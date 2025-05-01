@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35828.75
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MamaFit.API", "MamaFit.API\MamaFit.API.csproj", "{E1CD3161-C062-4E94-BCD6-6570A2F73883}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. API", "1. API", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Services", "2. Services", "{C5787510-60EC-4024-BFAC-69B0D9BE9767}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Repositories", "3. Repositories", "{23B3F928-48F2-48F7-BCA5-F0021DC23158}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. BusinessObjects", "4. BusinessObjects", "{330C30FD-1297-42C5-87B4-47C377465377}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MamaFit.Services", "MamaFit.Services\MamaFit.Services.csproj", "{42DD4038-BC8B-4E9B-AA4E-29150627DF74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MamaFit.Repositories", "MamaFit.Repositories\MamaFit.Repositories.csproj", "{5823E9EE-9B82-4249-95F0-341C54D4B87E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MamaFit.BusinessObjects", "MamaFit.BusinessObjects\MamaFit.BusinessObjects.csproj", "{60A0A1CF-02B9-4817-BC66-0127C639D3FB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E1CD3161-C062-4E94-BCD6-6570A2F73883}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1CD3161-C062-4E94-BCD6-6570A2F73883}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1CD3161-C062-4E94-BCD6-6570A2F73883}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1CD3161-C062-4E94-BCD6-6570A2F73883}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42DD4038-BC8B-4E9B-AA4E-29150627DF74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42DD4038-BC8B-4E9B-AA4E-29150627DF74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42DD4038-BC8B-4E9B-AA4E-29150627DF74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42DD4038-BC8B-4E9B-AA4E-29150627DF74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5823E9EE-9B82-4249-95F0-341C54D4B87E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5823E9EE-9B82-4249-95F0-341C54D4B87E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5823E9EE-9B82-4249-95F0-341C54D4B87E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5823E9EE-9B82-4249-95F0-341C54D4B87E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60A0A1CF-02B9-4817-BC66-0127C639D3FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60A0A1CF-02B9-4817-BC66-0127C639D3FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60A0A1CF-02B9-4817-BC66-0127C639D3FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60A0A1CF-02B9-4817-BC66-0127C639D3FB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E1CD3161-C062-4E94-BCD6-6570A2F73883} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{42DD4038-BC8B-4E9B-AA4E-29150627DF74} = {C5787510-60EC-4024-BFAC-69B0D9BE9767}
+		{5823E9EE-9B82-4249-95F0-341C54D4B87E} = {23B3F928-48F2-48F7-BCA5-F0021DC23158}
+		{60A0A1CF-02B9-4817-BC66-0127C639D3FB} = {330C30FD-1297-42C5-87B4-47C377465377}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ED66D7EE-499B-43B5-BB9B-D8FF8FF76C1C}
+	EndGlobalSection
+EndGlobal

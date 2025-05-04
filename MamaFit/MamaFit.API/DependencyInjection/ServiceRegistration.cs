@@ -1,4 +1,6 @@
-﻿using MamaFit.Services.Mapper;
+﻿using MamaFit.Repositories.Implement;
+using MamaFit.Repositories.Interface;
+using MamaFit.Services.Mapper;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -61,6 +63,7 @@ namespace MamaFit.Configuration
         public static void AddRepositories(this IServiceCollection services)
         {
             // Add your repository registrations here
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
         public static void AddServices(this IServiceCollection services)

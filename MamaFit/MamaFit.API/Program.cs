@@ -1,4 +1,5 @@
 using MamaFit.API.Constant;
+using MamaFit.API.Middlewares;
 using MamaFit.Configuration;
 using NLog.Web;
 using System.Text.Json.Serialization;
@@ -52,6 +53,8 @@ namespace MamaFit.API
                         c.RoutePrefix = string.Empty;
                     });
                 }
+
+                app.UseMiddleware<ExceptionMiddleware>();
 
                 app.UseHttpsRedirection();
 

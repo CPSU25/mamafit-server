@@ -1,6 +1,8 @@
 ﻿namespace MamaFit.BusinessObjects.Enum
 {
-    public class EnumList
+    public enum OrderType
     {
+        BUY,
+        CUSTOMIZE
     }
 }

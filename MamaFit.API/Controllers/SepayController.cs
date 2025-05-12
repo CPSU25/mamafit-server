@@ -30,7 +30,7 @@ public class SepayController : ControllerBase
         ));
     }
 
-    [HttpPost("generate-qr/{orderId}")]
+    [HttpGet("generate-qr/{orderId}")]
     public async Task<IActionResult> GeneratePaymentQr(string orderId)
     {
         var qrResponse = await _sepayService.CreatePaymentQrAsync(orderId);

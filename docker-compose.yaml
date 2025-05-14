@@ -21,6 +21,8 @@ services:
       - SepaySettings__AccountNumber=${SEPAY_ACCOUNT_NUMBER}
       - SepaySettings__AccountName=${SEPAY_ACCOUNT_NAME}
       - SepaySettings__BankCode=${SEPAY_BANK_CODE}
+      - GhtkSettings__ApiToken=${GHTK_API_TOKEN}
+      - GhtkSettings__BaseUri=${GHTK_BASE_URI}
     networks:
       - default
 

@@ -111,7 +111,7 @@ namespace MamaFit.API.DependencyInjection
             IConfiguration configuration)
         {
             services.AddHangfire(config =>
-                config.UsePostgreSqlStorage(configuration.GetConnectionString("HangfireDb")));
+                config.UsePostgreSqlStorage(configuration.GetConnectionString("HangfireConnection")));
             services.AddHangfireServer();
             return services;
         }

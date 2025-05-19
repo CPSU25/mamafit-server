@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MamaFit.BusinessObjects.Entity
+﻿namespace MamaFit.BusinessObjects.Entity
 {
-    public class MaternityDress
+    public class MaternityDress : BaseEntity
     {
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public List<string> Images { get; set; } = new List<string>();
+        public string? Slug { get; set; }
+        public virtual ICollection<MaternityDressDetail> Details { get; set; } = new List<MaternityDressDetail>();
+        public float AverageRating { get; set; }
+        public int TotalRatings { get; set; }
+        public Dictionary<int, int> RatingDistribution { get; set; } = new();
     }
 }

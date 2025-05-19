@@ -1,14 +1,14 @@
 ﻿using MamaFit.BusinessObjects.Enum;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MamaFit.BusinessObjects.Entity
 {
     public class Order : BaseEntity
     {
+        public string? OrderIdPanrent { get; set; }
+        public Order? ParentOrder { get; set; }
+        public string? UserId { get; set; }
+        public ApplicationUser? User { get; set; }
+        public OrderType Type { get; set; }
         public string? Code { get; set; }
         public OrderStatus? Status { get; set; }
         public float TotalAmount { get; set; }
@@ -21,5 +21,8 @@ namespace MamaFit.BusinessObjects.Entity
         public string? CanceledReason { get; set; }
         public float SubTotalAmount { get; set; }
         public string? WarrantyCode { get; set; }
+        public string? WarrantyHistoryId { get; set; }
+        public WarrantyHistory? WarrantyHistory { get; set; }
+        public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 }

@@ -11,6 +11,6 @@ namespace MamaFit.BusinessObjects.Entity
         public string? Name { get; set; }
         public string? Description { get; set; }
         public int NumberOfPregnancy { get; set; }
-        public virtual ICollection<Measurement> Measurement { get; set; } = new List<Measurement>();
+        public virtual ICollection<Measurement> Measurements { get; set; } = new List<Measurement>();
     }
 }

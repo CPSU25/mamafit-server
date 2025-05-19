@@ -1,15 +1,25 @@
 ﻿using MamaFit.BusinessObjects.Enum;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MamaFit.BusinessObjects.Entity
 {
-    public sealed class Order : BaseEntity
+    public class Order : BaseEntity
     {
-        public Guid UserId { get; set; }
-        public ApplicationUser? User { get; set; }
         public string? Code { get; set; }
-        public float? Total { get; set; }
         public OrderStatus? Status { get; set; }
-        public OrderType? Type { get; set; }
-        public ICollection<OrderDetail> Details { get; set; } = new List<OrderDetail>();
+        public float TotalAmount { get; set; }
+        public float ShippingFee { get; set; }
+        public PaymentStatus PaymentStatus { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
+        public DeliveryMethod DeliveryMethod { get; set; }
+        public PaymentType PaymentType { get; set; }
+        public DateTime? CanceledAt { get; set; }
+        public string? CanceledReason { get; set; }
+        public float SubTotalAmount { get; set; }
+        public string? WarrantyCode { get; set; }
     }
 }

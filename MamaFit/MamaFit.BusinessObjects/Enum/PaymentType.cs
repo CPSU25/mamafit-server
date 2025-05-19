@@ -1,8 +1,8 @@
 ﻿namespace MamaFit.BusinessObjects.Enum
 {
-    public enum OrderType
+    public enum PaymentType
     {
-        BUY,
-        CUSTOMIZE
+        DEPOSIT,
+        FULL
     }
 }

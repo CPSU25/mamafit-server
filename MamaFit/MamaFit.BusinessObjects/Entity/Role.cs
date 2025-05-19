@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace MamaFit.BusinessObjects.Entity
 {
-    internal class Appointment
+    public class Role : BaseEntity
     {
+        public string? RoleName { get; set; }
     }
 }

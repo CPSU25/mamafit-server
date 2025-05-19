@@ -1,6 +1,0 @@
-﻿namespace MamaFit.BusinessObjects.Enum
-{
-    public class EnumList
-    {
-    }
-}

@@ -1,12 +1,21 @@
-﻿namespace MamaFit.BusinessObjects.Entity
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MamaFit.BusinessObjects.Entity
 {
-    public class BaseEntity
+    public abstract class BaseEntity
     {
-        public Guid Id { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? UpdatedDate { get; set; }
+        protected BaseEntity()
+        {
+            Id = Guid.NewGuid().ToString("N");
+            CreatedAt = UpdatedAt = DateTime.Now;
+        }
+
+        [Key]
+        public string Id { get; set; }
         public string? CreatedBy { get; set; }
-        public string? UpdatedBy { get; set; }
-        public bool? IsDeleted { get; set; } = false;
+        public string? UpdateBy { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public bool? IsDelete { get; set; } = false;
     }
 }

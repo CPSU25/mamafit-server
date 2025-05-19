@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MamaFit.BusinessObjects.Entity
 {
-    internal class Appointment
+    public class MaternityDress
     {
     }
 }

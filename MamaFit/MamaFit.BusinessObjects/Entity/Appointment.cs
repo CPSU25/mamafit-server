@@ -1,11 +1,11 @@
-﻿using MamaFit.BusinessObjects.Enum;
+﻿using MamaFit.BusinessObjects.Base;
+using MamaFit.BusinessObjects.Enum;
 
 namespace MamaFit.BusinessObjects.Entity
 {
     public class Appointment : BaseEntity
     {
         public string? UserId { get; set; }
-        public ApplicationUser? User { get; set; }
         public string? BranchId { get; set; }
         public Branch? Branch { get; set; }
         public string? FullName { get; set; } = null!;
@@ -15,5 +15,8 @@ namespace MamaFit.BusinessObjects.Entity
         public AppointmentStatus? Status { get; set; }
         public DateTime? CanceledAt { get; set; }
         public string? CanceledReason { get; set; }
+        
+        //Navigation property
+        public ApplicationUser? User { get; set; }
     }
 }

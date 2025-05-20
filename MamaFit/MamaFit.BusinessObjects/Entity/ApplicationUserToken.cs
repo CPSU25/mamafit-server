@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MamaFit.BusinessObjects.Base;
 
 namespace MamaFit.BusinessObjects.Entity
 {

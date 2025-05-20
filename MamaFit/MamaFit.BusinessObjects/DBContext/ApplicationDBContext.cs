@@ -1,5 +1,6 @@
 ﻿using MamaFit.BusinessObjects.Entity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace MamaFit.BusinessObjects.DBContext
 {
@@ -11,33 +12,33 @@ namespace MamaFit.BusinessObjects.DBContext
         {
 
         }
-
-        public DbSet<ApplicationUser> User { get; set; }
-        public DbSet<ApplicationUserToken> UserToken { get; set; }
-        public DbSet<Appointment> Appointment { get; set; }
-        public DbSet<Branch> Branch { get; set; }
-        public DbSet<CartItem> CartItem { get; set; }
-        public DbSet<Category> Category { get; set; }
-        public DbSet<Component> Component { get; set; }
-        public DbSet<ComponentOption> ComponentOption { get; set; }
-        public DbSet<DesignOrder> DesignOrder { get; set; }
-        public DbSet<DressCustomization> DressCustomization { get; set; }
-        public DbSet<Feedback> Feedback { get; set; }
-        public DbSet<Location> Location { get; set; }
-        public DbSet<MaternityDress> MaternityDress { get; set; }
-        public DbSet<MaternityDressDetail> MaternityDressDetail { get; set; }
-        public DbSet<BranchMaternityDressDetail> BranchMaternityDressDetail { get; set; }
-        public DbSet<MaternityDressInspection> MaternityDressInspection { get; set; }
-        public DbSet<Measurement> Measurement { get; set; }
-        public DbSet<MeasurementDiary> MeasurementDiary { get; set; }
-        public DbSet<Notification> Notification { get; set; }
-        public DbSet<Order> Order { get; set; }
-        public DbSet<OrderItem> OrderItem { get; set; }
-        public DbSet<OrderItemInspection> OrderItemInspection { get; set; }
-        public DbSet<OrderItemProductionStage> OrderItemProductionStage { get; set; }
-        public DbSet<Role> Role { get; set; }
-        public DbSet<Style> Style { get; set; }
-        public DbSet<WarrantyHistory> WarrantyHistory { get; set; }
+        
+        public DbSet<ApplicationUser> Users { get; set; }
+        public DbSet<ApplicationUserToken> UserTokens { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<Branch> Branches { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Component> Components { get; set; }
+        public DbSet<ComponentOption> ComponentOptions { get; set; }
+        public DbSet<DesignOrder> DesignOrders { get; set; }
+        public DbSet<MaternityDressCustomization> DressCustomizations { get; set; }
+        public DbSet<Feedback> Feedbacks { get; set; }
+        public DbSet<Location> Locations { get; set; }
+        public DbSet<MaternityDress> MaternityDresses { get; set; }
+        public DbSet<MaternityDressDetail> MaternityDressDetails { get; set; }
+        public DbSet<BranchMaternityDressDetail> BranchMaternityDressDetails { get; set; }
+        public DbSet<MaternityDressInspection> MaternityDressInspections { get; set; }
+        public DbSet<Measurement> Measurements { get; set; }
+        public DbSet<MeasurementDiary> MeasurementDiaries { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<OrderItemInspection> OrderItemInspections { get; set; }
+        public DbSet<OrderItemProductionStage> OrderItemProductionStages { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<Style> Styles { get; set; }
+        public DbSet<WarrantyHistory> WarrantyHistories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -96,7 +97,7 @@ namespace MamaFit.BusinessObjects.DBContext
                        .OnDelete(DeleteBehavior.Cascade);
 
                 options.HasMany(u => u.DressCustomizations)
-                       .WithOne(o => o.User)
+                       .WithOne(o => o.Users)
                        .HasForeignKey(o => o.UserId)
                        .OnDelete(DeleteBehavior.Cascade);
 
@@ -141,10 +142,6 @@ namespace MamaFit.BusinessObjects.DBContext
                        .HasForeignKey(oii => oii.OrderItemId)
                        .OnDelete(DeleteBehavior.Cascade);
 
-                options.HasMany(ot => ot.WarrantyRequests)
-                       .WithOne(wh => wh.WarrantyOrderItem)
-                       .HasForeignKey(wh => wh.WarrantyOrderItemId)
-                       .OnDelete(DeleteBehavior.Cascade);
 
                 options.HasMany(ot => ot.WarrantyRequests)
                        .WithOne(wh => wh.OriginalOrderItem)

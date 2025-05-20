@@ -1,6 +1,8 @@
-﻿using MamaFit.Repositories.Implement;
+﻿using MamaFit.BusinessObjects.DBContext;
+using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Interface;
 using MamaFit.Services.Mapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -11,6 +13,22 @@ namespace MamaFit.Configuration
         public static IServiceCollection AddHttpClientServices(this IServiceCollection services)
         {
             services.AddHttpClient();
+            return services;
+        }
+
+        public static IServiceCollection AddDatabase(this IServiceCollection services)
+        {
+            IConfiguration configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
+
+            var connectionString = configuration.GetConnectionString("local");
+            Console.WriteLine("Connection string used: " + connectionString);
+            
+            services.AddDbContext<ApplicationDBContext>(options =>
+            {
+                options.UseNpgsql(connectionString);
+            });
             return services;
         }
 

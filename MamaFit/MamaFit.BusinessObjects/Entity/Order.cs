@@ -1,4 +1,5 @@
-﻿using MamaFit.BusinessObjects.Enum;
+﻿using MamaFit.BusinessObjects.Base;
+using MamaFit.BusinessObjects.Enum;
 
 namespace MamaFit.BusinessObjects.Entity
 {

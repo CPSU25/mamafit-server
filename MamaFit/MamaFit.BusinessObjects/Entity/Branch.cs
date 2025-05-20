@@ -11,5 +11,6 @@
         public string? OpeningHour { get; set; }
         public List<string> Images { get; set; } = new List<string>();
         public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+        public virtual ICollection<BranchMaternityDressDetail> BranchMaternityDressDetail { get; set; } = [];
     }
 }

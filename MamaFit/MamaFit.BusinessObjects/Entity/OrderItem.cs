@@ -8,6 +8,8 @@ namespace MamaFit.BusinessObjects.Entity
         public OrderItem? ParentOrderItem { get; set; }
         public string? MaternityDressDetailId { get; set; }
         public MaternityDressDetail? MaternityDressDetail { get; set; }
+        public string? OrderId { get; set; }
+        public Order? Order { get; set; }
         public ItemType? ItemType { get; set; }
         public float Price { get; set; }
         public int Quantity { get; set; }

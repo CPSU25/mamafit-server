@@ -11,5 +11,6 @@ namespace MamaFit.BusinessObjects.Entity
         public string? Metadata { get; set; }
         public bool? IsRead { get; set; } = false;
         public string? ReceiverId { get; set; }
+        public ApplicationUser? Receiver { get; set; }
     }
 }

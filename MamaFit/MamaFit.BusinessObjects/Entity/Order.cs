@@ -4,7 +4,7 @@ namespace MamaFit.BusinessObjects.Entity
 {
     public class Order : BaseEntity
     {
-        public string? OrderIdPanrent { get; set; }
+        public string? PanrentOrderId { get; set; }
         public Order? ParentOrder { get; set; }
         public string? UserId { get; set; }
         public ApplicationUser? User { get; set; }

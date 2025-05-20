@@ -10,5 +10,7 @@
         public float AverageRating { get; set; }
         public int TotalRatings { get; set; }
         public Dictionary<int, int> RatingDistribution { get; set; } = new();
+        public string? StyleId { get; set; }
+        public Style? Style { get; set; }
     }
 }

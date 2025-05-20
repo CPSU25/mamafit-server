@@ -135,7 +135,23 @@ namespace MamaFit.BusinessObjects.DBContext
                        .WithOne(f => f.OrderItem)
                        .HasForeignKey(f => f.OrderItemId)
                        .OnDelete(DeleteBehavior.Cascade);
+
+                options.HasMany(ot => ot.OrderItemInspections)
+                       .WithOne(oii => oii.OrderItem)
+                       .HasForeignKey(oii => oii.OrderItemId)
+                       .OnDelete(DeleteBehavior.Cascade);
+
+                options.HasMany(ot => ot.WarrantyRequests)
+                       .WithOne(wh => wh.WarrantyOrderItem)
+                       .HasForeignKey(wh => wh.WarrantyOrderItemId)
+                       .OnDelete(DeleteBehavior.Cascade);
+
+                options.HasMany(ot => ot.WarrantyRequests)
+                       .WithOne(wh => wh.OriginalOrderItem)
+                       .HasForeignKey(wh => wh.OriginalOrderItemId)
+                       .OnDelete(DeleteBehavior.Cascade);
             });
+
         }
     }
 }

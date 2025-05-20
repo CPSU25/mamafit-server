@@ -4,12 +4,23 @@ using MamaFit.Configuration;
 using NLog.Web;
 using System.Text.Json.Serialization;
 
+using MamaFit.BusinessObjects.DBContext;
+using Microsoft.EntityFrameworkCore;
 namespace MamaFit.API
 {
     public class Program
     {
         public static void Main(string[] args)
         {
+
+            // Add services to the container.
+            IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseNpgsql(builder.Configuration.GetConnectionString("local"));
+            });
 
             var logger = NLog.LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config")).GetCurrentClassLogger();
             try

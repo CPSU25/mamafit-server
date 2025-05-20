@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace MamaFit.BusinessObjects.Enum
 {
-    public class EnumList
+    public enum AppointmentStatus
     {
+        UP_COMMING,
+        CHECKED_IN,
+        CHECKED_OUT,
+        CANCELED,
     }
 }

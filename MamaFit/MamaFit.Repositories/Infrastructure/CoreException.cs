@@ -16,8 +16,7 @@ namespace MamaFit.Repositories.Infrastructure
             Code = code;
             StatusCode = statusCode;
         }
-
-
+        
         public string Code { get; }
 
         public int StatusCode { get; set; }

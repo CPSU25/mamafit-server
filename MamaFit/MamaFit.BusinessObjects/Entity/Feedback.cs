@@ -1,4 +1,6 @@
-﻿namespace MamaFit.BusinessObjects.Entity
+﻿using MamaFit.BusinessObjects.Base;
+
+namespace MamaFit.BusinessObjects.Entity
 {
     public class Feedback : BaseEntity
     {

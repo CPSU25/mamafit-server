@@ -14,19 +14,11 @@ namespace MamaFit.API
         {
 
             // Add services to the container.
-            IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-            builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseNpgsql(builder.Configuration.GetConnectionString("local"));
-            });
-
             var logger = NLog.LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config")).GetCurrentClassLogger();
             try
             {
                 var builder = WebApplication.CreateBuilder(args);
-
+                
                 builder.Logging.ClearProviders();
                 builder.Host.UseNLog();
 
@@ -41,7 +33,7 @@ namespace MamaFit.API
                     x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
 
-                // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+                builder.Services.AddDatabase();
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen();
 

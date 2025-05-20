@@ -1,4 +1,6 @@
-﻿namespace MamaFit.BusinessObjects.Entity
+﻿using MamaFit.BusinessObjects.Base;
+
+namespace MamaFit.BusinessObjects.Entity
 {
     public class MaternityDress : BaseEntity
     {
@@ -9,7 +11,7 @@
         public virtual ICollection<MaternityDressDetail> Details { get; set; } = new List<MaternityDressDetail>();
         public float AverageRating { get; set; }
         public int TotalRatings { get; set; }
-        public Dictionary<int, int> RatingDistribution { get; set; } = new();
+        public int? Rating { get; set; } 
         public string? StyleId { get; set; }
         public Style? Style { get; set; }
     }

@@ -33,7 +33,7 @@ namespace MamaFit.API
                     x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
 
-                builder.Services.AddDatabase();
+                builder.Services.AddDatabase(builder.Configuration);
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen();
 

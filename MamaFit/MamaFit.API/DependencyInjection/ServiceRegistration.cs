@@ -16,19 +16,13 @@ namespace MamaFit.Configuration
             return services;
         }
 
-        public static IServiceCollection AddDatabase(this IServiceCollection services)
+        public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
-            IConfiguration configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .Build();
-
             var connectionString = configuration.GetConnectionString("local");
-            Console.WriteLine("Connection string used: " + connectionString);
-            
             services.AddDbContext<ApplicationDBContext>(options =>
-            {
-                options.UseNpgsql(connectionString);
-            });
+                //options.UseNpgsql(connectionString)
+                options.UseSqlServer(connectionString)
+            );
             return services;
         }
 

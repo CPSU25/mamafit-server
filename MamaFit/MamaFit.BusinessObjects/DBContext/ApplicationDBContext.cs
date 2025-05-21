@@ -49,62 +49,62 @@ namespace MamaFit.BusinessObjects.DBContext
                 options.HasOne(u => u.Role)
                        .WithMany(r => r.Users)
                        .HasForeignKey(u => u.RoleId)
-                       .OnDelete(DeleteBehavior.Cascade);
+                       .OnDelete(DeleteBehavior.NoAction);
 
                 options.HasMany(u => u.Appointments)
                        .WithOne(a => a.User)
                        .HasForeignKey(u => u.UserId)
-                       .OnDelete(DeleteBehavior.Cascade);
+                       .OnDelete(DeleteBehavior.NoAction);
 
                 options.HasMany(u => u.Feedbacks)
                        .WithOne(f => f.User)
                        .HasForeignKey(f => f.UserId)
-                       .OnDelete(DeleteBehavior.Cascade);
+                       .OnDelete(DeleteBehavior.NoAction);
 
                 options.HasMany(u => u.DesignOrders)
                        .WithOne(f => f.User)
                        .HasForeignKey(f => f.UserId)
-                       .OnDelete(DeleteBehavior.Cascade);
+                       .OnDelete(DeleteBehavior.NoAction);
 
                 options.HasMany(u => u.Notifications)
                        .WithOne(n => n.Receiver)
                        .HasForeignKey(n => n.ReceiverId)
-                       .OnDelete(DeleteBehavior.Cascade);
+                       .OnDelete(DeleteBehavior.NoAction);
 
                 options.HasMany(u => u.OTPs)
                        .WithOne(o => o.User)
                        .HasForeignKey(o => o.UserId)
-                       .OnDelete(DeleteBehavior.Cascade);
+                       .OnDelete(DeleteBehavior.NoAction);
 
                 options.HasMany(u => u.MeasurementDiaries)
                        .WithOne(m => m.User)
                        .HasForeignKey(m => m.UserId)
-                       .OnDelete(DeleteBehavior.Cascade);
+                       .OnDelete(DeleteBehavior.NoAction);
 
                 options.HasMany(u => u.Location)
                        .WithOne(l => l.User)
                        .HasForeignKey(l => l.UserId)
-                       .OnDelete(DeleteBehavior.Cascade);
+                       .OnDelete(DeleteBehavior.NoAction);
 
                 options.HasMany(u => u.CartItems)
                        .WithOne(l => l.User)
                        .HasForeignKey(l => l.UserId)
-                       .OnDelete(DeleteBehavior.Cascade);
+                       .OnDelete(DeleteBehavior.NoAction);
 
                 options.HasMany(u => u.Orders)
                        .WithOne(o => o.User)
                        .HasForeignKey(o => o.UserId)
-                       .OnDelete(DeleteBehavior.Cascade);
+                       .OnDelete(DeleteBehavior.NoAction);
 
                 options.HasMany(u => u.DressCustomizations)
                        .WithOne(o => o.Users)
                        .HasForeignKey(o => o.UserId)
-                       .OnDelete(DeleteBehavior.Cascade);
+                       .OnDelete(DeleteBehavior.NoAction);
 
                 options.HasMany(u => u.VoucherDiscounts)
                        .WithOne(o => o.User)
                        .HasForeignKey(o => o.UserId)
-                       .OnDelete(DeleteBehavior.Cascade);
+                       .OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<Order>(options =>
@@ -112,12 +112,12 @@ namespace MamaFit.BusinessObjects.DBContext
                 options.HasMany(o => o.OrderItems)
                        .WithOne(oi => oi.Order)
                        .HasForeignKey(oi => oi.OrderId)
-                       .OnDelete(DeleteBehavior.Cascade);
+                       .OnDelete(DeleteBehavior.NoAction);
 
                 options.HasMany(o => o.Transactions)
                        .WithOne(oi => oi.Order)
                        .HasForeignKey(oi => oi.OrderId)
-                       .OnDelete(DeleteBehavior.Cascade);
+                       .OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<OrderItem>(options =>
@@ -125,30 +125,36 @@ namespace MamaFit.BusinessObjects.DBContext
                 options.HasOne(ot => ot.MaternityDressDetail)
                        .WithMany(mdd => mdd.OrderItems)
                        .HasForeignKey(ot => ot.MaternityDressDetailId)
-                       .OnDelete(DeleteBehavior.Cascade);
+                       .OnDelete(DeleteBehavior.NoAction);
 
                 options.HasMany(ot => ot.OrderItemProductionStages)
                        .WithOne(oips => oips.OrderItem)
                        .HasForeignKey(oips => oips.OrderItemId)
-                       .OnDelete(DeleteBehavior.Cascade);
+                       .OnDelete(DeleteBehavior.NoAction);
 
                 options.HasMany(ot => ot.Feedbacks)
                        .WithOne(f => f.OrderItem)
                        .HasForeignKey(f => f.OrderItemId)
-                       .OnDelete(DeleteBehavior.Cascade);
+                       .OnDelete(DeleteBehavior.NoAction);
 
                 options.HasMany(ot => ot.OrderItemInspections)
                        .WithOne(oii => oii.OrderItem)
                        .HasForeignKey(oii => oii.OrderItemId)
-                       .OnDelete(DeleteBehavior.Cascade);
+                       .OnDelete(DeleteBehavior.NoAction);
 
 
                 options.HasMany(ot => ot.WarrantyRequests)
                        .WithOne(wh => wh.OriginalOrderItem)
                        .HasForeignKey(wh => wh.OriginalOrderItemId)
-                       .OnDelete(DeleteBehavior.Cascade);
+                       .OnDelete(DeleteBehavior.NoAction);
             });
 
+            //sqlserver
+            modelBuilder.Entity<Category>(options =>
+            {
+                   options.Property(c => c.ImagesJson)
+                          .HasColumnType("nvarchar(max)");
+            });
         }
     }
 }

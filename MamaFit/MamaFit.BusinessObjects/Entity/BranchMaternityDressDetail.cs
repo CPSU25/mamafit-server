@@ -1,8 +1,6 @@
-﻿using MamaFit.BusinessObjects.Base;
-
-namespace MamaFit.BusinessObjects.Entity
+﻿namespace MamaFit.BusinessObjects.Entity
 {
-    public class BranchMaternityDressDetail : BaseEntity
+    public class BranchMaternityDressDetail
     {
         public string? MaternityDressDetailId { get; set; }
         public string? BranchId { get; set; }

@@ -20,7 +20,7 @@ namespace MamaFit.BusinessObjects.DBContext
 
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDBContext>();
             //optionsBuilder.UseNpgsql(connectionString);
-            optionsBuilder.UseSqlServer(connectionString);
+            optionsBuilder.UseNpgsql(connectionString);
 
             return new ApplicationDBContext(optionsBuilder.Options);
         }

@@ -7,6 +7,7 @@ namespace MamaFit.BusinessObjects.Entity
     {
         public string? UserId { get; set; }
         public ApplicationUser? User { get; set; }
+        public Branch? Branch { get; set; }
         public string? MapId { get; set; }
         public string? Name { get; set; }
         public string? Address { get; set; }

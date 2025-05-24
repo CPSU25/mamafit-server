@@ -21,7 +21,7 @@ namespace MamaFit.Configuration
             var connectionString = configuration.GetConnectionString("local");
             services.AddDbContext<ApplicationDBContext>(options =>
                 //options.UseNpgsql(connectionString)
-                options.UseSqlServer(connectionString)
+                options.UseNpgsql(connectionString)
             );
             return services;
         }

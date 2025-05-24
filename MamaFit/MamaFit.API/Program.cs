@@ -3,9 +3,6 @@ using MamaFit.API.Middlewares;
 using MamaFit.Configuration;
 using NLog.Web;
 using System.Text.Json.Serialization;
-
-using MamaFit.BusinessObjects.DBContext;
-using Microsoft.EntityFrameworkCore;
 namespace MamaFit.API
 {
     public class Program

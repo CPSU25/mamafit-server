@@ -12,7 +12,7 @@ namespace MamaFit.BusinessObjects.DBContext
         {
 
         }
-        
+
         public DbSet<ApplicationUser> Users { get; set; }
         public DbSet<ApplicationUserToken> UserTokens { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
@@ -38,7 +38,9 @@ namespace MamaFit.BusinessObjects.DBContext
         public DbSet<OrderItemProductionStage> OrderItemProductionStages { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Style> Styles { get; set; }
+        public DbSet<VoucherBatch> VoucherBatchs { get; set; }
         public DbSet<WarrantyHistory> WarrantyHistories { get; set; }
+        public DbSet<WarrantyRequest> WarrantyRequests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -105,6 +107,16 @@ namespace MamaFit.BusinessObjects.DBContext
                        .WithOne(o => o.User)
                        .HasForeignKey(o => o.UserId)
                        .OnDelete(DeleteBehavior.NoAction);
+
+                options.HasMany(u => u.Token)
+                       .WithOne(l => l.User)
+                       .HasForeignKey(l => l.UserId)
+                       .OnDelete(DeleteBehavior.NoAction);
+
+                options.HasOne(u => u.Branch)
+                       .WithOne(b => b.BranchManager)
+                       .HasForeignKey<ApplicationUser>(u => u.BranchId)
+                       .OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<Order>(options =>
@@ -137,11 +149,20 @@ namespace MamaFit.BusinessObjects.DBContext
                        .HasForeignKey(f => f.OrderItemId)
                        .OnDelete(DeleteBehavior.NoAction);
 
+                options.HasOne(ot => ot.DesignOrder)
+                       .WithOne(od => od.OrderItem)
+                       .HasForeignKey<OrderItem>(ot => ot.DesignOrderId)
+                       .OnDelete(DeleteBehavior.NoAction);
+
+                options.HasOne(ot => ot.MaternityDressCustomization)
+                       .WithOne(mdc => mdc.OrderItems)
+                       .HasForeignKey<OrderItem>(ot => ot.MaternityDressCustomizationId)
+                       .OnDelete(DeleteBehavior.NoAction);
+
                 options.HasMany(ot => ot.OrderItemInspections)
                        .WithOne(oii => oii.OrderItem)
                        .HasForeignKey(oii => oii.OrderItemId)
                        .OnDelete(DeleteBehavior.NoAction);
-
 
                 options.HasMany(ot => ot.WarrantyRequests)
                        .WithOne(wh => wh.OriginalOrderItem)
@@ -149,12 +170,59 @@ namespace MamaFit.BusinessObjects.DBContext
                        .OnDelete(DeleteBehavior.NoAction);
             });
 
-            //sqlserver
-            modelBuilder.Entity<Category>(options =>
+            modelBuilder.Entity<OrderItemProductionStage>(options =>
             {
-                   options.Property(c => c.ImagesJson)
-                          .HasColumnType("nvarchar(max)");
+                options.HasKey(oips => new { oips.OrderItemId, oips.ProductionStageId });
             });
+
+            modelBuilder.Entity<ProductionStage>(options =>
+            {
+                options.HasMany(ps => ps.OrderItemProductionStages)
+                       .WithOne(oips => oips.ProductionStage)
+                       .HasForeignKey(oips => oips.ProductionStageId)
+                       .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<BranchMaternityDressDetail>(options =>
+            {
+                options.HasKey(bmdd => new { bmdd.BranchId, bmdd.MaternityDressDetailId });
+            });
+
+            modelBuilder.Entity<Branch>(options =>
+            {
+                options.HasMany(b => b.BranchMaternityDressDetail)
+                       .WithOne(bmdd => bmdd.Branch)
+                       .HasForeignKey(bmdd => bmdd.BranchId)
+                       .OnDelete(DeleteBehavior.NoAction);
+
+
+                options.HasOne(b => b.Location)
+                       .WithOne(l => l.Branch)
+                       .HasForeignKey<Branch>(b => b.LocationId)
+                       .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<MaternityDressDetail>(options =>
+            {
+                options.HasMany(md => md.BranchMaternityDressDetails)
+                       .WithOne(bmdd => bmdd.MaternityDressDetail)
+                       .HasForeignKey(bmdd => bmdd.MaternityDressDetailId)
+                       .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<VoucherBatch>(options =>
+            {
+                options.HasMany(vb => vb.VoucherDiscounts)
+                       .WithOne(vd => vd.VoucherBatch)
+                       .HasForeignKey(vb => vb.VoucherBatchId)
+                       .OnDelete(DeleteBehavior.NoAction);
+            });
+            //sqlserver
+            /*            modelBuilder.Entity<Category>(options =>
+                        {
+                            options.Property(c => c.ImagesJson)
+                                   .HasColumnType("nvarchar(max)");
+                        });*/
         }
     }
 }

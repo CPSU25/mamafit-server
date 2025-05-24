@@ -2,7 +2,7 @@
 
 namespace MamaFit.BusinessObjects.Entity
 {
-    public class VouchetBatch : BaseEntity
+    public class VoucherBatch : BaseEntity
     {
         public string? BatchCode { get; set; }
         public string? Description { get; set; }

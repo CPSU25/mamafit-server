@@ -24,8 +24,6 @@ namespace MamaFit.BusinessObjects.Entity
         public string? VoucherDiscountId { get; set; }
         public VoucherDiscount? VoucherDiscount { get; set; }
         public string? WarrantyCode { get; set; }
-        public string? WarrantyHistoryId { get; set; }
-        public WarrantyHistory? WarrantyHistory { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public virtual ICollection<Transaction> Transactions { get; set; } = [];
     }

@@ -1,8 +1,6 @@
-﻿using MamaFit.BusinessObjects.Base;
-
-namespace MamaFit.BusinessObjects.Entity
+﻿namespace MamaFit.BusinessObjects.Entity
 {
-    public class OrderItemProductionStage : BaseEntity
+    public class OrderItemProductionStage
     {
         public string? ProductionStageId { get; set; }
         public string? OrderItemId { get; set; }

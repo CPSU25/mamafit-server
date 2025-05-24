@@ -14,6 +14,6 @@ namespace MamaFit.BusinessObjects.Entity
         public int Quantity { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
-        public virtual ICollection<BranchMaternityDressDetail> BranchMaternityDressDetail { get; set; } = [];
+        public virtual ICollection<BranchMaternityDressDetail> BranchMaternityDressDetails { get; set; } = [];
     }
 }

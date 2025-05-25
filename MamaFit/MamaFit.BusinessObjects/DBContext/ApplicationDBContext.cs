@@ -41,11 +41,43 @@ namespace MamaFit.BusinessObjects.DBContext
         public DbSet<VoucherBatch> VoucherBatchs { get; set; }
         public DbSet<WarrantyHistory> WarrantyHistories { get; set; }
         public DbSet<WarrantyRequest> WarrantyRequests { get; set; }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            #region Confiure Table Names
+            modelBuilder.Entity<ApplicationUser>().ToTable("User");
+            modelBuilder.Entity<ApplicationUserToken>().ToTable("UserToken");
+            modelBuilder.Entity<Appointment>().ToTable("Appointment");
+            modelBuilder.Entity<Branch>().ToTable("Branch");
+            modelBuilder.Entity<CartItem>().ToTable("CartItem");
+            modelBuilder.Entity<Category>().ToTable("Category");
+            modelBuilder.Entity<Component>().ToTable("Component");
+            modelBuilder.Entity<ComponentOption>().ToTable("ComponentOption");
+            modelBuilder.Entity<DesignOrder>().ToTable("DesignOrder");
+            modelBuilder.Entity<MaternityDressCustomization>().ToTable("DressCustomization");
+            modelBuilder.Entity<Feedback>().ToTable("Feedback");
+            modelBuilder.Entity<Location>().ToTable("Location");
+            modelBuilder.Entity<MaternityDress>().ToTable("MaternityDress");
+            modelBuilder.Entity<MaternityDressDetail>().ToTable("MaternityDressDetail");
+            modelBuilder.Entity<BranchMaternityDressDetail>().ToTable("BranchMaternityDressDetail");
+            modelBuilder.Entity<MaternityDressInspection>().ToTable("MaternityDressInspection");
+            modelBuilder.Entity<Measurement>().ToTable("Measurement");
+            modelBuilder.Entity<MeasurementDiary>().ToTable("MeasurementDiary");
+            modelBuilder.Entity<Notification>().ToTable("Notification");
+            modelBuilder.Entity<Order>().ToTable("Order");
+            modelBuilder.Entity<OrderItem>().ToTable("OrderItem");
+            modelBuilder.Entity<OrderItemInspection>().ToTable("OrderItemInspection");
+            modelBuilder.Entity<OrderItemProductionStage>().ToTable("OrderItemProductionStage");
+            modelBuilder.Entity<Role>().ToTable("Role");
+            modelBuilder.Entity<Style>().ToTable("Style");
+            modelBuilder.Entity<VoucherBatch>().ToTable("VoucherBatch");
+            modelBuilder.Entity<WarrantyHistory>().ToTable("WarrantyHistory");
+            modelBuilder.Entity<WarrantyRequest>().ToTable("WarrantyRequest");
+            #endregion
+
+            #region Configure FluentApi
             modelBuilder.Entity<ApplicationUser>(options =>
             {
                 options.HasOne(u => u.Role)
@@ -217,12 +249,7 @@ namespace MamaFit.BusinessObjects.DBContext
                        .HasForeignKey(vb => vb.VoucherBatchId)
                        .OnDelete(DeleteBehavior.NoAction);
             });
-            //sqlserver
-            /*            modelBuilder.Entity<Category>(options =>
-                        {
-                            options.Property(c => c.ImagesJson)
-                                   .HasColumnType("nvarchar(max)");
-                        });*/
+            #endregion
         }
     }
 }

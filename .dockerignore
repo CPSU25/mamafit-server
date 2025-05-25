@@ -1,30 +1,35 @@
-**/.classpath
-**/.dockerignore
-**/.env
-**/.git
-**/.gitignore
-**/.project
-**/.settings
-**/.toolstarget
-**/.vs
-**/.vscode
-**/*.*proj.user
-**/*.dbmdl
-**/*.jfm
-**/azds.yaml
-**/bin
-**/charts
-**/docker-compose*
-**/Dockerfile*
-**/node_modules
-**/npm-debug.log
-**/obj
-**/secrets.dev.yaml
-**/values.dev.yaml
+# Bỏ qua thư mục source control, meta
+.git
+.gitignore
+.vscode
+.idea
+
+# Node, dotnet, Java build artifacts
+node_modules
+bin
+obj
+
+# Docker files, môi trường, log
+docker-compose*
+Dockerfile*
+.env
+npm-debug.log
+
+# Một số file project của VS/IDE
+*.user
+*.dbmdl
+*.jfm
+.classpath
+.project
+.settings
+.toolstarget
+
+# File/yaml CI/CD, Kubernetes, Helm
+azds.yaml
+charts
+secrets.dev.yaml
+values.dev.yaml
+
+# (Tùy chọn) không đưa README, LICENSE vào image
 LICENSE
 README.md
-!**/.gitignore
-!.git/HEAD
-!.git/config
-!.git/packed-refs
-!.git/refs/heads/**

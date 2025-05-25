@@ -1,29 +1,33 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-# This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-
-# This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+
+# Copy solution and project files (bắt buộc cho multi-project!)
+COPY ["MamaFit.sln", "."]
 COPY ["MamaFit.API/MamaFit.API.csproj", "MamaFit.API/"]
+COPY ["MamaFit.BusinessObjects/MamaFit.BusinessObjects.csproj", "MamaFit.BusinessObjects/"]
+COPY ["MamaFit.Repositories/MamaFit.Repositories.csproj", "MamaFit.Repositories/"]
+COPY ["MamaFit.Services/MamaFit.Services.csproj", "MamaFit.Services/"]
+
+# Restore nuget package
 RUN dotnet restore "./MamaFit.API/MamaFit.API.csproj"
+
+# Copy toàn bộ source code còn lại
 COPY . .
+
 WORKDIR "/src/MamaFit.API"
 RUN dotnet build "./MamaFit.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./MamaFit.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .

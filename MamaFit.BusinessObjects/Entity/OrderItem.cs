@@ -7,8 +7,9 @@ namespace MamaFit.BusinessObjects.Entity
     {
         public string? MaternityDressDetailId { get; set; }
         public string? OrderId { get; set; }
+        public string? MeasurementDiaryId { get; set; }
         public string? MaternityDressCustomizationId { get; set; }
-        public string? DesignOrderId { get; set; }
+        public string? DesignRequestId { get; set; }
         public ItemType? ItemType { get; set; }
         public float Price { get; set; }
         public int Quantity { get; set; }
@@ -17,7 +18,8 @@ namespace MamaFit.BusinessObjects.Entity
 
         //Navigation property
         public MaternityDressCustomization? MaternityDressCustomization { get; set; }
-        public DesignOrder? DesignOrder { get; set; }
+        public MeasurementDiary? MeasurementDiary { get; set; }
+        public DesignRequest? DesignRequest { get; set; }
         public virtual ICollection<OrderItemInspection>? OrderItemInspections { get; set; } = [];
         public virtual ICollection<OrderItemProductionStage>? OrderItemProductionStages { get; set; } = [];
         public virtual ICollection<Feedback>? Feedbacks { get; set; } = [];

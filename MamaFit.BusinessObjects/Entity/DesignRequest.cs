@@ -2,16 +2,15 @@
 
 namespace MamaFit.BusinessObjects.Entity
 {
-    public class DesignOrder : BaseEntity
+    public class DesignRequest : BaseEntity
     {
         public string? UserId { get; set; }
-        public string? DesignerId { get; set; }
         public string? Description { get; set; }
         public List<string>? Images { get; set; } = new List<string>();
         
-        //Navigation property
+        //Navigation properties
         public OrderItem? OrderItem { get; set; }
-        public ApplicationUser? Designer { get; set; }
         public ApplicationUser? User { get; set; }
+        public ICollection<MaternityDressTask> MaternityDressTasks { get; set; } = new List<MaternityDressTask>();
     }
 }

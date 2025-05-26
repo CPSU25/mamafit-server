@@ -3,6 +3,8 @@ using MamaFit.API.Middlewares;
 using MamaFit.Configuration;
 using NLog.Web;
 using System.Text.Json.Serialization;
+using MamaFit.Repositories.Helper;
+
 namespace MamaFit.API
 {
     public class Program
@@ -29,7 +31,8 @@ namespace MamaFit.API
                 {
                     x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
-
+                
+                builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
                 builder.Services.AddDatabase(builder.Configuration);
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen();

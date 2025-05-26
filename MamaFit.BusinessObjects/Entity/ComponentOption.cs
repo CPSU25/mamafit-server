@@ -1,4 +1,5 @@
 ﻿using MamaFit.BusinessObjects.Base;
+using MamaFit.BusinessObjects.Enum;
 
 namespace MamaFit.BusinessObjects.Entity
 {
@@ -8,6 +9,7 @@ namespace MamaFit.BusinessObjects.Entity
         public string? Name { get; set; }
         public string? Description { get; set; }
         public List<string>? Images { get; set; } = [];
+        public ComponentOptionType? ComponentOptionType { get; set; }
         
         //Navigation property
         public virtual ICollection<MaternityDressSelection> MaternityDressSelections { get; set; } = new List<MaternityDressSelection>();

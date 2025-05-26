@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MamaFit.BusinessObjects.Base;
+﻿using MamaFit.BusinessObjects.Base;
+using MamaFit.BusinessObjects.Enum;
 
 namespace MamaFit.BusinessObjects.Entity
 {
@@ -14,5 +10,6 @@ namespace MamaFit.BusinessObjects.Entity
         public string? Token { get; set; }
         public DateTime? ExpiredAt { get; set; }
         public bool? IsRevoked { get; set; }
+        public TokenType? TokenType { get; set; }
     }
 }

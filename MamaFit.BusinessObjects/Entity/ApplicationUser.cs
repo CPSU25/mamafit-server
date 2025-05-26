@@ -14,18 +14,18 @@ namespace MamaFit.BusinessObjects.Entity
         public string? PhoneNumber { get; set; }
         public bool IsVerify { get; set; } = false;
         public string? RoleId { get; set; }
-        public string? BranchId { get; set; }
         
-        //Navigation property
+        //Navigation properties
         public Role? Role { get; set; }
-        public Branch? Branch { get; set; }
+        public ICollection<Branch>? Branch { get; set; }
+        public virtual ICollection<MaternityDressTask> MaternityDressTasks { get; set; } = new List<MaternityDressTask>();
         public virtual ICollection<ApplicationUserToken>? Token { get; set; }
-        public virtual ICollection<Location>? Location { get; set; } = new List<Location>();
+        public virtual ICollection<Address>? Addresses { get; set; } = new List<Address>();
         public virtual ICollection<MeasurementDiary>? MeasurementDiaries { get; set; } = new List<MeasurementDiary>();
         public virtual ICollection<Notification>? Notifications { get; set; } = new List<Notification>();
         public virtual ICollection<OTP>? OTPs { get; set; } = new List<OTP>();
         public virtual ICollection<Feedback>? Feedbacks { get; set; } = new List<Feedback>();
-        public virtual ICollection<DesignOrder>? DesignOrders { get; set; } = new List<DesignOrder>();
+        public virtual ICollection<DesignRequest>? DesignRequests { get; set; } = new List<DesignRequest>();
         public virtual ICollection<Appointment>? Appointments { get; set; } = new List<Appointment>();
         public virtual ICollection<CartItem>? CartItems { get; set; } = new List<CartItem>();
         public virtual ICollection<MaternityDressCustomization>? DressCustomizations { get; set; } = [];

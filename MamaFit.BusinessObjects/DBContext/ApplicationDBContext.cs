@@ -4,13 +4,13 @@ using Microsoft.Extensions.Configuration;
 
 namespace MamaFit.BusinessObjects.DBContext
 {
-    public class ApplicationDBContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
-        public ApplicationDBContext()
+        public ApplicationDbContext()
         {
         }
 
-        public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 
@@ -37,7 +37,7 @@ namespace MamaFit.BusinessObjects.DBContext
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<OrderItemInspection> OrderItemInspections { get; set; }
         public DbSet<OrderItemProductionStage> OrderItemProductionStages { get; set; }
-        public DbSet<Role> Roles { get; set; }
+        public DbSet<ApplicationUserRole> Roles { get; set; }
         public DbSet<Style> Styles { get; set; }
         public DbSet<VoucherBatch> VoucherBatchs { get; set; }
         public DbSet<WarrantyHistory> WarrantyHistories { get; set; }
@@ -77,7 +77,7 @@ namespace MamaFit.BusinessObjects.DBContext
             modelBuilder.Entity<OrderItem>().ToTable("OrderItem");
             modelBuilder.Entity<OrderItemInspection>().ToTable("OrderItemInspection");
             modelBuilder.Entity<OrderItemProductionStage>().ToTable("OrderItemProductionStage");
-            modelBuilder.Entity<Role>().ToTable("Role");
+            modelBuilder.Entity<ApplicationUserRole>().ToTable("UserRole");
             modelBuilder.Entity<Style>().ToTable("Style");
             modelBuilder.Entity<VoucherBatch>().ToTable("VoucherBatch");
             modelBuilder.Entity<WarrantyHistory>().ToTable("WarrantyHistory");
@@ -260,6 +260,21 @@ namespace MamaFit.BusinessObjects.DBContext
                     .OnDelete(DeleteBehavior.NoAction);
             });
 
+            modelBuilder.Entity<MaternityDressCustomization>(options =>
+            {
+                options.HasOne(mdc => mdc.MaternityDressTask)
+                    .WithOne(mdt => mdt.MaternityDressCustomization)
+                    .HasForeignKey<MaternityDressTask>(mdt => mdt.MaternityDressCustomizationId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<DesignRequest>(options =>
+            {
+                options.HasOne(dr => dr.MaternityDressTask)
+                    .WithOne(mdt => mdt.DesignRequest)
+                    .HasForeignKey<MaternityDressTask>(mdt => mdt.DesignRequestId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
             #endregion
         }
     }

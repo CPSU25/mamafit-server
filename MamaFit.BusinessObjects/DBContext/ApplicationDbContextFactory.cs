@@ -5,9 +5,9 @@ using System.IO;
 
 namespace MamaFit.BusinessObjects.DBContext
 {
-    public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDBContext>
+    public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
     {
-        public ApplicationDBContext CreateDbContext(string[] args)
+        public ApplicationDbContext CreateDbContext(string[] args)
         {
             Console.WriteLine("Current Directory: " + Directory.GetCurrentDirectory());
 
@@ -18,11 +18,11 @@ namespace MamaFit.BusinessObjects.DBContext
 
             var connectionString = config.GetConnectionString("local");
 
-            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDBContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
             //optionsBuilder.UseNpgsql(connectionString);
             optionsBuilder.UseNpgsql(connectionString);
 
-            return new ApplicationDBContext(optionsBuilder.Options);
+            return new ApplicationDbContext(optionsBuilder.Options);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using MamaFit.BusinessObjects.DBContext;
+﻿
+using MamaFit.BusinessObjects.DBContext;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Interface;
 using MamaFit.Services.Mapper;
@@ -8,7 +9,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace MamaFit.Configuration
 {
-    public static class ServiceRegistration
+    public static class ApplicationServiceExtension
     {
         public static IServiceCollection AddHttpClientServices(this IServiceCollection services)
         {
@@ -19,7 +20,7 @@ namespace MamaFit.Configuration
         public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("local");
-            services.AddDbContext<ApplicationDBContext>(options =>
+            services.AddDbContext<ApplicationDbContext>(options =>
                 //options.UseNpgsql(connectionString)
                 options.UseNpgsql(connectionString)
             );

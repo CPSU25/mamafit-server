@@ -1,0 +1,7 @@
+namespace MamaFit.BusinessObjects.DTO.Token;
+
+public class RefreshTokenRequestDto
+{
+    public string RefreshToken { get; set; } = string.Empty;
+}
+

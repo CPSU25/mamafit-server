@@ -8,5 +8,10 @@ namespace MamaFit.Repositories.Interface
 {
     public interface IUnitOfWork
     {
+        IGenericRepository<T> GetRepository<T>() where T : class;
+        Task SaveAsync();
+        void BeginTransaction();
+        void CommitTransaction();
+        void RollBack();
     }
 }

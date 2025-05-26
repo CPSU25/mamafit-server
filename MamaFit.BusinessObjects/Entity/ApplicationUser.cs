@@ -16,7 +16,7 @@ namespace MamaFit.BusinessObjects.Entity
         public string? RoleId { get; set; }
         
         //Navigation properties
-        public Role? Role { get; set; }
+        public ApplicationUserRole? Role { get; set; }
         public ICollection<Branch>? Branch { get; set; }
         public virtual ICollection<MaternityDressTask> MaternityDressTasks { get; set; } = new List<MaternityDressTask>();
         public virtual ICollection<ApplicationUserToken>? Token { get; set; }

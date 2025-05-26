@@ -9,8 +9,8 @@ namespace MamaFit.BusinessObjects.Entity
         public List<string>? Images { get; set; } = new List<string>();
         
         //Navigation properties
-        public OrderItem? OrderItem { get; set; }
-        public ApplicationUser? User { get; set; }
-        public ICollection<MaternityDressTask> MaternityDressTasks { get; set; } = new List<MaternityDressTask>();
+        public virtual OrderItem? OrderItem { get; set; }
+        public virtual ApplicationUser? User { get; set; }
+        public virtual MaternityDressTask? MaternityDressTask { get; set; }
     }
 }

@@ -13,7 +13,8 @@ namespace MamaFit.BusinessObjects.DBContext
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
-
+        
+        public DbSet<OTP> OTPs { get; set; }
         public DbSet<ApplicationUser> Users { get; set; }
         public DbSet<ApplicationUserToken> UserTokens { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
@@ -53,7 +54,7 @@ namespace MamaFit.BusinessObjects.DBContext
             base.OnModelCreating(modelBuilder);
 
             #region Confiure Table Names
-
+            modelBuilder.Entity<OTP>().ToTable("OTP");
             modelBuilder.Entity<ApplicationUser>().ToTable("User");
             modelBuilder.Entity<ApplicationUserToken>().ToTable("UserToken");
             modelBuilder.Entity<Appointment>().ToTable("Appointment");
@@ -77,7 +78,7 @@ namespace MamaFit.BusinessObjects.DBContext
             modelBuilder.Entity<OrderItem>().ToTable("OrderItem");
             modelBuilder.Entity<OrderItemInspection>().ToTable("OrderItemInspection");
             modelBuilder.Entity<OrderItemProductionStage>().ToTable("OrderItemProductionStage");
-            modelBuilder.Entity<ApplicationUserRole>().ToTable("UserRole");
+            modelBuilder.Entity<ApplicationUserRole>().ToTable("Role");
             modelBuilder.Entity<Style>().ToTable("Style");
             modelBuilder.Entity<VoucherBatch>().ToTable("VoucherBatch");
             modelBuilder.Entity<WarrantyHistory>().ToTable("WarrantyHistory");

@@ -5,7 +5,7 @@ namespace MamaFit.BusinessObjects.Entity
     public class ApplicationUser : BaseEntity
     {
         public string? UserName { get; set; }
-        public string UserEmail { get; set; }
+        public string? UserEmail { get; set; }
         public string? HashPassword { get; set; }
         public string? Salt { get; set; }
         public string? FullName { get; set; }

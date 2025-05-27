@@ -47,45 +47,81 @@ public class AuthService : IAuthService
     }
 
     public async Task<TokenResponseDto> SignInAsync(LoginRequestDto model)
-    {
-        ApplicationUser? user = await _unitOfWork.GetRepository<ApplicationUser>().Entities.FirstOrDefaultAsync(p => p.UserName == model.Username || p.UserEmail == model.Email);
-        if (user == null)
-        {
-            throw new ErrorException(StatusCodes.Status401Unauthorized, "Bạn chưa có tài khoản! Vui lòng đăng ký!");
-        }
-        if (user.IsDeleted)
-            throw new ErrorException(StatusCodes.Status403Forbidden, "Tài khoản của bạn đã bị khóa hoặc xóa.");
-        if (!user.IsVerify)
-            throw new ErrorException(StatusCodes.Status401Unauthorized, "Tài khoản chưa xác thực email/số điện thoại.");
+{
+    if (model == null)
+        throw new ErrorException(StatusCodes.Status400BadRequest, "Dữ liệu đăng nhập không hợp lệ!");
 
-        if (!VerifyPassword(model.Password, user.HashPassword, user.Salt))
-        {
-            throw new ErrorException(StatusCodes.Status401Unauthorized, "Mật khẩu không đúng!");
-        }
-        
-        var roleRepo = _unitOfWork.GetRepository<ApplicationUserRole>();
-        string role = (await roleRepo.FindAsync(x => x.Id == user.RoleId))?.RoleName ?? "unknown";
-        var token = GenerateTokens(user, role);
-        
-        var refreshTokenEntity = new ApplicationUserToken
-        {
-            UserId = user.Id,
-            Token = token.RefreshToken,
-            ExpiredAt = DateTime.UtcNow.AddDays(int.Parse(_configuration["JWT:RefreshTokenExpirationDays"])),
-            IsRevoked = false,
-            TokenType = TokenType.REFRESH_TOKEN
-        };
-        
-        var userTokenRepo = _unitOfWork.GetRepository<ApplicationUserToken>();
-        await userTokenRepo.InsertAsync(refreshTokenEntity);
-        await _unitOfWork.SaveAsync();
-        
-        return new TokenResponseDto()
-        {
-            AccessToken = token.AccessToken,
-            RefreshToken = token.RefreshToken,
-        };
+    var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
+    ApplicationUser? user = null;
+    string loginKey = null;
+
+    if (!string.IsNullOrWhiteSpace(model.Username))
+    {
+        loginKey = model.Username;
+        user = await userRepo.Entities.FirstOrDefaultAsync(p => p.UserName == model.Username);
     }
+    else if (!string.IsNullOrWhiteSpace(model.Email))
+    {
+        loginKey = model.Email.Trim().ToLower();
+        user = await userRepo.Entities.FirstOrDefaultAsync(
+            p => p.UserEmail != null && p.UserEmail.ToLower() == loginKey
+        );
+    }
+    else
+    {
+        throw new ErrorException(StatusCodes.Status400BadRequest, "Bạn phải nhập Email hoặc Username!");
+    }
+
+    if (user == null)
+        throw new ErrorException(StatusCodes.Status401Unauthorized, $"Không tìm thấy tài khoản với thông tin: {loginKey}");
+
+    if (user.IsDeleted)
+        throw new ErrorException(StatusCodes.Status403Forbidden, "Tài khoản của bạn đã bị khóa hoặc xóa.");
+    if (!user.IsVerify)
+        throw new ErrorException(StatusCodes.Status401Unauthorized, "Tài khoản chưa xác thực email/số điện thoại.");
+
+    if (!VerifyPassword(model.Password, user.HashPassword, user.Salt))
+        throw new ErrorException(StatusCodes.Status401Unauthorized, "Mật khẩu không đúng!");
+
+    // ---- DEBUG RoleId trước khi query
+    if (string.IsNullOrWhiteSpace(user.RoleId))
+    {
+        throw new ErrorException(StatusCodes.Status500InternalServerError,
+            "RoleId của user bị null/trống. Vui lòng kiểm tra lại dữ liệu tài khoản!");
+    }
+
+    var roleRepo = _unitOfWork.GetRepository<ApplicationUserRole>();
+    var userRole = await roleRepo.Entities.FirstOrDefaultAsync(x => x.Id == user.RoleId);
+
+    if (userRole == null)
+    {
+        throw new ErrorException(StatusCodes.Status500InternalServerError,
+            $"Không tìm thấy role cho tài khoản này! RoleId: {user.RoleId}");
+    }
+
+    string role = userRole.RoleName;
+    var token = GenerateTokens(user, role);
+
+    var refreshTokenEntity = new ApplicationUserToken
+    {
+        UserId = user.Id,
+        Token = token.RefreshToken,
+        ExpiredAt = DateTime.UtcNow.AddDays(int.Parse(_configuration["JWT:RefreshTokenExpirationDays"])),
+        IsRevoked = false,
+        TokenType = TokenType.REFRESH_TOKEN
+    };
+
+    var userTokenRepo = _unitOfWork.GetRepository<ApplicationUserToken>();
+    await userTokenRepo.InsertAsync(refreshTokenEntity);
+    await _unitOfWork.SaveAsync();
+
+    return new TokenResponseDto
+    {
+        AccessToken = token.AccessToken,
+        RefreshToken = token.RefreshToken,
+    };
+}
+
 
     public async Task<TokenResponseDto> RefreshTokenAsync(RefreshTokenRequestDto model)
 {
@@ -135,28 +171,27 @@ public class AuthService : IAuthService
     
     public async Task VerifyOtpAsync(VerifyOtpRequestDto model)
     {
+        var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
+        var user = await userRepo.Entities.FirstOrDefaultAsync(x => x.UserEmail == model.Email);
+
+        if (user == null)
+            throw new ErrorException(StatusCodes.Status404NotFound, "Không tìm thấy người dùng với email này!");
+        
         var otpRepo = _unitOfWork.GetRepository<OTP>();
         var otp = await otpRepo.Entities
-            .Where(x => x.UserId == model.UserId 
-                        && x.Code == model.Code 
-                        && x.OTPType == model.OTPType 
+            .Where(x => x.UserId == user.Id
+                        && x.Code == model.Code
+                        && x.OTPType == model.OTPType
                         && x.ExpiredAt >= DateTime.UtcNow)
             .OrderByDescending(x => x.ExpiredAt)
             .FirstOrDefaultAsync();
 
         if (otp == null)
             throw new ErrorException(StatusCodes.Status400BadRequest, "OTP không hợp lệ hoặc đã hết hạn.");
-
-        var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
-        var user = await userRepo.GetByIdAsync(model.UserId);
-        if (user != null)
-        {
-            user.IsVerify = true;
-            await userRepo.UpdateAsync(user);
-            await _unitOfWork.SaveAsync();
-        }
-
-        // Xoá OTP khỏi DB sau khi xác thực xong
+        
+        user.IsVerify = true;
+        await userRepo.UpdateAsync(user);
+        
         otpRepo.Delete(otp.Id);
         await _unitOfWork.SaveAsync();
     }
@@ -178,7 +213,8 @@ public class AuthService : IAuthService
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
+            new Claim(ClaimTypes.Email, user.UserEmail ?? string.Empty),
             new Claim(ClaimTypes.Role, role),
         };
 

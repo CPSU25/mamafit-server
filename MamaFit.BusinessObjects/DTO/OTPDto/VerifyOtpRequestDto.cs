@@ -4,7 +4,7 @@ namespace MamaFit.BusinessObjects.DTO.OTPDto;
 
 public class VerifyOtpRequestDto
 {
-    public string UserId { get; set; }
+    public string Email { get; set; }
     public string Code { get; set; }
     public OTPType OTPType { get; set; }
 }

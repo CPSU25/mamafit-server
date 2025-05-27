@@ -78,8 +78,8 @@ namespace MamaFit.Repositories.Infrastructure
         public const string NotFound = "Not Found";
         public const string Unknown = "Oops! Something went wrong, please try again later.";
         public const string NotUnique = "The resource is already, please try another.";
-        public const string TokenExpired = "The Token is already expired.";
-        public const string TokenInvalid = "The Token is invalid.";
+        public const string TokenExpired = "The TokenDto is already expired.";
+        public const string TokenInvalid = "The TokenDto is invalid.";
         public const string Validated = "Validated.";
         public const string Conflicted = "Conflicted.";
         public const string InvalidInput = "Invalid input!";

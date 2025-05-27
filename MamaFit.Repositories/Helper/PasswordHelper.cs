@@ -22,7 +22,7 @@ namespace MamaFit.Repositories.Infrastructure
         public static string HashPassword(string password, string salt)
         {
             var saltBytes = Convert.FromBase64String(salt);
-            var hashBytes = new Rfc2898DeriveBytes(password, saltBytes, 10000, HashAlgorithmName.SHA256).GetBytes(32);
+            var hashBytes = new Rfc2898DeriveBytes(password, saltBytes, 20000, HashAlgorithmName.SHA256).GetBytes(32);
             return Convert.ToBase64String(hashBytes);
         }
     }

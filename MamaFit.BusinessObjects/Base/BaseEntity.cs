@@ -7,7 +7,7 @@ namespace MamaFit.BusinessObjects.Base
         protected BaseEntity()
         {
             Id = Guid.NewGuid().ToString("N");
-            CreatedAt = UpdatedAt = DateTime.Now;
+            CreatedAt = UpdatedAt = DateTime.UtcNow;
         }
 
         [Key]

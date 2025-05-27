@@ -2,7 +2,9 @@
 using MamaFit.BusinessObjects.DBContext;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Interface;
+using MamaFit.Services.Interface;
 using MamaFit.Services.Mapper;
+using MamaFit.Services.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -82,6 +84,9 @@ namespace MamaFit.Configuration
         public static void AddServices(this IServiceCollection services)
         {
             // Add your service registrations here
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRoleService, RoleService>();
         }
 
         private static void AddAutoMapper(this IServiceCollection services)

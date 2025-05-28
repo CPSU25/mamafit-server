@@ -64,19 +64,20 @@ public class UserController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetAllUsers()
+    public async Task<IActionResult> GetAll(
+        [FromQuery] int index = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? nameSearch = null,
+        [FromQuery] string? roleId = null)
     {
-        try
-        {
-            var users = await _service.GetAllUsersAsync();
-            return Ok(ResponseModel<List<UserReponseDto>>.OkResponseModel(users));
-        }
-        catch (System.Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                ResponseModel<object>.InternalErrorResponseModel(null, null, ex.Message));
-        }
+        var pagedUsers = await _service.GetAllUsersAsync(index, pageSize, nameSearch, roleId);
+        return Ok(new ResponseModel<PaginatedList<UserReponseDto>>(
+            StatusCodes.Status200OK,
+            ResponseCodeConstants.SUCCESS,
+            pagedUsers
+        ));
     }
+
     
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetUserById(string userId)
@@ -85,6 +86,52 @@ public class UserController : ControllerBase
         {
             var user = await _service.GetUserByIdAsync(userId);
             return Ok(ResponseModel<UserReponseDto>.OkResponseModel(user));
+        }
+        catch (ErrorException ex)
+        {
+            return StatusCode(ex.StatusCode, new ResponseModel<object>(
+                ex.StatusCode,
+                ex.ErrorDetail.ErrorCode,
+                ex.ErrorDetail.ErrorMessage?.ToString()
+            ));
+        }
+        catch (System.Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                ResponseModel<object>.InternalErrorResponseModel(null, null, ex.Message));
+        }
+    }
+    
+    [HttpPut("{userId}")]
+    public async Task<IActionResult> UpdateUser(string userId, [FromBody] UpdateUserRequestDto model)
+    {
+        try
+        {
+            var updatedUser = await _service.UpdateUserAsync(userId, model);
+            return Ok(ResponseModel<UserReponseDto>.OkResponseModel(updatedUser));
+        }
+        catch (ErrorException ex)
+        {
+            return StatusCode(ex.StatusCode, new ResponseModel<object>(
+                ex.StatusCode,
+                ex.ErrorDetail.ErrorCode,
+                ex.ErrorDetail.ErrorMessage?.ToString()
+            ));
+        }
+        catch (System.Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                ResponseModel<object>.InternalErrorResponseModel(null, null, ex.Message));
+        }
+    }
+    
+    [HttpDelete("{userId}")]
+    public async Task<IActionResult> DeleteUser(string userId)
+    {
+        try
+        {
+            await _service.DeleteUserAsync(userId);
+            return Ok(ResponseModel<object>.OkResponseModel(null, null, "Xóa người dùng thành công!"));
         }
         catch (ErrorException ex)
         {

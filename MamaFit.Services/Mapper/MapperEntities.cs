@@ -21,7 +21,10 @@ namespace MamaFit.Services.Mapper
             CreateMap<ApplicationUserToken, RefreshTokenRequestDto>().ReverseMap();
             
             //User Mapper
-            CreateMap<ApplicationUser, UserReponseDto>().ReverseMap();
+            CreateMap<ApplicationUser, UserReponseDto>()
+                .ForMember(dest => dest.RoleName, 
+                    opt => opt.MapFrom(src => src.Role != null ? src.Role.RoleName : null));
+
             CreateMap<ApplicationUser, RegisterUserRequestDto>();
             CreateMap<RegisterUserRequestDto, ApplicationUser>()
                 .ForMember(dest => dest.HashPassword, opt => opt.Ignore())

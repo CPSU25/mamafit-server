@@ -29,20 +29,41 @@ public class RoleService : IRoleService
         return _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Name)?.Value ?? "System";
     }
     
-    public async Task<List<RoleResponseDto>> GetAllRolesAsync()
+    public async Task<PaginatedList<RoleResponseDto>> GetAllRolesAsync(int index = 1, int pageSize = 10, string? nameSearch = null)
     {
         var repo = _unitOfWork.GetRepository<ApplicationUserRole>();
-        var roles = await repo.GetAllAsync();
-        var result = roles.Where(x => x.IsDeleted != true).Select(_mapper.Map<RoleResponseDto>).ToList();
-        return result;
+        var query = repo.Entities.Where(x => x.IsDeleted != true);
+
+        if (!string.IsNullOrWhiteSpace(nameSearch))
+        {
+            query = query.Where(x => x.RoleName.Contains(nameSearch));
+        }
+
+        var resultQuery = await repo.GetPagging(query, index, pageSize);
+
+        var responseItems = resultQuery.Items
+            .Select(_mapper.Map<RoleResponseDto>)
+            .ToList();
+
+        var responsePaginatedList = new PaginatedList<RoleResponseDto>(
+            responseItems,
+            resultQuery.TotalCount,
+            resultQuery.PageNumber,
+            resultQuery.TotalPages
+        );
+
+        return responsePaginatedList;
     }
+
 
     public async Task<RoleResponseDto> GetRoleByIdAsync(string id)
     {
         var repo = _unitOfWork.GetRepository<ApplicationUserRole>();
         var role = await repo.GetByIdAsync(id);
         if (role == null || role.IsDeleted == true)
-            throw new ErrorException(404, "not_found", "Role không tồn tại");
+            throw new ErrorException(StatusCodes.Status404NotFound,
+                ErrorCode.NotFound, "Role is not exist!"
+                );
         return _mapper.Map<RoleResponseDto>(role);
     }
     
@@ -51,7 +72,8 @@ public class RoleService : IRoleService
         var repo = _unitOfWork.GetRepository<ApplicationUserRole>();
         bool exist = repo.Entities.Any(r => r.RoleName == model.RoleName && r.IsDeleted != true);
         if (exist)
-            throw new ErrorException(400, "duplicate", "Role đã tồn tại");
+            throw new ErrorException(StatusCodes.Status400BadRequest,
+                ErrorCode.Duplicate, "Role already existed");
 
         var now = DateTime.UtcNow;
         var role = new ApplicationUserRole()
@@ -72,11 +94,14 @@ public class RoleService : IRoleService
         var repo = _unitOfWork.GetRepository<ApplicationUserRole>();
         var role = await repo.GetByIdAsync(id);
         if (role == null || role.IsDeleted == true)
-            throw new ErrorException(404, "not_found", "Role không tồn tại");
+            throw new ErrorException(StatusCodes.Status404NotFound,
+                ErrorCode.NotFound, "Role is not exist!"
+            );
 
         bool exist = repo.Entities.Any(r => r.RoleName == model.RoleName && r.Id != id && r.IsDeleted != true);
         if (exist)
-            throw new ErrorException(400, "duplicate", "Role đã tồn tại");
+            throw new ErrorException(StatusCodes.Status400BadRequest,
+                ErrorCode.Duplicate, "Role already existed");
 
         role.RoleName = model.RoleName;
         role.UpdatedAt = DateTime.UtcNow;
@@ -92,7 +117,9 @@ public class RoleService : IRoleService
         var repo = _unitOfWork.GetRepository<ApplicationUserRole>();
         var role = await repo.GetByIdAsync(id);
         if (role == null || role.IsDeleted == true)
-            throw new ErrorException(404, "not_found", "Role không tồn tại");
+            throw new ErrorException(StatusCodes.Status404NotFound,
+                ErrorCode.NotFound, "Role is not exist!"
+            );
 
         role.IsDeleted = true;
         role.UpdatedAt = DateTime.UtcNow;

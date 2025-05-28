@@ -18,82 +18,65 @@ public class RoleController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll(
+        [FromQuery] int index = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? nameSearch = null)
     {
-        try
-        {
-            var roles = await _roleService.GetAllRolesAsync();
-            return Ok(ResponseModel<List<RoleResponseDto>>.OkResponseModel(roles));
-        }
-        catch (ErrorException ex)
-        {
-            return StatusCode(ex.StatusCode,
-                new ResponseModel<object>(ex.StatusCode, ex.ErrorDetail.ErrorCode,
-                    ex.ErrorDetail.ErrorMessage?.ToString()));
-        }
+        var pagedRoles = await _roleService.GetAllRolesAsync(index, pageSize, nameSearch);
+        return Ok(new ResponseModel<PaginatedList<RoleResponseDto>>(
+            StatusCodes.Status200OK,
+            ResponseCodeConstants.SUCCESS,
+            pagedRoles
+        ));
     }
+
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(string id)
     {
-        try
-        {
-            var role = await _roleService.GetRoleByIdAsync(id);
-            return Ok(ResponseModel<RoleResponseDto>.OkResponseModel(role));
-        }
-        catch (ErrorException ex)
-        {
-            return StatusCode(ex.StatusCode,
-                new ResponseModel<object>(ex.StatusCode, ex.ErrorDetail.ErrorCode,
-                    ex.ErrorDetail.ErrorMessage?.ToString()));
-        }
-    }
+        var role = await _roleService.GetRoleByIdAsync(id);
+        return Ok(new ResponseModel<RoleResponseDto>(
+            StatusCodes.Status200OK,
+            ResponseCodeConstants.SUCCESS,
+            role, null, 
+            "Get role by ID successfully!"
+    ));
+}
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] RoleRequestDto model)
     {
-        try
-        {
-            var role = await _roleService.CreateRoleAsync(model);
-            return Ok(ResponseModel<RoleResponseDto>.OkResponseModel(role));
-        }
-        catch (ErrorException ex)
-        {
-            return StatusCode(ex.StatusCode,
-                new ResponseModel<object>(ex.StatusCode, ex.ErrorDetail.ErrorCode,
-                    ex.ErrorDetail.ErrorMessage?.ToString()));
-        }
+        var role = await _roleService.CreateRoleAsync(model);
+        return Ok(new ResponseModel<RoleResponseDto>(
+            StatusCodes.Status201Created,
+            ResponseCodeConstants.CREATED,
+            role, null,
+            "Create role successfully!"
+        ));
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] RoleRequestDto model)
     {
-        try
-        {
-            var role = await _roleService.UpdateRoleAsync(id, model);
-            return Ok(ResponseModel<RoleResponseDto>.OkResponseModel(role));
-        }
-        catch (ErrorException ex)
-        {
-            return StatusCode(ex.StatusCode,
-                new ResponseModel<object>(ex.StatusCode, ex.ErrorDetail.ErrorCode,
-                    ex.ErrorDetail.ErrorMessage?.ToString()));
-        }
+        var role = await _roleService.UpdateRoleAsync(id, model);
+        return Ok(new ResponseModel<RoleResponseDto>(
+            StatusCodes.Status200OK,
+            ResponseCodeConstants.SUCCESS,
+            role, null,
+            "Update role successfully!"
+        ));
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
-        try
-        {
-            await _roleService.DeleteRoleAsync(id);
-            return Ok(ResponseModel<object>.OkResponseModel(null, null, "Xóa role thành công!"));
-        }
-        catch (ErrorException ex)
-        {
-            return StatusCode(ex.StatusCode,
-                new ResponseModel<object>(ex.StatusCode, ex.ErrorDetail.ErrorCode,
-                    ex.ErrorDetail.ErrorMessage?.ToString()));
-        }
+        await _roleService.DeleteRoleAsync(id);
+        return Ok(new ResponseModel<object>(
+            StatusCodes.Status200OK,
+            ResponseCodeConstants.SUCCESS,
+            null, null,
+            "Delete role successfully!"
+        ));
     }
 }

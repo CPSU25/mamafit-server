@@ -100,4 +100,50 @@ public class UserController : ControllerBase
                 ResponseModel<object>.InternalErrorResponseModel(null, null, ex.Message));
         }
     }
+    
+    [HttpPut("{userId}")]
+    public async Task<IActionResult> UpdateUser(string userId, [FromBody] UpdateUserRequestDto model)
+    {
+        try
+        {
+            var updatedUser = await _service.UpdateUserAsync(userId, model);
+            return Ok(ResponseModel<UserReponseDto>.OkResponseModel(updatedUser));
+        }
+        catch (ErrorException ex)
+        {
+            return StatusCode(ex.StatusCode, new ResponseModel<object>(
+                ex.StatusCode,
+                ex.ErrorDetail.ErrorCode,
+                ex.ErrorDetail.ErrorMessage?.ToString()
+            ));
+        }
+        catch (System.Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                ResponseModel<object>.InternalErrorResponseModel(null, null, ex.Message));
+        }
+    }
+    
+    [HttpDelete("{userId}")]
+    public async Task<IActionResult> DeleteUser(string userId)
+    {
+        try
+        {
+            await _service.DeleteUserAsync(userId);
+            return Ok(ResponseModel<object>.OkResponseModel(null, null, "Xóa người dùng thành công!"));
+        }
+        catch (ErrorException ex)
+        {
+            return StatusCode(ex.StatusCode, new ResponseModel<object>(
+                ex.StatusCode,
+                ex.ErrorDetail.ErrorCode,
+                ex.ErrorDetail.ErrorMessage?.ToString()
+            ));
+        }
+        catch (System.Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                ResponseModel<object>.InternalErrorResponseModel(null, null, ex.Message));
+        }
+    }
 }

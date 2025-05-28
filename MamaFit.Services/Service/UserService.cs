@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AutoMapper;
 using CloudinaryDotNet.Actions;
 using MamaFit.BusinessObjects.DTO.UserDto;
@@ -15,20 +16,28 @@ public class UserService : IUserService
 {
     private IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public UserService(IUnitOfWork unitOfWork, IMapper mapper)
+    public UserService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _httpContextAccessor = httpContextAccessor;
     }
 
+    private string GetCurrentUserName()
+    {
+        return _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Name)?.Value ?? "System";
+    }
+    
     public async Task SendRegisterOtpAsync(SendOTPRequestDto model)
     {
         var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
         
         bool isExist = await userRepo.Entities.AnyAsync(x => x.UserEmail == model.Email && x.PhoneNumber == model.PhoneNumber && x.IsVerify == true);
         if (isExist)
-            throw new ErrorException(StatusCodes.Status400BadRequest, "Email đã được sử dụng!");
+            throw new ErrorException(StatusCodes.Status400BadRequest,
+                ErrorCode.BadRequest, "Email or phone number has already been registered!");
         
         var user = await userRepo.Entities.FirstOrDefaultAsync(x => x.UserEmail == model.Email && x.IsVerify == false);
         if (user == null)
@@ -83,7 +92,8 @@ public class UserService : IUserService
 
         
         if (user == null)
-            throw new ErrorException(StatusCodes.Status400BadRequest, "Bạn chưa xác thực OTP hoặc user đã tạo mật khẩu!");
+            throw new ErrorException(StatusCodes.Status400BadRequest,
+                ErrorCode.BadRequest, "User not found or already registered!");
 
         var salt = PasswordHelper.GenerateSalt();
         var hashPassword = PasswordHelper.HashPassword(model.Password, salt);
@@ -120,19 +130,63 @@ public class UserService : IUserService
             .FirstOrDefaultAsync(u => u.Id == userId && u.IsDeleted == false);
         
         if (user == null)
-            throw new ErrorException(StatusCodes.Status404NotFound, "Người dùng không tồn tại!");
+            throw new ErrorException(StatusCodes.Status404NotFound,
+                ErrorCode.NotFound, "User not found!");
 
         return _mapper.Map<UserReponseDto>(user);
     }
 
+    public async Task<UserReponseDto> UpdateUserAsync(string userId, UpdateUserRequestDto model)
+    {
+        var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
+        var user = await userRepo.Entities
+            .FirstOrDefaultAsync(u => u.Id == userId && u.IsDeleted == false);
+        
+        if (user == null)
+            throw new ErrorException(StatusCodes.Status404NotFound,
+                ErrorCode.NotFound, "User not found!");
+        
+        user.UserName = model.Username;
+        user.FullName = model.FullName;
+        user.PhoneNumber = model.PhoneNumber;
+        user.UpdatedAt = DateTime.UtcNow;
+        user.UpdatedBy = GetCurrentUserName();
+        user.DateOfBirth = model.DateOfBirth;
+        user.RoleId = model.RoleId;
+        
+        await userRepo.UpdateAsync(user);
+        await _unitOfWork.SaveAsync();
+        
+        var updatedUser = await userRepo.Entities
+            .Include(u => u.Role)
+            .FirstOrDefaultAsync(u => u.Id == userId && u.IsDeleted == false);
+
+        return _mapper.Map<UserReponseDto>(updatedUser);
+    }
+    
+    public async Task DeleteUserAsync(string userId)
+    {
+        var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
+        var user = await userRepo.Entities
+            .FirstOrDefaultAsync(u => u.Id == userId && u.IsDeleted == false);
+        
+        if (user == null)
+            throw new ErrorException(StatusCodes.Status404NotFound,
+                ErrorCode.NotFound, "User not found!");
+
+        user.IsDeleted = true;
+        user.UpdatedAt = DateTime.UtcNow;
+        user.UpdatedBy = GetCurrentUserName();
+        await userRepo.UpdateAsync(user);
+        await _unitOfWork.SaveAsync();
+    }
+    
     public static string GenerateOtpCode(int length = 6)
     {
         var random = new Random();
         int min = (int)Math.Pow(10, length - 1);
         int max = (int)Math.Pow(10, length) - 1;
-        var code = random.Next(min, max + 1); // Cộng 1 để lấy đủ số chữ số
+        var code = random.Next(min, max + 1);
         return code.ToString();
     }
-
-    
 }

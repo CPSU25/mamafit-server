@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using MamaFit.BusinessObjects.DTO.OTPDto;
+using MamaFit.BusinessObjects.DTO.UserDto;
 
 namespace MamaFit.API.Controllers
 {
@@ -18,6 +19,31 @@ namespace MamaFit.API.Controllers
         public AuthController(IAuthService authService)
         {
             _authService = authService;
+        }
+        
+        [HttpGet("current-user")]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            try
+            {
+                var user = await _authService.GetCurrentUserAsync();
+                return Ok(ResponseModel<UserReponseDto>.OkResponseModel(user));
+            }
+            catch (ErrorException ex)
+            {
+                return StatusCode(
+                    ex.StatusCode, 
+                    new ResponseModel<object>(
+                        ex.StatusCode,
+                        ex.ErrorDetail.ErrorCode,
+                        ex.ErrorDetail.ErrorMessage?.ToString()
+                    )
+                );
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseModel<object>.InternalErrorResponseModel(null, null, ex.Message));
+            }
         }
         
         [HttpPost("signin")]

@@ -72,9 +72,11 @@ namespace MamaFit.Repositories.Infrastructure
     }
     public class ErrorCode
     {
+        public const string Forbidden = "Forbidden";
         public const string BadRequest = "Bad Request";
+        public const string InternalServerError = "Internal Server Error";
         public const string UnAuthenticated = "Un-Authenticate";
-        public const string UnAuthorized = "Forbidden";
+        public const string UnAuthorized = "Un-Authorized";
         public const string NotFound = "Not Found";
         public const string Unknown = "Oops! Something went wrong, please try again later.";
         public const string NotUnique = "The resource is already, please try another.";

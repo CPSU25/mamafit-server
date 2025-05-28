@@ -9,4 +9,6 @@ public interface IUserService
     Task SendRegisterOtpAsync(SendOTPRequestDto model);
     Task<List<UserReponseDto>> GetAllUsersAsync();
     Task<UserReponseDto> GetUserByIdAsync(string userId);
+    Task<UserReponseDto> UpdateUserAsync(string userId, UpdateUserRequestDto model);
+    Task DeleteUserAsync(string userId);
 }

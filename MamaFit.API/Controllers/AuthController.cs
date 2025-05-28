@@ -24,102 +24,50 @@ namespace MamaFit.API.Controllers
         [HttpGet("current-user")]
         public async Task<IActionResult> GetCurrentUser()
         {
-            try
-            {
-                var user = await _authService.GetCurrentUserAsync();
-                return Ok(ResponseModel<UserReponseDto>.OkResponseModel(user));
-            }
-            catch (ErrorException ex)
-            {
-                return StatusCode(
-                    ex.StatusCode, 
-                    new ResponseModel<object>(
-                        ex.StatusCode,
-                        ex.ErrorDetail.ErrorCode,
-                        ex.ErrorDetail.ErrorMessage?.ToString()
-                    )
-                );
-            }
-            catch (System.Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ResponseModel<object>.InternalErrorResponseModel(null, null, ex.Message));
-            }
+            var user = await _authService.GetCurrentUserAsync();
+            return Ok(new ResponseModel<UserReponseDto>(
+                StatusCodes.Status200OK,
+                ResponseCodeConstants.SUCCESS,
+                user,
+                null,
+                "Get current user successfully!"
+            ));
         }
-        
+
         [HttpPost("signin")]
         public async Task<IActionResult> SignIn([FromBody] LoginRequestDto model)
         {
-            try
-            {
-                var token = await _authService.SignInAsync(model);
-                return Ok(ResponseModel<TokenResponseDto>.OkResponseModel(token));
-            }
-            catch (ErrorException ex)
-            {
-                return StatusCode(
-                    ex.StatusCode, 
-                    new ResponseModel<object>(
-                        ex.StatusCode,
-                        ex.ErrorDetail.ErrorCode,
-                        ex.ErrorDetail.ErrorMessage?.ToString()
-                    )
-                );
-            }
-            catch (System.Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ResponseModel<object>.InternalErrorResponseModel(null, null, ex.Message));
-            }
+            var token = await _authService.SignInAsync(model);
+            return Ok(new ResponseModel<TokenResponseDto>(
+                StatusCodes.Status200OK,
+                ResponseCodeConstants.SUCCESS,
+                token, null,
+                "Login successfully!"
+            ));
         }
-        
+
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto model)
         {
-            try
-            {
-                var token = await _authService.RefreshTokenAsync(model);
-                return Ok(ResponseModel<TokenResponseDto>.OkResponseModel(token));
-            }
-            catch (ErrorException ex)
-            {
-                return StatusCode(
-                    ex.StatusCode, 
-                    new ResponseModel<object>(
-                        ex.StatusCode,
-                        ex.ErrorDetail.ErrorCode,
-                        ex.ErrorDetail.ErrorMessage?.ToString()
-                    )
-                );
-            }
-            catch (System.Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ResponseModel<object>.InternalErrorResponseModel(null, null, ex.Message));
-            }
+            var token = await _authService.RefreshTokenAsync(model);
+            return Ok(new ResponseModel<TokenResponseDto>(
+                StatusCodes.Status201Created,
+                ResponseCodeConstants.CREATED,
+                token, null,
+                "Refresh token successfully!"
+            ));
         }
-        
+
         [HttpPost("verify-otp")]
         public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpRequestDto model)
         {
-            try
-            {
-                await _authService.VerifyOtpAsync(model);
-                return Ok(ResponseModel<object>.OkResponseModel(null, null, "Xác thực thành công!"));
-            }
-            catch (ErrorException ex)
-            {
-                return StatusCode(
-                    ex.StatusCode, 
-                    new ResponseModel<object>(
-                        ex.StatusCode,
-                        ex.ErrorDetail.ErrorCode,
-                        ex.ErrorDetail.ErrorMessage?.ToString()
-                    )
-                );
-            }
-            catch (System.Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ResponseModel<object>.InternalErrorResponseModel(null, null, ex.Message));
-            }
+            await _authService.VerifyOtpAsync(model);
+            return Ok(new ResponseModel<object>(
+                StatusCodes.Status200OK,
+                ResponseCodeConstants.SUCCESS,
+                null, null,
+                "OTP verification successful!"
+            ));
         }
-
     }
 }

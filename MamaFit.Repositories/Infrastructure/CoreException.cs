@@ -88,6 +88,7 @@ namespace MamaFit.Repositories.Infrastructure
     }
     public class ResponseCodeConstants
     {
+        public const string CREATED = "Created!";
         public const string NOT_FOUND = "Not found!";
         public const string SUCCESS = "Success!";
         public const string FAILED = "Failed!";

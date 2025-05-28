@@ -64,19 +64,20 @@ public class UserController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetAllUsers()
+    public async Task<IActionResult> GetAll(
+        [FromQuery] int index = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? nameSearch = null,
+        [FromQuery] string? roleId = null)
     {
-        try
-        {
-            var users = await _service.GetAllUsersAsync();
-            return Ok(ResponseModel<List<UserReponseDto>>.OkResponseModel(users));
-        }
-        catch (System.Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                ResponseModel<object>.InternalErrorResponseModel(null, null, ex.Message));
-        }
+        var pagedUsers = await _service.GetAllUsersAsync(index, pageSize, nameSearch, roleId);
+        return Ok(new ResponseModel<PaginatedList<UserReponseDto>>(
+            StatusCodes.Status200OK,
+            ResponseCodeConstants.SUCCESS,
+            pagedUsers
+        ));
     }
+
     
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetUserById(string userId)

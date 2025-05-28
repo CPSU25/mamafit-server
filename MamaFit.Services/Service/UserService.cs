@@ -60,7 +60,7 @@ public class UserService : IUserService
             var oldOtps = _unitOfWork.GetRepository<OTP>().Entities.Where(x => x.UserId == user.Id && x.OTPType == OTPType.REGISTER);
             foreach (var oldOtp in oldOtps)
             {
-                _unitOfWork.GetRepository<OTP>().Delete(oldOtp.Id);
+                await _unitOfWork.GetRepository<OTP>().DeleteAsync(oldOtp.Id);
             }
             await _unitOfWork.SaveAsync();
         }
@@ -111,16 +111,40 @@ public class UserService : IUserService
         await _unitOfWork.SaveAsync();
     }
 
-    public async Task<List<UserReponseDto>> GetAllUsersAsync()
+    public async Task<PaginatedList<UserReponseDto>> GetAllUsersAsync(
+        int index = 1, int pageSize = 10, string? nameSearch = null, string? roleId = null)
     {
         var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
-        var users = await userRepo.Entities
+        var query = userRepo.Entities
             .Include(u => u.Role)
-            .Where(u => u.IsDeleted == false)
-            .ToListAsync();
-        
-        return _mapper.Map<List<UserReponseDto>>(users);
+            .Where(u => !u.IsDeleted);
+
+        if (!string.IsNullOrWhiteSpace(nameSearch))
+        {
+            query = query.Where(u => u.FullName.Contains(nameSearch) || u.UserName.Contains(nameSearch));
+        }
+
+        if (!string.IsNullOrWhiteSpace(roleId))
+        {
+            query = query.Where(u => u.RoleId == roleId);
+        }
+
+        var pagedResult = await userRepo.GetPagging(query, index, pageSize);
+
+        var responseItems = pagedResult.Items
+            .Select(_mapper.Map<UserReponseDto>)
+            .ToList();
+
+        var responsePaginatedList = new PaginatedList<UserReponseDto>(
+            responseItems,
+            pagedResult.TotalCount,
+            pagedResult.PageNumber,
+            pagedResult.TotalPages
+        );
+
+        return responsePaginatedList;
     }
+
     
     public async Task<UserReponseDto> GetUserByIdAsync(string userId)
     {

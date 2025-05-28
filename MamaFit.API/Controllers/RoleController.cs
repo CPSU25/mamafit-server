@@ -18,16 +18,19 @@ public class RoleController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll(
+        [FromQuery] int index = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? nameSearch = null)
     {
-        var roles = await _roleService.GetAllRolesAsync();
-        return Ok(new ResponseModel<List<RoleResponseDto>>(
+        var pagedRoles = await _roleService.GetAllRolesAsync(index, pageSize, nameSearch);
+        return Ok(new ResponseModel<PaginatedList<RoleResponseDto>>(
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,
-            roles, null,
-            "Retrieve all roles successfully!"
+            pagedRoles
         ));
     }
+
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(string id)

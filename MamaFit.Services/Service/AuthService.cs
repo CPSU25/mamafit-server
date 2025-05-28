@@ -130,33 +130,35 @@ public class AuthService : IAuthService
         // 2. Save notification token if provided
         if (!string.IsNullOrWhiteSpace(model.NotificationToken))
         {
+            var oldTokens = userTokenRepo.Entities
+                .Where(x => x.UserId == user.Id
+                            && x.TokenType == TokenType.NOTIFICATION_TOKEN
+                            && x.Token != model.NotificationToken)
+                .ToList();
+
+            foreach (var oldToken in oldTokens)
+            {
+                await userTokenRepo.DeleteAsync(oldToken.Id); 
+            }
+            
             var existNotiToken = await userTokenRepo.Entities
                 .FirstOrDefaultAsync(x =>
                     x.UserId == user.Id &&
                     x.Token == model.NotificationToken &&
-                    x.TokenType == TokenType.NOTIFICATION_TOKEN &&
-                    x.IsRevoked == false);
+                    x.TokenType == TokenType.NOTIFICATION_TOKEN);
 
             if (existNotiToken == null)
             {
-                // Chưa có thì thêm mới
                 var notiTokenEntity = new ApplicationUserToken
                 {
                     UserId = user.Id,
                     Token = model.NotificationToken,
                     ExpiredAt = null,
                     IsRevoked = false,
-                    TokenType = TokenType.NOTIFICATION_TOKEN
+                    TokenType = TokenType.NOTIFICATION_TOKEN,
+                    CreatedAt = DateTime.UtcNow
                 };
                 await userTokenRepo.InsertAsync(notiTokenEntity);
-            }
-            else
-            {
-                if (existNotiToken.IsRevoked == true)
-                {
-                    existNotiToken.IsRevoked = false;
-                    await userTokenRepo.UpdateAsync(existNotiToken);
-                }
             }
         }
 

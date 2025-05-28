@@ -85,6 +85,7 @@ namespace MamaFit.Repositories.Infrastructure
         public const string Validated = "Validated.";
         public const string Conflicted = "Conflicted.";
         public const string InvalidInput = "Invalid input!";
+        public const string Duplicate = "Duplicate!";
     }
     public class ResponseCodeConstants
     {

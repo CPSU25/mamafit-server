@@ -59,9 +59,9 @@ public class UserController : ControllerBase
         [FromQuery] int index = 1,
         [FromQuery] int pageSize = 10,
         [FromQuery] string? nameSearch = null,
-        [FromQuery] string? roleId = null)
+        [FromQuery] string? roleName = null)
     {
-        var pagedUsers = await _service.GetAllUsersAsync(index, pageSize, nameSearch, roleId);
+        var pagedUsers = await _service.GetAllUsersAsync(index, pageSize, nameSearch, roleName);
         return Ok(new ResponseModel<PaginatedList<UserReponseDto>>(
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,
@@ -74,12 +74,11 @@ public class UserController : ControllerBase
     public async Task<IActionResult> GetUserById(string userId)
     {
         var user = await _service.GetUserByIdAsync(userId);
-        return Ok(new ResponseModel<object>(
+        return Ok(new ResponseModel<UserReponseDto>(
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,
-            null,
-            null,
-            "Resend OTP successfully!"
+            user, null, 
+            "Get user by ID successfully!"
         ));
     }
 

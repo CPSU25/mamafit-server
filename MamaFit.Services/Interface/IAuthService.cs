@@ -10,6 +10,7 @@ public interface IAuthService
 {
     Task<UserReponseDto> GetCurrentUserAsync();
     Task<TokenResponseDto> SignInAsync(LoginRequestDto model);
+    Task LogoutAsync();
     Task<TokenResponseDto> RefreshTokenAsync(RefreshTokenRequestDto model);
     TokenResponseDto GenerateTokens(ApplicationUser user, string role);
     Task VerifyOtpAsync(VerifyOtpRequestDto model);

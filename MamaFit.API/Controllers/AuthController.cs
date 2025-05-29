@@ -34,6 +34,7 @@ namespace MamaFit.API.Controllers
             ));
         }
 
+
         [HttpPost("signin")]
         public async Task<IActionResult> SignIn([FromBody] LoginRequestDto model)
         {
@@ -46,6 +47,18 @@ namespace MamaFit.API.Controllers
             ));
         }
 
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _authService.LogoutAsync();
+            return Ok(new ResponseModel<object>(
+                StatusCodes.Status200OK,
+                ResponseCodeConstants.SUCCESS,
+                null, null,
+                "Logout successfully!"
+            ));
+        }
+        
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto model)
         {

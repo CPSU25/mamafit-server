@@ -15,54 +15,45 @@ public class UserController : ControllerBase
     {
         _service = service;
     }
-    
+
     [HttpPost("send-otp")]
     public async Task<IActionResult> SendOtp([FromBody] SendOTPRequestDto model)
     {
-        try
-        {
-            await _service.SendRegisterOtpAsync(model);
-            return Ok(ResponseModel<object>.OkResponseModel(null, null, "Đã gửi OTP thành công!"));
-        }
-        catch (ErrorException ex)
-        {
-            return StatusCode(ex.StatusCode, new ResponseModel<object>(
-                ex.StatusCode,
-                ex.ErrorDetail.ErrorCode,
-                ex.ErrorDetail.ErrorMessage?.ToString()
-            ));
-        }
-        catch (System.Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                ResponseModel<object>.InternalErrorResponseModel(null, null, ex.Message));
-        }
+        await _service.SendRegisterOtpAsync(model);
+        return Ok(new ResponseModel<object>(
+            StatusCodes.Status200OK,
+            ResponseCodeConstants.SUCCESS,
+            null,
+            null,
+            "Send OTP successfully!"
+        ));
     }
-    
+
+    [HttpPost("resend-otp")]
+    public async Task<IActionResult> ResendOtpAsync([FromBody] SendOTPRequestDto model)
+    {
+        await _service.ResendOtpAsync(model);
+        return Ok(new ResponseModel<object>(
+            StatusCodes.Status200OK,
+            ResponseCodeConstants.SUCCESS,
+            null,
+            null,
+            "Resend OTP successfully!"
+        ));
+    }
 
     [HttpPost("complete-register")]
     public async Task<IActionResult> CompleteRegister([FromBody] RegisterUserRequestDto model)
     {
-        try
-        {
-            await _service.CompleteRegisterAsync(model);
-            return Ok(ResponseModel<object>.OkResponseModel(null, null, "Đăng ký tài khoản thành công!"));
-        }
-        catch (ErrorException ex)
-        {
-            return StatusCode(ex.StatusCode, new ResponseModel<object>(
-                ex.StatusCode,
-                ex.ErrorDetail.ErrorCode,
-                ex.ErrorDetail.ErrorMessage?.ToString()
-            ));
-        }
-        catch (System.Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                ResponseModel<object>.InternalErrorResponseModel(null, null, ex.Message));
-        }
+        await _service.CompleteRegisterAsync(model);
+        return Ok(new ResponseModel<object>(
+            StatusCodes.Status201Created,
+            ResponseCodeConstants.CREATED,
+            null,
+            null,
+            "Register user successfully!"));
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> GetAll(
         [FromQuery] int index = 1,
@@ -78,73 +69,43 @@ public class UserController : ControllerBase
         ));
     }
 
-    
+
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetUserById(string userId)
     {
-        try
-        {
-            var user = await _service.GetUserByIdAsync(userId);
-            return Ok(ResponseModel<UserReponseDto>.OkResponseModel(user));
-        }
-        catch (ErrorException ex)
-        {
-            return StatusCode(ex.StatusCode, new ResponseModel<object>(
-                ex.StatusCode,
-                ex.ErrorDetail.ErrorCode,
-                ex.ErrorDetail.ErrorMessage?.ToString()
-            ));
-        }
-        catch (System.Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                ResponseModel<object>.InternalErrorResponseModel(null, null, ex.Message));
-        }
+        var user = await _service.GetUserByIdAsync(userId);
+        return Ok(new ResponseModel<object>(
+            StatusCodes.Status200OK,
+            ResponseCodeConstants.SUCCESS,
+            null,
+            null,
+            "Resend OTP successfully!"
+        ));
     }
-    
+
     [HttpPut("{userId}")]
     public async Task<IActionResult> UpdateUser(string userId, [FromBody] UpdateUserRequestDto model)
     {
-        try
-        {
             var updatedUser = await _service.UpdateUserAsync(userId, model);
-            return Ok(ResponseModel<UserReponseDto>.OkResponseModel(updatedUser));
-        }
-        catch (ErrorException ex)
-        {
-            return StatusCode(ex.StatusCode, new ResponseModel<object>(
-                ex.StatusCode,
-                ex.ErrorDetail.ErrorCode,
-                ex.ErrorDetail.ErrorMessage?.ToString()
+            return Ok(new ResponseModel<UserReponseDto>(
+                StatusCodes.Status200OK,
+                ResponseCodeConstants.SUCCESS,
+                updatedUser,
+                null,
+                "Update user successfully!"
             ));
-        }
-        catch (System.Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                ResponseModel<object>.InternalErrorResponseModel(null, null, ex.Message));
-        }
     }
-    
+
     [HttpDelete("{userId}")]
     public async Task<IActionResult> DeleteUser(string userId)
     {
-        try
-        {
             await _service.DeleteUserAsync(userId);
-            return Ok(ResponseModel<object>.OkResponseModel(null, null, "Xóa người dùng thành công!"));
-        }
-        catch (ErrorException ex)
-        {
-            return StatusCode(ex.StatusCode, new ResponseModel<object>(
-                ex.StatusCode,
-                ex.ErrorDetail.ErrorCode,
-                ex.ErrorDetail.ErrorMessage?.ToString()
+            return Ok(new ResponseModel<object>(
+                StatusCodes.Status200OK,
+                ResponseCodeConstants.SUCCESS,
+                null,
+                null,
+                "Delete user successfully!"
             ));
-        }
-        catch (System.Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                ResponseModel<object>.InternalErrorResponseModel(null, null, ex.Message));
-        }
     }
 }

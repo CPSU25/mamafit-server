@@ -21,7 +21,7 @@ namespace MamaFit.Services.Service;
 
 public class AuthService : IAuthService
 {
-    private IUnitOfWork _unitOfWork;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IConfiguration _configuration;
     private readonly IMapper _mapper;
@@ -37,7 +37,7 @@ public class AuthService : IAuthService
 
     public async Task<UserReponseDto> GetCurrentUserAsync()
     {
-        var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("userId");
         if (string.IsNullOrWhiteSpace(userId))
             throw new ErrorException(StatusCodes.Status401Unauthorized, "Unauthorized access!");
 
@@ -51,6 +51,26 @@ public class AuthService : IAuthService
         return _mapper.Map<UserReponseDto>(user);
     }
 
+    public async Task LogoutAsync()
+    {
+        var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrWhiteSpace(userId))
+            throw new ErrorException(StatusCodes.Status401Unauthorized, "Unauthorized access!");
+
+        var userTokenRepo = _unitOfWork.GetRepository<ApplicationUserToken>();
+        var tokens = await userTokenRepo.Entities
+            .Where(t => t.UserId == userId && t.TokenType == TokenType.REFRESH_TOKEN && t.TokenType == TokenType.NOTIFICATION_TOKEN)
+            .ToListAsync();
+
+        foreach (var token in tokens)
+        {
+            await userTokenRepo.DeleteAsync(token);
+        }
+
+        await _unitOfWork.SaveAsync();
+    }
+    
+    
     public async Task<TokenResponseDto> SignInAsync(LoginRequestDto model)
     {
         if (model == null)
@@ -58,25 +78,23 @@ public class AuthService : IAuthService
 
         var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
         ApplicationUser? user = null;
-        string loginKey = null;
+        
+        string loginKey = model.Identifier?.Trim();
+        if (string.IsNullOrWhiteSpace(loginKey))
+            throw new ErrorException(StatusCodes.Status400BadRequest,
+                ErrorCode.BadRequest,
+                "You must enter an email or username!");
 
-        if (!string.IsNullOrWhiteSpace(model.Username))
+        if (loginKey.Contains("@"))
         {
-            loginKey = model.Username;
-            user = await userRepo.Entities.FirstOrDefaultAsync(p => p.UserName == model.Username);
-        }
-        else if (!string.IsNullOrWhiteSpace(model.Email))
-        {
-            loginKey = model.Email.Trim().ToLower();
+            string email = loginKey.ToLower();
             user = await userRepo.Entities.FirstOrDefaultAsync(p =>
-                p.UserEmail != null && p.UserEmail.ToLower() == loginKey
+                p.UserEmail != null && p.UserEmail.ToLower() == email
             );
         }
         else
         {
-            throw new ErrorException(StatusCodes.Status400BadRequest,
-                ErrorCode.BadRequest,
-                "You must enter an email or username!");
+            user = await userRepo.Entities.FirstOrDefaultAsync(p => p.UserName == loginKey);
         }
 
         if (user == null)
@@ -264,10 +282,10 @@ public class AuthService : IAuthService
 
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
-            new Claim(ClaimTypes.Email, user.UserEmail ?? string.Empty),
-            new Claim(ClaimTypes.Role, role),
+            new Claim("userId", user.Id.ToString()),
+            new Claim("username", user.UserName ?? string.Empty),
+            new Claim("email", user.UserEmail ?? string.Empty),
+            new Claim("role", role),
         };
 
         var keyString = _configuration["JWT:SecretKey"];

@@ -14,7 +14,7 @@ namespace MamaFit.Services.Service;
 
 public class UserService : IUserService
 {
-    private IUnitOfWork _unitOfWork;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -27,9 +27,41 @@ public class UserService : IUserService
 
     private string GetCurrentUserName()
     {
-        return _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Name)?.Value ?? "System";
+        return _httpContextAccessor.HttpContext?.User?.FindFirst("name")?.Value ?? "System";
     }
-    
+
+    public async Task ResendOtpAsync(SendOTPRequestDto model)
+    {
+        var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
+        var user = await userRepo.Entities.FirstOrDefaultAsync(x =>
+            x.UserEmail == model.Email && x.PhoneNumber == model.PhoneNumber && x.IsVerify == false);
+
+        if (user == null)
+            throw new ErrorException(StatusCodes.Status404NotFound,
+                ErrorCode.NotFound, "User not found or already registered!");
+        
+        var oldOtps = _unitOfWork.GetRepository<OTP>().Entities
+            .Where(x => x.UserId == user.Id && x.OTPType == OTPType.REGISTER);
+        foreach (var oldOtp in oldOtps)
+        {
+            await _unitOfWork.GetRepository<OTP>().DeleteAsync(oldOtp.Id);
+        }
+
+        await _unitOfWork.SaveAsync();
+
+        var otpRepo = _unitOfWork.GetRepository<OTP>();
+        string otpCode = GenerateOtpCode();
+        var otp = new OTP
+        {
+            UserId = user.Id,
+            Code = otpCode,
+            ExpiredAt = DateTime.UtcNow.AddMinutes(5),
+            OTPType = OTPType.REGISTER
+        };
+        await otpRepo.InsertAsync(otp);
+        await _unitOfWork.SaveAsync();
+    }
+
     public async Task SendRegisterOtpAsync(SendOTPRequestDto model)
     {
         var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
@@ -48,8 +80,7 @@ public class UserService : IUserService
                 PhoneNumber = model.PhoneNumber,
                 IsVerify = false,
                 IsDeleted = false,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow
             };
             await userRepo.InsertAsync(user);
             await _unitOfWork.SaveAsync();

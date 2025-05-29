@@ -8,6 +8,7 @@ public interface IUserService
 {
     Task CompleteRegisterAsync(RegisterUserRequestDto model);
     Task SendRegisterOtpAsync(SendOTPRequestDto model);
+    Task ResendOtpAsync(SendOTPRequestDto model);
 
     Task<PaginatedList<UserReponseDto>> GetAllUsersAsync(
         int index, int pageSize, string? nameSearch, string? roleId);

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MamaFit.API.Controllers
 {
     [ApiController]
-    [Route("api/maternityDress")]
+    [Route("api/maternity-dress")]
     public class MaternityDressController : Controller
     {
         private readonly IMaternityDressService _maternityDressService;

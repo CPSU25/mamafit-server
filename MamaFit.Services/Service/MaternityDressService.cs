@@ -29,6 +29,7 @@ namespace MamaFit.Services.Service
 
             var newMaternityDress = new MaternityDress // Tạo mới Dress kèm với DressDetail
             {
+                StyleId = requestDto.StyleId,
                 Name = requestDto.Name,
                 Description = requestDto.Description,
                 Images = requestDto.Images,
@@ -66,10 +67,10 @@ namespace MamaFit.Services.Service
                 throw new ErrorException(StatusCodes.Status404NotFound,
                 ErrorCode.NotFound, "MaternityDress not found!");// Nếu không có
 
-            await maternityDressRepo.DeleteAsync(oldMaternityDress); // Deleted + Save changes
+            await maternityDressRepo.DeleteAsync(id); // Deleted + Save changes
             await _unitOfWork.SaveAsync();
         }
-
+        
         public async Task<PaginatedList<MaternityDressResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
         {
             var maternityDressRepo = _unitOfWork.GetRepository<MaternityDress>(); //Repo của Dress
@@ -150,7 +151,7 @@ namespace MamaFit.Services.Service
 
         private string GetCurrentUserName()
         {
-            return _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Name)?.Value ?? "System";
+            return _httpContextAccessor.HttpContext?.User?.FindFirst("name")?.Value ?? "System";
         }
     }
 }

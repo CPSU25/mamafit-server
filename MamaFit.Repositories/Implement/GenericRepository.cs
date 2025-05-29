@@ -31,11 +31,12 @@ namespace MamaFit.Repositories.Implement
 
         public async Task DeleteAsync(object id)
         {
-            T entity = await _dbSet.FindAsync(id) ?? throw new Exception();
-            if (entity != null)
-            {
-                _dbSet.Remove(entity);
-            }
+            var entity = await _dbSet.FindAsync(id) ?? throw new Exception("Entity not found");
+
+            entity.IsDeleted = true;
+            entity.UpdatedAt = DateTime.UtcNow;
+
+            _dbSet.Update(entity);
         }
 
         public async Task<IQueryable<T>> FindAllAsync(Expression<Func<T, bool>> predicate)

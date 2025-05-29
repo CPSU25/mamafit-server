@@ -25,7 +25,8 @@ namespace MamaFit.Services.Mapper
             //User Mapper
             CreateMap<ApplicationUser, UserReponseDto>()
                 .ForMember(dest => dest.RoleName,
-                    opt => opt.MapFrom(src => src.Role != null ? src.Role.RoleName : null));
+                    opt => opt.MapFrom(src => src.Role != null ? src.Role.RoleName : null))
+                .ReverseMap();
 
             CreateMap<ApplicationUser, RegisterUserRequestDto>();
             CreateMap<RegisterUserRequestDto, ApplicationUser>()

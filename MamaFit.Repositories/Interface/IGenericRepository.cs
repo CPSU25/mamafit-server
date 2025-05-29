@@ -13,7 +13,6 @@ namespace MamaFit.Repositories.Interface
         void Insert(T obj);
         void InsertRange(List<T> obj);
         Task InsertCollection(ICollection<T> collection);
-
         void Update(T obj);
         void Delete(object id);
         void Save();
@@ -21,10 +20,10 @@ namespace MamaFit.Repositories.Interface
         Task<T> GetByIdAsync(object id);
         List<T> GetAll();
         Task<IEnumerable<T>> GetAllAsync();
-
         Task InsertAsync(T obj);
         Task UpdateAsync(T obj);
         Task DeleteAsync(object id);
+        void DeleteRange(IEnumerable<T> entities);
         Task SaveAsync();
         Task<T> FindAsync(Expression<Func<T, bool>> predicate);
         Task<IQueryable<T>> FindAllAsync(Expression<Func<T, bool>> predicate);

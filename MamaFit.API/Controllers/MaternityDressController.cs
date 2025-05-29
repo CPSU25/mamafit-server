@@ -8,7 +8,7 @@ namespace MamaFit.API.Controllers
 {
     [ApiController]
     [Route("api/maternity-dress")]
-    public class MaternityDressController : Controller
+    public class MaternityDressController : ControllerBase
     {
         private readonly IMaternityDressService _maternityDressService;
 

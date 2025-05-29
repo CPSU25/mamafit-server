@@ -131,6 +131,7 @@ namespace MamaFit.Services.Service
         public async Task UpdateAsync(string id, MaternityDressRequestDto requestDto)
         {
             var maternityDressRepo = _unitOfWork.GetRepository<MaternityDress>(); //Repo của Dress 
+            var detailRepo = _unitOfWork.GetRepository<MaternityDressDetail>();
 
             var oldMaternityDress = await maternityDressRepo.Entities
                 .Include(md => md.Details)
@@ -141,8 +142,9 @@ namespace MamaFit.Services.Service
                 throw new ErrorException(StatusCodes.Status404NotFound,
                 ErrorCode.NotFound, "MaternityDress not found!"); // Nếu không có
 
+            
+            detailRepo.DeleteRange(oldMaternityDress.Details); // Xoá các bản ghi Details cũ trong database
             _mapper.Map(requestDto, oldMaternityDress); //Auto mapper Dto => dress
-            oldMaternityDress.Details.Clear();          //Put DressDetail
             oldMaternityDress.Details = requestDto.Details.Select(detailDto => _mapper.Map<MaternityDressDetail>(detailDto)).ToList();
 
             await maternityDressRepo.UpdateAsync(oldMaternityDress); //Update + Save changes

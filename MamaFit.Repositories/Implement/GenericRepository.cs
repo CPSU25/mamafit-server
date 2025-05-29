@@ -39,6 +39,11 @@ namespace MamaFit.Repositories.Implement
             _dbSet.Update(entity);
         }
 
+        public void DeleteRange(IEnumerable<T> entities)
+        {
+            _dbSet.RemoveRange(entities);
+        }
+
         public async Task<IQueryable<T>> FindAllAsync(Expression<Func<T, bool>> predicate)
         {
             return await Task.FromResult(_dbSet.Where(predicate));

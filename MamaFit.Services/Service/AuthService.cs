@@ -79,7 +79,7 @@ public class AuthService : IAuthService
         var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
         ApplicationUser? user = null;
         
-        string loginKey = model.Login?.Trim();
+        string loginKey = model.Identifier?.Trim();
         if (string.IsNullOrWhiteSpace(loginKey))
             throw new ErrorException(StatusCodes.Status400BadRequest,
                 ErrorCode.BadRequest,

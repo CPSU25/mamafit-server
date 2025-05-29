@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using MamaFit.BusinessObjects.DTO.OTPDto;
 using MamaFit.BusinessObjects.DTO.UserDto;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MamaFit.API.Controllers
 {
@@ -47,10 +48,11 @@ namespace MamaFit.API.Controllers
             ));
         }
 
+        [Authorize]
         [HttpPost("logout")]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> Logout([FromBody] LogoutRequestDto model)
         {
-            await _authService.LogoutAsync();
+            await _authService.LogoutAsync(model);
             return Ok(new ResponseModel<object>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,

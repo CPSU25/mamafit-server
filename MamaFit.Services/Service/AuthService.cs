@@ -42,35 +42,47 @@ public class AuthService : IAuthService
             throw new ErrorException(StatusCodes.Status401Unauthorized, "Unauthorized access!");
 
         var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
-        var user = await userRepo.Entities.FirstOrDefaultAsync(u => u.Id == userId);
+        var user = await userRepo.Entities
+            .Include(u => u.Role)
+            .FirstOrDefaultAsync(u => u.Id.Equals(userId));
 
         if (user == null)
-            throw new ErrorException(StatusCodes.Status404NotFound, 
+            throw new ErrorException(StatusCodes.Status404NotFound,
                 ErrorCode.NotFound, "User not found!");
 
         return _mapper.Map<UserReponseDto>(user);
     }
 
-    public async Task LogoutAsync()
+    public async Task LogoutAsync(LogoutRequestDto model)
     {
-        var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("userId");
         if (string.IsNullOrWhiteSpace(userId))
             throw new ErrorException(StatusCodes.Status401Unauthorized, "Unauthorized access!");
 
         var userTokenRepo = _unitOfWork.GetRepository<ApplicationUserToken>();
-        var tokens = await userTokenRepo.Entities
-            .Where(t => t.UserId == userId && t.TokenType == TokenType.REFRESH_TOKEN && t.TokenType == TokenType.NOTIFICATION_TOKEN)
-            .ToListAsync();
-
-        foreach (var token in tokens)
+        //Delete refresh token
+        if (!string.IsNullOrWhiteSpace(model.RefreshToken))
         {
-            await userTokenRepo.DeleteAsync(token);
+            var refreshToken = await userTokenRepo.Entities
+                .FirstOrDefaultAsync(t =>
+                    t.UserId == userId && t.Token == model.RefreshToken && t.TokenType == TokenType.REFRESH_TOKEN);
+            if (refreshToken != null)
+                await userTokenRepo.DeleteAsync(refreshToken.Id);
         }
-
+        
+        //Delete notification token
+        if (!string.IsNullOrWhiteSpace(model.NotificationToken))
+        {
+            var notificationToken = await userTokenRepo.Entities
+                .FirstOrDefaultAsync(t =>
+                    t.UserId == userId && t.Token == model.NotificationToken && t.TokenType == TokenType.NOTIFICATION_TOKEN);
+            if (notificationToken != null)
+                await userTokenRepo.DeleteAsync(notificationToken.Id);
+        }
         await _unitOfWork.SaveAsync();
     }
-    
-    
+
+
     public async Task<TokenResponseDto> SignInAsync(LoginRequestDto model)
     {
         if (model == null)
@@ -78,7 +90,7 @@ public class AuthService : IAuthService
 
         var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
         ApplicationUser? user = null;
-        
+
         string loginKey = model.Identifier?.Trim();
         if (string.IsNullOrWhiteSpace(loginKey))
             throw new ErrorException(StatusCodes.Status400BadRequest,
@@ -133,7 +145,7 @@ public class AuthService : IAuthService
         string role = userRole.RoleName;
         var token = GenerateTokens(user, role);
         var userTokenRepo = _unitOfWork.GetRepository<ApplicationUserToken>();
-        
+
         // 1. Save refresh token
         var refreshTokenEntity = new ApplicationUserToken
         {
@@ -156,9 +168,9 @@ public class AuthService : IAuthService
 
             foreach (var oldToken in oldTokens)
             {
-                await userTokenRepo.DeleteAsync(oldToken.Id); 
+                await userTokenRepo.DeleteAsync(oldToken.Id);
             }
-            
+
             var existNotiToken = await userTokenRepo.Entities
                 .FirstOrDefaultAsync(x =>
                     x.UserId == user.Id &&
@@ -200,10 +212,12 @@ public class AuthService : IAuthService
                 && t.IsRevoked == false);
 
         if (userToken == null)
-            throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.TokenInvalid, "Invalid refresh token!");
+            throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.BadRequest,
+                "Invalid refresh token!");
 
         if (userToken.ExpiredAt < DateTime.UtcNow)
-            throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.TokenExpired, "Refresh token has expired!");
+            throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.TokenExpired,
+                "Refresh token has expired!");
 
         var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
         var user = await userRepo.GetByIdAsync(userToken.UserId);
@@ -243,7 +257,7 @@ public class AuthService : IAuthService
         var user = await userRepo.Entities.FirstOrDefaultAsync(x => x.UserEmail == model.Email);
 
         if (user == null)
-            throw new ErrorException(StatusCodes.Status404NotFound, 
+            throw new ErrorException(StatusCodes.Status404NotFound,
                 ErrorCode.NotFound, "User not found with the provided email.");
 
         var otpRepo = _unitOfWork.GetRepository<OTP>();
@@ -284,6 +298,7 @@ public class AuthService : IAuthService
         {
             new Claim("userId", user.Id.ToString()),
             new Claim("username", user.UserName ?? string.Empty),
+            new Claim("name", user.FullName ?? string.Empty),
             new Claim("email", user.UserEmail ?? string.Empty),
             new Claim("role", role),
         };

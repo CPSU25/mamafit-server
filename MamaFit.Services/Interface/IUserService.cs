@@ -11,7 +11,7 @@ public interface IUserService
     Task ResendOtpAsync(SendOTPRequestDto model);
 
     Task<PaginatedList<UserReponseDto>> GetAllUsersAsync(
-        int index, int pageSize, string? nameSearch, string? roleId);
+        int index, int pageSize, string? nameSearch, string? roleName);
     Task<UserReponseDto> GetUserByIdAsync(string userId);
     Task<UserReponseDto> UpdateUserAsync(string userId, UpdateUserRequestDto model);
     Task DeleteUserAsync(string userId);

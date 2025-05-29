@@ -1,10 +1,6 @@
 ﻿using MamaFit.Repositories.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MamaFit.BusinessObjects.DBContext;
+using MamaFit.BusinessObjects.Base;
 
 namespace MamaFit.Repositories.Implement
 {
@@ -19,7 +15,7 @@ namespace MamaFit.Repositories.Implement
             _dbContext = dbContext;
         }
 
-        public IGenericRepository<T> GetRepository<T>() where T : class
+        public IGenericRepository<T> GetRepository<T>() where T : BaseEntity
         {
             if (_repositories.ContainsKey(typeof(T)))
             {

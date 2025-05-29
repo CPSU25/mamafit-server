@@ -1,14 +1,10 @@
-﻿using MamaFit.Repositories.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using MamaFit.BusinessObjects.Base;
+using MamaFit.Repositories.Infrastructure;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MamaFit.Repositories.Interface
 {
-    public interface IGenericRepository<T> where T : class
+    public interface IGenericRepository<T> where T : BaseEntity
     {
         IEnumerable<T> Get(int index, int pageSize);
         IQueryable<T> Entities { get; }

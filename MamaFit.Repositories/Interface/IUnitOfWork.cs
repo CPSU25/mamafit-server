@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MamaFit.BusinessObjects.Base;
 
 namespace MamaFit.Repositories.Interface
 {
     public interface IUnitOfWork
     {
-        IGenericRepository<T> GetRepository<T>() where T : class;
+        IGenericRepository<T> GetRepository<T>() where T : BaseEntity;
         Task SaveAsync();
         void BeginTransaction();
         void CommitTransaction();

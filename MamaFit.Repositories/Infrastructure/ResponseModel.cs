@@ -50,6 +50,26 @@ namespace MamaFit.Repositories.Infrastructure
         {
             return new ResponseModel<T>(StatusCodes.Status500InternalServerError, code, data, additionalData);
         }
+
+        public static ResponseModel<T> CreatedResponseModel<T>(T data, object? additionalData = null, string code = ResponseCodeConstants.SUCCESS)
+        {
+            return new ResponseModel<T>(StatusCodes.Status201Created, code, data, additionalData);
+        }
+
+        public static ResponseModel<T> NoContentResponseModel<T>(string? message = null, string code = ResponseCodeConstants.SUCCESS)
+        {
+            return new ResponseModel<T>(StatusCodes.Status204NoContent, code, default, null, message);
+        }
+
+        public static ResponseModel<T> UnauthorizedResponseModel<T>(T? data = default, object? additionalData = null, string code = ResponseCodeConstants.UNAUTHORIZED)
+        {
+            return new ResponseModel<T>(StatusCodes.Status401Unauthorized, code, data, additionalData);
+        }
+
+        public static ResponseModel<T> ForbiddenResponseModel<T>(T? data = default, object? additionalData = null, string code = ResponseCodeConstants.FORBIDDEN)
+        {
+            return new ResponseModel<T>(StatusCodes.Status403Forbidden, code, data, additionalData);
+        }
     }
 
     public class ResponseModel : ResponseModel<object>

@@ -9,6 +9,8 @@ using MamaFit.BusinessObjects.DTO.RoleDto;
 using MamaFit.BusinessObjects.DTO.Token;
 using MamaFit.BusinessObjects.DTO.UserDto;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.DTO.MaternityDressDto;
+using MamaFit.BusinessObjects.DTO.MaternityDressDetailDto;
 
 namespace MamaFit.Services.Mapper
 {
@@ -19,20 +21,28 @@ namespace MamaFit.Services.Mapper
             //TokenDto Mapper
             CreateMap<ApplicationUserToken, TokenResponseDto>().ReverseMap();
             CreateMap<ApplicationUserToken, RefreshTokenRequestDto>().ReverseMap();
-            
+
             //User Mapper
             CreateMap<ApplicationUser, UserReponseDto>()
-                .ForMember(dest => dest.RoleName, 
+                .ForMember(dest => dest.RoleName,
                     opt => opt.MapFrom(src => src.Role != null ? src.Role.RoleName : null));
 
             CreateMap<ApplicationUser, RegisterUserRequestDto>();
             CreateMap<RegisterUserRequestDto, ApplicationUser>()
                 .ForMember(dest => dest.HashPassword, opt => opt.Ignore())
                 .ForMember(dest => dest.Salt, opt => opt.Ignore());
-            
+
             //Role Mapper
             CreateMap<ApplicationUserRole, RoleResponseDto>().ReverseMap();
             CreateMap<ApplicationUserRole, RoleRequestDto>().ReverseMap();
+
+            //MaternityDress Mapper
+            CreateMap<MaternityDress, MaternityDressRequestDto>().ReverseMap();
+            CreateMap<MaternityDress, MaternityDressResponseDto>().ReverseMap();
+
+            //MaternityDressDetail Mappper
+            CreateMap<MaternityDressDetail, MaternityDressDetailRequestDto>().ReverseMap();
+            CreateMap<MaternityDressDetail, MaternityDressDetailResponseDto>().ReverseMap();
         }
     }
 }

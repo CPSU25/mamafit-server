@@ -3,10 +3,11 @@ using MamaFit.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using MamaFit.BusinessObjects.DBContext;
+using MamaFit.BusinessObjects.Base;
 
 namespace MamaFit.Repositories.Implement
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         protected readonly ApplicationDbContext _context;
         protected readonly DbSet<T> _dbSet;
@@ -56,8 +57,6 @@ namespace MamaFit.Repositories.Implement
         {
             return _dbSet.Skip(index * pageSize).Take(pageSize).ToList();
         }
-
-
 
         public List<T> GetAll()
         {

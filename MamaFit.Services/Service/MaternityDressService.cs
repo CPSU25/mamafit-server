@@ -6,7 +6,6 @@ using MamaFit.Repositories.Interface;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace MamaFit.Services.Service
 {
@@ -141,10 +140,11 @@ namespace MamaFit.Services.Service
             if (oldMaternityDress == null)
                 throw new ErrorException(StatusCodes.Status404NotFound,
                 ErrorCode.NotFound, "MaternityDress not found!"); // Nếu không có
-
             
             detailRepo.DeleteRange(oldMaternityDress.Details); // Xoá các bản ghi Details cũ trong database
             _mapper.Map(requestDto, oldMaternityDress); //Auto mapper Dto => dress
+            oldMaternityDress.UpdatedAt = DateTime.UtcNow;
+            oldMaternityDress.UpdatedBy = GetCurrentUserName();
             oldMaternityDress.Details = requestDto.Details.Select(detailDto => _mapper.Map<MaternityDressDetail>(detailDto)).ToList();
 
             await maternityDressRepo.UpdateAsync(oldMaternityDress); //Update + Save changes

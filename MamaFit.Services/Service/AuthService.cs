@@ -42,7 +42,9 @@ public class AuthService : IAuthService
             throw new ErrorException(StatusCodes.Status401Unauthorized, "Unauthorized access!");
 
         var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
-        var user = await userRepo.Entities.FirstOrDefaultAsync(u => u.Id == userId);
+        var user = await userRepo.Entities
+            .Include(u => u.Role)
+            .FirstOrDefaultAsync(u => u.Id.Equals(userId));
 
         if (user == null)
             throw new ErrorException(StatusCodes.Status404NotFound, 
@@ -79,7 +81,7 @@ public class AuthService : IAuthService
         var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
         ApplicationUser? user = null;
         
-        string loginKey = model.Login?.Trim();
+        string loginKey = model.Identifier?.Trim();
         if (string.IsNullOrWhiteSpace(loginKey))
             throw new ErrorException(StatusCodes.Status400BadRequest,
                 ErrorCode.BadRequest,

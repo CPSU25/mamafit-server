@@ -1,14 +1,10 @@
-﻿using MamaFit.Repositories.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using MamaFit.BusinessObjects.Base;
+using MamaFit.Repositories.Infrastructure;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MamaFit.Repositories.Interface
 {
-    public interface IGenericRepository<T> where T : class
+    public interface IGenericRepository<T> where T : BaseEntity
     {
         IEnumerable<T> Get(int index, int pageSize);
         IQueryable<T> Entities { get; }
@@ -17,7 +13,6 @@ namespace MamaFit.Repositories.Interface
         void Insert(T obj);
         void InsertRange(List<T> obj);
         Task InsertCollection(ICollection<T> collection);
-
         void Update(T obj);
         void Delete(object id);
         void Save();
@@ -25,10 +20,10 @@ namespace MamaFit.Repositories.Interface
         Task<T> GetByIdAsync(object id);
         List<T> GetAll();
         Task<IEnumerable<T>> GetAllAsync();
-
         Task InsertAsync(T obj);
         Task UpdateAsync(T obj);
         Task DeleteAsync(object id);
+        void DeleteRange(IEnumerable<T> entities);
         Task SaveAsync();
         Task<T> FindAsync(Expression<Func<T, bool>> predicate);
         Task<IQueryable<T>> FindAllAsync(Expression<Func<T, bool>> predicate);

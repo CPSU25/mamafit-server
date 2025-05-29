@@ -3,10 +3,11 @@ using MamaFit.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using MamaFit.BusinessObjects.DBContext;
+using MamaFit.BusinessObjects.Base;
 
 namespace MamaFit.Repositories.Implement
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         protected readonly ApplicationDbContext _context;
         protected readonly DbSet<T> _dbSet;
@@ -30,11 +31,17 @@ namespace MamaFit.Repositories.Implement
 
         public async Task DeleteAsync(object id)
         {
-            T entity = await _dbSet.FindAsync(id) ?? throw new Exception();
-            if (entity != null)
-            {
-                _dbSet.Remove(entity);
-            }
+            var entity = await _dbSet.FindAsync(id) ?? throw new Exception("Entity not found");
+
+            entity.IsDeleted = true;
+            entity.UpdatedAt = DateTime.UtcNow;
+
+            _dbSet.Update(entity);
+        }
+
+        public void DeleteRange(IEnumerable<T> entities)
+        {
+            _dbSet.RemoveRange(entities);
         }
 
         public async Task<IQueryable<T>> FindAllAsync(Expression<Func<T, bool>> predicate)
@@ -56,8 +63,6 @@ namespace MamaFit.Repositories.Implement
         {
             return _dbSet.Skip(index * pageSize).Take(pageSize).ToList();
         }
-
-
 
         public List<T> GetAll()
         {

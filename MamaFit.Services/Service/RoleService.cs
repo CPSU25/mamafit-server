@@ -24,9 +24,10 @@ public class RoleService : IRoleService
         _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
+    
     private string GetCurrentUserName()
     {
-        return _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Name)?.Value ?? "System";
+        return _httpContextAccessor.HttpContext?.User?.FindFirst("name")?.Value ?? "System";
     }
     
     public async Task<PaginatedList<RoleResponseDto>> GetAllRolesAsync(int index = 1, int pageSize = 10, string? nameSearch = null)
@@ -72,8 +73,8 @@ public class RoleService : IRoleService
         var repo = _unitOfWork.GetRepository<ApplicationUserRole>();
         bool exist = repo.Entities.Any(r => r.RoleName == model.RoleName && r.IsDeleted != true);
         if (exist)
-            throw new ErrorException(StatusCodes.Status400BadRequest,
-                ErrorCode.Duplicate, "Role already existed");
+            throw new ErrorException(StatusCodes.Status409Conflict,
+                ErrorCode.Conflicted, "Role already existed");
 
         var now = DateTime.UtcNow;
         var role = new ApplicationUserRole()
@@ -100,8 +101,8 @@ public class RoleService : IRoleService
 
         bool exist = repo.Entities.Any(r => r.RoleName == model.RoleName && r.Id != id && r.IsDeleted != true);
         if (exist)
-            throw new ErrorException(StatusCodes.Status400BadRequest,
-                ErrorCode.Duplicate, "Role already existed");
+            throw new ErrorException(StatusCodes.Status409Conflict,
+                ErrorCode.Conflicted, "Role already existed");
 
         role.RoleName = model.RoleName;
         role.UpdatedAt = DateTime.UtcNow;

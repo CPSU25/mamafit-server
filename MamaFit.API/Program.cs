@@ -32,6 +32,7 @@ namespace MamaFit.API
                     x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
                 
+                builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
                 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
                 builder.Services.AddDatabase(builder.Configuration);
                 builder.Services.AddEndpointsApiExplorer();

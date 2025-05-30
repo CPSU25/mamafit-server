@@ -13,6 +13,8 @@ using MamaFit.BusinessObjects.DTO.MaternityDressDto;
 using MamaFit.BusinessObjects.DTO.MaternityDressDetailDto;
 using MamaFit.BusinessObjects.DTO.CategoryDto;
 using MamaFit.BusinessObjects.DTO.StyleDto;
+using MamaFit.BusinessObjects.DTO.ComponentDto;
+using MamaFit.BusinessObjects.DTO.ComponentOptionDto;
 
 namespace MamaFit.Services.Mapper
 {
@@ -54,6 +56,14 @@ namespace MamaFit.Services.Mapper
             //Style Mapper
             CreateMap<Style, StyleRequestDto>().ReverseMap();
             CreateMap<Style, StyleResponseDto>().ReverseMap();
+
+            //Component Mapper
+            CreateMap<Component, ComponentRequestDto>().ReverseMap();
+            CreateMap<Component, ComponentResponseDto>().ReverseMap();
+
+            //ComponentOption Mapper
+            CreateMap<ComponentOption, ComponentOptionRequestDto>().ReverseMap();
+            CreateMap<ComponentOption, ComponentOptionResponseDto>().ReverseMap();
         }
     }
 }

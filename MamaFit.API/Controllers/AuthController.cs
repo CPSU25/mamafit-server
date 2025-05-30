@@ -19,7 +19,8 @@ namespace MamaFit.API.Controllers
         {
             _authService = authService;
         }
-
+        
+        [Authorize]
         [HttpGet("current-user")]
         public async Task<IActionResult> GetCurrentUser()
         {
@@ -100,8 +101,8 @@ namespace MamaFit.API.Controllers
             ));
         }
 
-        [HttpPost("decode/{jwtToken}")]
-        public IActionResult DecodeJwt(string jwtToken)
+        [HttpPost("decode")]
+        public IActionResult DecodeJwt([FromBody] string jwtToken)
         {
             var result = _authService.DecodePayload(jwtToken);
             return Ok(new ResponseModel<object>(

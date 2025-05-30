@@ -122,6 +122,7 @@ namespace MamaFit.Configuration
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IMaternityDressService, MaternityDressService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IComponentService, ComponentService>();
         }
 
         private static void AddAutoMapper(this IServiceCollection services)

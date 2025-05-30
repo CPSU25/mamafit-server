@@ -32,96 +32,32 @@ namespace MamaFit.API.Controllers
         }
 
         [HttpGet("{categoryId}")]
-        [ProducesResponseType(typeof(ResponseModel<CategoryResponseDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ResponseModel<object>), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ResponseModel<object>), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById([FromRoute] string categoryId)
         {
-            try
-            {
-                var category = await _categoryService.GetByIdAsync(categoryId);
-                return Ok(ResponseModel<CategoryResponseDto>.OkResponseModel(category));
-            }
-            catch (ErrorException ex)
-            {
-                return StatusCode(ex.StatusCode, new ResponseModel<object>(
-                    ex.StatusCode,
-                    ex.ErrorDetail.ErrorCode,
-                    ex.ErrorDetail.ErrorMessage
-                ));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    ResponseModel<object>.InternalErrorResponseModel(null, null, ex.Message));
-            }
+            var category = await _categoryService.GetByIdAsync(categoryId);
+            return Ok(ResponseModel<CategoryResponseDto>.OkResponseModel(category));
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(ResponseModel<string>), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ResponseModel<object>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] CategoryRequestDto requestDto)
         {
-            try
-            {
-                await _categoryService.CreateAsync(requestDto);
-                return StatusCode(StatusCodes.Status201Created,
-                    ResponseModel<string>.CreatedResponseModel("Created successfully"));
-            }
-            catch (ErrorException ex)
-            {
-                return StatusCode(ex.StatusCode,
-                    new ResponseModel<object>(ex.StatusCode, ex.ErrorDetail.ErrorCode, ex.ErrorDetail.ErrorMessage));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    ResponseModel<object>.InternalErrorResponseModel(null, null, ex.Message));
-            }
+            await _categoryService.CreateAsync(requestDto);
+            return StatusCode(StatusCodes.Status201Created,
+                ResponseModel<string>.CreatedResponseModel("Created successfully"));
         }
 
         [HttpPut("{categoryId}")]
-        [ProducesResponseType(typeof(ResponseModel<string>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ResponseModel<object>), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update(string categoryId, [FromBody] CategoryRequestDto requestDto)
         {
-            try
-            {
-                await _categoryService.UpdateAsync(categoryId, requestDto);
-                return Ok(ResponseModel<string>.OkResponseModel("Updated successfully"));
-            }
-            catch (ErrorException ex)
-            {
-                return StatusCode(ex.StatusCode,
-                    new ResponseModel<object>(ex.StatusCode, ex.ErrorDetail.ErrorCode, ex.ErrorDetail.ErrorMessage));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    ResponseModel<object>.InternalErrorResponseModel(null, null, ex.Message));
-            }
+            await _categoryService.UpdateAsync(categoryId, requestDto);
+            return Ok(ResponseModel<string>.OkResponseModel("Updated successfully"));
         }
 
         [HttpDelete("{categoryId}")]
-        [ProducesResponseType(typeof(ResponseModel<string>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ResponseModel<object>), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(string categoryId)
         {
-            try
-            {
-                await _categoryService.DeleteAsync(categoryId);
-                return Ok(ResponseModel<string>.OkResponseModel("Deleted successfully"));
-            }
-            catch (ErrorException ex)
-            {
-                return StatusCode(ex.StatusCode,
-                    new ResponseModel<object>(ex.StatusCode, ex.ErrorDetail.ErrorCode, ex.ErrorDetail.ErrorMessage));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    ResponseModel<object>.InternalErrorResponseModel(null, null, ex.Message));
-            }
+            await _categoryService.DeleteAsync(categoryId);
+            return Ok(ResponseModel<string>.OkResponseModel("Deleted successfully"));
         }
     }
 }

@@ -70,7 +70,7 @@ public class AuthService : IAuthService
             if (refreshToken != null)
                 await userTokenRepo.DeleteAsync(refreshToken.Id);
         }
-        
+
         //Delete notification token
         if (!string.IsNullOrWhiteSpace(model.NotificationToken))
         {
@@ -347,6 +347,13 @@ public class AuthService : IAuthService
         var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
         var user = await userRepo.Entities.FirstOrDefaultAsync(u => u.Id == payload.sub);
 
+        var userByEmail = await userRepo.Entities.FirstOrDefaultAsync(u => u.UserEmail == payload.email && u.CreatedBy.Equals("System"));
+
+        if (userByEmail != null)
+        {
+            throw new ErrorException(StatusCodes.Status409Conflict, ErrorCode.Conflicted, "Email has been aldready registered!");
+        }
+
         if (user == null)
         {
             // Tạo user mới
@@ -380,6 +387,7 @@ public class AuthService : IAuthService
             {
                 user.ProfilePicture = payload.picture;
                 user.UpdatedAt = DateTime.UtcNow;
+                user.UpdatedBy = "GoogleOAuth";
                 await userRepo.UpdateAsync(user);
             }
         }

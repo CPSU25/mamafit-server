@@ -100,8 +100,8 @@ namespace MamaFit.API.Controllers
             ));
         }
 
-        [HttpPost("decode/{jwtToken}")]
-        public IActionResult DecodeJwt(string jwtToken)
+        [HttpPost("decode")]
+        public IActionResult DecodeJwt([FromBody] string jwtToken)
         {
             var result = _authService.DecodePayload(jwtToken);
             return Ok(new ResponseModel<object>(

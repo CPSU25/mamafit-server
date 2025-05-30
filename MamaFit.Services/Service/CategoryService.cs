@@ -56,7 +56,7 @@ namespace MamaFit.Services.Service
                 throw new ErrorException(StatusCodes.Status404NotFound,
                 ErrorCode.NotFound, "Category not found!"); // Nếu không có
 
-            await categoryRepo.DeleteAsync(oldCategory);
+            await categoryRepo.SoftDeleteAsync(oldCategory);
             await categoryRepo.SaveAsync();
         }
 

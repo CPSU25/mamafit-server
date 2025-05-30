@@ -69,7 +69,7 @@ namespace MamaFit.Configuration
             });
             return services;
         }
-        
+
         public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             var jwtSettings = configuration.GetSection("JWT");
@@ -121,6 +121,7 @@ namespace MamaFit.Configuration
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IMaternityDressService, MaternityDressService>();
+            services.AddScoped<ICategoryService, CategoryService>();
         }
 
         private static void AddAutoMapper(this IServiceCollection services)

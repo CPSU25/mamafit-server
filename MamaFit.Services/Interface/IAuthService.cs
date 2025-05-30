@@ -14,4 +14,6 @@ public interface IAuthService
     Task<TokenResponseDto> RefreshTokenAsync(RefreshTokenRequestDto model);
     TokenResponseDto GenerateTokens(ApplicationUser user, string role);
     Task VerifyOtpAsync(VerifyOtpRequestDto model);
+    GoogleJwtPayload DecodePayload(string jwtToken);
+    Task<TokenResponseDto> SignInWithGoogleJwtAsync(string jwtToken, string? notificationToken = null);
 }

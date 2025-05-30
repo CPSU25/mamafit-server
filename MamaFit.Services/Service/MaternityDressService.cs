@@ -104,7 +104,7 @@ namespace MamaFit.Services.Service
                 listMaternityDress,
                 pagedResult.TotalCount,
                 pagedResult.PageNumber,
-                pagedResult.TotalPages
+                pageSize
             );
 
             return responsePaginatedList;

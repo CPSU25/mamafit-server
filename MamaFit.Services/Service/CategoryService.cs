@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MamaFit.BusinessObjects.DTO.CategoryDto;
 using MamaFit.BusinessObjects.Entity;
-using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using MamaFit.Services.Interface;
@@ -93,7 +92,7 @@ namespace MamaFit.Services.Service
                 listCategory,
                 pagedResult.TotalCount,
                 pagedResult.PageNumber,
-                pagedResult.TotalPages
+                pageSize
             );
 
             return responsePaginatedList;

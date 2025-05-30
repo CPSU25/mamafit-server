@@ -50,7 +50,7 @@ public class RoleService : IRoleService
             responseItems,
             resultQuery.TotalCount,
             resultQuery.PageNumber,
-            resultQuery.TotalPages
+            pageSize
         );
 
         return responsePaginatedList;

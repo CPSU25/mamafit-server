@@ -143,7 +143,7 @@ public class UserService : IUserService
     }
 
     public async Task<PaginatedList<UserReponseDto>> GetAllUsersAsync(
-        int index = 1, int pageSize = 10, string? nameSearch = null, string? roleId = null)
+        int index = 1, int pageSize = 10, string? nameSearch = null, string? roleName = null)
     {
         var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
         var query = userRepo.Entities
@@ -155,9 +155,9 @@ public class UserService : IUserService
             query = query.Where(u => u.FullName.Contains(nameSearch) || u.UserName.Contains(nameSearch));
         }
 
-        if (!string.IsNullOrWhiteSpace(roleId))
+        if (!string.IsNullOrWhiteSpace(roleName))
         {
-            query = query.Where(u => u.RoleId == roleId);
+            query = query.Where(u => u.Role.RoleName == roleName);
         }
 
         var pagedResult = await userRepo.GetPagging(query, index, pageSize);
@@ -170,7 +170,7 @@ public class UserService : IUserService
             responseItems,
             pagedResult.TotalCount,
             pagedResult.PageNumber,
-            pagedResult.TotalPages
+            pageSize
         );
 
         return responsePaginatedList;

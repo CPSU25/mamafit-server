@@ -31,6 +31,21 @@ namespace MamaFit.Repositories.Implement
 
         public async Task DeleteAsync(object id)
         {
+            T entity = await _dbSet.FindAsync(id) ?? throw new Exception();
+            if (entity != null)
+            {
+                _dbSet.Remove(entity);
+            }
+        }
+        
+        public Task DeleteAsync(T entity)
+        {
+            _dbSet.Remove(entity);
+            return Task.CompletedTask;
+        }
+
+        public async Task SoftDeleteAsync(object id)
+        {
             var entity = await _dbSet.FindAsync(id) ?? throw new Exception("Entity not found");
 
             entity.IsDeleted = true;

@@ -91,7 +91,8 @@ public class UserService : IUserService
                 PhoneNumber = model.PhoneNumber,
                 IsVerify = false,
                 IsDeleted = false,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                CreatedBy = GetCurrentUserName()
             };
             await userRepo.InsertAsync(user);
             await _unitOfWork.SaveAsync();
@@ -188,7 +189,6 @@ public class UserService : IUserService
         return responsePaginatedList;
     }
 
-    
     public async Task<UserReponseDto> GetUserByIdAsync(string userId)
     {
         var userRepo = _unitOfWork.GetRepository<ApplicationUser>();

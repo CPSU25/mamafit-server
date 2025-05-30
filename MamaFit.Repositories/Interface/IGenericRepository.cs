@@ -24,6 +24,7 @@ namespace MamaFit.Repositories.Interface
         Task UpdateAsync(T obj);
         Task DeleteAsync(object id);
         void DeleteRange(IEnumerable<T> entities);
+        Task SoftDeleteAsync(object id);
         Task SaveAsync();
         Task<T> FindAsync(Expression<Func<T, bool>> predicate);
         Task<IQueryable<T>> FindAllAsync(Expression<Func<T, bool>> predicate);

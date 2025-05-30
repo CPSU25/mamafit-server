@@ -3,8 +3,6 @@ using MamaFit.BusinessObjects.DTO.Token;
 using MamaFit.Services.Interface;
 using MamaFit.Repositories.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
 using MamaFit.BusinessObjects.DTO.OTPDto;
 using MamaFit.BusinessObjects.DTO.UserDto;
 using Microsoft.AspNetCore.Authorization;
@@ -21,7 +19,7 @@ namespace MamaFit.API.Controllers
         {
             _authService = authService;
         }
-        
+
         [Authorize]
         [HttpGet("current-user")]
         public async Task<IActionResult> GetCurrentUser()
@@ -49,6 +47,23 @@ namespace MamaFit.API.Controllers
             ));
         }
 
+        [HttpPost("login-google")]
+        public async Task<IActionResult> LoginGoogle([FromBody] GoogleLoginRequestDto request)
+        {
+            var tokenResponse = await _authService.SignInWithGoogleJwtAsync(request.JwtToken, request.NotificationToken);
+
+            var response = new ResponseModel<TokenResponseDto>(
+                StatusCodes.Status200OK,
+                ResponseCodeConstants.SUCCESS,
+                tokenResponse,
+                null,
+                "Login successfully!"
+            );
+
+            return Ok(response);
+        }
+
+
         [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout([FromBody] LogoutRequestDto model)
@@ -61,7 +76,7 @@ namespace MamaFit.API.Controllers
                 "Logout successfully!"
             ));
         }
-        
+
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto model)
         {
@@ -83,6 +98,18 @@ namespace MamaFit.API.Controllers
                 ResponseCodeConstants.SUCCESS,
                 null, null,
                 "OTP verification successful!"
+            ));
+        }
+
+        [HttpPost("decode")]
+        public IActionResult DecodeJwt([FromBody] string jwtToken)
+        {
+            var result = _authService.DecodePayload(jwtToken);
+            return Ok(new ResponseModel<object>(
+                StatusCodes.Status200OK,
+                ResponseCodeConstants.SUCCESS,
+                result, null,
+                "Decode successfully!"
             ));
         }
     }

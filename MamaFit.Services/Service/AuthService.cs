@@ -1,7 +1,8 @@
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using AutoMapper;
 using MamaFit.BusinessObjects.DTO.AuthDto;
 using MamaFit.BusinessObjects.DTO.OTPDto;
@@ -69,7 +70,7 @@ public class AuthService : IAuthService
             if (refreshToken != null)
                 await userTokenRepo.DeleteAsync(refreshToken.Id);
         }
-        
+
         //Delete notification token
         if (!string.IsNullOrWhiteSpace(model.NotificationToken))
         {
@@ -81,7 +82,6 @@ public class AuthService : IAuthService
         }
         await _unitOfWork.SaveAsync();
     }
-
 
     public async Task<TokenResponseDto> SignInAsync(LoginRequestDto model)
     {
@@ -201,7 +201,6 @@ public class AuthService : IAuthService
         };
     }
 
-
     public async Task<TokenResponseDto> RefreshTokenAsync(RefreshTokenRequestDto model)
     {
         var tokenRepo = _unitOfWork.GetRepository<ApplicationUserToken>();
@@ -282,7 +281,6 @@ public class AuthService : IAuthService
         await _unitOfWork.SaveAsync();
     }
 
-
     private bool VerifyPassword(string password, string storedHash, string storedSalt)
     {
         var saltBytes = Convert.FromBase64String(storedSalt);
@@ -327,4 +325,149 @@ public class AuthService : IAuthService
             RefreshToken = refreshTokenString,
         };
     }
+
+    public GoogleJwtPayload DecodePayload(string jwtToken)
+    {
+        var parts = jwtToken.Split('.');
+        if (parts.Length != 3)
+            throw new ArgumentException("Invalid JWT token");
+
+        var payload = parts[1];
+        var json = Encoding.UTF8.GetString(Convert.FromBase64String(PadBase64(payload)));
+        return JsonSerializer.Deserialize<GoogleJwtPayload>(json);
+    }
+
+    private string PadBase64(string base64)
+    {
+        return base64.PadRight(base64.Length + (4 - base64.Length % 4) % 4, '=').Replace('-', '+').Replace('_', '/');
+    }
+
+    public async Task<TokenResponseDto> SignInWithGoogleJwtAsync(string jwtToken, string? notificationToken = null)
+    {
+        var payload = DecodePayload(jwtToken);
+
+        var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
+        var user = await userRepo.Entities.FirstOrDefaultAsync(u => u.Id == payload.sub);
+
+        var userByEmail = await userRepo.Entities.FirstOrDefaultAsync(u => u.UserEmail == payload.email && u.CreatedBy.Equals("System"));
+
+        if (userByEmail != null)
+        {
+            throw new ErrorException(StatusCodes.Status409Conflict, ErrorCode.Conflicted, "Email has been aldready registered!");
+        }
+
+        if (user == null)
+        {
+            // Tạo user mới
+            user = new ApplicationUser
+            {
+                Id = payload.sub,
+                UserName = payload.name,
+                FullName = payload.name,
+                UserEmail = payload.email,
+                HashPassword = null,
+                Salt = null,
+                ProfilePicture = payload.picture,
+                DateOfBirth = null,
+                PhoneNumber = null,
+                IsVerify = payload.email_verified,
+                CreatedAt = DateTime.UtcNow,
+                CreatedBy = "GoogleOAuth"
+            };
+
+            var roleRepo = _unitOfWork.GetRepository<ApplicationUserRole>();
+            var defaultRole = await roleRepo.Entities.FirstOrDefaultAsync(r => r.RoleName == "User");
+            if (defaultRole != null)
+                user.RoleId = defaultRole.Id;
+
+            await userRepo.InsertAsync(user);
+        }
+        else
+        {
+            // Cập nhật profile picture nếu khác
+            if (user.ProfilePicture != payload.picture)
+            {
+                user.ProfilePicture = payload.picture;
+                user.UpdatedAt = DateTime.UtcNow;
+                user.UpdatedBy = "GoogleOAuth";
+                await userRepo.UpdateAsync(user);
+            }
+        }
+
+        await _unitOfWork.SaveAsync();
+
+        if (string.IsNullOrWhiteSpace(user.RoleId))
+            throw new ErrorException(StatusCodes.Status409Conflict,
+                ErrorCode.Conflicted,
+                "The user's RoleId is null or empty. Please check the account data!");
+
+        var roleRepoCheck = _unitOfWork.GetRepository<ApplicationUserRole>();
+        var userRole = await roleRepoCheck.Entities.FirstOrDefaultAsync(x => x.Id == user.RoleId);
+
+        if (userRole == null)
+            throw new ErrorException(StatusCodes.Status404NotFound,
+                ErrorCode.NotFound,
+                $"No role found for this account! RoleId: {user.RoleId}");
+
+        string role = userRole.RoleName;
+
+        var token = GenerateTokens(user, role);
+
+        var userTokenRepo = _unitOfWork.GetRepository<ApplicationUserToken>();
+
+        // Lưu refresh token
+        var refreshTokenEntity = new ApplicationUserToken
+        {
+            UserId = user.Id,
+            Token = token.RefreshToken,
+            ExpiredAt = DateTime.UtcNow.AddDays(int.Parse(_configuration["JWT:RefreshTokenExpirationDays"])),
+            IsRevoked = false,
+            TokenType = TokenType.REFRESH_TOKEN
+        };
+        await userTokenRepo.InsertAsync(refreshTokenEntity);
+
+        // Xử lý notification token nếu có
+        if (!string.IsNullOrWhiteSpace(notificationToken))
+        {
+            var oldTokens = await userTokenRepo.Entities
+                .Where(x => x.UserId == user.Id
+                            && x.TokenType == TokenType.NOTIFICATION_TOKEN
+                            && x.Token != notificationToken)
+                .ToListAsync();
+
+            foreach (var oldToken in oldTokens)
+            {
+                await userTokenRepo.DeleteAsync(oldToken.Id);
+            }
+
+            var existNotiToken = await userTokenRepo.Entities
+                .FirstOrDefaultAsync(x =>
+                    x.UserId == user.Id &&
+                    x.Token == notificationToken &&
+                    x.TokenType == TokenType.NOTIFICATION_TOKEN);
+
+            if (existNotiToken == null)
+            {
+                var notiTokenEntity = new ApplicationUserToken
+                {
+                    UserId = user.Id,
+                    Token = notificationToken,
+                    ExpiredAt = null,
+                    IsRevoked = false,
+                    TokenType = TokenType.NOTIFICATION_TOKEN,
+                    CreatedAt = DateTime.UtcNow
+                };
+                await userTokenRepo.InsertAsync(notiTokenEntity);
+            }
+        }
+
+        await _unitOfWork.SaveAsync();
+
+        return new TokenResponseDto
+        {
+            AccessToken = token.AccessToken,
+            RefreshToken = token.RefreshToken
+        };
+    }
+
 }

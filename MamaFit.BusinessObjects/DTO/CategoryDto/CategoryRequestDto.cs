@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MamaFit.BusinessObjects.DTO.StyleDto;
 
 namespace MamaFit.BusinessObjects.DTO.CategoryDto
 {
     public class CategoryRequestDto
     {
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public List<string> Images { get; set; } = [];
+        public List<StyleRequestDto>? Styles { get; set; }
     }
 }

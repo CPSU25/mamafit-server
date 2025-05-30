@@ -260,10 +260,12 @@ public class AuthService : IAuthService
             throw new ErrorException(StatusCodes.Status404NotFound,
                 ErrorCode.NotFound, "User not found with the provided email.");
 
+        string otpInputHash = HashHelper.HashOtp(model.Code);
+        
         var otpRepo = _unitOfWork.GetRepository<OTP>();
         var otp = await otpRepo.Entities
             .Where(x => x.UserId == user.Id
-                        && x.Code == model.Code
+                        && x.Code == otpInputHash
                         && x.OTPType == model.OTPType
                         && x.ExpiredAt >= DateTime.UtcNow)
             .OrderByDescending(x => x.ExpiredAt)

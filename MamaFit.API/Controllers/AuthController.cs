@@ -22,6 +22,7 @@ namespace MamaFit.API.Controllers
             _authService = authService;
         }
         
+        [Authorize]
         [HttpGet("current-user")]
         public async Task<IActionResult> GetCurrentUser()
         {

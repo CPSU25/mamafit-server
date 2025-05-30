@@ -25,7 +25,7 @@ public class UserController : ControllerBase
             ResponseCodeConstants.SUCCESS,
             null,
             null,
-            "Send OTP successfully!"
+            "Send OTP successfully. Please check your email!"
         ));
     }
 

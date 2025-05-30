@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MamaFit.Repositories.Infrastructure
 {
-    public static class PasswordHelper
+    public static class HashHelper
     {
         public static string GenerateSalt()
         {
@@ -24,6 +24,18 @@ namespace MamaFit.Repositories.Infrastructure
             var saltBytes = Convert.FromBase64String(salt);
             var hashBytes = new Rfc2898DeriveBytes(password, saltBytes, 20000, HashAlgorithmName.SHA256).GetBytes(32);
             return Convert.ToBase64String(hashBytes);
+        }
+        
+        public static string HashOtp(string otp)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(otp));
+                StringBuilder builder = new StringBuilder();
+                foreach (var b in bytes)
+                    builder.Append(b.ToString("x2"));
+                return builder.ToString();
+            }
         }
     }
 }

@@ -123,6 +123,8 @@ namespace MamaFit.Configuration
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IMaternityDressService, MaternityDressService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IComponentService, ComponentService>();
             services.AddScoped<IEmailSenderSevice, EmailSenderService>();
             services.AddScoped<ICloudinaryService, CloudinaryService>();
         }

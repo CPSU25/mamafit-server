@@ -27,7 +27,8 @@ namespace MamaFit.API.Controllers
             return Ok(new ResponseModel<PaginatedList<CategoryResponseDto>>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
-                categories
+                categories, null,
+                "Get all categories successfully!"
             ));
         }
 

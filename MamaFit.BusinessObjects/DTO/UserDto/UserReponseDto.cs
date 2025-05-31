@@ -4,7 +4,7 @@ public class UserReponseDto
 {
     public string? Id { get; set; }
     public string? Username { get; set; } = string.Empty;
-    public string? Email { get; set; } = string.Empty;
+    public string? UserEmail { get; set; } = string.Empty;
     public string? PhoneNumber { get; set; } = string.Empty;
     public DateTime? DateOfBirth { get; set; }
     public string? ProfilePicture { get; set; }

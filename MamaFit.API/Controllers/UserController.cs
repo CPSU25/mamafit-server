@@ -1,4 +1,6 @@
+using MamaFit.BusinessObjects.DTO.UploadImageDto;
 using MamaFit.BusinessObjects.DTO.UserDto;
+using MamaFit.Repositories.Helper;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +27,7 @@ public class UserController : ControllerBase
             ResponseCodeConstants.SUCCESS,
             null,
             null,
-            "Send OTP successfully!"
+            "Send OTP successfully. Please check your email!"
         ));
     }
 
@@ -82,6 +84,19 @@ public class UserController : ControllerBase
         ));
     }
 
+    [HttpPut("profile-picture")]
+    public async Task<IActionResult> UpdateUserProfilePicture([FromForm] UploadImageDto model)
+    {
+        var result = await _service.UpdateUserProfilePictureAsync(model);
+        return Ok(new ResponseModel<PhotoUploadResult>(
+            StatusCodes.Status200OK,
+            ResponseCodeConstants.SUCCESS,
+            result,
+            null,
+            "Update user profile picture successfully!"
+        ));
+    }
+    
     [HttpPut("{userId}")]
     public async Task<IActionResult> UpdateUser(string userId, [FromBody] UpdateUserRequestDto model)
     {

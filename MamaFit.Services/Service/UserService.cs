@@ -1,11 +1,14 @@
 using System.Security.Claims;
 using AutoMapper;
 using CloudinaryDotNet.Actions;
+using MamaFit.BusinessObjects.DTO.UploadImageDto;
 using MamaFit.BusinessObjects.DTO.UserDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
+using MamaFit.Repositories.Helper;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
+using MamaFit.Services.ExternalService;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -18,9 +21,11 @@ public class UserService : IUserService
     private readonly IMapper _mapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IEmailSenderSevice _emailSenderService;
+    private readonly ICloudinaryService _cloudinaryService;
 
-    public UserService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor, IEmailSenderSevice emailSenderService)
+    public UserService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor, IEmailSenderSevice emailSenderService, ICloudinaryService cloudinaryService)
     {
+        _cloudinaryService = cloudinaryService;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _httpContextAccessor = httpContextAccessor;
@@ -65,6 +70,36 @@ public class UserService : IUserService
         await SendOtpEmailAsync(model.Email, otpCode);
     }
 
+    public async Task<PhotoUploadResult> UpdateUserProfilePictureAsync(UploadImageDto model)
+    {
+        var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
+        var user = await userRepo.Entities.FirstOrDefaultAsync(u => u.Id == model.Id);
+
+        if (user == null)
+            throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "User not found.");
+        
+        if (!string.IsNullOrEmpty(user.ProfilePicture))
+        {
+            var publicId = _cloudinaryService.GetCloudinaryPublicIdFromUrl(user.ProfilePicture);
+            if (!string.IsNullOrEmpty(publicId))
+            {
+                await _cloudinaryService.DeletePhotoAsync(publicId);
+            }
+        }
+        
+        var uploadResult = await _cloudinaryService.AddPhotoAsync(model.NewImage);
+        
+        if (!uploadResult.IsSuccess)
+            throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.BadRequest, uploadResult.ErrorMessage ?? "Failed to upload image.");
+        
+        user.ProfilePicture = uploadResult.Url;
+        user.UpdatedAt = DateTime.UtcNow;
+        user.UpdatedBy = GetCurrentUserName();
+        await userRepo.UpdateAsync(user);
+        await _unitOfWork.SaveAsync();
+
+        return uploadResult;
+    }
     public async Task SendRegisterOtpAsync(SendOTPRequestDto model)
     {
         var userRepo = _unitOfWork.GetRepository<ApplicationUser>();

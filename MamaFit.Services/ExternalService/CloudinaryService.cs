@@ -63,4 +63,22 @@ public class CloudinaryService : ICloudinaryService
         var result = await _cloudinary.DestroyAsync(deleteParams);
         return result;
     }
+    
+    public string GetCloudinaryPublicIdFromUrl(string imageUrl)
+    {
+        if (string.IsNullOrEmpty(imageUrl)) return null;
+
+        var uri = new Uri(imageUrl);
+        var segments = uri.Segments;
+        var uploadIndex = Array.FindIndex(segments, s => s.Contains("upload"));
+        if (uploadIndex < 0 || uploadIndex == segments.Length - 1) return null;
+
+        var publicIdSegments = segments.Skip(uploadIndex + 1).ToArray();
+        var publicIdWithExt = string.Join("", publicIdSegments);
+        
+        var dotIndex = publicIdWithExt.LastIndexOf('.');
+        if (dotIndex > 0)
+            return publicIdWithExt.Substring(0, dotIndex);
+        return publicIdWithExt;
+    }
 }

@@ -3,6 +3,7 @@ using System.Text;
 using MamaFit.BusinessObjects.DBContext;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Interface;
+using MamaFit.Services.ExternalService;
 using MamaFit.Services.Interface;
 using MamaFit.Services.Mapper;
 using MamaFit.Services.Service;
@@ -66,6 +67,7 @@ namespace MamaFit.Configuration
                     Format = "time",
                     Example = OpenApiAnyFactory.CreateFromJson("\"13:45:42\"")
                 });
+               // options.OperationFilter<FileUploadOperationFiler>();
             });
             return services;
         }
@@ -122,6 +124,7 @@ namespace MamaFit.Configuration
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IMaternityDressService, MaternityDressService>();
             services.AddScoped<IEmailSenderSevice, EmailSenderService>();
+            services.AddScoped<ICloudinaryService, CloudinaryService>();
         }
 
         private static void AddAutoMapper(this IServiceCollection services)

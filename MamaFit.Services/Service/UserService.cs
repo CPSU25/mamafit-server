@@ -41,11 +41,14 @@ public class UserService : IUserService
     {
         var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
         var user = await userRepo.Entities.FirstOrDefaultAsync(x =>
-            x.UserEmail == model.Email && x.PhoneNumber == model.PhoneNumber && x.IsVerify == false);
+            x.UserEmail == model.Email && x.PhoneNumber == model.PhoneNumber);
 
         if (user == null)
             throw new ErrorException(StatusCodes.Status404NotFound,
-                ErrorCode.NotFound, "User not found or already registered!");
+                ErrorCode.NotFound, "User not found!");
+        if (user.IsVerify)
+            throw new ErrorException(StatusCodes.Status400BadRequest,
+                ErrorCode.BadRequest, "User is already verified!");
         
         var oldOtps = _unitOfWork.GetRepository<OTP>().Entities
             .Where(x => x.UserId == user.Id && x.OTPType == OTPType.REGISTER);

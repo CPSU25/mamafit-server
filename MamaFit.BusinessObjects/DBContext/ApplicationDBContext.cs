@@ -47,7 +47,7 @@ namespace MamaFit.BusinessObjects.DBContext
         public DbSet<MilestoneTask> MilestoneTasks { get; set; }
         public DbSet<MaternityDressService> MaternityDressServices { get; set; }
         public DbSet<MaternityDressServiceOption> MaternityDressServiceOptions { get; set; }
-        public DbSet<OrderItemService> OrderItemServices { get; set; }
+        public DbSet<OrderItemServiceOption> OrderItemServiceOptions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -87,7 +87,7 @@ namespace MamaFit.BusinessObjects.DBContext
             modelBuilder.Entity<MilestoneTask>().ToTable("MilestoneTask");
             modelBuilder.Entity<MaternityDressService>().ToTable("MaternityDressService");
             modelBuilder.Entity<MaternityDressServiceOption>().ToTable("MaternityDressServiceOption");
-            modelBuilder.Entity<OrderItemService>().ToTable("OrderItemService");
+            modelBuilder.Entity<OrderItemServiceOption>().ToTable("OrderItemServiceOption");
 
             #endregion
 
@@ -231,9 +231,9 @@ namespace MamaFit.BusinessObjects.DBContext
                 options.HasKey(bmdd => new { bmdd.BranchId, bmdd.MaternityDressDetailId });
             });
 
-            modelBuilder.Entity<OrderItemService>(options =>
+            modelBuilder.Entity<OrderItemServiceOption>(options =>
             {
-                options.HasKey(ois => new { ois.MaternityDressServiceId, ois.OrderItemId });
+                options.HasKey(ois => new { ois.MaternityDressServiceOptionId, ois.OrderItemId });
             });
             
             modelBuilder.Entity<Branch>(options =>

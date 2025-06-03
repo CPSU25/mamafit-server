@@ -10,7 +10,7 @@ namespace MamaFit.BusinessObjects.Entity
         public List<string>? Images { get; set; } = [];
         
         //Navigation property
-        public virtual ICollection<ComponentOption> Option { get; set; } = [];
+        public virtual ICollection<ComponentOption> Options { get; set; } = [];
         public Style? Style { get; set; }
     }
 }

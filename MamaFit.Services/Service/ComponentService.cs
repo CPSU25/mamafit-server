@@ -37,7 +37,7 @@ namespace MamaFit.Services.Service
                 Description = requestDto.Description,
                 Images = requestDto.Images,
                 StyleId = requestDto.StyleId,
-                Option = requestDto.Options.Select(o => new ComponentOption
+                Options = requestDto.Options.Select(o => new ComponentOption
                 {
                     Name = o.Name,
                     Description = o.Description,
@@ -60,7 +60,7 @@ namespace MamaFit.Services.Service
         {
             var componentRepo = _unitOfWork.GetRepository<Component>();
             var component = await componentRepo.Entities
-                .Include(c => c.Option)
+                .Include(c => c.Options)
                 .FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
 
             if (component == null)
@@ -75,7 +75,7 @@ namespace MamaFit.Services.Service
             var componentRepo = _unitOfWork.GetRepository<Component>();
 
             var query = componentRepo.Entities
-                .Include(c => c.Option)
+                .Include(c => c.Options)
                 .Include(c => c.Style)
                 .Where(c => !c.IsDeleted);
 
@@ -111,7 +111,7 @@ namespace MamaFit.Services.Service
         {
             var componentRepo = _unitOfWork.GetRepository<Component>();
             var component = await componentRepo.Entities
-                .Include(c => c.Option)
+                .Include(c => c.Options)
                 .Include(c => c.Style)
                 .Where(c => !c.IsDeleted)
                 .FirstOrDefaultAsync(c => c.Id == id);
@@ -128,18 +128,18 @@ namespace MamaFit.Services.Service
             var optionRepo = _unitOfWork.GetRepository<ComponentOption>();
 
             var component = await componentRepo.Entities
-                .Include(c => c.Option)
+                .Include(c => c.Options)
                 .FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
 
             if (component == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, "Component not found!");
 
-            optionRepo.DeleteRange(component.Option); // Xóa option cũ
+            optionRepo.DeleteRange(component.Options); // Xóa option cũ
 
             _mapper.Map(requestDto, component);
             component.UpdatedAt = DateTime.UtcNow;
             component.UpdatedBy = GetCurrentUserName();
-            component.Option = requestDto.Options.Select(o => _mapper.Map<ComponentOption>(o)).ToList();
+            component.Options = requestDto.Options.Select(o => _mapper.Map<ComponentOption>(o)).ToList();
 
             await componentRepo.UpdateAsync(component);
             await componentRepo.SaveAsync();

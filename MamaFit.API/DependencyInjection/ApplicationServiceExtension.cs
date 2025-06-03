@@ -97,6 +97,20 @@ namespace MamaFit.Configuration
                         ValidateLifetime = true,
                         ClockSkew = TimeSpan.Zero // Tùy chỉnh: giảm thời gian lệch đồng hồ, cho chặt
                     };
+
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnAuthenticationFailed = context =>
+                        {
+                            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                            {
+                                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                                context.Response.ContentType = "application/json";
+                                return context.Response.WriteAsync("{\"message\": \"Token expired\"}");
+                            }
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
 
             return services;

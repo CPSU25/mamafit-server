@@ -14,6 +14,7 @@ public class MaternityDressTask : BaseEntity
     // Navigation properties
     public MaternityDressCustomization? MaternityDressCustomization { get; set; }
     public ICollection<MilestoneTask>? MilestoneTasks { get; set; }
+    public ICollection<OrderItemTask>? OrderItemTasks { get; set; }
     public DesignRequest? DesignRequest { get; set; }
     public ApplicationUser? Designer { get; set; }
 }

@@ -67,11 +67,11 @@ namespace MamaFit.Configuration
                     Format = "time",
                     Example = OpenApiAnyFactory.CreateFromJson("\"13:45:42\"")
                 });
-               // options.OperationFilter<FileUploadOperationFiler>();
+                // options.OperationFilter<FileUploadOperationFiler>();
             });
             return services;
         }
-        
+
         public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             var jwtSettings = configuration.GetSection("JWT");
@@ -137,9 +137,11 @@ namespace MamaFit.Configuration
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IMaternityDressService, MaternityDressService>();
+            services.AddScoped<IMaternityDressDetailService, MaternityDressDetailService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IStyleService, StyleService>();
             services.AddScoped<IComponentService, ComponentService>();
+            services.AddScoped<IComponentOptionService, ComponentOptionService>();
             services.AddScoped<IEmailSenderSevice, EmailSenderService>();
             services.AddScoped<ICloudinaryService, CloudinaryService>();
         }

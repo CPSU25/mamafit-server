@@ -11,6 +11,7 @@ using MamaFit.BusinessObjects.DTO.ComponentDto;
 using MamaFit.BusinessObjects.DTO.ComponentOptionDto;
 using MamaFit.BusinessObjects.DTO.MaternityDressDetailDto;
 using MamaFit.BusinessObjects.DTO.MeasurementDiaryDto;
+
 namespace MamaFit.Services.Mapper
 {
     public class MapperEntities : Profile

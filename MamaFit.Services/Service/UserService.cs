@@ -175,7 +175,7 @@ public class UserService : IUserService
         
         if (user == null)
             throw new ErrorException(StatusCodes.Status400BadRequest,
-                ErrorCode.BadRequest, "User not found or already registered!");
+                ErrorCode.BadRequest, "Invalid email or phone number, or user already registered!");
 
         var salt = HashHelper.GenerateSalt();
         var hashPassword = HashHelper.HashPassword(model.Password, salt);

@@ -94,7 +94,7 @@ public class RoleService : IRoleService
     {
         var repo = _unitOfWork.GetRepository<ApplicationUserRole>();
         var role = await repo.GetByIdAsync(id);
-        if (role == null || role.IsDeleted == true)
+        if (role == null || role.IsDeleted)
             throw new ErrorException(StatusCodes.Status404NotFound,
                 ErrorCode.NotFound, "Role is not exist!"
             );
@@ -117,7 +117,7 @@ public class RoleService : IRoleService
     {
         var repo = _unitOfWork.GetRepository<ApplicationUserRole>();
         var role = await repo.GetByIdAsync(id);
-        if (role == null || role.IsDeleted == true)
+        if (role == null || role.IsDeleted)
             throw new ErrorException(StatusCodes.Status404NotFound,
                 ErrorCode.NotFound, "Role is not exist!"
             );

@@ -144,6 +144,7 @@ namespace MamaFit.Configuration
             services.AddScoped<IComponentOptionService, ComponentOptionService>();
             services.AddScoped<IEmailSenderSevice, EmailSenderService>();
             services.AddScoped<ICloudinaryService, CloudinaryService>();
+            services.AddScoped<IMeasurementDiaryService, MeasurementDiaryService>();
         }
 
         private static void AddAutoMapper(this IServiceCollection services)

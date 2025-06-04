@@ -1,4 +1,5 @@
-﻿using MamaFit.BusinessObjects.Entity;
+﻿using MamaFit.BusinessObjects.Data;
+using MamaFit.BusinessObjects.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -30,22 +31,19 @@ namespace MamaFit.BusinessObjects.DBContext
         public DbSet<MaternityDress> MaternityDresses { get; set; }
         public DbSet<MaternityDressDetail> MaternityDressDetails { get; set; }
         public DbSet<BranchMaternityDressDetail> BranchMaternityDressDetails { get; set; }
-        public DbSet<MaternityDressInspection> MaternityDressInspections { get; set; }
         public DbSet<Measurement> Measurements { get; set; }
         public DbSet<MeasurementDiary> MeasurementDiaries { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<OrderItemTask> OrderItemsTasks { get; set; }
-        public DbSet<OrderItemInspection> OrderItemInspections { get; set; }
-        public DbSet<OrderItemProductionStage> OrderItemProductionStages { get; set; }
         public DbSet<ApplicationUserRole> Roles { get; set; }
         public DbSet<Style> Styles { get; set; }
         public DbSet<VoucherBatch> VoucherBatchs { get; set; }
         public DbSet<WarrantyHistory> WarrantyHistories { get; set; }
         public DbSet<WarrantyRequest> WarrantyRequests { get; set; }
         public DbSet<MaternityDressTask> MaternityDressTasks { get; set; }
-        public DbSet<MilestoneTask> MilestoneTasks { get; set; }
+        public DbSet<Milestone> Milestones { get; set; }
         public DbSet<MaternityDressService> MaternityDressServices { get; set; }
         public DbSet<MaternityDressServiceOption> MaternityDressServiceOptions { get; set; }
         public DbSet<OrderItemServiceOption> OrderItemServiceOptions { get; set; }
@@ -55,6 +53,7 @@ namespace MamaFit.BusinessObjects.DBContext
             base.OnModelCreating(modelBuilder);
 
             #region Confiure Table Names
+
             modelBuilder.Entity<OTP>().ToTable("OTP");
             modelBuilder.Entity<ApplicationUser>().ToTable("User");
             modelBuilder.Entity<ApplicationUserToken>().ToTable("UserToken");
@@ -65,27 +64,24 @@ namespace MamaFit.BusinessObjects.DBContext
             modelBuilder.Entity<Component>().ToTable("Component");
             modelBuilder.Entity<ComponentOption>().ToTable("ComponentOption");
             modelBuilder.Entity<DesignRequest>().ToTable("DesignRequest");
-            modelBuilder.Entity<MaternityDressCustomization>().ToTable("DressCustomization");
+            modelBuilder.Entity<MaternityDressCustomization>().ToTable("MaternityDressCustomization");
             modelBuilder.Entity<Feedback>().ToTable("Feedback");
             modelBuilder.Entity<Address>().ToTable("Address");
             modelBuilder.Entity<MaternityDress>().ToTable("MaternityDress");
             modelBuilder.Entity<MaternityDressDetail>().ToTable("MaternityDressDetail");
             modelBuilder.Entity<BranchMaternityDressDetail>().ToTable("BranchMaternityDressDetail");
-            modelBuilder.Entity<MaternityDressInspection>().ToTable("MaternityDressInspection");
             modelBuilder.Entity<Measurement>().ToTable("Measurement");
             modelBuilder.Entity<MeasurementDiary>().ToTable("MeasurementDiary");
             modelBuilder.Entity<Notification>().ToTable("Notification");
             modelBuilder.Entity<Order>().ToTable("Order");
             modelBuilder.Entity<OrderItem>().ToTable("OrderItem");
-            modelBuilder.Entity<OrderItemInspection>().ToTable("OrderItemInspection");
-            modelBuilder.Entity<OrderItemProductionStage>().ToTable("OrderItemProductionStage");
             modelBuilder.Entity<ApplicationUserRole>().ToTable("Role");
             modelBuilder.Entity<Style>().ToTable("Style");
             modelBuilder.Entity<VoucherBatch>().ToTable("VoucherBatch");
             modelBuilder.Entity<WarrantyHistory>().ToTable("WarrantyHistory");
             modelBuilder.Entity<WarrantyRequest>().ToTable("WarrantyRequest");
             modelBuilder.Entity<MaternityDressTask>().ToTable("MaternityDressTask");
-            modelBuilder.Entity<MilestoneTask>().ToTable("MilestoneTask");
+            modelBuilder.Entity<Milestone>().ToTable("Milestone");
             modelBuilder.Entity<MaternityDressService>().ToTable("MaternityDressService");
             modelBuilder.Entity<MaternityDressServiceOption>().ToTable("MaternityDressServiceOption");
             modelBuilder.Entity<OrderItemServiceOption>().ToTable("OrderItemServiceOption");
@@ -147,7 +143,7 @@ namespace MamaFit.BusinessObjects.DBContext
                     .OnDelete(DeleteBehavior.NoAction);
 
                 options.HasMany(u => u.DressCustomizations)
-                    .WithOne(o => o.Users)
+                    .WithOne(o => o.User)
                     .HasForeignKey(o => o.UserId)
                     .OnDelete(DeleteBehavior.NoAction);
 
@@ -160,7 +156,11 @@ namespace MamaFit.BusinessObjects.DBContext
                     .WithOne(l => l.User)
                     .HasForeignKey(l => l.UserId)
                     .OnDelete(DeleteBehavior.NoAction);
-
+                
+                options.HasOne(u => u.Branch)
+                    .WithMany(b => b.Staffs)
+                    .HasForeignKey(u => u.BranchId)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<Order>(options =>
@@ -183,11 +183,6 @@ namespace MamaFit.BusinessObjects.DBContext
                     .HasForeignKey(ot => ot.MaternityDressDetailId)
                     .OnDelete(DeleteBehavior.NoAction);
 
-                options.HasMany(ot => ot.OrderItemProductionStages)
-                    .WithOne(oips => oips.OrderItem)
-                    .HasForeignKey(oips => oips.OrderItemId)
-                    .OnDelete(DeleteBehavior.NoAction);
-
                 options.HasMany(ot => ot.Feedbacks)
                     .WithOne(f => f.OrderItem)
                     .HasForeignKey(f => f.OrderItemId)
@@ -199,44 +194,28 @@ namespace MamaFit.BusinessObjects.DBContext
                     .OnDelete(DeleteBehavior.NoAction);
 
                 options.HasOne(ot => ot.MaternityDressCustomization)
-                    .WithOne(mdc => mdc.OrderItems)
+                    .WithOne(mdc => mdc.OrderItem)
                     .HasForeignKey<MaternityDressCustomization>(ot => ot.OrderItemId)
                     .OnDelete(DeleteBehavior.NoAction);
-
-                options.HasMany(ot => ot.OrderItemInspections)
-                    .WithOne(oii => oii.OrderItem)
-                    .HasForeignKey(oii => oii.OrderItemId)
-                    .OnDelete(DeleteBehavior.NoAction);
-
+                
                 options.HasMany(ot => ot.WarrantyRequests)
                     .WithOne(wh => wh.OriginalOrderItem)
                     .HasForeignKey(wh => wh.OriginalOrderItemId)
                     .OnDelete(DeleteBehavior.NoAction);
             });
-
-            modelBuilder.Entity<OrderItemTask>(options =>
-            {
-                options.HasKey(iot => new { iot.OrderItemId, iot.MaternityDressTaskId });
-            });
-
-            modelBuilder.Entity<OrderItemProductionStage>(options =>
-            {
-                options.HasKey(oips => new { oips.OrderItemId, oips.ProductionStageId });
-            });
-
-            modelBuilder.Entity<ProductionStage>(options =>
-            {
-                options.HasMany(ps => ps.OrderItemProductionStages)
-                    .WithOne(oips => oips.ProductionStage)
-                    .HasForeignKey(oips => oips.ProductionStageId)
-                    .OnDelete(DeleteBehavior.NoAction);
-            });
-
+            
             modelBuilder.Entity<BranchMaternityDressDetail>(options =>
             {
                 options.HasKey(bmdd => new { bmdd.BranchId, bmdd.MaternityDressDetailId });
             });
 
+            modelBuilder.Entity<OrderItemTask>(options =>
+            {
+                options.HasKey(oit => new
+                {
+                    oit.UserId, oit.OrderItemId, oit.MilestoneId
+                });
+            });
             modelBuilder.Entity<OrderItemServiceOption>(options =>
             {
                 options.HasKey(ois => new { ois.MaternityDressServiceOptionId, ois.OrderItemId });
@@ -248,7 +227,11 @@ namespace MamaFit.BusinessObjects.DBContext
                     .WithOne(bmdd => bmdd.Branch)
                     .HasForeignKey(bmdd => bmdd.BranchId)
                     .OnDelete(DeleteBehavior.NoAction);
-
+                
+                options.HasOne(b => b.BranchManager)
+                    .WithOne(u => u.BranchAsManager)
+                    .HasForeignKey<Branch>(b => b.BranchManagerId)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<MaternityDressDetail>(options =>
@@ -267,21 +250,8 @@ namespace MamaFit.BusinessObjects.DBContext
                     .OnDelete(DeleteBehavior.NoAction);
             });
 
-            modelBuilder.Entity<MaternityDressCustomization>(options =>
-            {
-                options.HasOne(mdc => mdc.MaternityDressTask)
-                    .WithOne(mdt => mdt.MaternityDressCustomization)
-                    .HasForeignKey<MaternityDressTask>(mdt => mdt.MaternityDressCustomizationId)
-                    .OnDelete(DeleteBehavior.NoAction);
-            });
+            SeedData.Seed(modelBuilder);
 
-            modelBuilder.Entity<DesignRequest>(options =>
-            {
-                options.HasOne(dr => dr.MaternityDressTask)
-                    .WithOne(mdt => mdt.DesignRequest)
-                    .HasForeignKey<MaternityDressTask>(mdt => mdt.DesignRequestId)
-                    .OnDelete(DeleteBehavior.NoAction);
-            });
             #endregion
         }
     }

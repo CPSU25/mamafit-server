@@ -11,6 +11,6 @@ namespace MamaFit.BusinessObjects.Entity
         //Navigation properties
         public virtual OrderItem? OrderItem { get; set; }
         public virtual ApplicationUser? User { get; set; }
-        public virtual MaternityDressTask? MaternityDressTask { get; set; }
+        public virtual ICollection<MaternityDressCustomization>? MaternityDressCustomizations { get; set; } = new List<MaternityDressCustomization>();
     }
 }

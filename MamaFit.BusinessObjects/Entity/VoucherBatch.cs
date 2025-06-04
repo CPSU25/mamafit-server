@@ -14,6 +14,8 @@ namespace MamaFit.BusinessObjects.Entity
         public int? DiscountPercentValue { get; set; }
         public float? MinimumOrderValue { get; set; }
         public float? MaximumDiscountValue { get; set; }
+        
+        // Navigation properties
         public virtual ICollection<VoucherDiscount> VoucherDiscounts { get; set; } = [];
     }
 }

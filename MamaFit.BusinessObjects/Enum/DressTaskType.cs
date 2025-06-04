@@ -1,6 +1,6 @@
 namespace MamaFit.BusinessObjects.Enum;
 
-public enum DressTaskStatus
+public enum DressTaskType
 {
     ASSIGNED,
     IN_PROGRESS,

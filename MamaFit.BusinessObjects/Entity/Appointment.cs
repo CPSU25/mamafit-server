@@ -6,6 +6,7 @@ namespace MamaFit.BusinessObjects.Entity
     public class Appointment : BaseEntity
     {
         public string? UserId { get; set; }
+        public string? StaffId { get; set; }
         public string? BranchId { get; set; }
         public Branch? Branch { get; set; }
         public string? FullName { get; set; } = null!;
@@ -16,7 +17,8 @@ namespace MamaFit.BusinessObjects.Entity
         public DateTime? CanceledAt { get; set; }
         public string? CanceledReason { get; set; }
         
-        //Navigation property
+        //Navigation properties
         public ApplicationUser? User { get; set; }
+        public ApplicationUser? Staff { get; set; }
     }
 }

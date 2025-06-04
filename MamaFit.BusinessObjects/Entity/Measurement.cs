@@ -4,6 +4,7 @@ namespace MamaFit.BusinessObjects.Entity
 {
     public class Measurement : BaseEntity
     {
+        public string? MeasurementDiaryId { get; set; }
         public float Height { get; set; }
         public float Weight { get; set; }
         public float Neck { get; set; }
@@ -12,5 +13,8 @@ namespace MamaFit.BusinessObjects.Entity
         public float Stomach { get; set; }
         public float ShoulderWidth { get; set; }
         public float Hip { get; set; }
+        
+        // Navigation properties
+        public MeasurementDiary? MeasurementDiary { get; set; }
     }
 }

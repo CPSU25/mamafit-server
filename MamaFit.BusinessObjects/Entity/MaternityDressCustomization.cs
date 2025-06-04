@@ -7,12 +7,13 @@ namespace MamaFit.BusinessObjects.Entity
     {
         public string? UserId { get; set; }
         public string? OrderItemId { get; set; }
+        public string? DesignRequestId { get; set; }
         public CustomizationEnum? CustomizationType { get; set; }
 
         //Navigation properties
         public virtual ICollection<MaternityDressSelection> MaternityDressSelections { get; set; } = new List<MaternityDressSelection>();
-        public virtual MaternityDressTask MaternityDressTask { get; set; }
-        public virtual ApplicationUser? Users { get; set; }
-        public virtual OrderItem? OrderItems { get; set; }
+        public virtual DesignRequest? DesignRequest { get; set; }
+        public virtual ApplicationUser? User { get; set; }
+        public virtual OrderItem? OrderItem { get; set; }
     }
 }

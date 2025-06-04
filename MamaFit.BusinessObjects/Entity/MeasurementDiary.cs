@@ -10,7 +10,7 @@ namespace MamaFit.BusinessObjects.Entity
         public int NumberOfPregnancy { get; set; }
         
         // Nagivation property
-        public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
         public ApplicationUser? User { get; set; }
         public virtual ICollection<Measurement> Measurements { get; set; } = new List<Measurement>();
     }

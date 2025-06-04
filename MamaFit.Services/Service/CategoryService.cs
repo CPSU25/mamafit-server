@@ -32,14 +32,7 @@ namespace MamaFit.Services.Service
                 Description = requestDto.Description,
                 Images = requestDto.Images,
                 CreatedAt = DateTime.UtcNow,
-                CreatedBy = GetCurrentUserName(),
-                Styles = requestDto.Styles.Select(styleDto => new Style
-                {
-                    Name = styleDto.Name,
-                    Description = styleDto.Description,
-                    IsCustom = styleDto.IsCustom,
-                    Images = styleDto.Images
-                }).ToList()
+                CreatedBy = GetCurrentUserName()
             };
 
             await categoryRepo.InsertAsync(newCategory); // Insert + Save changes
@@ -117,10 +110,8 @@ namespace MamaFit.Services.Service
         public async Task UpdateAsync(string id, CategoryRequestDto requestDto)
         {
             var categoryRepo = _unitOfWork.GetRepository<Category>(); // Repo của Category
-            var styleRepo = _unitOfWork.GetRepository<Style>();
 
             var oldCategory = await categoryRepo.Entities
-                .Include(c => c.Styles)
                 .Where(c => !c.IsDeleted)
                 .FirstOrDefaultAsync(c => c.Id.Equals(id)); // Tìm Category
 
@@ -128,11 +119,9 @@ namespace MamaFit.Services.Service
                 throw new ErrorException(StatusCodes.Status404NotFound,
                 ErrorCode.NotFound, "MaternityDress not found!"); // Nếu không có
 
-            styleRepo.DeleteRange(oldCategory.Styles); // Xóa bản ghi style trong category
             _mapper.Map(requestDto, oldCategory); // Auto mapper Dto => category
             oldCategory.UpdatedAt = DateTime.UtcNow;
             oldCategory.UpdatedBy = GetCurrentUserName();
-            oldCategory.Styles = requestDto.Styles.Select(styleDto => _mapper.Map<Style>(styleDto)).ToList();
 
             await categoryRepo.UpdateAsync(oldCategory);    //Update + Save changes
             await categoryRepo.SaveAsync();

@@ -9,6 +9,5 @@ namespace MamaFit.BusinessObjects.DTO.MaternityDressDto
         public string? Description { get; set; }
         public List<string> Images { get; set; } = new List<string>();
         public string? Slug { get; set; }
-        public List<MaternityDressDetailRequestDto>? Details { get; set; }
     }
 }

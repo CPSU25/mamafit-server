@@ -2,6 +2,7 @@
 {
     public class StyleRequestDto
     {
+        public string? CategoryId { get; set; }
         public string? Name { get; set; }
         public bool? IsCustom { get; set; }
         public string? Description { get; set; }

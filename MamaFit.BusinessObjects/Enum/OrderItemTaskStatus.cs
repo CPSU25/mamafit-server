@@ -1,6 +1,6 @@
 namespace MamaFit.BusinessObjects.Enum;
 
-public enum MilestoneTaskStatus
+public enum OrderItemTaskStatus
 {
     
 }

@@ -17,6 +17,7 @@ namespace MamaFit.BusinessObjects.Entity
         
         // Navigation properties
         public ApplicationUser? BranchManager { get; set; }
+        public virtual ICollection<ApplicationUser> Staffs { get; set; } = new List<ApplicationUser>();
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
         public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
         public virtual ICollection<BranchMaternityDressDetail> BranchMaternityDressDetail { get; set; } = [];

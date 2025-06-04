@@ -3,13 +3,13 @@ using MamaFit.BusinessObjects.Enum;
 
 namespace MamaFit.BusinessObjects.Entity;
 
-public class MilestoneTask : BaseEntity
+public class Milestone : BaseEntity
 {
+    public string? MaternityDressTaskId { get; set; }
     public string? Name { get; set; }
-    public string? TaskId { get; set; }
     public string? Description { get; set; }
-    public MilestoneTaskStatus? MilestoneTaskStatus { get; set; }
     
     // Navigation properties
     public MaternityDressTask? MaternityDressTask { get; set; }
+    public virtual ICollection<OrderItemTask> OrderItemTasks { get; set; } = new List<OrderItemTask>();
 }

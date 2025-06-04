@@ -5,10 +5,10 @@ namespace MamaFit.BusinessObjects.Entity
 {
     public class Order : BaseEntity
     {
-        public string? PanrentOrderId { get; set; }
+        public string? ParentOrderId { get; set; }
         public string? BranchId { get; set; }
         public string? UserId { get; set; }
-        public string? LocationId { get; set; }
+        public string? AddressId { get; set; }
         public string? VoucherDiscountId { get; set; }
         public OrderType Type { get; set; }
         public string? Code { get; set; }
@@ -26,7 +26,7 @@ namespace MamaFit.BusinessObjects.Entity
 
         // Navigation properties
         public ApplicationUser User { get; set; } = new ApplicationUser();
-        public Address Location { get; set; } = new Address();
+        public Address Address { get; set; } = new Address();
         public MeasurementDiary MeasurementDiary { get; set; } = new MeasurementDiary();
         public VoucherDiscount? VoucherDiscount { get; set; }
         public Branch? Branch { get; set; }

@@ -18,8 +18,6 @@ namespace MamaFit.BusinessObjects.Entity
         public MaternityDressDetail? MaternityDressDetail { get; set; }
         public MaternityDressCustomization? MaternityDressCustomization { get; set; }
         public DesignRequest? DesignRequest { get; set; }
-        public virtual ICollection<OrderItemInspection>? OrderItemInspections { get; set; } = [];
-        public virtual ICollection<OrderItemProductionStage>? OrderItemProductionStages { get; set; } = [];
         public virtual ICollection<OrderItemTask>? OrderItemTasks { get; set; } = [];
         public virtual ICollection<Feedback>? Feedbacks { get; set; } = [];
         public virtual ICollection<WarrantyRequest>? WarrantyRequests { get; set; } = [];

@@ -33,20 +33,6 @@ namespace MamaFit.Services.Service
                 Description = requestDto.Description,
                 Images = requestDto.Images,
                 Slug = requestDto.Slug,
-                Details = requestDto.Details.Select(detailDto => new MaternityDressDetail
-                {
-                    Name = detailDto.Name,
-                    Description = detailDto.Description,
-                    Color = detailDto.Color,
-                    Image = detailDto.Image,
-                    Size = detailDto.Size,
-                    Price = detailDto.Price,
-                    Quantity = detailDto.Quantity,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
-                    CreatedBy = GetCurrentUserName()
-
-                }).ToList(),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
                 CreatedBy = GetCurrentUserName()
@@ -75,7 +61,6 @@ namespace MamaFit.Services.Service
             var maternityDressRepo = _unitOfWork.GetRepository<MaternityDress>(); //Repo của Dress
 
             var query = maternityDressRepo.Entities //Select
-                .Include(md => md.Details)
                 .Where(md => !md.IsDeleted);
 
             if (!string.IsNullOrWhiteSpace(search)) // Search
@@ -116,7 +101,6 @@ namespace MamaFit.Services.Service
             var maternityDressRepo = _unitOfWork.GetRepository<MaternityDress>(); //Repo của Dress
 
             var oldMaternityDress = await maternityDressRepo.Entities
-                .Include(md => md.Details)
                 .Where(md => !md.IsDeleted)
                 .FirstOrDefaultAsync(md => md.Id.Equals(id)); // Tìm oldMaternity
 
@@ -145,7 +129,6 @@ namespace MamaFit.Services.Service
             _mapper.Map(requestDto, oldMaternityDress); //Auto mapper Dto => dress
             oldMaternityDress.UpdatedAt = DateTime.UtcNow;
             oldMaternityDress.UpdatedBy = GetCurrentUserName();
-            oldMaternityDress.Details = requestDto.Details.Select(detailDto => _mapper.Map<MaternityDressDetail>(detailDto)).ToList();
 
             await maternityDressRepo.UpdateAsync(oldMaternityDress); //Update + Save changes
             await maternityDressRepo.SaveAsync();

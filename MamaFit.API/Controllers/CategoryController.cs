@@ -27,7 +27,8 @@ namespace MamaFit.API.Controllers
             return Ok(new ResponseModel<PaginatedList<CategoryResponseDto>>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
-                categories, null,
+                categories,
+                null,
                 "Get all categories successfully!"
             ));
         }
@@ -36,7 +37,13 @@ namespace MamaFit.API.Controllers
         public async Task<IActionResult> GetById([FromRoute] string categoryId)
         {
             var category = await _categoryService.GetByIdAsync(categoryId);
-            return Ok(ResponseModel<CategoryResponseDto>.OkResponseModel(category));
+            return Ok(new ResponseModel<CategoryResponseDto>(
+                StatusCodes.Status200OK,
+                ResponseCodeConstants.SUCCESS,
+                category,
+                null,
+                "Get category successfully!"
+            ));
         }
 
         [HttpPost]
@@ -44,21 +51,39 @@ namespace MamaFit.API.Controllers
         {
             await _categoryService.CreateAsync(requestDto);
             return StatusCode(StatusCodes.Status201Created,
-                ResponseModel<string>.CreatedResponseModel("Created successfully"));
+                new ResponseModel<string>(
+                    StatusCodes.Status201Created,
+                    ResponseCodeConstants.CREATED,
+                    null,
+                    null,
+                    "Created category successfully!"
+                ));
         }
 
         [HttpPut("{categoryId}")]
-        public async Task<IActionResult> Update(string categoryId, [FromBody] CategoryRequestDto requestDto)
+        public async Task<IActionResult> Update([FromRoute] string categoryId, [FromBody] CategoryRequestDto requestDto)
         {
             await _categoryService.UpdateAsync(categoryId, requestDto);
-            return Ok(ResponseModel<string>.OkResponseModel("Updated successfully"));
+            return Ok(new ResponseModel<string>(
+                StatusCodes.Status200OK,
+                ResponseCodeConstants.SUCCESS,
+                null,
+                null,
+                "Updated category successfully!"
+            ));
         }
 
         [HttpDelete("{categoryId}")]
-        public async Task<IActionResult> Delete(string categoryId)
+        public async Task<IActionResult> Delete([FromRoute] string categoryId)
         {
             await _categoryService.DeleteAsync(categoryId);
-            return Ok(ResponseModel<string>.OkResponseModel("Deleted successfully"));
+            return Ok(new ResponseModel<string>(
+                StatusCodes.Status200OK,
+                ResponseCodeConstants.SUCCESS,
+                null,
+                null,
+                "Deleted category successfully!"
+            ));
         }
     }
 }

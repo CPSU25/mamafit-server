@@ -37,16 +37,6 @@ namespace MamaFit.Services.Service
                 Description = requestDto.Description,
                 Images = requestDto.Images,
                 StyleId = requestDto.StyleId,
-                Options = requestDto.Options.Select(o => new ComponentOption
-                {
-                    Name = o.Name,
-                    Description = o.Description,
-                    Images = o.Images,
-                    ComponentOptionType = o.ComponentOptionType,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
-                    CreatedBy = GetCurrentUserName()
-                }).ToList(),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
                 CreatedBy = GetCurrentUserName()
@@ -75,8 +65,6 @@ namespace MamaFit.Services.Service
             var componentRepo = _unitOfWork.GetRepository<Component>();
 
             var query = componentRepo.Entities
-                .Include(c => c.Options)
-                .Include(c => c.Style)
                 .Where(c => !c.IsDeleted);
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -111,8 +99,6 @@ namespace MamaFit.Services.Service
         {
             var componentRepo = _unitOfWork.GetRepository<Component>();
             var component = await componentRepo.Entities
-                .Include(c => c.Options)
-                .Include(c => c.Style)
                 .Where(c => !c.IsDeleted)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
@@ -128,7 +114,6 @@ namespace MamaFit.Services.Service
             var optionRepo = _unitOfWork.GetRepository<ComponentOption>();
 
             var component = await componentRepo.Entities
-                .Include(c => c.Options)
                 .FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
 
             if (component == null)
@@ -139,7 +124,6 @@ namespace MamaFit.Services.Service
             _mapper.Map(requestDto, component);
             component.UpdatedAt = DateTime.UtcNow;
             component.UpdatedBy = GetCurrentUserName();
-            component.Options = requestDto.Options.Select(o => _mapper.Map<ComponentOption>(o)).ToList();
 
             await componentRepo.UpdateAsync(component);
             await componentRepo.SaveAsync();

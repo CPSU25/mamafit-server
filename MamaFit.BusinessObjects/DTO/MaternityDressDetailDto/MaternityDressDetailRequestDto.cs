@@ -2,6 +2,7 @@
 {
     public class MaternityDressDetailRequestDto
     {
+        public string? MaternityDressId { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
         public string? Color { get; set; }

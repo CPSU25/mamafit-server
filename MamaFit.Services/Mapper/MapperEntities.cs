@@ -5,11 +5,11 @@ using MamaFit.BusinessObjects.DTO.Token;
 using MamaFit.BusinessObjects.DTO.UserDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.DTO.MaternityDressDto;
-using MamaFit.BusinessObjects.DTO.MaternityDressDetailDto;
 using MamaFit.BusinessObjects.DTO.CategoryDto;
 using MamaFit.BusinessObjects.DTO.StyleDto;
 using MamaFit.BusinessObjects.DTO.ComponentDto;
 using MamaFit.BusinessObjects.DTO.ComponentOptionDto;
+using MamaFit.BusinessObjects.DTO.MaternityDressDetailDto;
 
 namespace MamaFit.Services.Mapper
 {

@@ -117,6 +117,75 @@ namespace MamaFit.BusinessObjects.Data
                     RoleId = "b8d237b8b6f849988d60c6c3c1d0a943",
                 }
             );
+            modelBuilder.Entity<Category>().HasData(
+               new Category { Id = "a1b2c3d4e5f60123456789abcdefabcd", Name = "Category 1", Description = "Description for Category 1" },
+               new Category { Id = "b1c2d3e4f5a60123456789abcdefabcd", Name = "Category 2", Description = "Description for Category 2" },
+               new Category { Id = "c1d2e3f4a5b60123456789abcdefabcd", Name = "Category 3", Description = "Description for Category 3" },
+               new Category { Id = "d1e2f3a4b5c60123456789abcdefabcd", Name = "Category 4", Description = "Description for Category 4" },
+               new Category { Id = "e1f2a3b4c5d60123456789abcdefabcd", Name = "Category 5", Description = "Description for Category 5" }
+           );
+
+            // Seed Style
+            modelBuilder.Entity<Style>().HasData(
+                new Style { Id = "f1a2b3c4d5e60123456789abcdefabcd", Name = "Style 1", Description = "Description for Style 1" },
+                new Style { Id = "a2b3c4d5e6f70123456789abcdefabcd", Name = "Style 2", Description = "Description for Style 2" },
+                new Style { Id = "b2c3d4e5f6a80123456789abcdefabcd", Name = "Style 3", Description = "Description for Style 3" },
+                new Style { Id = "c2d3e4f5a6b90123456789abcdefabcd", Name = "Style 4", Description = "Description for Style 4" },
+                new Style { Id = "d2e3f4a5b6c00123456789abcdefabcd", Name = "Style 5", Description = "Description for Style 5" }
+            );
+
+            // Seed Component
+            modelBuilder.Entity<Component>().HasData(
+                new Component { Id = "bb3a2d487e9d4bcda5f7b2e7c58a5f40", Name = "Component 1", Description = "Description for Component 1" },
+                new Component { Id = "cc4b3e598fab5cd1b6f8c3f8d69b6f51", Name = "Component 2", Description = "Description for Component 2" },
+                new Component { Id = "dd5c4f6a0abc6de2c7g9d4g9e7ac7g62", Name = "Component 3", Description = "Description for Component 3" },
+                new Component { Id = "ee6d5g7b1bcd7ef3d8h0e5h0f8bd8h73", Name = "Component 4", Description = "Description for Component 4" },
+                new Component { Id = "ff7e6h8c2cde8fg4e9i1f6i1g9ce9i84", Name = "Component 5", Description = "Description for Component 5" }
+            );
+
+            // Seed ComponentOption (Images lưu dưới dạng JSON string)
+            modelBuilder.Entity<ComponentOption>().HasData(
+                new ComponentOption
+                {
+                    Id = "00112233445566778899aabbccddeeff",
+                    Name = "Option 1",
+                    Description = "Description Option 1",
+                    ComponentOptionType = Enum.ComponentOptionType.APPROVAL_PENDING,
+                    ComponentId = "bb3a2d487e9d4bcda5f7b2e7c58a5f40"
+                },
+                new ComponentOption
+                {
+                    Id = "112233445566778899aabbccddeeff00",
+                    Name = "Option 2",
+                    Description = "Description Option 2",
+                    ComponentOptionType = Enum.ComponentOptionType.QUOTATION_PENDING,
+                    ComponentId = "cc4b3e598fab5cd1b6f8c3f8d69b6f51"
+                },
+                new ComponentOption
+                {
+                    Id = "2233445566778899aabbccddeeff0011",
+                    Name = "Option 3",
+                    Description = "Description Option 3",
+                    ComponentOptionType = Enum.ComponentOptionType.APPROVAL_PENDING,
+                    ComponentId = "dd5c4f6a0abc6de2c7g9d4g9e7ac7g62"
+                },
+                new ComponentOption
+                {
+                    Id = "33445566778899aabbccddeeff001122",
+                    Name = "Option 4",
+                    Description = "Description Option 4",
+                    ComponentOptionType = Enum.ComponentOptionType.QUOTATION_PENDING,
+                    ComponentId = "ee6d5g7b1bcd7ef3d8h0e5h0f8bd8h73"
+                },
+                new ComponentOption
+                {
+                    Id = "445566778899aabbccddeeff00112233",
+                    Name = "Option 5",
+                    Description = "Description Option 5",
+                    ComponentOptionType = Enum.ComponentOptionType.APPROVED,
+                    ComponentId = "ff7e6h8c2cde8fg4e9i1f6i1g9ce9i84"
+                }
+            );
         }
     }
 }

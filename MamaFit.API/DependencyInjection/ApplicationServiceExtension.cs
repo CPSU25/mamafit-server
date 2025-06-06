@@ -100,15 +100,31 @@ namespace MamaFit.Configuration
 
                     options.Events = new JwtBearerEvents
                     {
-                        OnAuthenticationFailed = context =>
+                        OnChallenge = async context =>
                         {
-                            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                            context.HandleResponse();
+                            context.Response.ContentType = "application/json";
+
+                            string message = "Token is invalid";
+
+                            if (context.AuthenticateFailure is SecurityTokenExpiredException)
                             {
                                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                                context.Response.ContentType = "application/json";
-                                return context.Response.WriteAsync("{\"message\": \"Token expired\"}");
+                                message = "Token is expired";
                             }
-                            return Task.CompletedTask;
+                            else if (context.AuthenticateFailure != null)
+                            {
+                                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                                message = "Token is invalid";
+                            }
+                            else if (string.IsNullOrEmpty(context.Request.Headers["Authorization"]))
+                            {
+                                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                                message = "No token provided";
+                            }
+
+                            var result = System.Text.Json.JsonSerializer.Serialize(new { message });
+                            await context.Response.WriteAsync(result);
                         }
                     };
                 });

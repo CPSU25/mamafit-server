@@ -21,11 +21,11 @@ namespace MamaFit.API.Controllers
         }
         
         [Authorize]
-        [HttpGet("current-user")]
+        [HttpGet("permission")]
         public async Task<IActionResult> GetCurrentUser()
         {
             var user = await _authService.GetCurrentUserAsync();
-            return Ok(new ResponseModel<UserReponseDto>(
+            return Ok(new ResponseModel<PermissionResponseDto>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 user,

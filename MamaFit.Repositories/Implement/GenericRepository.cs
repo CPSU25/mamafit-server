@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using MamaFit.BusinessObjects.DBContext;
 using MamaFit.BusinessObjects.Base;
+using Microsoft.AspNetCore.Http;
 
 namespace MamaFit.Repositories.Implement
 {
@@ -11,13 +12,20 @@ namespace MamaFit.Repositories.Implement
     {
         protected readonly ApplicationDbContext _context;
         protected readonly DbSet<T> _dbSet;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public GenericRepository(ApplicationDbContext context)
+        public GenericRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _dbSet = _context.Set<T>();
+            _httpContextAccessor = httpContextAccessor;
         }
-
+        
+        private string GetCurrentUserName()
+        {
+            return _httpContextAccessor.HttpContext?.User?.FindFirst("name")?.Value ?? "System";
+        }
+        
         public IQueryable<T> Entities => _context.Set<T>();
 
         public void Delete(object id)
@@ -50,8 +58,9 @@ namespace MamaFit.Repositories.Implement
 
             entity.IsDeleted = true;
             entity.UpdatedAt = DateTime.UtcNow;
-
-            _dbSet.Update(entity);
+            entity.UpdatedBy = GetCurrentUserName();
+            
+            await UpdateAsync(entity);
         }
 
         public void DeleteRange(IEnumerable<T> entities)
@@ -116,6 +125,8 @@ namespace MamaFit.Repositories.Implement
 
         public async Task InsertAsync(T obj)
         {
+            obj.CreatedAt = DateTime.UtcNow;
+            obj.CreatedBy = GetCurrentUserName();
             await _dbSet.AddAsync(obj);
         }
 
@@ -145,6 +156,8 @@ namespace MamaFit.Repositories.Implement
 
         public async Task UpdateAsync(T obj)
         {
+            obj.UpdatedAt = DateTime.UtcNow;
+            obj.UpdatedBy = GetCurrentUserName();
             _dbSet.Attach(obj);
             _context.Entry(obj).State = EntityState.Modified;
         }

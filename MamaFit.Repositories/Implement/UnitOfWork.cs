@@ -1,6 +1,7 @@
 ﻿using MamaFit.Repositories.Interface;
 using MamaFit.BusinessObjects.DBContext;
 using MamaFit.BusinessObjects.Base;
+using Microsoft.AspNetCore.Http;
 
 namespace MamaFit.Repositories.Implement
 {
@@ -8,11 +9,13 @@ namespace MamaFit.Repositories.Implement
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly Dictionary<Type, object> _repositories = new();
-        private bool disposed = false;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private bool _disposed;
 
-        public UnitOfWork(ApplicationDbContext dbContext)
+        public UnitOfWork(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor)
         {
             _dbContext = dbContext;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public IGenericRepository<T> GetRepository<T>() where T : BaseEntity
@@ -22,7 +25,7 @@ namespace MamaFit.Repositories.Implement
                 return (IGenericRepository<T>)_repositories[typeof(T)];
             }
 
-            var repositoryInstance = new GenericRepository<T>(_dbContext);
+            var repositoryInstance = new GenericRepository<T>(_dbContext, _httpContextAccessor);
             _repositories.Add(typeof(T), repositoryInstance);
             return repositoryInstance;
         }
@@ -32,14 +35,14 @@ namespace MamaFit.Repositories.Implement
         }
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposed)
+            if (!_disposed)
             {
                 if (disposing)
                 {
                     _dbContext.Dispose();
                 }
             }
-            disposed = true;
+            _disposed = true;
         }
 
         public void Dispose()

@@ -36,7 +36,7 @@ public class AuthService : IAuthService
         _mapper = mapper;
     }
 
-    public async Task<UserReponseDto> GetCurrentUserAsync()
+    public async Task<PermissionResponseDto> GetCurrentUserAsync()
     {
         var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("userId");
         if (string.IsNullOrWhiteSpace(userId))
@@ -51,7 +51,7 @@ public class AuthService : IAuthService
             throw new ErrorException(StatusCodes.Status404NotFound,
                 ErrorCode.NotFound, "User not found!");
 
-        return _mapper.Map<UserReponseDto>(user);
+        return _mapper.Map<PermissionResponseDto>(user);
     }
 
     public async Task LogoutAsync(LogoutRequestDto model)

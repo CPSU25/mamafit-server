@@ -60,7 +60,7 @@ namespace MamaFit.API
                 }
 
                 app.UseMiddleware<ExceptionMiddleware>();
-
+                
                 app.UseHttpsRedirection();
 
                 app.UseRouting();
@@ -74,7 +74,7 @@ namespace MamaFit.API
                 app.UseAuthorization();
 
                 app.MapControllers();
-
+                
                 app.Run();
             }
             catch (Exception exception)

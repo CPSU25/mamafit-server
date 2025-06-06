@@ -11,6 +11,8 @@ using MamaFit.BusinessObjects.DTO.ComponentDto;
 using MamaFit.BusinessObjects.DTO.ComponentOptionDto;
 using MamaFit.BusinessObjects.DTO.MaternityDressDetailDto;
 using MamaFit.BusinessObjects.DTO.MeasurementDiaryDto;
+using MamaFit.BusinessObjects.DTO.DesignRequestDto;
+using MamaFit.BusinessObjects.DTO.Appointment;
 
 namespace MamaFit.Services.Mapper
 {
@@ -27,6 +29,9 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.RoleName,
                     opt => opt.MapFrom(src => src.Role != null ? src.Role.RoleName : null))
                 .ReverseMap();
+            CreateMap<ApplicationUser, PermissionResponseDto>()
+                .ForMember(dest => dest.RoleName,
+                    opt => opt.MapFrom(src => src.Role != null ? src.Role.RoleName : null));
 
             CreateMap<ApplicationUser, RegisterUserRequestDto>();
             CreateMap<RegisterUserRequestDto, ApplicationUser>()
@@ -60,11 +65,19 @@ namespace MamaFit.Services.Mapper
             //ComponentOption Mapper
             CreateMap<ComponentOption, ComponentOptionRequestDto>().ReverseMap();
             CreateMap<ComponentOption, ComponentOptionResponseDto>().ReverseMap();
-            
+
             //MeasurementDiary Mapper
             CreateMap<MeasurementDiary, MeasurementDiaryRequestDto>().ReverseMap();
             CreateMap<MeasurementDiary, MeasurementDiaryResponseDto>().ReverseMap();
             CreateMap<MeasurementDiary, UpdateMeasurementDiaryDto>().ReverseMap();
+
+            //DesignRequest Mapper
+            CreateMap<DesignRequest, DesignRequestCreateDto>().ReverseMap();
+            CreateMap<DesignRequest, DesignResponseDto>().ReverseMap();
+
+            //Appointment Mapper 
+            CreateMap<Appointment, AppointmentRequestDto>().ReverseMap();
+            CreateMap<Appointment, AppointmentResponseDto>().ReverseMap();
         }
     }
 }

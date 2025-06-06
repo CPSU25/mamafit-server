@@ -16,18 +16,11 @@ public class RoleService : IRoleService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
-    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public RoleService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+    public RoleService(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        _httpContextAccessor = httpContextAccessor;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
-    }
-    
-    private string GetCurrentUserName()
-    {
-        return _httpContextAccessor.HttpContext?.User?.FindFirst("name")?.Value ?? "System";
     }
     
     public async Task<PaginatedList<RoleResponseDto>> GetAllRolesAsync(int index = 1, int pageSize = 10, string? nameSearch = null)
@@ -75,16 +68,8 @@ public class RoleService : IRoleService
         if (exist)
             throw new ErrorException(StatusCodes.Status409Conflict,
                 ErrorCode.Conflicted, "Role already existed");
-
-        var now = DateTime.UtcNow;
-        var role = new ApplicationUserRole()
-        {
-            RoleName = model.RoleName,
-            CreatedAt = now,
-            CreatedBy = GetCurrentUserName(),
-            UpdatedAt = now,
-            IsDeleted = false
-        };
+        
+        var role = _mapper.Map<ApplicationUserRole>(model);
         await repo.InsertAsync(role);
         await _unitOfWork.SaveAsync();
         return _mapper.Map<RoleResponseDto>(role);
@@ -105,8 +90,6 @@ public class RoleService : IRoleService
                 ErrorCode.Conflicted, "Role already existed");
 
         role.RoleName = model.RoleName;
-        role.UpdatedAt = DateTime.UtcNow;
-        role.UpdatedBy = GetCurrentUserName();
         
         await repo.UpdateAsync(role);
         await _unitOfWork.SaveAsync();
@@ -121,12 +104,8 @@ public class RoleService : IRoleService
             throw new ErrorException(StatusCodes.Status404NotFound,
                 ErrorCode.NotFound, "Role is not exist!"
             );
-
-        role.IsDeleted = true;
-        role.UpdatedAt = DateTime.UtcNow;
-        role.UpdatedBy = GetCurrentUserName();
         
-        await repo.UpdateAsync(role);
+        await repo.SoftDeleteAsync(role);
         await _unitOfWork.SaveAsync();
     }
 }

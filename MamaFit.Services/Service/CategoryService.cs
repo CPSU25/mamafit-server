@@ -58,7 +58,6 @@ namespace MamaFit.Services.Service
             var categoryRepo = _unitOfWork.GetRepository<Category>(); // Repo của Category
 
             var query = categoryRepo.Entities
-                .Include(c => c.Styles)
                 .Where(c => !c.IsDeleted);
 
             if (!string.IsNullOrWhiteSpace(search)) // Search

@@ -8,7 +8,7 @@ namespace MamaFit.Services.Interface;
 
 public interface IAuthService
 {
-    Task<UserReponseDto> GetCurrentUserAsync();
+    Task<PermissionResponseDto> GetCurrentUserAsync();
     Task<TokenResponseDto> SignInAsync(LoginRequestDto model);
     Task LogoutAsync(LogoutRequestDto model);
     Task<TokenResponseDto> RefreshTokenAsync(RefreshTokenRequestDto model);

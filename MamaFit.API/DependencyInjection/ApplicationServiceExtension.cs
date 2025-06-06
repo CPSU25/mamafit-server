@@ -1,5 +1,4 @@
-﻿
-using System.Text;
+﻿using System.Text;
 using MamaFit.BusinessObjects.DBContext;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Interface;
@@ -13,7 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace MamaFit.Configuration
+namespace MamaFit.API.DependencyInjection
 {
     public static class ApplicationServiceExtension
     {
@@ -149,9 +148,11 @@ namespace MamaFit.Configuration
         public static void AddServices(this IServiceCollection services)
         {
             // Add your service registrations here
+            services.AddScoped<IAppointmentService, AppointmentService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IDesignRequestService, DesignRequestService>();
             services.AddScoped<IMaternityDressService, MaternityDressService>();
             services.AddScoped<IMaternityDressDetailService, MaternityDressDetailService>();
             services.AddScoped<ICategoryService, CategoryService>();

@@ -30,36 +30,35 @@ namespace MamaFit.Services.Service
 
         public async Task CreateAsync(AppointmentRequestDto requestDto)
         {
-            try
+            var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
+            var branchRepo = _unitOfWork.GetRepository<Branch>();
+            var appointmentRepo = _unitOfWork.GetRepository<Appointment>();
+
+            var token = GetCurrentUserName();
+
+            var branch = await branchRepo.GetByIdAsync(requestDto.BranchId);
+            if (branch == null)
+                throw new ErrorException(StatusCodes.Status404NotFound,ErrorCode.NotFound, "Branch is not available");
+
+            if (token == "System")
             {
-                var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
-                var branchRepo = _unitOfWork.GetRepository<Branch>();
-                var appointmentRepo = _unitOfWork.GetRepository<Appointment>();
-
-                var token = GetCurrentUserName();
-
-                var branch = await branchRepo.GetByIdAsync(requestDto.BranchId);
-                if (branch == null)
-                    throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Branch is not available");
-
-                if (token == null)
+                var newAppointmentWithStranger = new Appointment
                 {
-                    var newAppointmentWithStranger = new Appointment
-                    {
-                        BookingTime = requestDto.BookingTime,
-                        PhoneNumber = requestDto.PhoneNumber,
-                        Branch = branch,
-                        FullName = requestDto.FullName,
-                        Note = requestDto.Note,
-                        Status = BusinessObjects.Enum.AppointmentStatus.UP_COMMING,
-                        CreatedAt = DateTime.UtcNow,
-                        CreatedBy = requestDto.FullName
-                    };
+                    BookingTime = requestDto.BookingTime,
+                    PhoneNumber = requestDto.PhoneNumber,
+                    Branch = branch,
+                    FullName = requestDto.FullName,
+                    Note = requestDto.Note,
+                    Status = BusinessObjects.Enum.AppointmentStatus.UP_COMMING,
+                    CreatedAt = DateTime.UtcNow,
+                    CreatedBy = requestDto.FullName
+                };
 
-                    await appointmentRepo.InsertAsync(newAppointmentWithStranger);
-                    await appointmentRepo.SaveAsync();
-                }
-
+                await appointmentRepo.InsertAsync(newAppointmentWithStranger);
+                await appointmentRepo.SaveAsync();
+            }
+            else
+            {
                 var user = await userRepo.GetByIdAsync(requestDto.UserId);
                 if (user == null)
                     throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "User is not available");
@@ -80,110 +79,69 @@ namespace MamaFit.Services.Service
                 await appointmentRepo.InsertAsync(newAppointment);
                 await appointmentRepo.SaveAsync();
             }
-            catch (Exception ex)
-            {
-                throw new ErrorException(StatusCodes.Status500InternalServerError, ErrorCode.InternalServerError, ex.Message);
-            }
-
         }
 
         public async Task DeleteAsync(string id)
         {
-            try
-            {
-                var appointmentRepo = _unitOfWork.GetRepository<Appointment>();
+            var appointmentRepo = _unitOfWork.GetRepository<Appointment>();
 
-                var oldAppointment = await appointmentRepo.GetByIdAsync(id);
-                if (oldAppointment == null)
-                    throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, $"Appointment not found with {id}");
+            var oldAppointment = await appointmentRepo.GetByIdAsync(id);
+            if (oldAppointment == null)
+                throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, $"Appointment not found with {id}");
 
-                await appointmentRepo.SoftDeleteAsync(id);
-                await appointmentRepo.SaveAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new ErrorException(StatusCodes.Status500InternalServerError, ErrorCode.InternalServerError, ex.Message);
-            }
+            await appointmentRepo.SoftDeleteAsync(id);
+            await appointmentRepo.SaveAsync();
         }
 
         public async Task<PaginatedList<AppointmentResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
         {
-            try
+            var appointmentRepo = _unitOfWork.GetRepository<Appointment>();
+
+            var query = appointmentRepo.Entities
+                .AsNoTracking()
+                .Where(a => a.IsDeleted.Equals(false));
+
+            query = sortBy?.ToLower() switch
             {
-                var appointmentRepo = _unitOfWork.GetRepository<Appointment>();
+                "name_asc" => query.OrderBy(u => u.FullName),
+                "name_desc" => query.OrderByDescending(u => u.FullName),
+                "createdat_asc" => query.OrderBy(u => u.CreatedAt),
+                "createdat_desc" => query.OrderByDescending(u => u.CreatedAt),
+                _ => query.OrderByDescending(u => u.CreatedAt) // default
+            };
 
-                var query = appointmentRepo.Entities
-                    .AsNoTracking()
-                    .Where(a => a.IsDeleted.Equals(false));
+            var pagedResult = await appointmentRepo.GetPagging(query, index, pageSize);
 
-                if (!query.Any())
-                    throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "No avaialbe appointment");
+            var listAppointment = pagedResult.Items
+                .Select(_mapper.Map<AppointmentResponseDto>)
+                .ToList();
 
-                query = sortBy?.ToLower() switch
-                {
-                    "name_asc" => query.OrderBy(u => u.FullName),
-                    "name_desc" => query.OrderByDescending(u => u.FullName),
-                    "createdat_asc" => query.OrderBy(u => u.CreatedAt),
-                    "createdat_desc" => query.OrderByDescending(u => u.CreatedAt),
-                    _ => query.OrderByDescending(u => u.CreatedAt) // default
-                };
-
-                var pagedResult = await appointmentRepo.GetPagging(query, index, pageSize);
-
-                var listAppointment = pagedResult.Items
-                    .Select(_mapper.Map<AppointmentResponseDto>)
-                    .ToList();
-
-                var responseAppointmentList = new PaginatedList<AppointmentResponseDto>
-                    (listAppointment, pagedResult.TotalCount, pagedResult.PageNumber, pageSize);
-                return responseAppointmentList;
-            }
-            catch (Exception ex)
-            {
-                throw new ErrorException(StatusCodes.Status500InternalServerError, ErrorCode.InternalServerError, ex.Message);
-            }
+            var responseAppointmentList = new PaginatedList<AppointmentResponseDto>
+                (listAppointment, pagedResult.TotalCount, pagedResult.PageNumber, pageSize);
+            return responseAppointmentList;
         }
 
         public async Task<AppointmentResponseDto> GetByIdAsync(string id)
         {
-            try
-            {
-                var appointmentRepo = _unitOfWork.GetRepository<Appointment>();
-                var appointment = await appointmentRepo.GetByIdAsync(id);
 
-                if (appointment == null)
-                    throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, $"Appointment not found with {id}");
+            var appointmentRepo = _unitOfWork.GetRepository<Appointment>();
+            var appointment = await appointmentRepo.GetByIdAsync(id);
 
-                return _mapper.Map<AppointmentResponseDto>(appointment);
-            }
-            catch (Exception ex)
-            {
-                throw new ErrorException(StatusCodes.Status500InternalServerError, ErrorCode.InternalServerError, ex.Message);
-            }
+            return _mapper.Map<AppointmentResponseDto>(appointment);
         }
 
         public async Task UpdateAsync(string id, AppointmentRequestDto requestDto)
         {
-            try
-            {
-                var appointmentRepo = _unitOfWork.GetRepository<Appointment>();
+            var appointmentRepo = _unitOfWork.GetRepository<Appointment>();
 
-                var appointment = await appointmentRepo.GetByIdAsync(id);
+            var appointment = await appointmentRepo.GetByIdAsync(id);
 
-                if (appointment == null)
-                    throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, $"Appointment not found with {id}");
+            _mapper.Map(requestDto, appointment);
+            appointment.UpdatedAt = DateTime.UtcNow;
+            appointment.UpdatedBy = GetCurrentUserName();
 
-                _mapper.Map(requestDto, appointment);
-                appointment.UpdatedAt = DateTime.UtcNow;
-                appointment.UpdatedBy = GetCurrentUserName();
-
-                await appointmentRepo.UpdateAsync(appointment);
-                await appointmentRepo.SaveAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new ErrorException(StatusCodes.Status500InternalServerError, ErrorCode.InternalServerError, ex.Message);
-            }
+            await appointmentRepo.UpdateAsync(appointment);
+            await appointmentRepo.SaveAsync();
         }
     }
 }

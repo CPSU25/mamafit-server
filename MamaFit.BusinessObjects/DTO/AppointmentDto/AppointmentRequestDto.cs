@@ -1,9 +1,8 @@
-﻿using MamaFit.BusinessObjects.Base;
-using MamaFit.BusinessObjects.Enum;
+﻿using MamaFit.BusinessObjects.Enum;
 
-namespace MamaFit.BusinessObjects.Entity
+namespace MamaFit.BusinessObjects.DTO.Appointment
 {
-    public class Appointment : BaseEntity
+    public class AppointmentRequestDto
     {
         public string? UserId { get; set; }
         public string? StaffId { get; set; }
@@ -15,10 +14,5 @@ namespace MamaFit.BusinessObjects.Entity
         public AppointmentStatus? Status { get; set; }
         public DateTime? CanceledAt { get; set; }
         public string? CanceledReason { get; set; }
-        
-        //Navigation properties
-        public ApplicationUser? User { get; set; }
-        public ApplicationUser? Staff { get; set; }
-        public Branch? Branch { get; set; }
     }
 }

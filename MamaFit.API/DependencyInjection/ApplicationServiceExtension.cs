@@ -148,9 +148,11 @@ namespace MamaFit.API.DependencyInjection
         public static void AddServices(this IServiceCollection services)
         {
             // Add your service registrations here
+            services.AddScoped<IAppointmentService, AppointmentService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IDesignRequestService, DesignRequestService>();
             services.AddScoped<IMaternityDressService, MaternityDressService>();
             services.AddScoped<IMaternityDressDetailService, MaternityDressDetailService>();
             services.AddScoped<ICategoryService, CategoryService>();

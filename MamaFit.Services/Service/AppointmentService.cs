@@ -183,7 +183,7 @@ namespace MamaFit.Services.Service
             if (oldAppointment == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, $"Appointment not found with {id}");
 
-            if(oldAppointment.Status != BusinessObjects.Enum.AppointmentStatus.CANCELED)
+            if (oldAppointment.Status != BusinessObjects.Enum.AppointmentStatus.CANCELED)
             {
                 oldAppointment.Status = BusinessObjects.Enum.AppointmentStatus.CANCELED;
                 oldAppointment.CanceledAt = DateTime.UtcNow;
@@ -215,6 +215,47 @@ namespace MamaFit.Services.Service
                 await appointmentRepo.SaveAsync();
             }
             else throw new ErrorException(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, $"Appointment with id:{id} already checked-out");
+        }
+
+        public async Task<PaginatedList<AppointmentResponseDto>> GetByUserId(string userId, int index, int pageSize, string? search, AppointmentOrderBy? sortBy)
+        {
+            var appointmentRepo = _unitOfWork.GetRepository<Appointment>();
+            var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
+
+            var user = await userRepo.GetByIdAsync(userId);
+
+            if (user == null)
+                throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, $"User not found with {userId}");
+
+            var query = appointmentRepo.Entities
+                .AsNoTracking()
+                .Where(a => a.IsDeleted.Equals(false) || a.User.Id.Equals(userId));
+
+            query = sortBy switch
+            {
+                AppointmentOrderBy.UPCOMMING_AT_ASC => query
+                .Where(u => u.BookingTime > DateTime.UtcNow)
+                .OrderBy(u => u.BookingTime),
+
+                AppointmentOrderBy.UPCOMMING_AT_DESC => query
+                .Where(u => u.BookingTime > DateTime.UtcNow)
+                .OrderByDescending(u => u.BookingTime),
+
+                AppointmentOrderBy.CREATED_AT_ASC => query.OrderBy(u => u.CreatedAt),
+
+                AppointmentOrderBy.CREATED_AT_DESC => query.OrderByDescending(u => u.CreatedAt),
+                _ => query.OrderByDescending(u => u.CreatedAt) // default
+            };
+
+            var pagedResult = await appointmentRepo.GetPagging(query, index, pageSize);
+
+            var listAppointment = pagedResult.Items
+                .Select(_mapper.Map<AppointmentResponseDto>)
+                .ToList();
+
+            var responseAppointmentList = new PaginatedList<AppointmentResponseDto>
+                (listAppointment, pagedResult.TotalCount, pagedResult.PageNumber, pageSize);
+            return responseAppointmentList;
         }
     }
 }

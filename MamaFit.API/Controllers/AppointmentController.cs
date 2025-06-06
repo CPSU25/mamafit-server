@@ -2,6 +2,7 @@
 using MamaFit.BusinessObjects.DTO.AppointmentDto;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MamaFit.API.Controllers
@@ -17,6 +18,7 @@ namespace MamaFit.API.Controllers
             _appointmentService = appointmentService;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAll(
             [FromQuery] int index = 1,
@@ -34,6 +36,7 @@ namespace MamaFit.API.Controllers
             ));
         }
 
+        [Authorize]
         [HttpGet("{appointmentId}")]
         public async Task<IActionResult> GetById([FromRoute] string appointmentId)
         {
@@ -47,6 +50,7 @@ namespace MamaFit.API.Controllers
             ));
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AppointmentRequestDto requestDto)
         {
@@ -61,6 +65,7 @@ namespace MamaFit.API.Controllers
                 ));
         }
 
+        [Authorize]
         [HttpPut("{appointmentId}")]
         public async Task<IActionResult> Update([FromRoute] string appointmentId, [FromBody] AppointmentRequestDto requestDto)
         {
@@ -74,6 +79,7 @@ namespace MamaFit.API.Controllers
             ));
         }
 
+        [Authorize]
         [HttpDelete("{appointmentId}")]
         public async Task<IActionResult> Delete([FromRoute] string appointmentId)
         {
@@ -87,6 +93,7 @@ namespace MamaFit.API.Controllers
             ));
         }
 
+        [Authorize]
         [HttpPut("{id}/check-in")]
         public async Task<IActionResult> CheckIn(string id)
         {
@@ -100,6 +107,7 @@ namespace MamaFit.API.Controllers
             ));
         }
 
+        [Authorize]
         [HttpPut("{id}/check-out")]
         public async Task<IActionResult> CheckOut(string id)
         {
@@ -113,6 +121,7 @@ namespace MamaFit.API.Controllers
             ));
         }
 
+        [Authorize]
         [HttpPut("{id}/cancel")]
         public async Task<IActionResult> Cancel(string id, [FromBody] string request)
         {

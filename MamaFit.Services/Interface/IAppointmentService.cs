@@ -6,6 +6,7 @@ public interface IAppointmentService
 {
     Task<PaginatedList<AppointmentResponseDto>> GetAllAsync(int index, int pageSize, string? search, AppointmentOrderBy? sortBy);
     Task<AppointmentResponseDto> GetByIdAsync(string id);
+    Task<PaginatedList<AppointmentResponseDto>> GetByUserId(string userId, int index, int pageSize, string? search, AppointmentOrderBy? sortBy);
     Task CreateAsync(AppointmentRequestDto requestDto);
     Task UpdateAsync(string id, AppointmentRequestDto requestDto);
     Task DeleteAsync(string id);

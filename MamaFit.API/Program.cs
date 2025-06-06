@@ -1,6 +1,6 @@
 using MamaFit.API.Constant;
 using MamaFit.API.Middlewares;
-using MamaFit.Configuration;
+using MamaFit.API.DependencyInjection;
 using NLog.Web;
 using System.Text.Json.Serialization;
 using MamaFit.Repositories.Helper;

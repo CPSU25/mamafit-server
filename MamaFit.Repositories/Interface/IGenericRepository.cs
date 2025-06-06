@@ -23,6 +23,7 @@ namespace MamaFit.Repositories.Interface
         Task InsertAsync(T obj);
         Task UpdateAsync(T obj);
         Task DeleteAsync(object id);
+        Task DeleteAsync(T entity);
         void DeleteRange(IEnumerable<T> entities);
         Task SoftDeleteAsync(object id);
         Task SaveAsync();

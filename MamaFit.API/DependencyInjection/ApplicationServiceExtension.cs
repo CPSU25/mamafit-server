@@ -1,5 +1,4 @@
-﻿
-using System.Text;
+﻿using System.Text;
 using MamaFit.BusinessObjects.DBContext;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Interface;
@@ -13,7 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace MamaFit.Configuration
+namespace MamaFit.API.DependencyInjection
 {
     public static class ApplicationServiceExtension
     {

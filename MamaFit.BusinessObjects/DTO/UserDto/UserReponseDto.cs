@@ -3,7 +3,7 @@ namespace MamaFit.BusinessObjects.DTO.UserDto;
 public class UserReponseDto
 {
     public string? Id { get; set; }
-    public string? Username { get; set; } = string.Empty;
+    public string? UserName { get; set; } = string.Empty;
     public string? UserEmail { get; set; } = string.Empty;
     public string? PhoneNumber { get; set; } = string.Empty;
     public DateTime? DateOfBirth { get; set; }

@@ -1,4 +1,5 @@
 ﻿using MamaFit.BusinessObjects.DTO.Appointment;
+using MamaFit.BusinessObjects.DTO.AppointmentDto;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,7 @@ namespace MamaFit.API.Controllers
             [FromQuery] int index = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] string? search = null,
-            [FromQuery] string? sortBy = "createdat_desc")
+            [FromQuery] AppointmentOrderBy? sortBy = AppointmentOrderBy.CREATED_AT_DESC)
         {
             var appointments = await _appointmentService.GetAllAsync(index, pageSize, search, sortBy);
             return Ok(new ResponseModel<PaginatedList<AppointmentResponseDto>>(
@@ -83,6 +84,56 @@ namespace MamaFit.API.Controllers
                 null,
                 null,
                 "Deleted appointment successfully!"
+            ));
+        }
+
+        [HttpPut("{id}/check-in")]
+        public async Task<IActionResult> CheckIn(string id)
+        {
+            await _appointmentService.CheckInAsync(id);
+            return Ok(new ResponseModel<string>(
+                StatusCodes.Status200OK,
+                ResponseCodeConstants.SUCCESS,
+                null,
+                null,
+                "Checked-in appointment successfully!"
+            ));
+        }
+
+        [HttpPut("{id}/check-out")]
+        public async Task<IActionResult> CheckOut(string id)
+        {
+            await _appointmentService.CheckOutAsync(id);
+            return Ok(new ResponseModel<string>(
+                StatusCodes.Status200OK,
+                ResponseCodeConstants.SUCCESS,
+                null,
+                null,
+                "Checked-out appointment successfully!"
+            ));
+        }
+
+        [HttpPut("{id}/cancel")]
+        public async Task<IActionResult> Cancel(string id, [FromBody] string request)
+        {
+            if (string.IsNullOrWhiteSpace(request))
+            {
+                return BadRequest(new ResponseModel<string>(
+                    StatusCodes.Status400BadRequest,
+                    ResponseCodeConstants.BADREQUEST,
+                    null,
+                    null,
+                    "Cancel reason is required."
+                ));
+            }
+
+            await _appointmentService.CancelAppointment(id, request);
+            return Ok(new ResponseModel<string>(
+                StatusCodes.Status200OK,
+                ResponseCodeConstants.SUCCESS,
+                null,
+                null,
+                "Cancelled appointment successfully!"
             ));
         }
     }

@@ -26,7 +26,6 @@ public class UserController : ControllerBase
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,
             null,
-            null,
             "Send OTP successfully. Please check your email!"
         ));
     }
@@ -39,7 +38,6 @@ public class UserController : ControllerBase
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,
             null,
-            null,
             "Resend OTP successfully!"
         ));
     }
@@ -51,7 +49,6 @@ public class UserController : ControllerBase
         return Ok(new ResponseModel<object>(
             StatusCodes.Status201Created,
             ResponseCodeConstants.CREATED,
-            null,
             null,
             "Register user successfully!"));
     }
@@ -67,7 +64,7 @@ public class UserController : ControllerBase
         return Ok(new ResponseModel<PaginatedList<UserReponseDto>>(
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,
-            pagedUsers
+            pagedUsers, "Get all users successfully!"
         ));
     }
 
@@ -79,7 +76,7 @@ public class UserController : ControllerBase
         return Ok(new ResponseModel<UserReponseDto>(
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,
-            user, null, 
+            user, 
             "Get user by ID successfully!"
         ));
     }
@@ -92,7 +89,6 @@ public class UserController : ControllerBase
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,
             result,
-            null,
             "Update user profile picture successfully!"
         ));
     }
@@ -105,7 +101,6 @@ public class UserController : ControllerBase
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 updatedUser,
-                null,
                 "Update user successfully!"
             ));
     }
@@ -117,7 +112,6 @@ public class UserController : ControllerBase
             return Ok(new ResponseModel<object>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
-                null,
                 null,
                 "Delete user successfully!"
             ));

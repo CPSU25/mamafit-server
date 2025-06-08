@@ -16,6 +16,31 @@ namespace MamaFit.API.DependencyInjection
 {
     public static class ApplicationServiceExtension
     {
+        public static void AddRepositories(this IServiceCollection services)
+        {
+            // Add your repository registrations here
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+        }
+
+        public static void AddServices(this IServiceCollection services)
+        {
+            // Add your service registrations here
+            services.AddScoped<IAppointmentService, AppointmentService>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IDesignRequestService, DesignRequestService>();
+            services.AddScoped<IMaternityDressService, MaternityDressService>();
+            services.AddScoped<IMaternityDressDetailService, MaternityDressDetailService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IStyleService, StyleService>();
+            services.AddScoped<IComponentService, ComponentService>();
+            services.AddScoped<IComponentOptionService, ComponentOptionService>();
+            services.AddTransient<IEmailSenderSevice, EmailSenderService>();
+            services.AddScoped<ICloudinaryService, CloudinaryService>();
+            services.AddScoped<IMeasurementDiaryService, MeasurementDiaryService>();
+        }
+
         public static IServiceCollection AddHttpClientServices(this IServiceCollection services)
         {
             services.AddHttpClient();
@@ -138,32 +163,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddServices();
             services.AddAutoMapper();
         }
-
-        public static void AddRepositories(this IServiceCollection services)
-        {
-            // Add your repository registrations here
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-        }
-
-        public static void AddServices(this IServiceCollection services)
-        {
-            // Add your service registrations here
-            services.AddScoped<IAppointmentService, AppointmentService>();
-            services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IRoleService, RoleService>();
-            services.AddScoped<IDesignRequestService, DesignRequestService>();
-            services.AddScoped<IMaternityDressService, MaternityDressService>();
-            services.AddScoped<IMaternityDressDetailService, MaternityDressDetailService>();
-            services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<IStyleService, StyleService>();
-            services.AddScoped<IComponentService, ComponentService>();
-            services.AddScoped<IComponentOptionService, ComponentOptionService>();
-            services.AddScoped<IEmailSenderSevice, EmailSenderService>();
-            services.AddScoped<ICloudinaryService, CloudinaryService>();
-            services.AddScoped<IMeasurementDiaryService, MeasurementDiaryService>();
-        }
-
+        
         private static void AddAutoMapper(this IServiceCollection services)
         {
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

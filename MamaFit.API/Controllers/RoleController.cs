@@ -27,7 +27,7 @@ public class RoleController : ControllerBase
         return Ok(new ResponseModel<PaginatedList<RoleResponseDto>>(
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,
-            pagedRoles
+            pagedRoles, "Get all roles successfully!"
         ));
     }
 
@@ -39,7 +39,7 @@ public class RoleController : ControllerBase
         return Ok(new ResponseModel<RoleResponseDto>(
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,
-            role, null, 
+            role, 
             "Get role by ID successfully!"
     ));
 }
@@ -51,7 +51,7 @@ public class RoleController : ControllerBase
         return Ok(new ResponseModel<RoleResponseDto>(
             StatusCodes.Status201Created,
             ResponseCodeConstants.CREATED,
-            role, null,
+            role,
             "Create role successfully!"
         ));
     }
@@ -63,7 +63,7 @@ public class RoleController : ControllerBase
         return Ok(new ResponseModel<RoleResponseDto>(
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,
-            role, null,
+            role,
             "Update role successfully!"
         ));
     }
@@ -75,7 +75,7 @@ public class RoleController : ControllerBase
         return Ok(new ResponseModel<object>(
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,
-            null, null,
+            null,
             "Delete role successfully!"
         ));
     }

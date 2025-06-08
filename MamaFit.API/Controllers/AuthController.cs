@@ -29,7 +29,6 @@ namespace MamaFit.API.Controllers
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 user,
-                null,
                 "Get current user successfully!"
             ));
         }
@@ -42,7 +41,7 @@ namespace MamaFit.API.Controllers
             return Ok(new ResponseModel<TokenResponseDto>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
-                token, null,
+                token,
                 "Login successfully!"
             ));
         }
@@ -56,7 +55,6 @@ namespace MamaFit.API.Controllers
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 tokenResponse,
-                null,
                 "Login successfully!"
             );
 
@@ -72,7 +70,7 @@ namespace MamaFit.API.Controllers
             return Ok(new ResponseModel<object>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
-                null, null,
+                null,
                 "Logout successfully!"
             ));
         }
@@ -84,7 +82,7 @@ namespace MamaFit.API.Controllers
             return Ok(new ResponseModel<TokenResponseDto>(
                 StatusCodes.Status201Created,
                 ResponseCodeConstants.CREATED,
-                token, null,
+                token,
                 "Refresh token successfully!"
             ));
         }
@@ -96,7 +94,7 @@ namespace MamaFit.API.Controllers
             return Ok(new ResponseModel<object>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
-                null, null,
+                null,
                 "OTP verification successful!"
             ));
         }
@@ -108,7 +106,7 @@ namespace MamaFit.API.Controllers
             return Ok(new ResponseModel<object>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
-                result, null,
+                result,
                 "Decode successfully!"
             ));
         }

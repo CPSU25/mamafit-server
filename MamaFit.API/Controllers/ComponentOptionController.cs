@@ -28,7 +28,6 @@ namespace MamaFit.API.Controllers
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 options,
-                null,
                 "Get all component options successfully!"
             ));
         }
@@ -41,7 +40,6 @@ namespace MamaFit.API.Controllers
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 option,
-                null,
                 "Get component option successfully!"
             ));
         }
@@ -55,7 +53,6 @@ namespace MamaFit.API.Controllers
                     StatusCodes.Status201Created,
                     ResponseCodeConstants.CREATED,
                     null,
-                    null,
                     "Created component option successfully!"
                 ));
         }
@@ -68,7 +65,6 @@ namespace MamaFit.API.Controllers
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 null,
-                null,
                 "Updated component option successfully!"
             ));
         }
@@ -80,7 +76,6 @@ namespace MamaFit.API.Controllers
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
-                null,
                 null,
                 "Deleted component option successfully!"
             ));

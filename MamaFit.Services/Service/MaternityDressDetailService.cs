@@ -5,7 +5,6 @@ using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 namespace MamaFit.Services.Service
 {
@@ -24,69 +23,56 @@ namespace MamaFit.Services.Service
 
         public async Task CreateAsync(MaternityDressDetailRequestDto requestDto)
         {
-            var maternityDressRepo = _unitOfWork.GetRepository<MaternityDress>();
-            var maternityDressDetailRepo = _unitOfWork.GetRepository<MaternityDressDetail>();
+            var exists = await _unitOfWork.MaternityDressRepository.GetByIdAsync(requestDto.MaternityDressId);
 
-            var exists = await maternityDressRepo.Entities
-                .AnyAsync(x => x.Id == requestDto.MaternityDressId && !x.IsDeleted);
-
-            if (!exists)
-            {
+            if (exists == null)
                 throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.NotFound, "Maternity dress does not exist.");
-            }
 
             var entity = _mapper.Map<MaternityDressDetail>(requestDto);
+
+            entity.MaternityDress = exists;
             entity.CreatedAt = DateTime.UtcNow;
             entity.CreatedBy = GetCurrentUserName();
 
-            await maternityDressDetailRepo.InsertAsync(entity);
-            await maternityDressDetailRepo.SaveAsync();
+            await _unitOfWork.MaternityDressDetailRepository.InsertAsync(entity);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(string id)
         {
-            var repo = _unitOfWork.GetRepository<MaternityDressDetail>();
-            var entity = await repo.GetByIdAsync(id);
+            var entity = await _unitOfWork.MaternityDressDetailRepository.GetByIdAsync(id);
 
             if (entity == null)
             {
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Maternity dress detail not found.");
             }
 
-            await repo.SoftDeleteAsync(id);
-            await repo.SaveAsync();
+            await _unitOfWork.MaternityDressDetailRepository.SoftDeleteAsync(id);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<PaginatedList<MaternityDressDetailResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
         {
-            var repo = _unitOfWork.GetRepository<MaternityDressDetail>();
 
-            var query = repo.Entities.Where(x => !x.IsDeleted);
+            var maternityDressDetailList = await _unitOfWork.DesignRequestRepository.GetAllAsync(index, pageSize, search, sortBy);
 
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                query = query.Where(x => x.Name.Contains(search));
-            }
+            // Map từng phần tử trong danh sách Items
+            var responseList = maternityDressDetailList.Items.Select(item => _mapper.Map<MaternityDressDetailResponseDto>(item)).ToList();
 
-            query = sortBy?.ToLower() switch
-            {
-                "name_asc" => query.OrderBy(x => x.Name),
-                "name_desc" => query.OrderByDescending(x => x.Name),
-                "createdat_asc" => query.OrderBy(x => x.CreatedAt),
-                "createdat_desc" => query.OrderByDescending(x => x.CreatedAt),
-                _ => query.OrderByDescending(x => x.CreatedAt)
-            };
+            // Tạo PaginatedList mới với các đối tượng đã map
+            var paginatedResponse = new PaginatedList<MaternityDressDetailResponseDto>(
+                responseList,
+                maternityDressDetailList.TotalCount,
+                maternityDressDetailList.PageNumber,
+                maternityDressDetailList.PageSize
+            );
 
-            var paged = await repo.GetPagging(query, index, pageSize);
-            var list = paged.Items.Select(_mapper.Map<MaternityDressDetailResponseDto>).ToList();
-
-            return new PaginatedList<MaternityDressDetailResponseDto>(list, paged.TotalCount, paged.PageNumber, pageSize);
+            return paginatedResponse;
         }
 
         public async Task<MaternityDressDetailResponseDto> GetByIdAsync(string id)
         {
-            var repo = _unitOfWork.GetRepository<MaternityDressDetail>();
-            var entity = await repo.GetByIdAsync(id);
+            var entity = await _unitOfWork.MaternityDressDetailRepository.GetByIdAsync(id);
 
             if (entity == null)
             {
@@ -98,32 +84,25 @@ namespace MamaFit.Services.Service
 
         public async Task UpdateAsync(string id, MaternityDressDetailRequestDto requestDto)
         {
-            var repo = _unitOfWork.GetRepository<MaternityDressDetail>();
-            var entity = await repo.GetByIdAsync(id);
+            var entity = await _unitOfWork.MaternityDressDetailRepository.GetByIdAsync(id);
 
             if (entity == null)
-            {
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Maternity dress detail not found.");
-            }
 
             if (!string.IsNullOrWhiteSpace(requestDto.MaternityDressId) && requestDto.MaternityDressId != entity.MaternityDressId)
             {
-                var maternityDressRepo = _unitOfWork.GetRepository<MaternityDress>();
-                var exists = await maternityDressRepo.Entities
-                    .AnyAsync(x => x.Id == requestDto.MaternityDressId && !x.IsDeleted);
+                var exists = await _unitOfWork.MaternityDressRepository.GetByIdAsync(id);
 
-                if (!exists)
-                {
+                if (exists == null)
                     throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.NotFound, "Maternity dress does not exist.");
-                }
             }
 
             _mapper.Map(requestDto, entity);
             entity.UpdatedAt = DateTime.UtcNow;
             entity.UpdatedBy = GetCurrentUserName();
 
-            await repo.UpdateAsync(entity);
-            await repo.SaveAsync();
+            await _unitOfWork.MaternityDressDetailRepository.UpdateAsync(entity);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         private string GetCurrentUserName()

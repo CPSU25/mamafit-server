@@ -31,19 +31,29 @@ namespace MamaFit.API.DependencyInjection
         {
             // Add your service registrations here
             services.AddScoped<IAppointmentService, AppointmentService>();
+            services.AddScoped<IAppointmentRepository,AppointmentRepository>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IDesignRequestService, DesignRequestService>();
+            services.AddScoped<IDesignRequestRepository, DesignRequestRepository>();
             services.AddScoped<IMaternityDressService, MaternityDressService>();
+            services.AddScoped<IMaternityDressRepository, MaternityDressRepository>();
             services.AddScoped<IMaternityDressDetailService, MaternityDressDetailService>();
+            services.AddScoped<IMaternityDressDetailRepository, MaternityDressDetailRepository>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IStyleService, StyleService>();
+            services.AddScoped<IStyleRepository, StyleRepository>();
             services.AddScoped<IComponentService, ComponentService>();
+            services.AddScoped<IComponentRepository, ComponentRepository>();
             services.AddScoped<IComponentOptionService, ComponentOptionService>();
+            services.AddScoped<IComponentOptionRepository, ComponentOptionRepository>();
             services.AddTransient<IEmailSenderSevice, EmailSenderService>();
             services.AddScoped<ICloudinaryService, CloudinaryService>();
             //services.AddScoped<IMeasurementDiaryService, MeasurementDiaryService>();
+            services.AddScoped<IBranchRepository, IBranchRepository>();
+            services.AddScoped<IOrderItemRepository, IOrderItemRepository>();
         }
 
         public static IServiceCollection AddHttpClientServices(this IServiceCollection services)

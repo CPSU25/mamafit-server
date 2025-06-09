@@ -1,9 +1,8 @@
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.Repositories.Infrastructure;
-
 namespace MamaFit.Repositories.Interface;
 
-public interface IUserRepository
+public interface IUserRepository : IGenericRepository<ApplicationUser>
 {
     Task<PaginatedList<ApplicationUser>> GetUsersAsync(int index, int pageSize, string? nameSearch, string? roleName);
     Task<ApplicationUser?> GetByIdAsync(string id);

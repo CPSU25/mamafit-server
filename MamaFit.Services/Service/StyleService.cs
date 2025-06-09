@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
-using MamaFit.BusinessObjects.DTO.CategoryDto;
 using MamaFit.BusinessObjects.DTO.StyleDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 namespace MamaFit.Services.Service
 {
@@ -25,91 +23,61 @@ namespace MamaFit.Services.Service
 
         public async Task CreateAsync(StyleRequestDto requestDto)
         {
-            var categoryRepo = _unitOfWork.GetRepository<Category>();// Repository category
 
-            var category = await categoryRepo.GetByIdAsync(requestDto.CategoryId); // Tìm category
+            var category = await _unitOfWork.CategoryRepository.GetByIdAsync(requestDto.CategoryId); // Tìm category
             if (category == null)
-            {
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Category is not available");
-            }
-            var styleRepo = _unitOfWork.GetRepository<Style>(); // Repo style
 
             var newStyle = _mapper.Map<Style>(requestDto); // Map Style
             newStyle.Category = category;
             newStyle.CreatedBy = GetCurrentUserName();
             newStyle.CreatedAt = DateTime.UtcNow;
 
-            await styleRepo.InsertAsync(newStyle); // Tạo mới style
-            await styleRepo.SaveAsync();
+            await _unitOfWork.StyleRepository.InsertAsync(newStyle); // Tạo mới style
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(string id)
         {
-            var styleRepo = _unitOfWork.GetRepository<Style>(); // Repo style
-
-            var oldStyle = await styleRepo.GetByIdAsync(id);
+            var oldStyle = await _unitOfWork.StyleRepository.GetByIdAsync(id);
             if (oldStyle == null)
             {
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Style is not available");
             }
-            await styleRepo.SoftDeleteAsync(id);
-            await styleRepo.SaveAsync();
+            await _unitOfWork.StyleRepository.SoftDeleteAsync(id);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<PaginatedList<StyleResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
         {
-            var styleRepo = _unitOfWork.GetRepository<Style>(); // Repo của Category
+            var styleList = await _unitOfWork.StyleRepository.GetAllAsync(index, pageSize, search, sortBy);
 
-            var query = styleRepo.Entities
-                .Where(c => !c.IsDeleted);
+            // Map từng phần tử trong danh sách Items
+            var responseList = styleList.Items.Select(item => _mapper.Map<StyleResponseDto>(item)).ToList();
 
-            if (!string.IsNullOrWhiteSpace(search)) // Search
-            {
-                query = query.Where(u => u.Name.Contains(search));
-            }
-
-            query = sortBy?.ToLower() switch
-            {
-                "name_asc" => query.OrderBy(u => u.Name),
-                "name_desc" => query.OrderByDescending(u => u.Name),
-                "createdat_asc" => query.OrderBy(u => u.CreatedAt),
-                "createdat_desc" => query.OrderByDescending(u => u.CreatedAt),
-                _ => query.OrderByDescending(u => u.CreatedAt) // default
-            };
-
-            var pagedResult = await styleRepo.GetPagging(query, index, pageSize); // Paging
-
-            var listStyle = pagedResult.Items
-                .Select(_mapper.Map<StyleResponseDto>)
-                .ToList();
-
-            var responsePaginatedList = new PaginatedList<StyleResponseDto>(
-                listStyle,
-                pagedResult.TotalCount,
-                pagedResult.PageNumber,
-                pageSize
+            // Tạo PaginatedList mới với các đối tượng đã map
+            var paginatedResponse = new PaginatedList<StyleResponseDto>(
+                responseList,
+                styleList.TotalCount,
+                styleList.PageNumber,
+                styleList.PageSize
             );
 
-            return responsePaginatedList;
+            return paginatedResponse;
         }
 
         public async Task<StyleResponseDto> GetByIdAsync(string id)
         {
-            var styleRepo = _unitOfWork.GetRepository<Style>(); // Repo style
-
-            var oldStyle = await styleRepo.GetByIdAsync(id);
+            var oldStyle = await _unitOfWork.StyleRepository.GetByIdAsync(id);
             if (oldStyle == null)
-            {
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Style is not available");
-            }
+
             return _mapper.Map<StyleResponseDto>(oldStyle);
         }
 
         public async Task UpdateAsync(string id, StyleRequestDto requestDto)
         {
-            var styleRepo = _unitOfWork.GetRepository<Style>(); // Repo style
-
-            var oldStyle = await styleRepo.GetByIdAsync(id);
+            var oldStyle = await _unitOfWork.StyleRepository.GetByIdAsync(id);
             if (oldStyle == null)
             {
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Style is not available");
@@ -118,8 +86,8 @@ namespace MamaFit.Services.Service
             _mapper.Map(requestDto, oldStyle); // Map request 
             oldStyle.UpdatedAt = DateTime.UtcNow;
             oldStyle.UpdatedBy = GetCurrentUserName();
-            await styleRepo.UpdateAsync(oldStyle);
-            await styleRepo.SaveAsync();
+            await _unitOfWork.StyleRepository.UpdateAsync(oldStyle);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         private string GetCurrentUserName()

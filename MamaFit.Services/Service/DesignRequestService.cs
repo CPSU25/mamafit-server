@@ -5,7 +5,6 @@ using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 namespace MamaFit.Services.Service
 {
@@ -24,17 +23,13 @@ namespace MamaFit.Services.Service
 
         public async Task CreateAsync(DesignRequestCreateDto requestDto)
         {
-            var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
-            var orderItemRepo = _unitOfWork.GetRepository<OrderItem>();
-            var designRequestRepo = _unitOfWork.GetRepository<DesignRequest>();
-
             // Kiểm tra User tồn tại
-            var user = await userRepo.GetByIdAsync(requestDto.UserId);
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(requestDto.UserId);
             if (user == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "User is not available");
 
             // Kiểm tra OrderItem tồn tại
-            var orderItem = await orderItemRepo.GetByIdAsync(requestDto.OrderItemId);
+            var orderItem = await _unitOfWork.OrderItemRepository.GetByIdAsync(requestDto.OrderItemId);
             if (orderItem == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Order item is not available");
 
@@ -44,17 +39,13 @@ namespace MamaFit.Services.Service
             newRequest.CreatedAt = DateTime.UtcNow;
             newRequest.CreatedBy = GetCurrentUserName();
 
-            await designRequestRepo.InsertAsync(newRequest);
-            await designRequestRepo.SaveAsync();
+            await _unitOfWork.DesignRequestRepository.InsertAsync(newRequest);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<DesignResponseDto> GetByIdAsync(string id)
         {
-            var designRequestRepo = _unitOfWork.GetRepository<DesignRequest>();
-            var request = await designRequestRepo.Entities
-                .Include(d => d.User)
-                .Include(d => d.OrderItem)
-                .FirstOrDefaultAsync(d => d.Id == id && !d.IsDeleted);
+            var request = await _unitOfWork.DesignRequestRepository.GetByIdAsync(id);
 
             if (request == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Design request is not available");
@@ -64,45 +55,30 @@ namespace MamaFit.Services.Service
 
         public async Task<PaginatedList<DesignResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
         {
-            var designRequestRepo = _unitOfWork.GetRepository<DesignRequest>();
-            var query = designRequestRepo.Entities
-                .Include(d => d.User)
-                .Include(d => d.OrderItem)
-                .Where(d => !d.IsDeleted);
+            var designList = await _unitOfWork.DesignRequestRepository.GetAllAsync( index, pageSize, search, sortBy);
 
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                query = query.Where(d => d.Description!.Contains(search));
-            }
+            // Map từng phần tử trong danh sách Items
+            var responseList = designList.Items.Select(item => _mapper.Map<DesignResponseDto>(item)).ToList();
 
-            query = sortBy?.ToLower() switch
-            {
-                "createdat_asc" => query.OrderBy(d => d.CreatedAt),
-                "createdat_desc" => query.OrderByDescending(d => d.CreatedAt),
-                _ => query.OrderByDescending(d => d.CreatedAt)
-            };
-
-            var pagedResult = await designRequestRepo.GetPagging(query, index, pageSize);
-
-            var result = pagedResult.Items.Select(_mapper.Map<DesignResponseDto>).ToList();
-            return new PaginatedList<DesignResponseDto>(
-                result,
-                pagedResult.TotalCount,
-                pagedResult.PageNumber,
-                pageSize
+            // Tạo PaginatedList mới với các đối tượng đã map
+            var paginatedResponse = new PaginatedList<DesignResponseDto>(
+                responseList,
+                designList.TotalCount,
+                designList.PageNumber,
+                designList.PageSize
             );
+
+            return paginatedResponse;
         }
 
         public async Task DeleteAsync(string id)
         {
-            var designRequestRepo = _unitOfWork.GetRepository<DesignRequest>();
-
-            var request = await designRequestRepo.GetByIdAsync(id);
+            var request = await _unitOfWork.DesignRequestRepository.GetByIdAsync(id);
             if (request == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Design request is not available");
 
-            await designRequestRepo.SoftDeleteAsync(id);
-            await designRequestRepo.SaveAsync();
+            await _unitOfWork.DesignRequestRepository.SoftDeleteAsync(id);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         private string GetCurrentUserName()

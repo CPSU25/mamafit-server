@@ -5,7 +5,6 @@ using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 namespace MamaFit.Services.Service
 {
@@ -24,12 +23,9 @@ namespace MamaFit.Services.Service
 
         public async Task CreateAsync(ComponentRequestDto requestDto)
         {
-            var styleRepo = _unitOfWork.GetRepository<Style>();
-            var style = await styleRepo.GetByIdAsync(requestDto.StyleId);
+            var style = await _unitOfWork.StyleRepository.GetByIdAsync(requestDto.StyleId);
             if (style == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, "Style not found!");
-
-            var componentRepo = _unitOfWork.GetRepository<Component>(); // Tạo repository 
 
             var newComponent = new Component
             {
@@ -37,70 +33,48 @@ namespace MamaFit.Services.Service
                 Description = requestDto.Description,
                 Images = requestDto.Images,
                 StyleId = requestDto.StyleId,
+                Style = style,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
                 CreatedBy = GetCurrentUserName()
             };
 
-            await componentRepo.InsertAsync(newComponent);
-            await componentRepo.SaveAsync();
+            await _unitOfWork.ComponentRepository.InsertAsync(newComponent);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(string id)
         {
-            var componentRepo = _unitOfWork.GetRepository<Component>();
-            var component = await componentRepo.Entities
-                .Include(c => c.Options)
-                .FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
+            var component = await _unitOfWork.ComponentRepository.GetByIdAsync(id);
 
             if (component == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, "Component not found!");
 
-            await componentRepo.SoftDeleteAsync(component);
-            await componentRepo.SaveAsync();
+            await _unitOfWork.ComponentRepository.SoftDeleteAsync(component);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<PaginatedList<ComponentResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
         {
-            var componentRepo = _unitOfWork.GetRepository<Component>();
+            var componentList = await _unitOfWork.ComponentRepository.GetAllAsync(index, pageSize, search, sortBy);
 
-            var query = componentRepo.Entities
-                .Where(c => !c.IsDeleted);
+            // Map từng phần tử trong danh sách Items
+            var responseList = componentList.Items.Select(item => _mapper.Map<ComponentResponseDto>(item)).ToList();
 
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                query = query.Where(c => c.Name.Contains(search));
-            }
-
-            query = sortBy?.ToLower() switch
-            {
-                "name_asc" => query.OrderBy(c => c.Name),
-                "name_desc" => query.OrderByDescending(c => c.Name),
-                "createdat_asc" => query.OrderBy(c => c.CreatedAt),
-                "createdat_desc" => query.OrderByDescending(c => c.CreatedAt),
-                _ => query.OrderByDescending(c => c.CreatedAt)
-            };
-
-            var pagedResult = await componentRepo.GetPagging(query, index, pageSize);
-
-            var listComponent = pagedResult.Items
-                .Select(_mapper.Map<ComponentResponseDto>)
-                .ToList();
-
-            return new PaginatedList<ComponentResponseDto>(
-                listComponent,
-                pagedResult.TotalCount,
-                pagedResult.PageNumber,
-                pageSize
+            // Tạo PaginatedList mới với các đối tượng đã map
+            var paginatedResponse = new PaginatedList<ComponentResponseDto>(
+                responseList,
+                componentList.TotalCount,
+                componentList.PageNumber,
+                componentList.PageSize
             );
+
+            return paginatedResponse;
         }
 
         public async Task<ComponentResponseDto> GetByIdAsync(string id)
         {
-            var componentRepo = _unitOfWork.GetRepository<Component>();
-            var component = await componentRepo.Entities
-                .Where(c => !c.IsDeleted)
-                .FirstOrDefaultAsync(c => c.Id == id);
+            var component = _unitOfWork.ComponentRepository.GetById(id);
 
             if (component == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, "Component not found!");
@@ -110,23 +84,18 @@ namespace MamaFit.Services.Service
 
         public async Task UpdateAsync(string id, ComponentRequestDto requestDto)
         {
-            var componentRepo = _unitOfWork.GetRepository<Component>();
-            var optionRepo = _unitOfWork.GetRepository<ComponentOption>();
 
-            var component = await componentRepo.Entities
-                .FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
+            var component = await _unitOfWork.ComponentRepository.GetByIdAsync(id);
 
             if (component == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, "Component not found!");
-
-            optionRepo.DeleteRange(component.Options); // Xóa option cũ
 
             _mapper.Map(requestDto, component);
             component.UpdatedAt = DateTime.UtcNow;
             component.UpdatedBy = GetCurrentUserName();
 
-            await componentRepo.UpdateAsync(component);
-            await componentRepo.SaveAsync();
+            await _unitOfWork.ComponentRepository.UpdateAsync(component);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         private string GetCurrentUserName()

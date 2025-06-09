@@ -12,14 +12,42 @@ namespace MamaFit.Repositories.Implement
         private bool _disposed = false;
         public IUserRepository UserRepository { get; }
         public IRoleRepository RoleRepository { get; }
+        public IAppointmentRepository AppointmentRepository { get; }
+        public ICategoryRepository CategoryRepository { get; }
+        public IStyleRepository StyleRepository { get; }
+        public IComponentRepository ComponentRepository { get; }
+        public IComponentOptionRepository ComponentOptionRepository { get; }
+        public IBranchRepository BranchRepository { get; }
+        public IDesignRequestRepository DesignRequestRepository { get; }
+        public IMaternityDressRepository MaternityDressRepository { get; }
+        public IMaternityDressDetailRepository MaternityDressDetailRepository { get; }
+        public IOrderItemRepository OrderItemRepository { get; }
 
         public UnitOfWork(ApplicationDbContext context,
             IUserRepository userRepository,
-            IRoleRepository roleRepository)
+            IRoleRepository roleRepository,
+            IAppointmentRepository appointmentRepository,
+            IStyleRepository styleRepository,
+            IComponentRepository componentRepository,
+            IComponentOptionRepository componentOptionRepository,
+            IBranchRepository branchRepository,
+            IDesignRequestRepository designRequestRepository,
+            IMaternityDressRepository maternityDressRepository,
+            IMaternityDressDetailRepository maternityDressDetailRepository,
+            IOrderItemRepository orderItemRepository)
         {
             _context = context;
             UserRepository = userRepository;
             RoleRepository = roleRepository;
+            AppointmentRepository = appointmentRepository;
+            StyleRepository = styleRepository;
+            ComponentRepository = componentRepository;
+            ComponentOptionRepository = componentOptionRepository;
+            BranchRepository = branchRepository;
+            DesignRequestRepository = designRequestRepository;
+            MaternityDressDetailRepository = maternityDressDetailRepository;
+            MaternityDressRepository = maternityDressRepository;
+            OrderItemRepository = orderItemRepository;
         }
 
         public int SaveChanges()
@@ -42,7 +70,7 @@ namespace MamaFit.Repositories.Implement
 
             return result;
         }
-        
+
         public async Task<int> SaveChangesAsync()
         {
             int result = -1;

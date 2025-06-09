@@ -1,6 +1,8 @@
+using MamaFit.BusinessObjects.Entity;
+
 namespace MamaFit.Repositories.Interface;
 
-public interface IUserRepository
+public interface IUserRepository : IGenericRepository<ApplicationUser>
 {
     
 }

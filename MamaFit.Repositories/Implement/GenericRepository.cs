@@ -26,7 +26,7 @@ namespace MamaFit.Repositories.Implement
             return _httpContextAccessor.HttpContext?.User?.FindFirst("name")?.Value ?? "System";
         }
         
-        public IQueryable<T> Entities => _context.Set<T>();
+        //public IQueryable<T> Entities => _context.Set<T>();
 
         public void Delete(object id)
         {

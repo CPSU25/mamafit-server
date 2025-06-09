@@ -25,7 +25,7 @@ public class RoleService : IRoleService
     
     public async Task<PaginatedList<RoleResponseDto>> GetAllRolesAsync(int index = 1, int pageSize = 10, string? nameSearch = null)
     {
-        var repo = _unitOfWork.GetRepository<ApplicationUserRole>();
+        var repo = _unitOfWork.RoleRepository.Get
         var query = repo.Entities.Where(x => x.IsDeleted != true);
 
         if (!string.IsNullOrWhiteSpace(nameSearch))

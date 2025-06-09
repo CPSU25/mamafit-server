@@ -94,7 +94,6 @@ public class UserService : IUserService
         
         if (!uploadResult.IsSuccess)
             throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.BadRequest, uploadResult.ErrorMessage ?? "Failed to upload image.");
-        
         user.ProfilePicture = uploadResult.Url;
         user.UpdatedAt = DateTime.UtcNow;
         user.UpdatedBy = GetCurrentUserName();

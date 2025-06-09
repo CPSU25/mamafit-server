@@ -29,7 +29,7 @@ namespace MamaFit.Repositories.Implement
             IUserRepository userRepository,
             IRoleRepository roleRepository,
             ITokenRepository tokenRepository,
-            IOTPRepository otpRepository)
+            IOTPRepository otpRepository,
             IAppointmentRepository appointmentRepository,
             IStyleRepository styleRepository,
             IComponentRepository componentRepository,

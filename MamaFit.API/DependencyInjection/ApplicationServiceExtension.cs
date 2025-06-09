@@ -25,13 +25,15 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();
             services.AddScoped<IOTPRepository, OTPRepository>();
+            services.AddScoped<IBranchRepository, BranchRepository>();
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         }
 
         public static void AddServices(this IServiceCollection services)
         {
             // Add your service registrations here
             services.AddScoped<IAppointmentService, AppointmentService>();
-            services.AddScoped<IAppointmentRepository,AppointmentRepository>();
+            //services.AddScoped<IAppointmentRepository,AppointmentRepository>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();

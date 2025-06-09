@@ -17,24 +17,42 @@ public class RoleRepository : GenericRepository<ApplicationUserRole>, IRoleRepos
     
     public async Task<PaginatedList<ApplicationUserRole>> GetRolesAsync(int index, int pageSize, string? nameSearch)
     {
-        var query = _dbSet.AsQueryable().Where(x => !x.IsDeleted);
-
+        var query = _dbSet.Where(x => !x.IsDeleted);
+        
         if (!string.IsNullOrWhiteSpace(nameSearch))
             query = query.Where(x => x.RoleName.Contains(nameSearch));
-
+        
         return await query.GetPaginatedList(index, pageSize);
     }
 
-    public async Task<ApplicationUserRole?> GetByIdIfNotDeletedAsync(string id)
+    public async Task<ApplicationUserRole?> GetByNameAsync(string name)
     {
-        var role = await _dbSet.FindAsync(id);
-        return (role != null && !role.IsDeleted) ? role : null;
+        return await _dbSet.AsNoTracking()
+            .FirstOrDefaultAsync(r => r.RoleName == name && !r.IsDeleted);
+    }
+    public async Task<ApplicationUserRole?> GetByIdAsync(string id)
+    {
+        return await GetByIdNotDeletedAsync(id);
     }
 
-    public async Task<bool> IsRoleNameExistedAsync(string name, string? excludeId = null)
+    public async Task<bool> IsRoleNameExistedAsync(string name)
     {
-        return await _dbSet.AnyAsync(r =>
-            r.RoleName == name && !r.IsDeleted &&
-            (excludeId == null || r.Id != excludeId));
+        return await _dbSet.AsNoTracking().AnyAsync(r =>
+            r.RoleName == name && !r.IsDeleted);
+    }
+    
+    public async Task CreateAsync(ApplicationUserRole role)
+    {
+        await InsertAsync(role);
+    }
+
+    public async Task UpdateRoleAsync(ApplicationUserRole role)
+    {
+        await UpdateAsync(role);
+    }
+    
+    public async Task DeleteAsync(ApplicationUserRole role)
+    {
+        await SoftDeleteAsync(role.Id);
     }
 }

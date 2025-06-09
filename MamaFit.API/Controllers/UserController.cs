@@ -18,40 +18,6 @@ public class UserController : ControllerBase
         _service = service;
     }
 
-    [HttpPost("send-otp")]
-    public async Task<IActionResult> SendOtp([FromBody] SendOTPRequestDto model)
-    {
-        await _service.SendRegisterOtpAsync(model);
-        return Ok(new ResponseModel<object>(
-            StatusCodes.Status200OK,
-            ResponseCodeConstants.SUCCESS,
-            null,
-            "Send OTP successfully. Please check your email!"
-        ));
-    }
-
-    [HttpPost("resend-otp")]
-    public async Task<IActionResult> ResendOtpAsync([FromBody] SendOTPRequestDto model)
-    {
-        await _service.ResendOtpAsync(model);
-        return Ok(new ResponseModel<object>(
-            StatusCodes.Status200OK,
-            ResponseCodeConstants.SUCCESS,
-            null,
-            "Resend OTP successfully!"
-        ));
-    }
-
-    [HttpPost("complete-register")]
-    public async Task<IActionResult> CompleteRegister([FromBody] RegisterUserRequestDto model)
-    {
-        await _service.CompleteRegisterAsync(model);
-        return Ok(new ResponseModel<object>(
-            StatusCodes.Status201Created,
-            ResponseCodeConstants.CREATED,
-            null,
-            "Register user successfully!"));
-    }
 
     [HttpGet]
     public async Task<IActionResult> GetAll(
@@ -76,7 +42,7 @@ public class UserController : ControllerBase
         return Ok(new ResponseModel<UserReponseDto>(
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,
-            user, 
+            user,
             "Get user by ID successfully!"
         ));
     }
@@ -92,28 +58,28 @@ public class UserController : ControllerBase
             "Update user profile picture successfully!"
         ));
     }
-    
+
     [HttpPut("{userId}")]
     public async Task<IActionResult> UpdateUser(string userId, [FromBody] UpdateUserRequestDto model)
     {
-            var updatedUser = await _service.UpdateUserAsync(userId, model);
-            return Ok(new ResponseModel<UserReponseDto>(
-                StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
-                updatedUser,
-                "Update user successfully!"
-            ));
+        var updatedUser = await _service.UpdateUserAsync(userId, model);
+        return Ok(new ResponseModel<UserReponseDto>(
+            StatusCodes.Status200OK,
+            ResponseCodeConstants.SUCCESS,
+            updatedUser,
+            "Update user successfully!"
+        ));
     }
 
     [HttpDelete("{userId}")]
     public async Task<IActionResult> DeleteUser(string userId)
     {
-            await _service.DeleteUserAsync(userId);
-            return Ok(new ResponseModel<object>(
-                StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
-                null,
-                "Delete user successfully!"
-            ));
+        await _service.DeleteUserAsync(userId);
+        return Ok(new ResponseModel<object>(
+            StatusCodes.Status200OK,
+            ResponseCodeConstants.SUCCESS,
+            null,
+            "Delete user successfully!"
+        ));
     }
 }

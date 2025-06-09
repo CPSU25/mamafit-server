@@ -12,14 +12,20 @@ namespace MamaFit.Repositories.Implement
         private bool _disposed = false;
         public IUserRepository UserRepository { get; }
         public IRoleRepository RoleRepository { get; }
+        public ITokenRepository TokenRepository { get; }
+        public IOTPRepository OTPRepository { get; }
 
         public UnitOfWork(ApplicationDbContext context,
             IUserRepository userRepository,
-            IRoleRepository roleRepository)
+            IRoleRepository roleRepository,
+            ITokenRepository tokenRepository,
+            IOTPRepository otpRepository)
         {
             _context = context;
             UserRepository = userRepository;
             RoleRepository = roleRepository;
+            TokenRepository = tokenRepository;
+            OTPRepository = otpRepository;
         }
 
         public int SaveChanges()

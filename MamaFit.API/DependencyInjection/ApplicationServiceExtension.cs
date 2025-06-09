@@ -2,6 +2,7 @@
 using MamaFit.BusinessObjects.DBContext;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Interface;
+using MamaFit.Repositories.Repository;
 using MamaFit.Services.ExternalService;
 using MamaFit.Services.Interface;
 using MamaFit.Services.Mapper;
@@ -20,6 +21,10 @@ namespace MamaFit.API.DependencyInjection
         {
             // Add your repository registrations here
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<ITokenRepository, TokenRepository>();
+            services.AddScoped<IOTPRepository, OTPRepository>();
         }
 
         public static void AddServices(this IServiceCollection services)
@@ -38,7 +43,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IComponentOptionService, ComponentOptionService>();
             services.AddTransient<IEmailSenderSevice, EmailSenderService>();
             services.AddScoped<ICloudinaryService, CloudinaryService>();
-            services.AddScoped<IMeasurementDiaryService, MeasurementDiaryService>();
+            //services.AddScoped<IMeasurementDiaryService, MeasurementDiaryService>();
         }
 
         public static IServiceCollection AddHttpClientServices(this IServiceCollection services)

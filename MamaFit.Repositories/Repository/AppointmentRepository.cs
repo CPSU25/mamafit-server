@@ -49,7 +49,7 @@ namespace MamaFit.Repositories.Repository
             return responseAppointmentList;
         }
 
-        public async Task<PaginatedList<AppointmentResponseDto>> GetByUserId(string userId, int index, int pageSize, string? search, AppointmentOrderBy? sortBy)
+        public async Task<PaginatedList<Appointment>> GetByUserId(string userId, int index, int pageSize, string? search, AppointmentOrderBy? sortBy)
         {
             var query = _dbSet
                .AsNoTracking()

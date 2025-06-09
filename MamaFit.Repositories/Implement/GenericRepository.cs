@@ -112,8 +112,14 @@ namespace MamaFit.Repositories.Implement
         {
             return await _dbSet.FindAsync(id);
         }
+        
+        public async Task<T> GetByIdNotDeletedAsync(object id)
+        {
+            var entity = await _dbSet.FindAsync(id);
+            return (entity != null && !entity.IsDeleted) ? entity : null;
+        }
 
-        public async Task<PaginatedList<T>> GetPagging(IQueryable<T> query, int index, int pageSize)
+        public async Task<PaginatedList<T>> GetPaging(IQueryable<T> query, int index, int pageSize)
         {
             return await query.GetPaginatedList(index, pageSize);
         }

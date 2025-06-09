@@ -38,7 +38,7 @@ namespace MamaFit.Repositories.Repository
                 _ => query.OrderByDescending(u => u.CreatedAt) // default
             };
 
-            var pagedResult = await GetPagging(query, index, pageSize); // Paging
+            var pagedResult = await GetPaging(query, index, pageSize); // Paging
 
             var listStyle = pagedResult.Items
                 .ToList();

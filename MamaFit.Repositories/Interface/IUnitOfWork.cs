@@ -4,6 +4,8 @@
     {
         public IUserRepository UserRepository { get; }
         public IRoleRepository RoleRepository { get; }
+        public ITokenRepository TokenRepository { get; }
+        public IOTPRepository OTPRepository { get; }
         public IAppointmentRepository AppointmentRepository { get; }
         public ICategoryRepository CategoryRepository { get; }
         public IStyleRepository StyleRepository { get; }

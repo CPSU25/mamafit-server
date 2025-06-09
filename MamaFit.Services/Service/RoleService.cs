@@ -25,24 +25,19 @@ public class RoleService : IRoleService
     
     public async Task<PaginatedList<RoleResponseDto>> GetAllRolesAsync(int index = 1, int pageSize = 10, string? nameSearch = null)
     {
-        var repo = _unitOfWork.RoleRepository.Get
-        var query = repo.Entities.Where(x => x.IsDeleted != true);
+        var roles = await _unitOfWork.RoleRepository.GetRolesAsync(index, pageSize, nameSearch);
 
-        if (!string.IsNullOrWhiteSpace(nameSearch))
-        {
-            query = query.Where(x => x.RoleName.Contains(nameSearch));
-        }
-
-        var resultQuery = await repo.GetPagging(query, index, pageSize);
-
-        var responseItems = resultQuery.Items
-            .Select(_mapper.Map<RoleResponseDto>)
+        if (roles == null)
+            throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "No roles found");
+        
+        var responseItems = roles.Items
+            .Select(role => _mapper.Map<RoleResponseDto>(role))
             .ToList();
 
         var responsePaginatedList = new PaginatedList<RoleResponseDto>(
             responseItems,
-            resultQuery.TotalCount,
-            resultQuery.PageNumber,
+            roles.TotalCount,
+            roles.PageNumber,
             pageSize
         );
 
@@ -52,9 +47,8 @@ public class RoleService : IRoleService
 
     public async Task<RoleResponseDto> GetRoleByIdAsync(string id)
     {
-        var repo = _unitOfWork.GetRepository<ApplicationUserRole>();
-        var role = await repo.GetByIdAsync(id);
-        if (role == null || role.IsDeleted == true)
+        var role = await _unitOfWork.RoleRepository.GetByIdAsync(id);
+        if (role == null)
             throw new ErrorException(StatusCodes.Status404NotFound,
                 ErrorCode.NotFound, "Role is not exist!"
                 );
@@ -63,49 +57,46 @@ public class RoleService : IRoleService
     
     public async Task<RoleResponseDto> CreateRoleAsync(RoleRequestDto model)
     {
-        var repo = _unitOfWork.GetRepository<ApplicationUserRole>();
-        bool exist = repo.Entities.Any(r => r.RoleName == model.RoleName && r.IsDeleted != true);
+        var exist = await _unitOfWork.RoleRepository.IsRoleNameExistedAsync(model.RoleName);
         if (exist)
             throw new ErrorException(StatusCodes.Status409Conflict,
                 ErrorCode.Conflicted, "Role already existed");
         
         var role = _mapper.Map<ApplicationUserRole>(model);
-        await repo.InsertAsync(role);
-        await _unitOfWork.SaveAsync();
+        await _unitOfWork.RoleRepository.CreateAsync(role);
+        await _unitOfWork.SaveChangesAsync();
         return _mapper.Map<RoleResponseDto>(role);
     }
     
     public async Task<RoleResponseDto> UpdateRoleAsync(string id, RoleRequestDto model)
     {
-        var repo = _unitOfWork.GetRepository<ApplicationUserRole>();
-        var role = await repo.GetByIdAsync(id);
-        if (role == null || role.IsDeleted)
+        var role = await _unitOfWork.RoleRepository.GetByIdAsync(id);
+        if (role == null)
             throw new ErrorException(StatusCodes.Status404NotFound,
                 ErrorCode.NotFound, "Role is not exist!"
             );
 
-        bool exist = repo.Entities.Any(r => r.RoleName == model.RoleName && r.Id != id && r.IsDeleted != true);
+        bool exist = await _unitOfWork.RoleRepository.IsRoleNameExistedAsync(model.RoleName);
         if (exist)
             throw new ErrorException(StatusCodes.Status409Conflict,
                 ErrorCode.Conflicted, "Role already existed");
 
         role.RoleName = model.RoleName;
-        
-        await repo.UpdateAsync(role);
-        await _unitOfWork.SaveAsync();
+
+        await _unitOfWork.RoleRepository.UpdateRoleAsync(role);
+        await _unitOfWork.SaveChangesAsync();
         return _mapper.Map<RoleResponseDto>(role);
     }
     
     public async Task DeleteRoleAsync(string id)
     {
-        var repo = _unitOfWork.GetRepository<ApplicationUserRole>();
-        var role = await repo.GetByIdAsync(id);
-        if (role == null || role.IsDeleted)
+        var role = await _unitOfWork.RoleRepository.GetByIdAsync(id);
+        if (role == null)
             throw new ErrorException(StatusCodes.Status404NotFound,
                 ErrorCode.NotFound, "Role is not exist!"
             );
         
-        await repo.SoftDeleteAsync(role);
-        await _unitOfWork.SaveAsync();
+        await _unitOfWork.RoleRepository.DeleteAsync(role);
+        await _unitOfWork.SaveChangesAsync();
     }
 }

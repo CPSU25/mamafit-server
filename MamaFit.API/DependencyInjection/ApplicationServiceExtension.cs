@@ -21,13 +21,19 @@ namespace MamaFit.API.DependencyInjection
         {
             // Add your repository registrations here
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<ITokenRepository, TokenRepository>();
+            services.AddScoped<IOTPRepository, OTPRepository>();
+            services.AddScoped<IBranchRepository, BranchRepository>();
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         }
 
         public static void AddServices(this IServiceCollection services)
         {
             // Add your service registrations here
             services.AddScoped<IAppointmentService, AppointmentService>();
-            services.AddScoped<IAppointmentRepository,AppointmentRepository>();
+            //services.AddScoped<IAppointmentRepository,AppointmentRepository>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
@@ -47,7 +53,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IComponentOptionRepository, ComponentOptionRepository>();
             services.AddTransient<IEmailSenderSevice, EmailSenderService>();
             services.AddScoped<ICloudinaryService, CloudinaryService>();
-            services.AddScoped<IMeasurementDiaryService, MeasurementDiaryService>();
+            //services.AddScoped<IMeasurementDiaryService, MeasurementDiaryService>();
             services.AddScoped<IBranchRepository, IBranchRepository>();
             services.AddScoped<IOrderItemRepository, IOrderItemRepository>();
         }

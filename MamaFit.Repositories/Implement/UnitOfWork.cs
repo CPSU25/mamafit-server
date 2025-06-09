@@ -12,6 +12,8 @@ namespace MamaFit.Repositories.Implement
         private bool _disposed = false;
         public IUserRepository UserRepository { get; }
         public IRoleRepository RoleRepository { get; }
+        public ITokenRepository TokenRepository { get; }
+        public IOTPRepository OTPRepository { get; }
         public IAppointmentRepository AppointmentRepository { get; }
         public ICategoryRepository CategoryRepository { get; }
         public IStyleRepository StyleRepository { get; }
@@ -26,6 +28,8 @@ namespace MamaFit.Repositories.Implement
         public UnitOfWork(ApplicationDbContext context,
             IUserRepository userRepository,
             IRoleRepository roleRepository,
+            ITokenRepository tokenRepository,
+            IOTPRepository otpRepository,
             IAppointmentRepository appointmentRepository,
             IStyleRepository styleRepository,
             IComponentRepository componentRepository,
@@ -39,6 +43,8 @@ namespace MamaFit.Repositories.Implement
             _context = context;
             UserRepository = userRepository;
             RoleRepository = roleRepository;
+            TokenRepository = tokenRepository;
+            OTPRepository = otpRepository;
             AppointmentRepository = appointmentRepository;
             StyleRepository = styleRepository;
             ComponentRepository = componentRepository;

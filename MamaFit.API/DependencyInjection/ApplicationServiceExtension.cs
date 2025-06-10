@@ -134,7 +134,7 @@ namespace MamaFit.API.DependencyInjection
                         ValidateAudience = true,
                         ValidAudience = audience,
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!)),
                         ValidateLifetime = true,
                         ClockSkew = TimeSpan.Zero // Tùy chỉnh: giảm thời gian lệch đồng hồ, cho chặt
                     };

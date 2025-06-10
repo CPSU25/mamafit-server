@@ -4,16 +4,15 @@ using MamaFit.API.DependencyInjection;
 using NLog.Web;
 using System.Text.Json.Serialization;
 using MamaFit.Repositories.Helper;
+using NLog;
 
 namespace MamaFit.API
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
-
-            // Add services to the container.
-            var logger = NLog.LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config")).GetCurrentClassLogger();
+            var logger = NLog.LogManager.Setup().LoadConfigurationFromFile(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config")).GetCurrentClassLogger();
             try
             {
                 var builder = WebApplication.CreateBuilder(args);

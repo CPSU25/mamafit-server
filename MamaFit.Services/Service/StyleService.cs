@@ -66,6 +66,31 @@ namespace MamaFit.Services.Service
             return paginatedResponse;
         }
 
+        public async Task<PaginatedList<StyleResponseDto>> GetAllByCategoryAsync(string categoryId, int index, int pageSize, string? search, string? sortBy)
+        {
+
+            var categpory = await _unitOfWork.CategoryRepository.GetByIdAsync(categoryId);
+            if (categpory == null)
+                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Category is not available");
+
+            var styleList = await _unitOfWork.StyleRepository.GetAllByCategoryAsync(categoryId,index, pageSize, search, sortBy);
+            if (styleList == null)
+                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "No record found");
+
+            // Map từng phần tử trong danh sách Items
+            var responseList = styleList.Items.Select(item => _mapper.Map<StyleResponseDto>(item)).ToList();
+
+            // Tạo PaginatedList mới với các đối tượng đã map
+            var paginatedResponse = new PaginatedList<StyleResponseDto>(
+                responseList,
+                styleList.TotalCount,
+                styleList.PageNumber,
+                styleList.PageSize
+            );
+
+            return paginatedResponse;
+        }
+
         public async Task<StyleResponseDto> GetByIdAsync(string id)
         {
             var oldStyle = await _unitOfWork.StyleRepository.GetByIdAsync(id);

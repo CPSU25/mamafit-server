@@ -138,7 +138,7 @@ public class AuthService : IAuthService
         var userToken = await _unitOfWork.TokenRepository.GetTokenAsync(model.RefreshToken, TokenType.REFRESH_TOKEN);
 
         if (userToken == null)
-            throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.BadRequest,
+            throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.UnAuthorized,
                 "Invalid refresh token!");
 
         if (userToken.ExpiredAt < DateTime.UtcNow)
@@ -210,47 +210,79 @@ public class AuthService : IAuthService
     public async Task SendRegisterOtpAsync(SendOTPRequestDto model)
     {
         var isExist = await _unitOfWork.UserRepository.GetByEmailPhoneAsync(model.Email, model.PhoneNumber);
-        if ((isExist.PhoneNumber == model.PhoneNumber || isExist.UserEmail == model.Email) && isExist.IsVerify)
-            throw new ErrorException(StatusCodes.Status400BadRequest,
-                ErrorCode.BadRequest, "Email or phone number has already been registered!");
-        var user = await _unitOfWork.UserRepository.GetByEmailAsync(model.Email);
-        if (user == null)
+        if (isExist == null)
         {
-            user = _mapper.Map<ApplicationUser>(model);
-            {
-                user.IsVerify = false;
-            };
+            var user = _mapper.Map<ApplicationUser>(model);
+            user.UserEmail = model.Email;
+            user.PhoneNumber = model.PhoneNumber;
+            user.IsVerify = false;
             await _unitOfWork.UserRepository.CreateUserAsync(user);
             await _unitOfWork.SaveChangesAsync();
+            
+            string otpCode = GenerateOtpCode();
+            string otpHash = HashHelper.HashOtp(otpCode);
+            var otp = new OTP
+            {
+                UserId = user.Id,
+                Code = otpHash,
+                ExpiredAt = DateTime.UtcNow.AddMinutes(1),
+                OTPType = OTPType.REGISTER
+            };
+            await _unitOfWork.OTPRepository.CreateOTPAsync(otp);
+            await _unitOfWork.SaveChangesAsync();
+
+            await SendOtpEmailAsync(model.Email, otpCode);
         }
         else
         {
-            var oldOtps = await _unitOfWork.OTPRepository.GetOTPAsync(user.Id, null, OTPType.REGISTER);
+            if ((isExist.PhoneNumber == model.PhoneNumber || isExist.UserEmail == model.Email) && isExist.IsVerify)
+            {
+                throw new ErrorException(StatusCodes.Status400BadRequest,
+                    ErrorCode.BadRequest, "Email or phone number has already been registered!");
+            }
+            var isEmailUsed = await _unitOfWork.UserRepository.GetByEmailAsync(model.Email);
+            if (isEmailUsed != null && isEmailUsed.IsVerify)
+            {
+                throw new ErrorException(StatusCodes.Status400BadRequest,
+                    ErrorCode.BadRequest, "Email has already been registered by another user!");
+            }
+            var isPhoneUsed = await _unitOfWork.UserRepository.GetByPhoneNumberAsync(model.PhoneNumber);
+            if (isPhoneUsed != null && isPhoneUsed.IsVerify)
+            {
+                throw new ErrorException(StatusCodes.Status400BadRequest,
+                    ErrorCode.BadRequest, "Phone number has already been registered by another user!");
+            }
+            
+            var oldOtps = await _unitOfWork.OTPRepository.GetOTPAsync(isExist.Id, null, OTPType.REGISTER);
             await _unitOfWork.OTPRepository.DeleteOTPAsync(oldOtps);
             await _unitOfWork.SaveChangesAsync();
-        }
-        string otpCode = GenerateOtpCode();
-        string otpHash = HashHelper.HashOtp(otpCode);
-        var otp = new OTP
-        {
-            UserId = user.Id,
-            Code = otpHash,
-            ExpiredAt = DateTime.UtcNow.AddMinutes(1),
-            OTPType = OTPType.REGISTER
-        };
-        await _unitOfWork.OTPRepository.CreateOTPAsync(otp);
-        await _unitOfWork.SaveChangesAsync();
+            
+            string otpCode = GenerateOtpCode();
+            string otpHash = HashHelper.HashOtp(otpCode);
+            var otp = new OTP
+            {
+                UserId = isExist.Id,
+                Code = otpHash,
+                ExpiredAt = DateTime.UtcNow.AddMinutes(3),
+                OTPType = OTPType.REGISTER
+            };
+            await _unitOfWork.OTPRepository.CreateOTPAsync(otp);
+            await _unitOfWork.SaveChangesAsync();
 
-        await SendOtpEmailAsync(model.Email, otpCode);
+            await SendOtpEmailAsync(model.Email, otpCode);
+        }
     }
 
     public async Task CompleteRegisterAsync(RegisterUserRequestDto model)
     {
         var user = await _unitOfWork.UserRepository.GetByEmailPhoneAsync(model.Email, model.PhoneNumber);
 
-        if (user == null || user.IsVerify)
+        if (user == null)
             throw new ErrorException(StatusCodes.Status400BadRequest,
-                ErrorCode.BadRequest, "Invalid email or phone number, or user already registered!");
+                ErrorCode.BadRequest, "Invalid email or phone number. Please check your information and try again.");
+        if(user.IsVerify == false)
+            throw new ErrorException(StatusCodes.Status400BadRequest,
+                ErrorCode.BadRequest, "User is not verified! Please verify your account first.");
         
         var salt = HashHelper.GenerateSalt();
         var hashPassword = HashHelper.HashPassword(model.Password, salt);

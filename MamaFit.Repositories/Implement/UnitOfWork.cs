@@ -1,8 +1,5 @@
 ﻿using MamaFit.Repositories.Interface;
 using MamaFit.BusinessObjects.DBContext;
-using MamaFit.BusinessObjects.Base;
-using MamaFit.Repositories.Repository;
-using Microsoft.AspNetCore.Http;
 
 namespace MamaFit.Repositories.Implement
 {
@@ -31,6 +28,7 @@ namespace MamaFit.Repositories.Implement
             ITokenRepository tokenRepository,
             IOTPRepository otpRepository,
             IAppointmentRepository appointmentRepository,
+            ICategoryRepository categoryRepository,
             IStyleRepository styleRepository,
             IComponentRepository componentRepository,
             IComponentOptionRepository componentOptionRepository,
@@ -46,6 +44,7 @@ namespace MamaFit.Repositories.Implement
             TokenRepository = tokenRepository;
             OTPRepository = otpRepository;
             AppointmentRepository = appointmentRepository;
+            CategoryRepository = categoryRepository;
             StyleRepository = styleRepository;
             ComponentRepository = componentRepository;
             ComponentOptionRepository = componentOptionRepository;

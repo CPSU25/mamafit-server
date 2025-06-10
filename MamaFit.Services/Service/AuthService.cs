@@ -417,7 +417,7 @@ public class AuthService : IAuthService
         var user = await _unitOfWork.UserRepository.GetByIdAsync(payload.sub);
 
         var userByEmail = await _unitOfWork.UserRepository.GetByEmailAsync(payload.email.ToLower());
-        if (userByEmail != null && userByEmail.IsVerify)
+        if (userByEmail != null && userByEmail.IsVerify && userByEmail.CreatedBy != "GoogleOAuth")
         {
             throw new ErrorException(StatusCodes.Status409Conflict, ErrorCode.Conflicted,
                 "Email has been aldready registered!");

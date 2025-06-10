@@ -47,6 +47,10 @@ public class UserRepository : GenericRepository<ApplicationUser>, IUserRepositor
     {
         return await _dbSet.FirstOrDefaultAsync(x => x.UserEmail.ToLower() == email && x.PhoneNumber == phone && !x.IsDeleted);
     }
+    public async Task<ApplicationUser?> GetByPhoneNumberAsync(string phoneNumber) 
+    {
+        return await _dbSet.FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber && !x.IsDeleted);
+    }
     public async Task<ApplicationUser?> GetByEmailAsync(string email)
     {
         return await _dbSet.FirstOrDefaultAsync(x => x.UserEmail.ToLower() == email && !x.IsDeleted);

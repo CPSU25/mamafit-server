@@ -50,7 +50,7 @@ namespace MamaFit.Services.Service
             if (component == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, "Component not found!");
 
-            await _unitOfWork.ComponentRepository.SoftDeleteAsync(component);
+            await _unitOfWork.ComponentRepository.SoftDeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
         }
 

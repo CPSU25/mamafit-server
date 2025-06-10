@@ -9,6 +9,7 @@ public interface IUserRepository : IGenericRepository<ApplicationUser>
     Task<ApplicationUser?> GetByEmailAsync(string email);
     Task<ApplicationUser?> GetByUsernameAsync(string username);
     Task<ApplicationUser?> GetByEmailPhoneAsync(string email, string phoneNumber);
+    Task<ApplicationUser?> GetByPhoneNumberAsync(string phoneNumber);
     Task CreateUserAsync(ApplicationUser user);
     Task UpdateUserAsync(ApplicationUser user);
     Task DeleteUserAsync(ApplicationUser user);

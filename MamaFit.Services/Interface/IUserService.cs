@@ -9,15 +9,10 @@ namespace MamaFit.Services.Interface;
 
 public interface IUserService
 {
-    Task CompleteRegisterAsync(RegisterUserRequestDto model);
-    Task SendRegisterOtpAsync(SendOTPRequestDto model);
-    Task ResendOtpAsync(SendOTPRequestDto model);
-
     Task<PaginatedList<UserReponseDto>> GetAllUsersAsync(
         int index, int pageSize, string? nameSearch, string? roleName);
     Task<UserReponseDto> GetUserByIdAsync(string userId);
     Task<UserReponseDto> UpdateUserAsync(string userId, UpdateUserRequestDto model);
     Task<PhotoUploadResult> UpdateUserProfilePictureAsync(UploadImageDto model);
     Task DeleteUserAsync(string userId);
-    
 }

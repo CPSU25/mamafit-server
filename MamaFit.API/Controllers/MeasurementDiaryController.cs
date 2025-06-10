@@ -26,7 +26,7 @@ public class MeasurementDiaryController : ControllerBase
         return Ok( new ResponseModel<PaginatedList<MeasurementDiaryResponseDto>>(
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,
-            diaries, null, "Get all measurement diaries successfully!"
+            diaries, "Get all measurement diaries successfully!"
         ));
     }
     
@@ -37,7 +37,7 @@ public class MeasurementDiaryController : ControllerBase
         return Ok(new ResponseModel<MeasurementDiaryResponseDto>(
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,
-            diary, null, 
+            diary,
             "Get measurement diary by ID successfully!"
         ));
     }
@@ -49,7 +49,7 @@ public class MeasurementDiaryController : ControllerBase
         return StatusCode(StatusCodes.Status201Created, new ResponseModel<MeasurementDiaryResponseDto>(
             StatusCodes.Status201Created,
             ResponseCodeConstants.CREATED,
-            diary, null,
+            diary,
             "Measurement diary created successfully!"
         ));
     }
@@ -61,7 +61,7 @@ public class MeasurementDiaryController : ControllerBase
         return Ok(new ResponseModel<MeasurementDiaryResponseDto>(
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,
-            diary, null,
+            diary,
             "Measurement diary updated successfully!"
         ));
     }
@@ -73,7 +73,7 @@ public class MeasurementDiaryController : ControllerBase
         return Ok(new ResponseModel<string>(
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,
-            null, null,
+            null,
             "Measurement diary deleted successfully!"
         ));
     }

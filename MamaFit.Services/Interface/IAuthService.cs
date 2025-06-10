@@ -11,8 +11,10 @@ public interface IAuthService
     Task<PermissionResponseDto> GetCurrentUserAsync();
     Task<TokenResponseDto> SignInAsync(LoginRequestDto model);
     Task LogoutAsync(LogoutRequestDto model);
+    Task ResendOtpAsync(SendOTPRequestDto model);
     Task<TokenResponseDto> RefreshTokenAsync(RefreshTokenRequestDto model);
-    TokenResponseDto GenerateTokens(ApplicationUser user, string role);
+    Task CompleteRegisterAsync(RegisterUserRequestDto model);
+    Task SendRegisterOtpAsync(SendOTPRequestDto model);
     Task VerifyOtpAsync(VerifyOtpRequestDto model);
     GoogleJwtPayload DecodePayload(string jwtToken);
     Task<TokenResponseDto> SignInWithGoogleJwtAsync(string jwtToken, string? notificationToken = null);

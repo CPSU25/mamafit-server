@@ -28,7 +28,6 @@ namespace MamaFit.API.Controllers
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 categories,
-                null,
                 "Get all categories successfully!"
             ));
         }
@@ -41,7 +40,6 @@ namespace MamaFit.API.Controllers
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 category,
-                null,
                 "Get category successfully!"
             ));
         }
@@ -55,7 +53,6 @@ namespace MamaFit.API.Controllers
                     StatusCodes.Status201Created,
                     ResponseCodeConstants.CREATED,
                     null,
-                    null,
                     "Created category successfully!"
                 ));
         }
@@ -68,7 +65,6 @@ namespace MamaFit.API.Controllers
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 null,
-                null,
                 "Updated category successfully!"
             ));
         }
@@ -80,7 +76,6 @@ namespace MamaFit.API.Controllers
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
-                null,
                 null,
                 "Deleted category successfully!"
             ));

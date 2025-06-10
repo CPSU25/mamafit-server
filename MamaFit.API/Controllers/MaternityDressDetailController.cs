@@ -29,7 +29,6 @@ namespace MamaFit.API.Controllers
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 result,
-                null,
                 "Get all maternity dress details successfully!"
             ));
         }
@@ -43,7 +42,6 @@ namespace MamaFit.API.Controllers
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 result,
-                null,
                 "Get maternity dress detail successfully!"
             ));
         }
@@ -56,7 +54,6 @@ namespace MamaFit.API.Controllers
             return StatusCode(StatusCodes.Status201Created, new ResponseModel<string>(
                 StatusCodes.Status201Created,
                 ResponseCodeConstants.CREATED,
-                null,
                 null,
                 "Created maternity dress detail successfully!"
             ));
@@ -71,7 +68,6 @@ namespace MamaFit.API.Controllers
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 null,
-                null,
                 "Updated maternity dress detail successfully!"
             ));
         }
@@ -84,7 +80,6 @@ namespace MamaFit.API.Controllers
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
-                null,
                 null,
                 "Deleted maternity dress detail successfully!"
             ));

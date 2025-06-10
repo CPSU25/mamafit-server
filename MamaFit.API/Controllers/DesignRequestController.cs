@@ -28,7 +28,6 @@ namespace MamaFit.API.Controllers
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 requests,
-                null,
                 "Get all design requests successfully!"
             ));
         }
@@ -41,7 +40,6 @@ namespace MamaFit.API.Controllers
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 request,
-                null,
                 "Get design request successfully!"
             ));
         }
@@ -55,7 +53,6 @@ namespace MamaFit.API.Controllers
                     StatusCodes.Status201Created,
                     ResponseCodeConstants.CREATED,
                     null,
-                    null,
                     "Created design request successfully!"
                 ));
         }
@@ -67,7 +64,6 @@ namespace MamaFit.API.Controllers
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
-                null,
                 null,
                 "Deleted design request successfully!"
             ));

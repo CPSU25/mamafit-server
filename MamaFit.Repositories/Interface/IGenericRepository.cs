@@ -7,8 +7,8 @@ namespace MamaFit.Repositories.Interface
     public interface IGenericRepository<T> where T : BaseEntity
     {
         IEnumerable<T> Get(int index, int pageSize);
-        IQueryable<T> Entities { get; }
-        Task<PaginatedList<T>> GetPagging(IQueryable<T> query, int index, int pageSize);
+        //IQueryable<T> Entities { get; }
+        Task<PaginatedList<T>> GetPaging(IQueryable<T> query, int index, int pageSize);
         T GetById(object id);
         void Insert(T obj);
         void InsertRange(List<T> obj);

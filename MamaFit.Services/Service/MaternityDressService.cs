@@ -5,7 +5,6 @@ using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 namespace MamaFit.Services.Service
 {
@@ -24,7 +23,6 @@ namespace MamaFit.Services.Service
 
         public async Task CreateAsync(MaternityDressRequestDto requestDto)
         {
-            var maternityDressRepo = _unitOfWork.GetRepository<MaternityDress>(); //Repo của Dress
 
             var newMaternityDress = new MaternityDress // Tạo mới Dress kèm với DressDetail
             {
@@ -38,71 +36,44 @@ namespace MamaFit.Services.Service
                 CreatedBy = GetCurrentUserName()
             };
 
-            await maternityDressRepo.InsertAsync(newMaternityDress); // Insert + Save changes
-            await _unitOfWork.SaveAsync();
+            await _unitOfWork.MaternityDressRepository.InsertAsync(newMaternityDress); // Insert + Save changes
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(string id)
         {
-            var maternityDressRepo = _unitOfWork.GetRepository<MaternityDress>(); //Repo của Dress
 
-            var oldMaternityDress = await GetByIdAsync(id);// Tìm oldMaternity
+            var oldMaternityDress = await _unitOfWork.MaternityDressRepository.GetByIdAsync(id);// Tìm oldMaternity
 
             if (oldMaternityDress == null)
                 throw new ErrorException(StatusCodes.Status404NotFound,
                 ErrorCode.NotFound, "MaternityDress not found!");// Nếu không có
 
-            await maternityDressRepo.DeleteAsync(id); // Deleted + Save changes
-            await _unitOfWork.SaveAsync();
+            await _unitOfWork.MaternityDressRepository.DeleteAsync(id); // Deleted + Save changes
+            await _unitOfWork.SaveChangesAsync();
         }
         
         public async Task<PaginatedList<MaternityDressResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
         {
-            var maternityDressRepo = _unitOfWork.GetRepository<MaternityDress>(); //Repo của Dress
+            var maternityDressList = await _unitOfWork.DesignRequestRepository.GetAllAsync(index, pageSize, search, sortBy);
 
-            var query = maternityDressRepo.Entities //Select
-                .Where(md => !md.IsDeleted);
+            // Map từng phần tử trong danh sách Items
+            var responseList = maternityDressList.Items.Select(item => _mapper.Map<MaternityDressResponseDto>(item)).ToList();
 
-            if (!string.IsNullOrWhiteSpace(search)) // Search
-            {
-                query = query.Where(u => u.Name.Contains(search));
-            }
-
-            query = sortBy?.ToLower() switch
-            {
-                "name_asc" => query.OrderBy(u => u.Name),
-                "name_desc" => query.OrderByDescending(u => u.Name),
-                "price_asc" => query.OrderBy(u => u.Details.Min(d => d.Price)),
-                "price_desc" => query.OrderByDescending(u => u.Details.Max(d => d.Price)),
-                "createdat_asc" => query.OrderBy(u => u.CreatedAt),
-                "createdat_desc" => query.OrderByDescending(u => u.CreatedAt),
-                _ => query.OrderByDescending(u => u.CreatedAt) // default
-            };
-
-            var pagedResult = await maternityDressRepo.GetPagging(query, index, pageSize); // Paging
-
-            var listMaternityDress = pagedResult.Items
-                .Select(_mapper.Map<MaternityDressResponseDto>) //Mapping
-                .ToList();
-
-            var responsePaginatedList = new PaginatedList<MaternityDressResponseDto>(
-                listMaternityDress,
-                pagedResult.TotalCount,
-                pagedResult.PageNumber,
-                pageSize
+            // Tạo PaginatedList mới với các đối tượng đã map
+            var paginatedResponse = new PaginatedList<MaternityDressResponseDto>(
+                responseList,
+                maternityDressList.TotalCount,
+                maternityDressList.PageNumber,
+                maternityDressList.PageSize
             );
 
-            return responsePaginatedList;
-
+            return paginatedResponse;
         }
 
         public async Task<MaternityDressResponseDto> GetByIdAsync(string id)
         {
-            var maternityDressRepo = _unitOfWork.GetRepository<MaternityDress>(); //Repo của Dress
-
-            var oldMaternityDress = await maternityDressRepo.Entities
-                .Where(md => !md.IsDeleted)
-                .FirstOrDefaultAsync(md => md.Id.Equals(id)); // Tìm oldMaternity
+            var oldMaternityDress = await _unitOfWork.MaternityDressRepository.GetByIdAsync(id);
 
             if (oldMaternityDress == null)
                 throw new ErrorException(StatusCodes.Status404NotFound,
@@ -113,25 +84,19 @@ namespace MamaFit.Services.Service
 
         public async Task UpdateAsync(string id, MaternityDressRequestDto requestDto)
         {
-            var maternityDressRepo = _unitOfWork.GetRepository<MaternityDress>(); //Repo của Dress 
-            var detailRepo = _unitOfWork.GetRepository<MaternityDressDetail>();
 
-            var oldMaternityDress = await maternityDressRepo.Entities
-                .Include(md => md.Details)
-                .Where(md => !md.IsDeleted)
-                .FirstOrDefaultAsync(md => md.Id.Equals(id)); // Tìm oldMaternity
+            var oldMaternityDress = await _unitOfWork.MaternityDressRepository.GetByIdAsync(id);
 
             if (oldMaternityDress == null)
                 throw new ErrorException(StatusCodes.Status404NotFound,
                 ErrorCode.NotFound, "MaternityDress not found!"); // Nếu không có
             
-            detailRepo.DeleteRange(oldMaternityDress.Details); // Xoá các bản ghi Details cũ trong database
             _mapper.Map(requestDto, oldMaternityDress); //Auto mapper Dto => dress
             oldMaternityDress.UpdatedAt = DateTime.UtcNow;
             oldMaternityDress.UpdatedBy = GetCurrentUserName();
 
-            await maternityDressRepo.UpdateAsync(oldMaternityDress); //Update + Save changes
-            await maternityDressRepo.SaveAsync();
+            await _unitOfWork.MaternityDressRepository.UpdateAsync(oldMaternityDress); //Update + Save changes
+            await _unitOfWork.SaveChangesAsync();
         }
 
         private string GetCurrentUserName()

@@ -19,7 +19,7 @@ namespace MamaFit.API.Controllers
         {
             _authService = authService;
         }
-        
+
         [Authorize]
         [HttpGet("permission")]
         public async Task<IActionResult> GetCurrentUser()
@@ -29,11 +29,46 @@ namespace MamaFit.API.Controllers
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 user,
-                null,
                 "Get current user successfully!"
             ));
         }
 
+        [HttpPost("send-otp")]
+        public async Task<IActionResult> SendOtp([FromBody] SendOTPRequestDto model)
+        {
+            await _authService.SendRegisterOtpAsync(model);
+            return Ok(new ResponseModel<object>(
+                StatusCodes.Status200OK,
+                ResponseCodeConstants.SUCCESS,
+                null,
+                "Send OTP successfully. Please check your email!"
+            ));
+        }
+
+
+        [HttpPost("resend-otp")]
+        public async Task<IActionResult> ResendOtpAsync([FromBody] SendOTPRequestDto model)
+        {
+            await _authService.ResendOtpAsync(model);
+            return Ok(new ResponseModel<object>(
+                StatusCodes.Status200OK,
+                ResponseCodeConstants.SUCCESS,
+                null,
+                "Resend OTP successfully!"
+            ));
+        }
+
+
+        [HttpPost("complete-register")]
+        public async Task<IActionResult> CompleteRegister([FromBody] RegisterUserRequestDto model)
+        {
+            await _authService.CompleteRegisterAsync(model);
+            return Ok(new ResponseModel<object>(
+                StatusCodes.Status201Created,
+                ResponseCodeConstants.CREATED,
+                null,
+                "Register user successfully!"));
+        }
 
         [HttpPost("signin")]
         public async Task<IActionResult> SignIn([FromBody] LoginRequestDto model)
@@ -42,7 +77,7 @@ namespace MamaFit.API.Controllers
             return Ok(new ResponseModel<TokenResponseDto>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
-                token, null,
+                token,
                 "Login successfully!"
             ));
         }
@@ -50,13 +85,13 @@ namespace MamaFit.API.Controllers
         [HttpPost("login-google")]
         public async Task<IActionResult> LoginGoogle([FromBody] GoogleLoginRequestDto request)
         {
-            var tokenResponse = await _authService.SignInWithGoogleJwtAsync(request.JwtToken, request.NotificationToken);
+            var tokenResponse =
+                await _authService.SignInWithGoogleJwtAsync(request.JwtToken, request.NotificationToken);
 
             var response = new ResponseModel<TokenResponseDto>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 tokenResponse,
-                null,
                 "Login successfully!"
             );
 
@@ -72,7 +107,7 @@ namespace MamaFit.API.Controllers
             return Ok(new ResponseModel<object>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
-                null, null,
+                null,
                 "Logout successfully!"
             ));
         }
@@ -84,7 +119,7 @@ namespace MamaFit.API.Controllers
             return Ok(new ResponseModel<TokenResponseDto>(
                 StatusCodes.Status201Created,
                 ResponseCodeConstants.CREATED,
-                token, null,
+                token,
                 "Refresh token successfully!"
             ));
         }
@@ -96,7 +131,7 @@ namespace MamaFit.API.Controllers
             return Ok(new ResponseModel<object>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
-                null, null,
+                null,
                 "OTP verification successful!"
             ));
         }
@@ -108,7 +143,7 @@ namespace MamaFit.API.Controllers
             return Ok(new ResponseModel<object>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
-                result, null,
+                result,
                 "Decode successfully!"
             ));
         }

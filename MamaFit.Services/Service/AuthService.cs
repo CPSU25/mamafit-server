@@ -24,16 +24,18 @@ public class AuthService : IAuthService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IEmailSenderSevice _emailSenderService;
     private readonly IConfiguration _configuration;
     private readonly IMapper _mapper;
 
     public AuthService(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor, IConfiguration configuration,
-        IMapper mapper)
+        IMapper mapper, IEmailSenderSevice emailSenderService)
     {
         _unitOfWork = unitOfWork;
         _httpContextAccessor = httpContextAccessor;
         _configuration = configuration;
         _mapper = mapper;
+        _emailSenderService = emailSenderService;
     }
 
     public async Task<PermissionResponseDto> GetCurrentUserAsync()
@@ -42,10 +44,7 @@ public class AuthService : IAuthService
         if (string.IsNullOrWhiteSpace(userId))
             throw new ErrorException(StatusCodes.Status401Unauthorized, "Unauthorized access!");
 
-        var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
-        var user = await userRepo.Entities
-            .Include(u => u.Role)
-            .FirstOrDefaultAsync(u => u.Id.Equals(userId));
+        var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
 
         if (user == null)
             throw new ErrorException(StatusCodes.Status404NotFound,
@@ -60,35 +59,22 @@ public class AuthService : IAuthService
         if (string.IsNullOrWhiteSpace(userId))
             throw new ErrorException(StatusCodes.Status401Unauthorized, "Unauthorized access!");
 
-        var userTokenRepo = _unitOfWork.GetRepository<ApplicationUserToken>();
-        //Delete refresh token
         if (!string.IsNullOrWhiteSpace(model.RefreshToken))
         {
-            var refreshToken = await userTokenRepo.Entities
-                .FirstOrDefaultAsync(t =>
-                    t.UserId == userId && t.Token == model.RefreshToken && t.TokenType == TokenType.REFRESH_TOKEN);
-            if (refreshToken != null)
-                await userTokenRepo.DeleteAsync(refreshToken.Id);
+                await _unitOfWork.TokenRepository.DeleteTokenAsync(userId, model.RefreshToken, TokenType.REFRESH_TOKEN);
         }
 
-        //Delete notification token
         if (!string.IsNullOrWhiteSpace(model.NotificationToken))
         {
-            var notificationToken = await userTokenRepo.Entities
-                .FirstOrDefaultAsync(t =>
-                    t.UserId == userId && t.Token == model.NotificationToken && t.TokenType == TokenType.NOTIFICATION_TOKEN);
-            if (notificationToken != null)
-                await userTokenRepo.DeleteAsync(notificationToken.Id);
+                await _unitOfWork.TokenRepository.DeleteTokenAsync(userId, model.NotificationToken,
+                    TokenType.NOTIFICATION_TOKEN);
         }
-        await _unitOfWork.SaveAsync();
+
+        await _unitOfWork.SaveChangesAsync();
     }
 
     public async Task<TokenResponseDto> SignInAsync(LoginRequestDto model)
     {
-        if (model == null)
-            throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.BadRequest, "Invalid login data!");
-
-        var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
         ApplicationUser? user = null;
 
         string loginKey = model.Identifier?.Trim();
@@ -99,14 +85,12 @@ public class AuthService : IAuthService
 
         if (loginKey.Contains("@"))
         {
-            string email = loginKey.ToLower();
-            user = await userRepo.Entities.FirstOrDefaultAsync(p =>
-                p.UserEmail != null && p.UserEmail.ToLower() == email
-            );
+            string email = loginKey.ToLower(); 
+            user = await _unitOfWork.UserRepository.GetByEmailAsync(email);
         }
         else
         {
-            user = await userRepo.Entities.FirstOrDefaultAsync(p => p.UserName == loginKey);
+            user = await _unitOfWork.UserRepository.GetByUsernameAsync(loginKey);
         }
 
         if (user == null)
@@ -125,75 +109,23 @@ public class AuthService : IAuthService
             throw new ErrorException(StatusCodes.Status401Unauthorized,
                 ErrorCode.UnAuthorized, "Incorrect password!");
 
-        if (string.IsNullOrWhiteSpace(user.RoleId))
-        {
-            throw new ErrorException(StatusCodes.Status409Conflict,
-                ErrorCode.Conflicted,
-                "The user's RoleId is null or empty. Please check the account data!");
-        }
+        var role = await _unitOfWork.RoleRepository.GetByIdAsync(user.RoleId);
 
-        var roleRepo = _unitOfWork.GetRepository<ApplicationUserRole>();
-        var userRole = await roleRepo.Entities.FirstOrDefaultAsync(x => x.Id == user.RoleId);
-
-        if (userRole == null)
+        if (role == null)
         {
             throw new ErrorException(StatusCodes.Status404NotFound,
                 ErrorCode.NotFound,
                 $"No role found for this account! RoleId: {user.RoleId}");
         }
 
-        string role = userRole.RoleName;
-        var token = GenerateTokens(user, role);
-        var userTokenRepo = _unitOfWork.GetRepository<ApplicationUserToken>();
+        string roleName = role.RoleName;
+        var token = GenerateTokens(user, roleName);
 
-        // 1. Save refresh token
-        var refreshTokenEntity = new ApplicationUserToken
-        {
-            UserId = user.Id,
-            Token = token.RefreshToken,
-            ExpiredAt = DateTime.UtcNow.AddDays(int.Parse(_configuration["JWT:RefreshTokenExpirationDays"])),
-            IsRevoked = false,
-            TokenType = TokenType.REFRESH_TOKEN
-        };
-        await userTokenRepo.InsertAsync(refreshTokenEntity);
-
-        // 2. Save notification token if provided
+        await HandleTokenAsync(user.Id, model.NotificationToken, TokenType.REFRESH_TOKEN);
         if (!string.IsNullOrWhiteSpace(model.NotificationToken))
         {
-            var oldTokens = userTokenRepo.Entities
-                .Where(x => x.UserId == user.Id
-                            && x.TokenType == TokenType.NOTIFICATION_TOKEN
-                            && x.Token != model.NotificationToken)
-                .ToList();
-
-            foreach (var oldToken in oldTokens)
-            {
-                await userTokenRepo.DeleteAsync(oldToken.Id);
-            }
-
-            var existNotiToken = await userTokenRepo.Entities
-                .FirstOrDefaultAsync(x =>
-                    x.UserId == user.Id &&
-                    x.Token == model.NotificationToken &&
-                    x.TokenType == TokenType.NOTIFICATION_TOKEN);
-
-            if (existNotiToken == null)
-            {
-                var notiTokenEntity = new ApplicationUserToken
-                {
-                    UserId = user.Id,
-                    Token = model.NotificationToken,
-                    ExpiredAt = null,
-                    IsRevoked = false,
-                    TokenType = TokenType.NOTIFICATION_TOKEN,
-                    CreatedAt = DateTime.UtcNow
-                };
-                await userTokenRepo.InsertAsync(notiTokenEntity);
-            }
+            await HandleTokenAsync(user.Id, model.NotificationToken, TokenType.NOTIFICATION_TOKEN);
         }
-
-        await _unitOfWork.SaveAsync();
-
         return new TokenResponseDto
         {
             AccessToken = token.AccessToken,
@@ -203,12 +135,7 @@ public class AuthService : IAuthService
 
     public async Task<TokenResponseDto> RefreshTokenAsync(RefreshTokenRequestDto model)
     {
-        var tokenRepo = _unitOfWork.GetRepository<ApplicationUserToken>();
-        var userToken = await tokenRepo.Entities
-            .FirstOrDefaultAsync(t =>
-                t.Token == model.RefreshToken
-                && t.TokenType == TokenType.REFRESH_TOKEN
-                && t.IsRevoked == false);
+        var userToken = await _unitOfWork.TokenRepository.GetTokenAsync(model.RefreshToken, TokenType.REFRESH_TOKEN);
 
         if (userToken == null)
             throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.BadRequest,
@@ -218,31 +145,16 @@ public class AuthService : IAuthService
             throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.TokenExpired,
                 "Refresh token has expired!");
 
-        var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
-        var user = await userRepo.GetByIdAsync(userToken.UserId);
+        var user = await _unitOfWork.UserRepository.GetByIdAsync(userToken.UserId);
         if (user == null || user.IsDeleted == true)
             throw new ErrorException(StatusCodes.Status404NotFound,
                 ErrorCode.NotFound, "User not found or account has been deleted.");
 
-        var roleRepo = _unitOfWork.GetRepository<ApplicationUserRole>();
-        string role = (await roleRepo.FindAsync(x => x.Id == user.RoleId)).RoleName ?? "unknown";
+        var role = await _unitOfWork.RoleRepository.GetByIdAsync(user.RoleId);
+        string roleName = role.RoleName;
 
-        var token = GenerateTokens(user, role);
-
-        userToken.IsRevoked = true;
-        await tokenRepo.UpdateAsync(userToken);
-
-        var refreshTokenEntity = new ApplicationUserToken
-        {
-            UserId = user.Id,
-            Token = token.RefreshToken,
-            ExpiredAt = DateTime.UtcNow.AddDays(int.Parse(_configuration["JWT:RefreshTokenExpirationDays"])),
-            IsRevoked = false,
-            TokenType = TokenType.REFRESH_TOKEN
-        };
-        await tokenRepo.InsertAsync(refreshTokenEntity);
-        await _unitOfWork.SaveAsync();
-
+        var token = GenerateTokens(user, roleName);
+        await HandleTokenAsync(user.Id, model.RefreshToken, TokenType.REFRESH_TOKEN);
         return new TokenResponseDto()
         {
             AccessToken = token.AccessToken,
@@ -252,35 +164,159 @@ public class AuthService : IAuthService
 
     public async Task VerifyOtpAsync(VerifyOtpRequestDto model)
     {
-        var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
-        var user = await userRepo.Entities.FirstOrDefaultAsync(x => x.UserEmail == model.Email);
+        var user = await _unitOfWork.UserRepository.GetByEmailAsync(model.Email);
 
         if (user == null)
             throw new ErrorException(StatusCodes.Status404NotFound,
                 ErrorCode.NotFound, "User not found with the provided email.");
 
         string otpInputHash = HashHelper.HashOtp(model.Code);
-        
-        var otpRepo = _unitOfWork.GetRepository<OTP>();
-        var otp = await otpRepo.Entities
-            .Where(x => x.UserId == user.Id
-                        && x.Code == otpInputHash
-                        && x.OTPType == model.OTPType
-                        && x.ExpiredAt >= DateTime.UtcNow)
-            .OrderByDescending(x => x.ExpiredAt)
-            .FirstOrDefaultAsync();
 
+        var otp = await _unitOfWork.OTPRepository.GetOTPAsync(user.Id, otpInputHash, OTPType.REGISTER);
         if (otp == null)
             throw new ErrorException(StatusCodes.Status400BadRequest,
                 ErrorCode.BadRequest, "Invalid or expired OTP code.");
 
         user.IsVerify = true;
-        await userRepo.UpdateAsync(user);
-
-        otpRepo.Delete(otp.Id);
-        await _unitOfWork.SaveAsync();
+        await _unitOfWork.UserRepository.UpdateUserAsync(user);
+        await _unitOfWork.OTPRepository.DeleteOTPAsync(otp);
+        await _unitOfWork.SaveChangesAsync();
     }
 
+    public async Task ResendOtpAsync(SendOTPRequestDto model)
+    {
+        var user = await _unitOfWork.UserRepository.GetByEmailPhoneAsync(model.Email,model.PhoneNumber);
+        if (user == null)
+            throw new ErrorException(StatusCodes.Status404NotFound,
+                ErrorCode.NotFound, "User not found!");
+        if (user.IsVerify)
+            throw new ErrorException(StatusCodes.Status400BadRequest,
+                ErrorCode.BadRequest, "User is already verified!");
+        
+        string otpCode = GenerateOtpCode();
+        var otp = new OTP
+        {
+            UserId = user.Id,
+            Code = otpCode,
+            ExpiredAt = DateTime.UtcNow.AddMinutes(1),
+            OTPType = OTPType.REGISTER
+        };
+        await _unitOfWork.OTPRepository.CreateOTPAsync(otp);
+        await _unitOfWork.SaveChangesAsync();
+        await SendOtpEmailAsync(model.Email, otpCode);
+    }
+
+
+    public async Task SendRegisterOtpAsync(SendOTPRequestDto model)
+    {
+        var isExist = await _unitOfWork.UserRepository.GetByEmailPhoneAsync(model.Email, model.PhoneNumber);
+        if ((isExist.PhoneNumber == model.PhoneNumber || isExist.UserEmail == model.Email) && isExist.IsVerify)
+            throw new ErrorException(StatusCodes.Status400BadRequest,
+                ErrorCode.BadRequest, "Email or phone number has already been registered!");
+        var user = await _unitOfWork.UserRepository.GetByEmailAsync(model.Email);
+        if (user == null)
+        {
+            user = _mapper.Map<ApplicationUser>(model);
+            {
+                user.IsVerify = false;
+            };
+            await _unitOfWork.UserRepository.CreateUserAsync(user);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        else
+        {
+            var oldOtps = await _unitOfWork.OTPRepository.GetOTPAsync(user.Id, null, OTPType.REGISTER);
+            await _unitOfWork.OTPRepository.DeleteOTPAsync(oldOtps);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        string otpCode = GenerateOtpCode();
+        string otpHash = HashHelper.HashOtp(otpCode);
+        var otp = new OTP
+        {
+            UserId = user.Id,
+            Code = otpHash,
+            ExpiredAt = DateTime.UtcNow.AddMinutes(1),
+            OTPType = OTPType.REGISTER
+        };
+        await _unitOfWork.OTPRepository.CreateOTPAsync(otp);
+        await _unitOfWork.SaveChangesAsync();
+
+        await SendOtpEmailAsync(model.Email, otpCode);
+    }
+
+    public async Task CompleteRegisterAsync(RegisterUserRequestDto model)
+    {
+        var user = await _unitOfWork.UserRepository.GetByEmailPhoneAsync(model.Email, model.PhoneNumber);
+
+        if (user == null || user.IsVerify)
+            throw new ErrorException(StatusCodes.Status400BadRequest,
+                ErrorCode.BadRequest, "Invalid email or phone number, or user already registered!");
+        
+        var salt = HashHelper.GenerateSalt();
+        var hashPassword = HashHelper.HashPassword(model.Password, salt);
+
+        user.HashPassword = hashPassword;
+        user.Salt = salt;
+        
+        var userRole = await _unitOfWork.RoleRepository.GetByNameAsync("User");
+        if (userRole != null)
+            user.RoleId = userRole.Id;
+
+        await _unitOfWork.UserRepository.UpdateUserAsync(user);
+        await _unitOfWork.SaveChangesAsync();
+    }
+
+    
+    public async Task SendOtpEmailAsync(string email, string otpCode)
+    {
+        string subject = "Your OTP Code - MamaFit";
+        string preheader = "Use this OTP code to complete your registration. This code is valid for 60 seconds.";
+
+        string content = $@"
+    <!DOCTYPE html>
+    <html lang=""en"">
+    <head>
+        <meta charset=""UTF-8"">
+        <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+        <meta http-equiv=""X-UA-Compatible"" content=""IE=edge"">
+        <title>Your OTP Code</title>
+        <style>
+            body {{ font-family: Arial, Helvetica, sans-serif; background: #f7f7f7; margin:0; padding:0; }}
+            .container {{ max-width: 480px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 32px 24px; }}
+            .brand {{ font-size: 24px; font-weight: bold; color: #2266cc; margin-bottom: 20px; text-align:center; }}
+            .title {{ font-size: 20px; font-weight: bold; margin-bottom: 8px; color: #333; text-align:center; }}
+            .otp {{ font-size: 28px; font-weight: bold; color: #e91e63; letter-spacing: 6px; margin: 24px 0; text-align:center; }}
+            .message {{ font-size: 16px; color: #333; margin-bottom: 18px; text-align:center; }}
+            .footer {{ margin-top: 36px; font-size: 13px; color: #888; text-align:center; }}
+        </style>
+    </head>
+    <body>
+        <span style=""display:none!important;"">{preheader}</span>
+        <div class=""container"">
+            <div class=""brand"">MamaFit</div>
+            <div class=""title"">Your One-Time Password (OTP)</div>
+            <div class=""message"">Hello,<br/>Use the code below to complete your registration.<br/>This code will expire in <b>60 seconds</b>.</div>
+            <div class=""otp"">{otpCode}</div>
+            <div class=""footer"">
+                If you did not request this, please ignore this email.<br>
+                &copy; {DateTime.Now.Year} MamaFit. All rights reserved.
+            </div>
+        </div>
+    </body>
+    </html>";
+
+        await _emailSenderService.SendEmailAsync(email, subject, content);
+    }
+
+    public static string GenerateOtpCode(int length = 6)
+    {
+        var random = new Random();
+        int min = (int)Math.Pow(10, length - 1);
+        int max = (int)Math.Pow(10, length) - 1;
+        var code = random.Next(min, max + 1);
+        return code.ToString();
+    }
+    
     private bool VerifyPassword(string password, string storedHash, string storedSalt)
     {
         var saltBytes = Convert.FromBase64String(storedSalt);
@@ -288,7 +324,7 @@ public class AuthService : IAuthService
         return Convert.ToBase64String(hashBytes) == storedHash;
     }
 
-    public TokenResponseDto GenerateTokens(ApplicationUser user, string role)
+    private TokenResponseDto GenerateTokens(ApplicationUser user, string role)
     {
         DateTime now = DateTime.UtcNow;
         var accessTokenExpirationMinutes = int.Parse(_configuration["JWT:AccessTokenExpirationMinutes"]);
@@ -346,14 +382,13 @@ public class AuthService : IAuthService
     {
         var payload = DecodePayload(jwtToken);
 
-        var userRepo = _unitOfWork.GetRepository<ApplicationUser>();
-        var user = await userRepo.Entities.FirstOrDefaultAsync(u => u.Id == payload.sub);
+        var user = await _unitOfWork.UserRepository.GetByIdAsync(payload.sub);
 
-        var userByEmail = await userRepo.Entities.FirstOrDefaultAsync(u => u.UserEmail == payload.email && u.CreatedBy.Equals("System"));
-
-        if (userByEmail != null)
+        var userByEmail = await _unitOfWork.UserRepository.GetByEmailAsync(payload.email.ToLower());
+        if (userByEmail != null && userByEmail.IsVerify)
         {
-            throw new ErrorException(StatusCodes.Status409Conflict, ErrorCode.Conflicted, "Email has been aldready registered!");
+            throw new ErrorException(StatusCodes.Status409Conflict, ErrorCode.Conflicted,
+                "Email has been aldready registered!");
         }
 
         if (user == null)
@@ -375,34 +410,30 @@ public class AuthService : IAuthService
                 CreatedBy = "GoogleOAuth"
             };
 
-            var roleRepo = _unitOfWork.GetRepository<ApplicationUserRole>();
-            var defaultRole = await roleRepo.Entities.FirstOrDefaultAsync(r => r.RoleName == "User");
+            var defaultRole = await _unitOfWork.RoleRepository.GetByNameAsync("User");
             if (defaultRole != null)
                 user.RoleId = defaultRole.Id;
 
-            await userRepo.InsertAsync(user);
+            await _unitOfWork.UserRepository.CreateUserAsync(user);
         }
         else
         {
-            // Cập nhật profile picture nếu khác
             if (user.ProfilePicture != payload.picture)
             {
                 user.ProfilePicture = payload.picture;
-                user.UpdatedAt = DateTime.UtcNow;
                 user.UpdatedBy = "GoogleOAuth";
-                await userRepo.UpdateAsync(user);
+                await _unitOfWork.UserRepository.UpdateUserAsync(user);
             }
         }
 
-        await _unitOfWork.SaveAsync();
+        await _unitOfWork.SaveChangesAsync();
 
         if (string.IsNullOrWhiteSpace(user.RoleId))
             throw new ErrorException(StatusCodes.Status409Conflict,
                 ErrorCode.Conflicted,
                 "The user's RoleId is null or empty. Please check the account data!");
 
-        var roleRepoCheck = _unitOfWork.GetRepository<ApplicationUserRole>();
-        var userRole = await roleRepoCheck.Entities.FirstOrDefaultAsync(x => x.Id == user.RoleId);
+        var userRole = await _unitOfWork.RoleRepository.GetByIdAsync(user.RoleId);
 
         if (userRole == null)
             throw new ErrorException(StatusCodes.Status404NotFound,
@@ -412,62 +443,48 @@ public class AuthService : IAuthService
         string role = userRole.RoleName;
 
         var token = GenerateTokens(user, role);
-
-        var userTokenRepo = _unitOfWork.GetRepository<ApplicationUserToken>();
-
-        // Lưu refresh token
-        var refreshTokenEntity = new ApplicationUserToken
-        {
-            UserId = user.Id,
-            Token = token.RefreshToken,
-            ExpiredAt = DateTime.UtcNow.AddDays(int.Parse(_configuration["JWT:RefreshTokenExpirationDays"])),
-            IsRevoked = false,
-            TokenType = TokenType.REFRESH_TOKEN
-        };
-        await userTokenRepo.InsertAsync(refreshTokenEntity);
-
-        // Xử lý notification token nếu có
+        
+        await HandleTokenAsync(user.Id, token.RefreshToken, TokenType.REFRESH_TOKEN);
         if (!string.IsNullOrWhiteSpace(notificationToken))
         {
-            var oldTokens = await userTokenRepo.Entities
-                .Where(x => x.UserId == user.Id
-                            && x.TokenType == TokenType.NOTIFICATION_TOKEN
-                            && x.Token != notificationToken)
-                .ToListAsync();
-
-            foreach (var oldToken in oldTokens)
-            {
-                await userTokenRepo.DeleteAsync(oldToken.Id);
-            }
-
-            var existNotiToken = await userTokenRepo.Entities
-                .FirstOrDefaultAsync(x =>
-                    x.UserId == user.Id &&
-                    x.Token == notificationToken &&
-                    x.TokenType == TokenType.NOTIFICATION_TOKEN);
-
-            if (existNotiToken == null)
-            {
-                var notiTokenEntity = new ApplicationUserToken
-                {
-                    UserId = user.Id,
-                    Token = notificationToken,
-                    ExpiredAt = null,
-                    IsRevoked = false,
-                    TokenType = TokenType.NOTIFICATION_TOKEN,
-                    CreatedAt = DateTime.UtcNow
-                };
-                await userTokenRepo.InsertAsync(notiTokenEntity);
-            }
+            await HandleTokenAsync(user.Id, notificationToken, TokenType.NOTIFICATION_TOKEN);
         }
-
-        await _unitOfWork.SaveAsync();
-
         return new TokenResponseDto
         {
             AccessToken = token.AccessToken,
             RefreshToken = token.RefreshToken
         };
     }
+    
+    private async Task HandleTokenAsync(string userId, string token, TokenType tokenType)
+    {
+        var existingToken = await _unitOfWork.TokenRepository.GetTokenAsync(userId, tokenType);
+        if (existingToken != null)
+        {
+            await _unitOfWork.TokenRepository.DeleteTokenAsync(userId, existingToken.Token, tokenType);
+        }
+        
+        DateTime? expiredAt = null;
+        if (tokenType == TokenType.REFRESH_TOKEN)
+        {
+            expiredAt = DateTime.UtcNow.AddDays(int.Parse(_configuration["JWT:RefreshTokenExpirationDays"]));
+        }
+        if (tokenType == TokenType.NOTIFICATION_TOKEN)
+        {
+            expiredAt = null;
+        }
+        
+        var tokenEntity = new ApplicationUserToken
+        {
+            UserId = userId,
+            Token = token,
+            ExpiredAt = expiredAt,
+            IsRevoked = false,
+            TokenType = tokenType,
+            CreatedAt = DateTime.UtcNow
+        };
 
+        await _unitOfWork.TokenRepository.CreateTokenAsync(tokenEntity);
+        await _unitOfWork.SaveChangesAsync();
+    }
 }

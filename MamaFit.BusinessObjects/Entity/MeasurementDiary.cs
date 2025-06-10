@@ -6,8 +6,18 @@ namespace MamaFit.BusinessObjects.Entity
     {
         public string? UserId { get; set; }
         public string? Name { get; set; }
-        public string? Description { get; set; } 
-        public int NumberOfPregnancy { get; set; }
+        public float? Height { get; set; }
+        public float? Weight { get; set; }
+        public DateTime? DateOfBirth { get; set; }
+        public DateTime? FirstDateOfLastPeriod { get; set; }
+        public float? Bust { get; set; }
+        public float? Waist { get; set; }
+        public float? Hip { get; set; }
+        public int? NumberOfPregnancy { get; set; }
+        public int? AverageMenstrualCycle { get; set; }
+        public DateTime? UltrasoundDate { get; set; }
+        public int WeeksFromUltrasound { get; set; }
+        public DateTime DueDateFromUltrasound { get; set; }
         
         // Nagivation property
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();

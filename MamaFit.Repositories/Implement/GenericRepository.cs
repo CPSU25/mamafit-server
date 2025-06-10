@@ -26,7 +26,7 @@ namespace MamaFit.Repositories.Implement
             return _httpContextAccessor.HttpContext?.User?.FindFirst("name")?.Value ?? "System";
         }
         
-        public IQueryable<T> Entities => _context.Set<T>();
+        //public IQueryable<T> Entities => _context.Set<T>();
 
         public void Delete(object id)
         {
@@ -112,8 +112,14 @@ namespace MamaFit.Repositories.Implement
         {
             return await _dbSet.FindAsync(id);
         }
+        
+        public async Task<T> GetByIdNotDeletedAsync(object id)
+        {
+            var entity = await _dbSet.FindAsync(id);
+            return (entity != null && !entity.IsDeleted) ? entity : null;
+        }
 
-        public async Task<PaginatedList<T>> GetPagging(IQueryable<T> query, int index, int pageSize)
+        public async Task<PaginatedList<T>> GetPaging(IQueryable<T> query, int index, int pageSize)
         {
             return await query.GetPaginatedList(index, pageSize);
         }

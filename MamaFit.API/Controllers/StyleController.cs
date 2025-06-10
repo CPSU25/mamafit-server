@@ -28,7 +28,6 @@ namespace MamaFit.API.Controllers
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 styles,
-                null,
                 "Get all styles successfully!"
             ));
         }
@@ -41,7 +40,6 @@ namespace MamaFit.API.Controllers
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 style,
-                null,
                 "Get style successfully!"
             ));
         }
@@ -55,7 +53,6 @@ namespace MamaFit.API.Controllers
                     StatusCodes.Status201Created,
                     ResponseCodeConstants.CREATED,
                     null,
-                    null,
                     "Created style successfully!"
                 ));
         }
@@ -68,7 +65,6 @@ namespace MamaFit.API.Controllers
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 null,
-                null,
                 "Updated style successfully!"
             ));
         }
@@ -80,7 +76,6 @@ namespace MamaFit.API.Controllers
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
-                null,
                 null,
                 "Deleted style successfully!"
             ));

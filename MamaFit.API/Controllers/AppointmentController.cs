@@ -31,7 +31,6 @@ namespace MamaFit.API.Controllers
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 appointments,
-                null,
                 "Get all appointments successfully!"
             ));
         }
@@ -45,7 +44,6 @@ namespace MamaFit.API.Controllers
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 appointment,
-                null,
                 "Get appointment successfully!"
             ));
         }
@@ -60,7 +58,6 @@ namespace MamaFit.API.Controllers
                     StatusCodes.Status201Created,
                     ResponseCodeConstants.CREATED,
                     null,
-                    null,
                     "Created appointment successfully!"
                 ));
         }
@@ -73,7 +70,6 @@ namespace MamaFit.API.Controllers
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
-                null,
                 null,
                 "Updated appointment successfully!"
             ));
@@ -88,7 +84,6 @@ namespace MamaFit.API.Controllers
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 null,
-                null,
                 "Deleted appointment successfully!"
             ));
         }
@@ -102,7 +97,6 @@ namespace MamaFit.API.Controllers
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 null,
-                null,
                 "Checked-in appointment successfully!"
             ));
         }
@@ -115,7 +109,6 @@ namespace MamaFit.API.Controllers
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
-                null,
                 null,
                 "Checked-out appointment successfully!"
             ));
@@ -131,7 +124,6 @@ namespace MamaFit.API.Controllers
                     StatusCodes.Status400BadRequest,
                     ResponseCodeConstants.BADREQUEST,
                     null,
-                    null,
                     "Cancel reason is required."
                 ));
             }
@@ -140,7 +132,6 @@ namespace MamaFit.API.Controllers
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
-                null,
                 null,
                 "Cancelled appointment successfully!"
             ));

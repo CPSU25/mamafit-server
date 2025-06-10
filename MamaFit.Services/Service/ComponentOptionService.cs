@@ -5,7 +5,6 @@ using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 namespace MamaFit.Services.Service
 {
@@ -24,77 +23,54 @@ namespace MamaFit.Services.Service
 
         public async Task CreateAsync(ComponentOptionRequestDto requestDto)
         {
-            var componentRepo = _unitOfWork.GetRepository<Component>();
-            var component = await componentRepo.GetByIdAsync(requestDto.ComponentId);
+            var component = await _unitOfWork.ComponentRepository.GetByIdAsync(requestDto.ComponentId);
             if (component == null)
-            {
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Component is not available");
-            }
 
-            var componentOptionRepo = _unitOfWork.GetRepository<ComponentOption>();
             var newOption = _mapper.Map<ComponentOption>(requestDto);
 
             newOption.Component = component;
             newOption.CreatedAt = DateTime.UtcNow;
             newOption.CreatedBy = GetCurrentUserName();
 
-            await componentOptionRepo.InsertAsync(newOption);
-            await componentOptionRepo.SaveAsync();
+            await _unitOfWork.ComponentOptionRepository.InsertAsync(newOption);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(string id)
         {
-            var componentOptionRepo = _unitOfWork.GetRepository<ComponentOption>();
-            var oldOption = await componentOptionRepo.GetByIdAsync(id);
+            var oldOption = await _unitOfWork.ComponentOptionRepository.GetByIdAsync(id);
 
             if (oldOption == null)
             {
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Component Option not found");
             }
 
-            await componentOptionRepo.SoftDeleteAsync(id);
-            await componentOptionRepo.SaveAsync();
+            await _unitOfWork.ComponentOptionRepository.SoftDeleteAsync(id);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<PaginatedList<ComponentOptionResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
         {
-            var componentOptionRepo = _unitOfWork.GetRepository<ComponentOption>();
-            var query = componentOptionRepo.Entities
-                .Include(o => o.Component)
-                .Where(o => !o.IsDeleted);
+            var optionList = await _unitOfWork.ComponentOptionRepository.GetAllAsync(index, pageSize, search, sortBy);
 
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                query = query.Where(o => o.Name.Contains(search));
-            }
+            // Map từng phần tử trong danh sách Items
+            var responseList = optionList.Items.Select(item => _mapper.Map<ComponentOptionResponseDto>(item)).ToList();
 
-            query = sortBy?.ToLower() switch
-            {
-                "name_asc" => query.OrderBy(o => o.Name),
-                "name_desc" => query.OrderByDescending(o => o.Name),
-                "createdat_asc" => query.OrderBy(o => o.CreatedAt),
-                "createdat_desc" => query.OrderByDescending(o => o.CreatedAt),
-                _ => query.OrderByDescending(o => o.CreatedAt),
-            };
-
-            var pagedResult = await componentOptionRepo.GetPagging(query, index, pageSize);
-
-            var list = pagedResult.Items
-                .Select(_mapper.Map<ComponentOptionResponseDto>)
-                .ToList();
-
-            return new PaginatedList<ComponentOptionResponseDto>(
-                list,
-                pagedResult.TotalCount,
-                pagedResult.PageNumber,
-                pageSize
+            // Tạo PaginatedList mới với các đối tượng đã map
+            var paginatedResponse = new PaginatedList<ComponentOptionResponseDto>(
+                responseList,
+                optionList.TotalCount,
+                optionList.PageNumber,
+                optionList.PageSize
             );
+
+            return paginatedResponse;
         }
 
         public async Task<ComponentOptionResponseDto> GetByIdAsync(string id)
         {
-            var componentOptionRepo = _unitOfWork.GetRepository<ComponentOption>();
-            var option = await componentOptionRepo.GetByIdAsync(id);
+            var option = await _unitOfWork.ComponentOptionRepository.GetByIdAsync(id);
 
             if (option == null)
             {
@@ -106,8 +82,7 @@ namespace MamaFit.Services.Service
 
         public async Task UpdateAsync(string id, ComponentOptionRequestDto requestDto)
         {
-            var componentOptionRepo = _unitOfWork.GetRepository<ComponentOption>();
-            var oldOption = await componentOptionRepo.GetByIdAsync(id);
+            var oldOption = await _unitOfWork.ComponentOptionRepository.GetByIdAsync(id);
 
             if (oldOption == null)
             {
@@ -118,8 +93,8 @@ namespace MamaFit.Services.Service
             oldOption.UpdatedAt = DateTime.UtcNow;
             oldOption.UpdatedBy = GetCurrentUserName();
 
-            await componentOptionRepo.UpdateAsync(oldOption);
-            await componentOptionRepo.SaveAsync();
+            await _unitOfWork.ComponentOptionRepository.UpdateAsync(oldOption);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         private string GetCurrentUserName()

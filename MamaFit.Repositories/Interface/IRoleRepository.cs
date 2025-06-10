@@ -3,7 +3,7 @@ using MamaFit.Repositories.Infrastructure;
 
 namespace MamaFit.Repositories.Interface;
 
-public interface IRoleRepository
+public interface IRoleRepository : IGenericRepository<ApplicationUserRole>
 {
     Task<PaginatedList<ApplicationUserRole>> GetRolesAsync(int index, int pageSize, string? nameSearch);
     Task<ApplicationUserRole?> GetByIdAsync(string id);

@@ -121,7 +121,7 @@ public class AuthService : IAuthService
         string roleName = role.RoleName;
         var token = GenerateTokens(user, roleName);
 
-        await HandleTokenAsync(user.Id, model.NotificationToken, TokenType.REFRESH_TOKEN);
+        await HandleTokenAsync(user.Id, token.RefreshToken, TokenType.REFRESH_TOKEN);
         if (!string.IsNullOrWhiteSpace(model.NotificationToken))
         {
             await HandleTokenAsync(user.Id, model.NotificationToken, TokenType.NOTIFICATION_TOKEN);
@@ -225,7 +225,7 @@ public class AuthService : IAuthService
             {
                 UserId = user.Id,
                 Code = otpHash,
-                ExpiredAt = DateTime.UtcNow.AddMinutes(1),
+                ExpiredAt = DateTime.UtcNow.AddMinutes(5),
                 OTPType = OTPType.REGISTER
             };
             await _unitOfWork.OTPRepository.CreateOTPAsync(otp);
@@ -263,7 +263,7 @@ public class AuthService : IAuthService
             {
                 UserId = isExist.Id,
                 Code = otpHash,
-                ExpiredAt = DateTime.UtcNow.AddMinutes(3),
+                ExpiredAt = DateTime.UtcNow.AddMinutes(5),
                 OTPType = OTPType.REGISTER
             };
             await _unitOfWork.OTPRepository.CreateOTPAsync(otp);
@@ -327,7 +327,7 @@ public class AuthService : IAuthService
         <div class=""container"">
             <div class=""brand"">MamaFit</div>
             <div class=""title"">Your One-Time Password (OTP)</div>
-            <div class=""message"">Hello,<br/>Use the code below to complete your registration.<br/>This code will expire in <b>60 seconds</b>.</div>
+            <div class=""message"">Hello,<br/>Use the code below to complete your registration.<br/>This code will expire in <b>5 minutes</b>.</div>
             <div class=""otp"">{otpCode}</div>
             <div class=""footer"">
                 If you did not request this, please ignore this email.<br>
@@ -446,7 +446,7 @@ public class AuthService : IAuthService
             if (defaultRole != null)
                 user.RoleId = defaultRole.Id;
 
-            await _unitOfWork.UserRepository.CreateUserAsync(user);
+            await _unitOfWork.UserRepository.InsertWithoutAuditAsync(user);
         }
         else
         {
@@ -454,7 +454,8 @@ public class AuthService : IAuthService
             {
                 user.ProfilePicture = payload.picture;
                 user.UpdatedBy = "GoogleOAuth";
-                await _unitOfWork.UserRepository.UpdateUserAsync(user);
+                user.UpdatedAt = DateTime.UtcNow;
+                await _unitOfWork.UserRepository.UpdateWithoutAuditAsync(user);
             }
         }
 
@@ -490,10 +491,11 @@ public class AuthService : IAuthService
     
     private async Task HandleTokenAsync(string userId, string token, TokenType tokenType)
     {
-        var existingToken = await _unitOfWork.TokenRepository.GetTokenAsync(userId, tokenType);
+        var existingToken = await _unitOfWork.TokenRepository.GetTokenByUserIdAsync(userId, tokenType);
         if (existingToken != null)
-        {
-            await _unitOfWork.TokenRepository.DeleteTokenAsync(userId, existingToken.Token, tokenType);
+        { 
+            _unitOfWork.TokenRepository.DeleteAsync(existingToken);
+            await _unitOfWork.SaveChangesAsync();
         }
         
         DateTime? expiredAt = null;

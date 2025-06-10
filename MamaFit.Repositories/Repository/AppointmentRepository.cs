@@ -38,7 +38,7 @@ namespace MamaFit.Repositories.Repository
                 _ => query.OrderByDescending(u => u.CreatedAt) // default
             };
 
-            var pagedResult = await GetPagging(query, index, pageSize);
+            var pagedResult = await GetPaging(query, index, pageSize);
 
             var listAppointment = pagedResult.Items
                 .ToList();
@@ -79,7 +79,7 @@ namespace MamaFit.Repositories.Repository
             var listAppointment = pagedResult.Items
                 .ToList();
 
-            return new PaginatedList<AppointmentResponseDto>(listAppointment, pagedResult.TotalCount, pagedResult.PageNumber, pageSize);
+            return new PaginatedList<Appointment>(listAppointment, pagedResult.TotalCount, pagedResult.PageNumber, pageSize);
         }
     }
 }

@@ -15,9 +15,14 @@ public class TokenRepository : GenericRepository<ApplicationUserToken>, ITokenRe
     {
     }
 
-    public async Task<ApplicationUserToken> GetTokenAsync(string token, TokenType tokenType)
+    public async Task<ApplicationUserToken?> GetTokenAsync(string token, TokenType tokenType)
     {
         return await _dbSet.FirstOrDefaultAsync(t => t.Token == token && t.TokenType == tokenType);
+    }
+    
+    public async Task<ApplicationUserToken?> GetTokenByUserIdAsync(string userId, TokenType tokenType)
+    {
+        return await _dbSet.FirstOrDefaultAsync(t => t.UserId == userId && t.TokenType == tokenType);
     }
 
     public async Task CreateTokenAsync(ApplicationUserToken userToken)

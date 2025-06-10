@@ -135,6 +135,11 @@ namespace MamaFit.Repositories.Implement
             obj.CreatedBy = GetCurrentUserName();
             await _dbSet.AddAsync(obj);
         }
+        
+        public async Task InsertWithoutAuditAsync(T obj)
+        {
+            await _dbSet.AddAsync(obj);
+        }
 
         public void InsertRange(List<T> obj)
         {
@@ -144,22 +149,17 @@ namespace MamaFit.Repositories.Implement
         {
             await _dbSet.AddRangeAsync(collection);
         }
-
-        public void Save()
-        {
-            _context.SaveChanges();
-        }
-
-        public async Task SaveAsync()
-        {
-            await _context.SaveChangesAsync();
-        }
-
+        
         public void Update(T obj)
         {
             _context.Entry(obj).State = EntityState.Modified;
         }
 
+        public async Task UpdateWithoutAuditAsync(T obj)
+        {
+            _dbSet.Attach(obj);
+            _context.Entry(obj).State = EntityState.Modified;
+        }
         public async Task UpdateAsync(T obj)
         {
             obj.UpdatedAt = DateTime.UtcNow;

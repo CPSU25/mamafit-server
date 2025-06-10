@@ -7,5 +7,6 @@ namespace MamaFit.Repositories.Interface
     public interface IStyleRepository : IGenericRepository<Style>
     {
         Task<PaginatedList<Style>> GetAllAsync(int index, int pageSize, string? search, string? sortBy);
+        Task<PaginatedList<Style>> GetAllByCategoryAsync(string categoryId,int index, int pageSize, string? search, string? sortBy);
     }
 }

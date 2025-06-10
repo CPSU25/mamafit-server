@@ -18,7 +18,7 @@ namespace MamaFit.Repositories.Repository
             var query = _dbSet
                 .Where(c => !c.IsDeleted);
 
-            if (!string.IsNullOrWhiteSpace(search)) // Search
+            if (!string.IsNullOrWhiteSpace(search)) 
             {
                 query = query.Where(u => u.Name.Contains(search));
             }

@@ -37,6 +37,7 @@ namespace MamaFit.Services.Mapper
             CreateMap<RegisterUserRequestDto, ApplicationUser>()
                 .ForMember(dest => dest.HashPassword, opt => opt.Ignore())
                 .ForMember(dest => dest.Salt, opt => opt.Ignore());
+            CreateMap<ApplicationUser, SendOTPRequestDto>().ReverseMap();
 
             //Role Mapper
             CreateMap<ApplicationUserRole, RoleResponseDto>().ReverseMap();

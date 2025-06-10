@@ -32,6 +32,23 @@ namespace MamaFit.API.Controllers
             ));
         }
 
+        [HttpGet("by-category/{categoryId}")]
+        public async Task<IActionResult> GetAllByCategory(
+            string categoryId,
+            [FromQuery] int index = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? search = null,
+            [FromQuery] string? sortBy = "createdat_desc")
+        {
+            var styles = await _styleService.GetAllByCategoryAsync(categoryId, index, pageSize, search, sortBy);
+            return Ok(new ResponseModel<PaginatedList<StyleResponseDto>>(
+                StatusCodes.Status200OK,
+                ResponseCodeConstants.SUCCESS,
+                styles,
+                "Get all styles successfully!"
+            ));
+        }
+
         [HttpGet("{styleId}")]
         public async Task<IActionResult> GetById([FromRoute] string styleId)
         {

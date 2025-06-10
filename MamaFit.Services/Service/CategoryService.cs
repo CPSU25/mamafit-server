@@ -49,7 +49,7 @@ namespace MamaFit.Services.Service
             if (oldCategory == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Category not found!");
 
-            await _unitOfWork.CategoryRepository.SoftDeleteAsync(oldCategory);
+            await _unitOfWork.CategoryRepository.SoftDeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
         }
 

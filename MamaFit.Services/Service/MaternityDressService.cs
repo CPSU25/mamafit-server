@@ -55,7 +55,7 @@ namespace MamaFit.Services.Service
         
         public async Task<PaginatedList<MaternityDressResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
         {
-            var maternityDressList = await _unitOfWork.DesignRequestRepository.GetAllAsync(index, pageSize, search, sortBy);
+            var maternityDressList = await _unitOfWork.MaternityDressRepository.GetAllAsync(index, pageSize, search, sortBy);
 
             // Map từng phần tử trong danh sách Items
             var responseList = maternityDressList.Items.Select(item => _mapper.Map<MaternityDressResponseDto>(item)).ToList();

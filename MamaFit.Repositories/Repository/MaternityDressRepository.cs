@@ -16,10 +16,10 @@ namespace MamaFit.Repositories.Repository
 
         public async Task<PaginatedList<MaternityDress>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
         {
-            var query = _dbSet //Select
+            var query = _dbSet
                  .Where(md => !md.IsDeleted);
 
-            if (!string.IsNullOrWhiteSpace(search)) // Search
+            if (!string.IsNullOrWhiteSpace(search))
             {
                 query = query.Where(u => u.Name.Contains(search));
             }

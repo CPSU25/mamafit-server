@@ -1,5 +1,6 @@
 ﻿using MamaFit.BusinessObjects.Data;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Entity.ChatEntity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -14,6 +15,11 @@ namespace MamaFit.BusinessObjects.DBContext
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
+
+        //DbSet Chat
+        public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<ChatRoom> ChatRooms { get; set; }
+        public DbSet<ChatRoomMember> ChatRoomMembers { get; set; }
 
         public DbSet<OTP> OTPs { get; set; }
         public DbSet<ApplicationUser> Users { get; set; }
@@ -54,6 +60,9 @@ namespace MamaFit.BusinessObjects.DBContext
 
             #region Confiure Table Names
 
+            modelBuilder.Entity<ChatMessage>().ToTable("ChatMessage");
+            modelBuilder.Entity<ChatRoom>().ToTable("ChatRoom");
+            modelBuilder.Entity<ChatRoomMember>().ToTable("ChatRoomMember");
             modelBuilder.Entity<OTP>().ToTable("OTP");
             modelBuilder.Entity<ApplicationUser>().ToTable("User");
             modelBuilder.Entity<ApplicationUserToken>().ToTable("UserToken");
@@ -248,6 +257,49 @@ namespace MamaFit.BusinessObjects.DBContext
                     .WithOne(vd => vd.VoucherBatch)
                     .HasForeignKey(vb => vb.VoucherBatchId)
                     .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<ChatRoom>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Description).HasMaxLength(500);
+            });
+
+            modelBuilder.Entity<ChatMessage>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Message).IsRequired().HasMaxLength(1000);
+                entity.HasIndex(e => e.CreatedAt);
+                entity.HasIndex(e => new { e.ChatRoomId, e.CreatedAt });
+                entity.HasIndex(e => e.SenderId);
+
+                entity.HasOne(m => m.Sender)
+                      .WithMany(u => u.SentMessages)
+                      .HasForeignKey(m => m.SenderId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(m => m.ChatRoom)
+                      .WithMany(r => r.Messages)
+                      .HasForeignKey(m => m.ChatRoomId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<ChatRoomMember>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.ChatRoomId });
+                entity.HasIndex(e => e.UserId);
+                entity.HasIndex(e => e.ChatRoomId);
+
+                entity.HasOne(m => m.User)
+                      .WithMany(u => u.ChatRoomMemberships)
+                      .HasForeignKey(m => m.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(m => m.ChatRoom)
+                      .WithMany(r => r.Members)
+                      .HasForeignKey(m => m.ChatRoomId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             SeedData.Seed(modelBuilder);

@@ -15,5 +15,6 @@ namespace MamaFit.BusinessObjects.DTO.MaternityDressDto
         public string? UpdatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public List<MaternityDressDetailResponseDto> Details { get; set; } = new List<MaternityDressDetailResponseDto>();
     }
 }

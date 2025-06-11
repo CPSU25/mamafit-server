@@ -1,4 +1,5 @@
 ﻿using MamaFit.BusinessObjects.Base;
+using MamaFit.BusinessObjects.Entity.ChatEntity;
 
 namespace MamaFit.BusinessObjects.Entity
 {
@@ -15,6 +16,10 @@ namespace MamaFit.BusinessObjects.Entity
         public string? PhoneNumber { get; set; }
         public bool IsVerify { get; set; } = false;
         public string? RoleId { get; set; }
+
+        //Related chat
+        public string? CurrentConnectionId { get; set; }    
+
         
         //Navigation properties
         public ApplicationUserRole? Role { get; set; }
@@ -33,5 +38,10 @@ namespace MamaFit.BusinessObjects.Entity
         public virtual ICollection<Order>? Orders { get; set; } = [];
         public virtual ICollection<VoucherDiscount>? VoucherDiscounts { get; set; } = [];
         public virtual ICollection<OrderItemTask>? OrderItemTasks { get; set; } = [];
+
+        //Related chat navigation 
+        public virtual ICollection<ChatRoom> CreatedChatRooms { get; set; } = new List<ChatRoom>();
+        public virtual ICollection<ChatRoomMember> ChatRoomMemberships { get; set; } = new List<ChatRoomMember>();
+        public virtual ICollection<ChatMessage> SentMessages { get; set; } = new List<ChatMessage>();
     }
 }

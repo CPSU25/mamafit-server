@@ -5,6 +5,7 @@ using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace MamaFit.Repositories.Repository
 {
@@ -17,7 +18,8 @@ namespace MamaFit.Repositories.Repository
         public async Task<PaginatedList<MaternityDress>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
         {
             var query = _dbSet
-                 .Where(md => !md.IsDeleted);
+                .Include(md => md.Details)
+                .Where(md => !md.IsDeleted);
 
             if (!string.IsNullOrWhiteSpace(search))
             {

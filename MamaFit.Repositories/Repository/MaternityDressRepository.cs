@@ -51,5 +51,11 @@ namespace MamaFit.Repositories.Repository
 
             return responsePaginatedList;
         }
+
+        public async Task<MaternityDress?> GetById(string id)
+        {
+            return await _dbSet.Include(x => x.Details)
+                .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
+        }
     }
 }

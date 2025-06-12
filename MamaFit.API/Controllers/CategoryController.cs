@@ -36,7 +36,7 @@ namespace MamaFit.API.Controllers
         public async Task<IActionResult> GetById([FromRoute] string categoryId)
         {
             var category = await _categoryService.GetByIdAsync(categoryId);
-            return Ok(new ResponseModel<CategoryResponseDto>(
+            return Ok(new ResponseModel<CategoryGetByIdResponse>(
                 StatusCodes.Status200OK,
                 ResponseCodeConstants.SUCCESS,
                 category,

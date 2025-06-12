@@ -19,6 +19,7 @@ namespace MamaFit.Repositories.Repository
         {
             var query = _dbSet
                 .Include(x => x.Style)
+                .Include(x => x.Details)
                 .Where(md => !md.IsDeleted);
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -56,6 +57,7 @@ namespace MamaFit.Repositories.Repository
         {
             return await _dbSet.Include(x => x.Details)
                 .Include(x => x.Style)
+                .Include(x => x.Details)
                 .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
         }
     }

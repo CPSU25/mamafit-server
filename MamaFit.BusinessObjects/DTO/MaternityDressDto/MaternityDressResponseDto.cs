@@ -6,7 +6,7 @@ namespace MamaFit.BusinessObjects.DTO.MaternityDressDto
     public class MaternityDressResponseDto
     {
         public string? Id { get; set; }
-        public Style? Style { get; set; }
+        public string? StyleName { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
         public List<string> Images { get; set; } = new List<string>();

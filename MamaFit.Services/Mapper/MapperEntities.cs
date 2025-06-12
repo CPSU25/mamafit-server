@@ -13,6 +13,7 @@ using MamaFit.BusinessObjects.DTO.MaternityDressDetailDto;
 using MamaFit.BusinessObjects.DTO.MeasurementDiaryDto;
 using MamaFit.BusinessObjects.DTO.DesignRequestDto;
 using MamaFit.BusinessObjects.DTO.Appointment;
+using MamaFit.BusinessObjects.DTO.BranchDto;
 
 namespace MamaFit.Services.Mapper
 {
@@ -86,6 +87,10 @@ namespace MamaFit.Services.Mapper
             //Appointment Mapper 
             CreateMap<Appointment, AppointmentRequestDto>().ReverseMap();
             CreateMap<Appointment, AppointmentResponseDto>().ReverseMap();
+
+            //Branch Mapper
+            CreateMap<Branch, BranchCreateDto>().ReverseMap();
+            CreateMap<Branch,BranchResponseDto>().ReverseMap();
         }
     }
 }

@@ -54,7 +54,10 @@ namespace MamaFit.Repositories.Repository
 
         public async Task<Component> GetById(string id)
         {
-            var component = await _dbSet.Include(c => c.Options).Where(c => !c.IsDeleted).FirstOrDefaultAsync(c => c.Id.Equals(id));
+            var component = await _dbSet
+                .Include(c => c.Options.Where(c => !c.IsDeleted))
+                .Where(c => !c.IsDeleted)
+                .FirstOrDefaultAsync(c => c.Id.Equals(id));
             return component!;
         }
     }

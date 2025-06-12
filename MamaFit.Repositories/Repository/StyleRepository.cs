@@ -20,7 +20,7 @@ namespace MamaFit.Repositories.Repository
 
             if (!string.IsNullOrWhiteSpace(search)) // Search
             {
-                query = query.Where(u => u.Name.Contains(search));
+                query = query.Where(u => u.Name!.Contains(search));
             }
 
             query = sortBy?.ToLower() switch
@@ -50,11 +50,11 @@ namespace MamaFit.Repositories.Repository
         public async Task<PaginatedList<Style>> GetAllByCategoryAsync(string categoryId, int index, int pageSize, string? search, string? sortBy)
         {
             var query = _dbSet
-                .Where(c => !c.IsDeleted && c.CategoryId.Equals(categoryId));
+                .Where(c => !c.IsDeleted && c.CategoryId!.Equals(categoryId));
 
             if (!string.IsNullOrWhiteSpace(search)) // Search
             {
-                query = query.Where(u => u.Name.Contains(search));
+                query = query.Where(u => u.Name!.Contains(search));
             }
 
             query = sortBy?.ToLower() switch

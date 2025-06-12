@@ -51,7 +51,7 @@ namespace MamaFit.Repositories.Repository
         public async Task<Category> GetById(string id)
         {
             var category = await _dbSet
-                .Include(c => c.Styles)
+                .Include(c => c.Styles.Where(c => !c.IsDeleted))
                 .Where(c => !c.IsDeleted)
                 .FirstOrDefaultAsync(c => c.Id.Equals(id));
             return category!;

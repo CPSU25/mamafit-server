@@ -86,7 +86,7 @@ namespace MamaFit.Services.Service
         {
             var entity = await _unitOfWork.MaternityDressDetailRepository.GetByIdAsync(id);
 
-            if (entity == null)
+            if (entity.IsDeleted || entity == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Maternity dress detail not found.");
 
             if (!string.IsNullOrWhiteSpace(requestDto.MaternityDressId) && requestDto.MaternityDressId != entity.MaternityDressId)

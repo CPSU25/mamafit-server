@@ -60,6 +60,7 @@ namespace MamaFit.Services.Mapper
             //Category Mapper
             CreateMap<Category, CategoryRequestDto>().ReverseMap();
             CreateMap<Category, CategoryResponseDto>().ReverseMap();
+            CreateMap<Category, CategoryGetByIdResponse>().ReverseMap();
 
             //Style Mapper
             CreateMap<Style, StyleRequestDto>().ReverseMap();

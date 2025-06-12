@@ -24,7 +24,7 @@ namespace MamaFit.Services.Service
         public async Task CreateAsync(ComponentOptionRequestDto requestDto)
         {
             var component = await _unitOfWork.ComponentRepository.GetByIdAsync(requestDto.ComponentId);
-            if (component == null)
+            if (component == null || component.IsDeleted)
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Component is not available");
 
             var newOption = _mapper.Map<ComponentOption>(requestDto);
@@ -41,7 +41,7 @@ namespace MamaFit.Services.Service
         {
             var oldOption = await _unitOfWork.ComponentOptionRepository.GetByIdAsync(id);
 
-            if (oldOption == null)
+            if (oldOption == null || oldOption.IsDeleted)
             {
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Component Option not found");
             }
@@ -72,7 +72,7 @@ namespace MamaFit.Services.Service
         {
             var option = await _unitOfWork.ComponentOptionRepository.GetByIdAsync(id);
 
-            if (option == null)
+            if (option == null || option.IsDeleted)
             {
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Component Option not found");
             }

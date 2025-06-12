@@ -5,6 +5,7 @@ using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +50,12 @@ namespace MamaFit.Repositories.Repository
                 pagedResult.PageNumber,
                 pageSize
             );
+        }
+
+        public async Task<Component> GetById(string id)
+        {
+            var component = await _dbSet.Include(c => c.Options).Where(c => !c.IsDeleted).FirstOrDefaultAsync(c => c.Id.Equals(id));
+            return component!;
         }
     }
 }

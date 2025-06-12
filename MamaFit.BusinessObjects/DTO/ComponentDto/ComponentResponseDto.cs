@@ -1,5 +1,4 @@
 ﻿using MamaFit.BusinessObjects.DTO.ComponentOptionDto;
-using MamaFit.BusinessObjects.Entity;
 
 namespace MamaFit.BusinessObjects.DTO.ComponentDto
 {
@@ -9,6 +8,7 @@ namespace MamaFit.BusinessObjects.DTO.ComponentDto
         public string? Name { get; set; }
         public string? Description { get; set; }
         public List<string>? Images { get; set; } = [];
+        public List<ComponentOptionResponseDto> Options { get; set; } = [];
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime CreatedAt { get; set; }

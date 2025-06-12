@@ -53,15 +53,15 @@ namespace MamaFit.Services.Service
             await _unitOfWork.SaveChangesAsync();
         }
         
-        public async Task<PaginatedList<MaternityDressResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
+        public async Task<PaginatedList<GetAllResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
         {
             var maternityDressList = await _unitOfWork.MaternityDressRepository.GetAllAsync(index, pageSize, search, sortBy);
 
             // Map từng phần tử trong danh sách Items
-            var responseList = maternityDressList.Items.Select(item => _mapper.Map<MaternityDressResponseDto>(item)).ToList();
+            var responseList = maternityDressList.Items.Select(item => _mapper.Map<GetAllResponseDto>(item)).ToList();
 
             // Tạo PaginatedList mới với các đối tượng đã map
-            var paginatedResponse = new PaginatedList<MaternityDressResponseDto>(
+            var paginatedResponse = new PaginatedList<GetAllResponseDto>(
                 responseList,
                 maternityDressList.TotalCount,
                 maternityDressList.PageNumber,
@@ -73,11 +73,11 @@ namespace MamaFit.Services.Service
 
         public async Task<MaternityDressResponseDto> GetByIdAsync(string id)
         {
-            var oldMaternityDress = await _unitOfWork.MaternityDressRepository.GetByIdAsync(id);
+            var oldMaternityDress = await _unitOfWork.MaternityDressRepository.GetById(id);
 
             if (oldMaternityDress == null)
                 throw new ErrorException(StatusCodes.Status404NotFound,
-                ErrorCode.NotFound, "MaternityDress not found!"); // Nếu không có
+                ErrorCode.NotFound, "MaternityDress not found!");
 
             return _mapper.Map<MaternityDressResponseDto>(oldMaternityDress);
         }

@@ -24,7 +24,7 @@ namespace MamaFit.API.Controllers
             [FromQuery] string? sortBy = "createdat_desc")
         {
             var maternityDressList = await _maternityDressService.GetAllAsync(index, pageSize, search, sortBy);
-            return Ok(ResponseModel<PaginatedList<MaternityDressResponseDto>>.OkResponseModel(maternityDressList));
+            return Ok(ResponseModel<PaginatedList<GetAllResponseDto>>.OkResponseModel(maternityDressList));
         }
 
         [HttpGet("{maternityDressId}")]

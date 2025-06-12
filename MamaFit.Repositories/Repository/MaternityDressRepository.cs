@@ -18,7 +18,7 @@ namespace MamaFit.Repositories.Repository
         public async Task<PaginatedList<MaternityDress>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
         {
             var query = _dbSet
-                .Include(md => md.Details)
+                .Include(x => x.Style)
                 .Where(md => !md.IsDeleted);
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -55,6 +55,7 @@ namespace MamaFit.Repositories.Repository
         public async Task<MaternityDress?> GetById(string id)
         {
             return await _dbSet.Include(x => x.Details)
+                .Include(x => x.Style)
                 .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
         }
     }

@@ -5,7 +5,6 @@ namespace MamaFit.BusinessObjects.DTO.Appointment
     public class AppointmentRequestDto
     {
         public string? UserId { get; set; }
-        public string? StaffId { get; set; }
         public string? BranchId { get; set; }
         public string? FullName { get; set; } = null!;
         public string? PhoneNumber { get; set; } = null!;

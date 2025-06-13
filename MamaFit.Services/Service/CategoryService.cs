@@ -48,7 +48,7 @@ namespace MamaFit.Services.Service
 
             if (oldCategory == null || oldCategory.IsDeleted)
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Category not found!");
-            if(oldCategory.Styles != null)
+            if(oldCategory.Styles.Any())
                 throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.BadRequest, "Cannot delete this category as policy restrict");
 
             await _unitOfWork.CategoryRepository.SoftDeleteAsync(id);

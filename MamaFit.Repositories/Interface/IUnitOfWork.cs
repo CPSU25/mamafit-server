@@ -16,6 +16,8 @@
         public IMaternityDressRepository MaternityDressRepository { get; }
         public IMaternityDressDetailRepository MaternityDressDetailRepository { get; }
         public IOrderItemRepository OrderItemRepository { get; }
+        public IMeasurementRepository MeasurementRepository { get; }
+        public IMeasurementDiaryRepository MeasurementDiaryRepository { get; }
         int SaveChanges();
         Task<int> SaveChangesAsync();
         void BeginTransaction();

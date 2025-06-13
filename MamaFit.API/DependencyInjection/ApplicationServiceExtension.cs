@@ -21,7 +21,7 @@ namespace MamaFit.API.DependencyInjection
         {
             // Add your repository registrations here
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IAppointmentRepository,AppointmentRepository>();
+            services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();
@@ -45,6 +45,7 @@ namespace MamaFit.API.DependencyInjection
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IBranchService, BranchService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IDesignRequestService, DesignRequestService>();
             services.AddScoped<IMaternityDressService, MaternityDressService>();
@@ -180,7 +181,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddServices();
             services.AddAutoMapper();
         }
-        
+
         private static void AddAutoMapper(this IServiceCollection services)
         {
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

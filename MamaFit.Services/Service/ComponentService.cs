@@ -53,7 +53,7 @@ namespace MamaFit.Services.Service
             if (component == null || component.IsDeleted)
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Component not found!");
 
-            if (component.Options != null)
+            if (component.Options.Any())
                 throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.BadRequest, "Cannot delete this component as policy restrict");
 
             await _unitOfWork.ComponentRepository.SoftDeleteAsync(id);

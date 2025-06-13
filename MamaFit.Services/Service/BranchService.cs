@@ -20,9 +20,13 @@ namespace MamaFit.Services.Service
 
         public async Task CreateAsync(BranchCreateDto requestDto)
         {
-            var branchManager = await _unitOfWork.UserRepository.GetByIdAsync(requestDto.BranchManagerId);
+            var branchManager = await _unitOfWork.UserRepository.GetByIdAsync(requestDto.BranchManagerId!);
             if (branchManager == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Branch Manager not found!");
+
+
+            if(branchManager.Role!.RoleName != "BranchManager")
+                throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.BadRequest, "User is not a branch manager!");
 
             var newBranch = _mapper.Map<Branch>(requestDto);
             newBranch.BranchManager = branchManager;
@@ -35,6 +39,10 @@ namespace MamaFit.Services.Service
             var branch = await _unitOfWork.BranchRepository.GetByIdAsync(id);
             if (branch == null || branch.IsDeleted)
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Branch not found!");
+
+            if( branch.Appointments.Any() || branch.BranchMaternityDressDetail.Any())
+                throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.BadRequest, "Cannot delete this branch due to policy restrict");
+
             await _unitOfWork.BranchRepository.SoftDeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
         }
@@ -58,14 +66,24 @@ namespace MamaFit.Services.Service
             return paginatedResponse;
         }
 
-        public Task<BranchResponseDto> GetByIdAsync(string id)
+        public async Task<BranchResponseDto> GetByIdAsync(string id)
         {
-            throw new NotImplementedException();
+            var branch = await _unitOfWork.BranchRepository.GetByIdAsync(id);
+            if (branch == null || branch.IsDeleted)
+                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Branch not found!");
+
+            return _mapper.Map<BranchResponseDto>(branch);
         }
 
-        public Task UpdateAsync(string id, BranchCreateDto requestDto)
+        public async Task UpdateAsync(string id, BranchCreateDto requestDto)
         {
-            throw new NotImplementedException();
+            var oldBranch = await _unitOfWork.BranchRepository.GetByIdAsync(id);
+            if (oldBranch == null || oldBranch.IsDeleted)
+                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Branch not found!");
+
+            _mapper.Map(requestDto,oldBranch);
+            await _unitOfWork.BranchRepository.UpdateAsync(oldBranch);
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

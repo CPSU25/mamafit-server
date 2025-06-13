@@ -58,13 +58,6 @@ namespace MamaFit.Services.Service
                 if (user == null)
                     throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "User is not available");
 
-                if (requestDto.StaffId != null)
-                {
-                    var staff = await _unitOfWork.UserRepository.GetByIdAsync(requestDto.StaffId);
-                    if (staff == null || !branch.Staffs.Contains(staff))
-                        throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Staff is not available");
-                }
-
                 var newAppointment = _mapper.Map<Appointment>(requestDto);
                 newAppointment.User = user;
                 newAppointment.Branch = branch;

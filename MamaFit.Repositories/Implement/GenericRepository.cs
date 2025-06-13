@@ -113,7 +113,7 @@ namespace MamaFit.Repositories.Implement
             return await _dbSet.FindAsync(id);
         }
         
-        public async Task<T> GetByIdNotDeletedAsync(object id)
+        public async Task<T?> GetByIdNotDeletedAsync(object id)
         {
             var entity = await _dbSet.FindAsync(id);
             return (entity != null && !entity.IsDeleted) ? entity : null;

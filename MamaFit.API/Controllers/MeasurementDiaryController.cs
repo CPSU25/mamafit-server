@@ -1,4 +1,4 @@
-using MamaFit.BusinessObjects.DTO.MeasurementDiaryDto;
+using MamaFit.BusinessObjects.DTO.MeasurementDto;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +33,7 @@ public class MeasurementDiaryController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(string id)
     {
-        var diary = await _diaryService.GetByIdAsync(id);
+        var diary = await _diaryService.GetDiaryByIdAsync(id);
         return Ok(new ResponseModel<MeasurementDiaryResponseDto>(
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,
@@ -41,35 +41,11 @@ public class MeasurementDiaryController : ControllerBase
             "Get measurement diary by ID successfully!"
         ));
     }
-    
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] MeasurementDiaryRequestDto requestDto)
-    {
-         var diary = await _diaryService.CreateAsync(requestDto);
-        return StatusCode(StatusCodes.Status201Created, new ResponseModel<MeasurementDiaryResponseDto>(
-            StatusCodes.Status201Created,
-            ResponseCodeConstants.CREATED,
-            diary,
-            "Measurement diary created successfully!"
-        ));
-    }
-    
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(string id, [FromBody] UpdateMeasurementDiaryDto model)
-    {
-        var diary = await _diaryService.UpdateAsync(id, model);
-        return Ok(new ResponseModel<MeasurementDiaryResponseDto>(
-            StatusCodes.Status200OK,
-            ResponseCodeConstants.SUCCESS,
-            diary,
-            "Measurement diary updated successfully!"
-        ));
-    }
-    
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
-        await _diaryService.DeleteAsync(id);
+        await _diaryService.DeleteDiaryAsync(id);
         return Ok(new ResponseModel<string>(
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,

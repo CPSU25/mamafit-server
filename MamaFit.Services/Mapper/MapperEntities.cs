@@ -10,7 +10,6 @@ using MamaFit.BusinessObjects.DTO.StyleDto;
 using MamaFit.BusinessObjects.DTO.ComponentDto;
 using MamaFit.BusinessObjects.DTO.ComponentOptionDto;
 using MamaFit.BusinessObjects.DTO.MaternityDressDetailDto;
-using MamaFit.BusinessObjects.DTO.MeasurementDiaryDto;
 using MamaFit.BusinessObjects.DTO.DesignRequestDto;
 using MamaFit.BusinessObjects.DTO.Appointment;
 using MamaFit.BusinessObjects.DTO.BranchDto;
@@ -75,11 +74,6 @@ namespace MamaFit.Services.Mapper
             CreateMap<ComponentOption, ComponentOptionRequestDto>().ReverseMap();
             CreateMap<ComponentOption, ComponentOptionResponseDto>().ReverseMap();
 
-            //MeasurementDiary Mapper
-            CreateMap<MeasurementDiary, MeasurementDiaryRequestDto>().ReverseMap();
-            CreateMap<MeasurementDiary, MeasurementDiaryResponseDto>().ReverseMap();
-            CreateMap<MeasurementDiary, UpdateMeasurementDiaryDto>().ReverseMap();
-
             //DesignRequest Mapper
             CreateMap<DesignRequest, DesignRequestCreateDto>().ReverseMap();
             CreateMap<DesignRequest, DesignResponseDto>().ReverseMap();
@@ -97,6 +91,10 @@ namespace MamaFit.Services.Mapper
             CreateMap<MeasurementDiary, MeasurementDiaryDto>().ReverseMap();
             CreateMap<Measurement, MeasurementCreateDto>().ReverseMap();
             CreateMap<Measurement, CreateMeasurementDto>().ReverseMap();
+            CreateMap<MeasurementDiary, MeasurementDiaryDto>().ReverseMap();
+            CreateMap<Measurement, UpdateMeasurementDto>().ReverseMap();
+            CreateMap<Measurement, MeasurementResponseDto>().ReverseMap();
+            CreateMap<MeasurementDiary, MeasurementDiaryResponseDto>().ReverseMap();
         }
     }
 }

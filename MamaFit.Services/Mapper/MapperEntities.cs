@@ -14,6 +14,7 @@ using MamaFit.BusinessObjects.DTO.MeasurementDiaryDto;
 using MamaFit.BusinessObjects.DTO.DesignRequestDto;
 using MamaFit.BusinessObjects.DTO.Appointment;
 using MamaFit.BusinessObjects.DTO.BranchDto;
+using MamaFit.BusinessObjects.DTO.MeasurementDto;
 
 namespace MamaFit.Services.Mapper
 {
@@ -61,7 +62,6 @@ namespace MamaFit.Services.Mapper
             //Category Mapper
             CreateMap<Category, CategoryRequestDto>().ReverseMap();
             CreateMap<Category, CategoryResponseDto>().ReverseMap();
-            CreateMap<Category, CategoryGetByIdResponse>().ReverseMap();
 
             //Style Mapper
             CreateMap<Style, StyleRequestDto>().ReverseMap();
@@ -91,6 +91,12 @@ namespace MamaFit.Services.Mapper
             //Branch Mapper
             CreateMap<Branch, BranchCreateDto>().ReverseMap();
             CreateMap<Branch,BranchResponseDto>().ReverseMap();
+            
+            //Measurement Mapper
+            CreateMap<Measurement, MeasurementDto>().ReverseMap();
+            CreateMap<MeasurementDiary, MeasurementDiaryDto>().ReverseMap();
+            CreateMap<Measurement, MeasurementCreateDto>().ReverseMap();
+            CreateMap<Measurement, CreateMeasurementDto>().ReverseMap();
         }
     }
 }

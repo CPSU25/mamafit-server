@@ -17,23 +17,7 @@ namespace MamaFit.BusinessObjects.Entity
         public int? NumberOfPregnancy { get; set; }
         public DateTime? UltrasoundDate { get; set; }
         public int WeeksFromUltrasound { get; set; }
-        public DateTime? PregnancyStartDate
-        {
-            get
-            {
-                if (UltrasoundDate.HasValue && WeeksFromUltrasound > 0)
-                {
-                    var ultrasoundDate = UltrasoundDate.Value;
-                    return ultrasoundDate.AddDays(-7 * WeeksFromUltrasound);
-                }
-                if (FirstDateOfLastPeriod.HasValue)
-                {
-                    int cycleLength = AverageMenstrualCycle.HasValue ? AverageMenstrualCycle.Value : 28;
-                    return FirstDateOfLastPeriod.Value.AddDays(cycleLength - 14); 
-                }
-                return null;
-            }
-        }
+        public DateTime? PregnancyStartDate { get; set; }
 
         // Nagivation property
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();

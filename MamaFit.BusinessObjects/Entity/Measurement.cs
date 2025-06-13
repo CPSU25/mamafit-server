@@ -5,6 +5,8 @@ namespace MamaFit.BusinessObjects.Entity
     public class Measurement : BaseEntity
     {
         public string? MeasurementDiaryId { get; set; }
+        public int WeekOfPregnancy { get; set; }
+        public float Weight { get; set; }
         public float Neck { get; set; }
         public float Coat { get; set; }
         public float Bust { get; set; }

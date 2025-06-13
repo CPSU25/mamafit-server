@@ -57,7 +57,7 @@ public class RoleController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(string id, [FromBody] RoleRequestDto model)
+    public async Task<IActionResult> Update([FromRoute] string id, [FromBody] RoleRequestDto model)
     {
         var role = await _roleService.UpdateRoleAsync(id, model);
         return Ok(new ResponseModel<RoleResponseDto>(

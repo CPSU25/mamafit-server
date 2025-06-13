@@ -17,6 +17,7 @@ namespace MamaFit.Repositories.Interface
         void Delete(object id);
         Task<IEnumerable<T>> GetAsync(int index, int pageSize);
         Task<T> GetByIdAsync(object id);
+        Task<T?> GetByIdNotDeletedAsync(object id);
         List<T> GetAll();
         Task<IEnumerable<T>> GetAllAsync();
         Task InsertAsync(T obj);

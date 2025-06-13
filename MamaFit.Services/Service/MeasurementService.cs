@@ -19,6 +19,32 @@ public class MeasurementService : IMeasurementService
         _mapper = mapper;
         _unitOfWork = unitOfWork;
     }
+
+    public async Task<PaginatedList<MeasurementResponseDto>> GetAllMeasurementsAsync(int index, int pageSize)
+    {
+        var measurements = await _unitOfWork.MeasurementRepository.GetAllAsync(index, pageSize);
+        if (measurements == null)
+            throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "No measurements found");
+
+        var responseItems = measurements.Items
+            .Select(measurement => _mapper.Map<MeasurementResponseDto>(measurement))
+            .ToList();
+
+        return new PaginatedList<MeasurementResponseDto>(
+            responseItems,
+            measurements.TotalCount,
+            measurements.PageNumber,
+            pageSize
+        );
+    }
+
+    public async Task<MeasurementResponseDto> GetMeasurementByIdAsync(string id)
+    {
+        var measurement = await _unitOfWork.MeasurementRepository.GetByIdAsync(id);
+        if (measurement == null)
+            throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Measurement not found");
+        return _mapper.Map<MeasurementResponseDto>(measurement);
+    }
     
     public async Task<MeasurementDto> GenerateMeasurementPreviewAsync(MeasurementCreateDto dto)
     {
@@ -133,6 +159,33 @@ public class MeasurementService : IMeasurementService
         return diaryEntity.Id;
     }
 
+    public async Task<MeasurementDto> UpdateMeasurementAsync(string id, UpdateMeasurementDto dto)
+    {
+        var measurement = await _unitOfWork.MeasurementRepository.GetByIdAsync(id);
+        if (measurement == null)
+            throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Measurement not found");
+
+        var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdAsync(measurement.MeasurementDiaryId);
+        if (diary == null)
+            throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Measurement Diary not found");
+        
+        _mapper.Map(dto, measurement);
+        await _unitOfWork.MeasurementRepository.UpdateAsync(measurement);
+        await _unitOfWork.SaveChangesAsync();
+
+        return _mapper.Map<MeasurementDto>(measurement);
+    }
+    
+    public async Task<bool> DeleteMeasurementAsync(string id)
+    {
+        var measurement = await _unitOfWork.MeasurementRepository.GetByIdAsync(id);
+        if (measurement == null)
+            throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Measurement not found");
+
+        await _unitOfWork.MeasurementRepository.SoftDeleteAsync(id);
+        await _unitOfWork.SaveChangesAsync();
+        return true;
+    }
     private DateTime? CalculatePregnancyStartDate(MeasurementDiaryDto dto)
     {
         DateTime? start = null;

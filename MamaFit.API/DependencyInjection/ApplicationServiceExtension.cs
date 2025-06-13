@@ -58,7 +58,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IComponentOptionService, ComponentOptionService>();
             services.AddTransient<IEmailSenderSevice, EmailSenderService>();
             services.AddScoped<ICloudinaryService, CloudinaryService>();
-            //services.AddScoped<IMeasurementDiaryService, MeasurementDiaryService>();
+            services.AddScoped<IMeasurementDiaryService, MeasurementDiaryService>();
             services.AddScoped<IMeasurementService, MeasurementService>();
         }
 

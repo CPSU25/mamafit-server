@@ -19,12 +19,12 @@ namespace MamaFit.Repositories.Repository
         {
             var query = _dbSet
                 .Include(x => x.Style)
-                .Include(x => x.Details)
+                .Include(x => x.Details.Where(x=> !x.IsDeleted))
                 .Where(md => !md.IsDeleted);
 
             if (!string.IsNullOrWhiteSpace(search))
             {
-                query = query.Where(u => u.Name.Contains(search));
+                query = query.Where(u => u.Name!.Contains(search));
             }
 
             query = sortBy?.ToLower() switch
@@ -57,7 +57,7 @@ namespace MamaFit.Repositories.Repository
         {
             return await _dbSet.Include(x => x.Details)
                 .Include(x => x.Style)
-                .Include(x => x.Details)
+                .Include(x => x.Details.Where(x => !x.IsDeleted))
                 .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
         }
     }

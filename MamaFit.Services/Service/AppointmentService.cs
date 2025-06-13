@@ -2,6 +2,7 @@
 using MamaFit.BusinessObjects.DTO.Appointment;
 using MamaFit.BusinessObjects.DTO.AppointmentDto;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using Microsoft.AspNetCore.Http;
@@ -31,7 +32,7 @@ namespace MamaFit.Services.Service
             var token = GetCurrentUserName();
 
             var branch = await _unitOfWork.BranchRepository.GetByIdAsync(requestDto.BranchId);
-            if (branch == null)
+            if (branch == null || branch.IsDeleted)
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Branch is not available");
 
             if (token == "System") //For stranger want to set up an Appointment
@@ -57,13 +58,6 @@ namespace MamaFit.Services.Service
                 if (user == null)
                     throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "User is not available");
 
-                if (requestDto.StaffId != null)
-                {
-                    var staff = await _unitOfWork.UserRepository.GetByIdAsync(requestDto.StaffId);
-                    if (staff == null || !branch.Staffs.Contains(staff))
-                        throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, "Staff is not available");
-                }
-
                 var newAppointment = _mapper.Map<Appointment>(requestDto);
                 newAppointment.User = user;
                 newAppointment.Branch = branch;
@@ -78,7 +72,7 @@ namespace MamaFit.Services.Service
         public async Task DeleteAsync(string id)
         {
             var oldAppointment = await _unitOfWork.AppointmentRepository.GetByIdAsync(id);
-            if (oldAppointment == null)
+            if (oldAppointment == null || oldAppointment.IsDeleted)
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, $"Appointment not found with id {id}");
 
             await _unitOfWork.AppointmentRepository.SoftDeleteAsync(id);
@@ -107,7 +101,7 @@ namespace MamaFit.Services.Service
         public async Task<AppointmentResponseDto> GetByIdAsync(string id)
         {
             var oldAppointment = await _unitOfWork.AppointmentRepository.GetByIdAsync(id);
-            if (oldAppointment == null)
+            if (oldAppointment == null || oldAppointment.IsDeleted)
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, $"Appointment not found with id {id}");
 
             return _mapper.Map<AppointmentResponseDto>(oldAppointment);
@@ -116,7 +110,7 @@ namespace MamaFit.Services.Service
         public async Task UpdateAsync(string id, AppointmentRequestDto requestDto)
         {
             var appointment = await _unitOfWork.AppointmentRepository.GetByIdAsync(id);
-            if (appointment == null)
+            if (appointment == null || appointment.IsDeleted)
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, $"Appointment not found with id {id}");
 
             _mapper.Map(requestDto, appointment);
@@ -130,7 +124,7 @@ namespace MamaFit.Services.Service
         public async Task CheckInAsync(string id)
         {
             var oldAppointment = await _unitOfWork.AppointmentRepository.GetByIdAsync(id);
-            if (oldAppointment == null)
+            if (oldAppointment == null || oldAppointment.IsDeleted || oldAppointment.Status == AppointmentStatus.CANCELED)
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, $"Appointment not found with id {id}");
 
             if (oldAppointment.Status != BusinessObjects.Enum.AppointmentStatus.CHECKED_IN)
@@ -151,7 +145,7 @@ namespace MamaFit.Services.Service
         public async Task CancelAppointment(string id, string reason)
         {
             var oldAppointment = await _unitOfWork.AppointmentRepository.GetByIdAsync(id);
-            if (oldAppointment == null)
+            if (oldAppointment == null || oldAppointment.IsDeleted)
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, $"Appointment not found with id {id}");
 
             if (oldAppointment.Status != BusinessObjects.Enum.AppointmentStatus.CANCELED)
@@ -174,10 +168,10 @@ namespace MamaFit.Services.Service
         public async Task CheckOutAsync(string id)
         {
             var oldAppointment = await _unitOfWork.AppointmentRepository.GetByIdAsync(id);
-            if (oldAppointment == null)
+            if (oldAppointment == null || oldAppointment.IsDeleted)
                 throw new ErrorException(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, $"Appointment not found with id {id}");
 
-            if (oldAppointment.Status != BusinessObjects.Enum.AppointmentStatus.CHECKED_OUT)
+            if (oldAppointment.Status != BusinessObjects.Enum.AppointmentStatus.CHECKED_OUT || oldAppointment.Status != AppointmentStatus.CANCELED)
             {
                 oldAppointment.Status = BusinessObjects.Enum.AppointmentStatus.CHECKED_OUT;
                 oldAppointment.UpdatedAt = DateTime.UtcNow;

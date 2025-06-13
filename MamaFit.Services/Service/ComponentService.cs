@@ -24,8 +24,11 @@ namespace MamaFit.Services.Service
         public async Task CreateAsync(ComponentRequestDto requestDto)
         {
             var style = await _unitOfWork.StyleRepository.GetByIdAsync(requestDto.StyleId);
-            if (style == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, "Style not found!");
+            if (style == null || style.IsDeleted)
+                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Style not found!");
+
+            if (style.IsCustom == false)
+                throw new ErrorException(StatusCodes.Status400BadRequest,ErrorCode.BadRequest, "Cannot create component on this style as policy restrict");
 
             var newComponent = new Component
             {
@@ -47,8 +50,11 @@ namespace MamaFit.Services.Service
         {
             var component = await _unitOfWork.ComponentRepository.GetByIdAsync(id);
 
-            if (component == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, "Component not found!");
+            if (component == null || component.IsDeleted)
+                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Component not found!");
+
+            if (component.Options.Any())
+                throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.BadRequest, "Cannot delete this component as policy restrict");
 
             await _unitOfWork.ComponentRepository.SoftDeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
@@ -74,10 +80,10 @@ namespace MamaFit.Services.Service
 
         public async Task<ComponentResponseDto> GetByIdAsync(string id)
         {
-            var component = _unitOfWork.ComponentRepository.GetById(id);
+            var component = await _unitOfWork.ComponentRepository.GetById(id);
 
             if (component == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, "Component not found!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Component not found!");
 
             return _mapper.Map<ComponentResponseDto>(component);
         }
@@ -88,7 +94,7 @@ namespace MamaFit.Services.Service
             var component = await _unitOfWork.ComponentRepository.GetByIdAsync(id);
 
             if (component == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, "Component not found!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Component not found!");
 
             _mapper.Map(requestDto, component);
             component.UpdatedAt = DateTime.UtcNow;

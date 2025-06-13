@@ -46,8 +46,10 @@ namespace MamaFit.Services.Service
 
             var oldCategory = await _unitOfWork.CategoryRepository.GetByIdAsync(id);
 
-            if (oldCategory == null)
+            if (oldCategory == null || oldCategory.IsDeleted)
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Category not found!");
+            if(oldCategory.Styles.Any())
+                throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.BadRequest, "Cannot delete this category as policy restrict");
 
             await _unitOfWork.CategoryRepository.SoftDeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
@@ -71,22 +73,22 @@ namespace MamaFit.Services.Service
             return paginatedResponse;
         }
 
-        public async Task<CategoryResponseDto> GetByIdAsync(string id)
+        public async Task<CategoryGetByIdResponse> GetByIdAsync(string id)
         {
 
-            var oldCategory = _unitOfWork.CategoryRepository.GetByIdAsync(id);
+            var oldCategory = await _unitOfWork.CategoryRepository.GetById(id);
 
-            if (oldCategory == null)
+            if (oldCategory == null || oldCategory.IsDeleted)
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Category not found!");
 
-            return _mapper.Map<CategoryResponseDto>(oldCategory);
+            return _mapper.Map<CategoryGetByIdResponse>(oldCategory);
         }
 
         public async Task UpdateAsync(string id, CategoryRequestDto requestDto)
         {
             var oldCategory = await _unitOfWork.CategoryRepository.GetByIdAsync(id);
 
-            if (oldCategory == null)
+            if (oldCategory == null || oldCategory.IsDeleted)
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Category not found!");
 
             _mapper.Map(requestDto, oldCategory);

@@ -43,16 +43,22 @@ namespace MamaFit.Services.Service
         public async Task DeleteAsync(string id)
         {
 
-            var oldMaternityDress = await _unitOfWork.MaternityDressRepository.GetByIdAsync(id);// Tìm oldMaternity
+            var oldMaternityDress = await _unitOfWork.MaternityDressRepository.GetById(id);// Tìm oldMaternity
 
             if (oldMaternityDress == null)
                 throw new ErrorException(StatusCodes.Status404NotFound,
-                ErrorCode.NotFound, "MaternityDress not found!");// Nếu không có
+                ErrorCode.NotFound, "MaternityDress not found!");
 
-            await _unitOfWork.MaternityDressRepository.DeleteAsync(id); // Deleted + Save changes
+            foreach (MaternityDressDetail detail in oldMaternityDress.Details)
+            {
+                await _unitOfWork.MaternityDressDetailRepository.SoftDeleteAsync(detail.Id);
+                await _unitOfWork.SaveChangesAsync();
+            }
+
+            await _unitOfWork.MaternityDressRepository.SoftDeleteAsync(id); // Deleted + Save changes
             await _unitOfWork.SaveChangesAsync();
         }
-        
+
         public async Task<PaginatedList<GetAllResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
         {
             var maternityDressList = await _unitOfWork.MaternityDressRepository.GetAllAsync(index, pageSize, search, sortBy);
@@ -87,10 +93,10 @@ namespace MamaFit.Services.Service
 
             var oldMaternityDress = await _unitOfWork.MaternityDressRepository.GetByIdAsync(id);
 
-            if (oldMaternityDress == null)
+            if (oldMaternityDress.IsDeleted || oldMaternityDress == null)
                 throw new ErrorException(StatusCodes.Status404NotFound,
                 ErrorCode.NotFound, "MaternityDress not found!"); // Nếu không có
-            
+
             _mapper.Map(requestDto, oldMaternityDress); //Auto mapper Dto => dress
             oldMaternityDress.UpdatedAt = DateTime.UtcNow;
             oldMaternityDress.UpdatedBy = GetCurrentUserName();

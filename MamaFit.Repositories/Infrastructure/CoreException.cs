@@ -24,22 +24,6 @@ namespace MamaFit.Repositories.Infrastructure
         [JsonExtensionData] public Dictionary<string, object> AdditionalData { get; set; }
 
     }
-    public class BadRequestException : ErrorException
-    {
-        public BadRequestException(string errorCode, string message = null)
-            : base(400, errorCode, message)
-        {
-        }
-        public BadRequestException(
-            ICollection<KeyValuePair<string, ICollection<string>>> errors)
-            : base(400, new ErrorDetail
-            {
-                ErrorCode = "bad_request",
-                ErrorMessage = errors
-            })
-        {
-        }
-    }
 
     public class ErrorException : Exception
     {
@@ -68,9 +52,9 @@ namespace MamaFit.Repositories.Infrastructure
     {
         [JsonPropertyName("errorCode")] public required string ErrorCode { get; set; }
 
-        [JsonPropertyName("errorMessage")] public required object ErrorMessage { get; set; }
+        [JsonPropertyName("errorMessage")] public required string ErrorMessage { get; set; }
     }
-    public class ErrorCode
+    public static class ErrorCode
     {
         public const string Forbidden = "Forbidden";
         public const string BadRequest = "Bad Request";
@@ -87,7 +71,7 @@ namespace MamaFit.Repositories.Infrastructure
         public const string InvalidInput = "Invalid input!";
         public const string Duplicate = "Duplicate!";
     }
-    public class ResponseCodeConstants
+    public static class ResponseCodeConstants
     {
         public const string CREATED = "Created!";
         public const string NOT_FOUND = "Not found!";
@@ -100,7 +84,43 @@ namespace MamaFit.Repositories.Infrastructure
         public const string UNAUTHORIZED = "Unauthorized!";
         public const string BADREQUEST = "Bad request!";
         public const string FORBIDDEN = "Forbidden!";
+    }
+    
+    public static class ApiCodes
+    {
+        // ───────────────────────────────
+        // ✅ SUCCESS CODES
+        // ───────────────────────────────
+        public const string SUCCESS = "SUCCESS";
+        public const string CREATED = "CREATED";
+        public const string VALIDATED = "VALIDATED";
 
+        // ───────────────────────────────
+        // ❌ CLIENT ERRORS (4xx)
+        // ───────────────────────────────
+        public const string BAD_REQUEST = "BAD_REQUEST";
+        public const string UNAUTHORIZED = "UNAUTHORIZED";
+        public const string UNAUTHENTICATED = "UNAUTHENTICATED";
+        public const string FORBIDDEN = "FORBIDDEN";
+        public const string NOT_FOUND = "NOT_FOUND";
+        public const string CONFLICT = "CONFLICT";
+        public const string INVALID_INPUT = "INVALID_INPUT";
+        public const string NOT_UNIQUE = "NOT_UNIQUE";
+        public const string DUPLICATE = "DUPLICATE";
+        public const string EXISTED = "EXISTED";
+        public const string VALIDATION_FAILED = "VALIDATION_FAILED";
+
+        // ───────────────────────────────
+        // 🔒 AUTH & TOKEN ERRORS
+        // ───────────────────────────────
+        public const string TOKEN_EXPIRED = "TOKEN_EXPIRED";
+        public const string TOKEN_INVALID = "TOKEN_INVALID";
+
+        // ───────────────────────────────
+        // 💥 SERVER ERRORS (5xx)
+        // ───────────────────────────────
+        public const string INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
+        public const string UNKNOWN_ERROR = "UNKNOWN_ERROR";
     }
 }
 

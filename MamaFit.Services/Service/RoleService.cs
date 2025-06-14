@@ -16,11 +16,13 @@ public class RoleService : IRoleService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IValidationService _validation;
 
-    public RoleService(IUnitOfWork unitOfWork, IMapper mapper)
+    public RoleService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _validation = validation;
     }
     
     public async Task<PaginatedList<RoleResponseDto>> GetAllRolesAsync(int index = 1, int pageSize = 10, string? nameSearch = null)
@@ -57,6 +59,7 @@ public class RoleService : IRoleService
     
     public async Task<RoleResponseDto> CreateRoleAsync(RoleRequestDto model)
     {
+        await _validation.ValidateAndThrowAsync(model);
         var exist = await _unitOfWork.RoleRepository.IsRoleNameExistedAsync(model.RoleName);
         if (exist)
             throw new ErrorException(StatusCodes.Status409Conflict,

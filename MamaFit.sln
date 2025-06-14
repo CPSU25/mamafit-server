@@ -23,10 +23,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MamaFit.Repositories", "Mam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MamaFit.BusinessObjects", "MamaFit.BusinessObjects\MamaFit.BusinessObjects.csproj", "{60A0A1CF-02B9-4817-BC66-0127C639D3FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MamaFit.Validation", "MamaFit.Validation\MamaFit.Validation.csproj", "{88E83FE3-3029-483B-B8C9-9D5904DED9C1}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5. Validation", "5. Validation", "{136B80B6-5204-46E9-948E-02BAE0E47156}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,10 +45,6 @@ Global
 		{60A0A1CF-02B9-4817-BC66-0127C639D3FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60A0A1CF-02B9-4817-BC66-0127C639D3FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60A0A1CF-02B9-4817-BC66-0127C639D3FB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{88E83FE3-3029-483B-B8C9-9D5904DED9C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{88E83FE3-3029-483B-B8C9-9D5904DED9C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{88E83FE3-3029-483B-B8C9-9D5904DED9C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{88E83FE3-3029-483B-B8C9-9D5904DED9C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,7 +54,6 @@ Global
 		{42DD4038-BC8B-4E9B-AA4E-29150627DF74} = {C5787510-60EC-4024-BFAC-69B0D9BE9767}
 		{5823E9EE-9B82-4249-95F0-341C54D4B87E} = {23B3F928-48F2-48F7-BCA5-F0021DC23158}
 		{60A0A1CF-02B9-4817-BC66-0127C639D3FB} = {330C30FD-1297-42C5-87B4-47C377465377}
-		{88E83FE3-3029-483B-B8C9-9D5904DED9C1} = {136B80B6-5204-46E9-948E-02BAE0E47156}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ED66D7EE-499B-43B5-BB9B-D8FF8FF76C1C}

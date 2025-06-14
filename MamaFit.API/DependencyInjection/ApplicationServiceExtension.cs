@@ -1,6 +1,8 @@
 ﻿using System.Text;
+using System.Text.Json;
 using MamaFit.BusinessObjects.DBContext;
 using MamaFit.Repositories.Implement;
+using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using MamaFit.Repositories.Repository;
 using MamaFit.Services.ExternalService;
@@ -43,8 +45,9 @@ namespace MamaFit.API.DependencyInjection
         public static void AddServices(this IServiceCollection services)
         {
             // Add your service registrations here
+            //services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IValidationService, ValidationService>();
             services.AddScoped<IAppointmentService, AppointmentService>();
-
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IBranchService, BranchService>();
@@ -147,29 +150,36 @@ namespace MamaFit.API.DependencyInjection
                     {
                         OnChallenge = async context =>
                         {
-                            context.HandleResponse();
-                            context.Response.ContentType = "application/json";
+                            context.HandleResponse(); // Ngăn hệ thống trả lỗi mặc định
+
+                            var response = context.Response;
+                            response.ContentType = "application/json";
 
                             string message = "Token is invalid";
+                            string errorCode = ApiCodes.TOKEN_INVALID;
+                            int statusCode = StatusCodes.Status401Unauthorized;
 
                             if (context.AuthenticateFailure is SecurityTokenExpiredException)
                             {
-                                context.Response.StatusCode = StatusCodes.Status403Forbidden;
                                 message = "Token is expired";
-                            }
-                            else if (context.AuthenticateFailure != null)
-                            {
-                                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                                message = "Token is invalid";
+                                errorCode = ApiCodes.TOKEN_EXPIRED;
+                                statusCode = StatusCodes.Status403Forbidden;
                             }
                             else if (string.IsNullOrEmpty(context.Request.Headers["Authorization"]))
                             {
-                                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                                 message = "No token provided";
+                                errorCode = ApiCodes.UNAUTHENTICATED;
                             }
 
-                            var result = System.Text.Json.JsonSerializer.Serialize(new { message });
-                            await context.Response.WriteAsync(result);
+                            response.StatusCode = statusCode;
+
+                            var result = JsonSerializer.Serialize(new
+                            {
+                                errorCode,
+                                message,
+                            });
+
+                            await response.WriteAsync(result);
                         }
                     };
                 });

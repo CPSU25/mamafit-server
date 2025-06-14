@@ -3,7 +3,9 @@ using MamaFit.API.Middlewares;
 using MamaFit.API.DependencyInjection;
 using NLog.Web;
 using System.Text.Json.Serialization;
+using FluentValidation;
 using MamaFit.Repositories.Helper;
+using MamaFit.Services.Validator;
 using NLog;
 
 namespace MamaFit.API
@@ -33,6 +35,7 @@ namespace MamaFit.API
                 
                 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
                 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
+                builder.Services.AddValidatorsFromAssemblyContaining<ValidatorAssemblyReference>();
                 builder.Services.AddDatabase(builder.Configuration);
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen();

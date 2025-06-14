@@ -38,6 +38,27 @@ namespace MamaFit.API.Middlewares
                 context.Response.ContentType = "application/json";
                 await context.Response.WriteAsync(result);
             }
+            catch (FluentValidation.ValidationException ex)
+            {
+                _logger.LogError(ex, "Validation failed.");
+
+                var errors = ex.Errors.Select(err => new
+                {
+                    field = err.PropertyName,
+                    message = err.ErrorMessage
+                });
+
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                context.Response.ContentType = "application/json";
+
+                var result = JsonSerializer.Serialize(new
+                {
+                    errorCode = ApiCodes.VALIDATION_FAILED,
+                    errors
+                });
+
+                await context.Response.WriteAsync(result);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An unexpected error occurred.");

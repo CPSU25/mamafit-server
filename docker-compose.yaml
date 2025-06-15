@@ -14,5 +14,3 @@ services:
       - CLOUDINARY__ApiSecret=${CLOUDINARY_API_SECRET}
       - EmailSettings__ApiKey=${MAILGUN_API_KEY}
       - EmailSettings__Domain=${MAILGUN_DOMAIN}
-    env_file:
-      - .env.prod

@@ -1,17 +1,60 @@
-name: CI/CD Pipeline
+name: 🚀 Build, Push & Deploy MamaFit API
 
 on:
   push:
     branches:
       - main
 
-jobs: 
-  docker-compose:
-    runs-on: self-hosted
-    environment: docker
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
 
-    - name: Run `docker compose`
-      run: docker compose up --build -d
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🔐 Login Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: 🏗️ Build image
+        run: |
+          docker compose -f docker-compose.build.yaml build
+          docker compose -f docker-compose.build.yaml push
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+
+    steps:
+      - name: 📝 Tạo .env.prod từ secrets
+        run: |
+          echo "REGISTRY_NAME=${{ secrets.DOCKER_HUB_USERNAME }}" > .env.prod
+          echo "DB_CONN=${{ secrets.DB_CONN }}" >> .env.prod
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.prod
+          echo "CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}" >> .env.prod
+          echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> .env.prod
+          echo "MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }}" >> .env.prod
+          echo "MAILGUN_DOMAIN=${{ secrets.MAILGUN_DOMAIN }}" >> .env.prod
+
+      - name: 📦 Copy .env.prod lên VPS
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: ".env.prod"
+          target: "/var/www/mamafit/.env.prod"
+
+      - name: 🚀 SSH vào VPS và deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd /var/www/mamafit
+            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/mamafit-api:latest
+            docker compose --env-file .env.prod up -d --remove-orphans

@@ -1,80 +1,90 @@
-name: Docker CI/CD for .NET
+name: Build, Test & Deploy MamaFit API
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
+
+env:
+  REGISTRY_NAME: ${{ secrets.REGISTRY_NAME }}
+  IMAGE_NAME: ${{ secrets.REGISTRY_NAME }}/mamafit-api:latest
 
 jobs:
-  build_and_push:
+  test:
+    name: Run .NET Unit Tests
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout source code
+        uses: actions/checkout@v4
 
-      - name: Set up .NET
-        uses: actions/setup-dotnet@v3
+      - name: Setup .NET 8 SDK
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0
+          dotnet-version: '8.0.x'
 
-      - name: Clean and restore dependencies
-        run: |
-          dotnet clean
-          dotnet restore
+      - name: Restore dependencies
+        run: dotnet restore
 
-      - name: Build project
-        run: dotnet build --configuration Release
+      - name: Build solution
+        run: dotnet build --configuration Release --no-restore
 
-      - name: Publish application
-        run: dotnet publish -c Release -o out
+      - name: Run tests
+        run: dotnet test --configuration Release --no-build --verbosity normal
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
+  build-and-push:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          no-cache: true
-          tags: |
-            ${{ secrets.DOCKER_HUB_USERNAME }}/mamafit-api:latest
+      - name: Build Docker image
+        run: docker build -t $IMAGE_NAME .
+
+      - name: Push Docker image
+        run: docker push $IMAGE_NAME
 
   deploy:
-    needs: build_and_push
+    name: Deploy to VPS via SSH
     runs-on: ubuntu-latest
+    needs: build-and-push
 
     steps:
-      - name: Add SSH Key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+      - name: Copy docker-compose.yml to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: "docker-compose.yml"
+          target: "~/mamafit"
 
-      - name: Deploy application via SSH & ENV
-        env:
-          REGISTRY_NAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-          DB_CONN: ${{ secrets.DB_CONN }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
-          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
-          MAILGUN_API_KEY: ${{ secrets.MAILGUN_API_KEY }}
-          MAILGUN_DOMAIN: ${{ secrets.MAILGUN_DOMAIN }}
-        run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} '
-            cd /var/www/mamafit &&
-            docker pull $REGISTRY_NAME/mamafit-api:latest &&
-            DB_CONN="$DB_CONN" \
-            JWT_SECRET="$JWT_SECRET" \
-            CLOUDINARY_API_KEY="$CLOUDINARY_API_KEY" \
-            CLOUDINARY_API_SECRET="$CLOUDINARY_API_SECRET" \
-            MAILGUN_API_KEY="$MAILGUN_API_KEY" \
-            MAILGUN_DOMAIN="$MAILGUN_DOMAIN" \
-            docker compose up -d --remove-orphans
-          '
+      - name: Deploy on VPS using Docker Compose
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd ~/mamafit
+            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+            docker pull $IMAGE_NAME || true
+            docker compose down || true
+            DB_CONN='${{ secrets.DB_CONN }}' \
+            JWT_SECRET='${{ secrets.JWT_SECRET }}' \
+            CLOUDINARY_API_KEY='${{ secrets.CLOUDINARY_API_KEY }}' \
+            CLOUDINARY_API_SECRET='${{ secrets.CLOUDINARY_API_SECRET }}' \
+            MAILGUN_API_KEY='${{ secrets.MAILGUN_API_KEY }}' \
+            MAILGUN_DOMAIN='${{ secrets.MAILGUN_DOMAIN }}' \
+            REGISTRY_NAME='${{ secrets.REGISTRY_NAME }}' \
+            docker compose up -d

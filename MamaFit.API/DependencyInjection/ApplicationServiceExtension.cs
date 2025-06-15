@@ -73,9 +73,8 @@ namespace MamaFit.API.DependencyInjection
 
         public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("local");
+            var connectionString = configuration.GetConnectionString("DefaultConnection") ;
             services.AddDbContext<ApplicationDbContext>(options =>
-                //options.UseNpgsql(connectionString)
                 options.UseNpgsql(connectionString)
             );
             return services;

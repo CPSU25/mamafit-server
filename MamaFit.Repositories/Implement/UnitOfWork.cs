@@ -23,6 +23,7 @@ namespace MamaFit.Repositories.Implement
         public IOrderItemRepository OrderItemRepository { get; }
         public IMeasurementRepository MeasurementRepository { get; }
         public IMeasurementDiaryRepository MeasurementDiaryRepository { get; }
+        public IChatRepository ChatRepository { get; }
 
         public UnitOfWork(ApplicationDbContext context,
             IUserRepository userRepository,
@@ -40,7 +41,8 @@ namespace MamaFit.Repositories.Implement
             IMaternityDressDetailRepository maternityDressDetailRepository,
             IOrderItemRepository orderItemRepository,
             IMeasurementRepository measurementRepository,
-            IMeasurementDiaryRepository measurementDiaryRepository)
+            IMeasurementDiaryRepository measurementDiaryRepository,
+            IChatRepository chatRepository)
         {
             _context = context;
             UserRepository = userRepository;
@@ -59,6 +61,7 @@ namespace MamaFit.Repositories.Implement
             OrderItemRepository = orderItemRepository;
             MeasurementRepository = measurementRepository;
             MeasurementDiaryRepository = measurementDiaryRepository;
+            ChatRepository = chatRepository;
         }
 
         public int SaveChanges()

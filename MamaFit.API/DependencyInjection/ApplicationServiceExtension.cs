@@ -40,6 +40,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IOrderItemRepository, OrderItemRepository>();
             services.AddScoped<IMeasurementRepository, MeasurementRepository>();
             services.AddScoped<IMeasurementDiaryRepository, MeasurementDiaryRepository>();
+            services.AddScoped<IChatRepository, ChatRepository>();
         }
 
         public static void AddServices(this IServiceCollection services)
@@ -63,6 +64,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<ICloudinaryService, CloudinaryService>();
             services.AddScoped<IMeasurementDiaryService, MeasurementDiaryService>();
             services.AddScoped<IMeasurementService, MeasurementService>();
+            services.AddScoped<IChatService, ChatService>();
         }
 
         public static IServiceCollection AddHttpClientServices(this IServiceCollection services)
@@ -193,6 +195,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddRepositories();
             services.AddServices();
             services.AddAutoMapper();
+            services.AddSignalR();
         }
 
         private static void AddAutoMapper(this IServiceCollection services)

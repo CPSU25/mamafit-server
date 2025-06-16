@@ -31,9 +31,11 @@ public class MeasurementDiaryController : ControllerBase
     }
     
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(string id)
+    public async Task<IActionResult> GetById([FromRoute] string id,
+        [FromQuery] DateTime? startDate = null,
+        [FromQuery] DateTime? endDate = null)
     {
-        var diary = await _diaryService.GetDiaryByIdAsync(id);
+        var diary = await _diaryService.GetDiaryByIdAsync(id, startDate, endDate);
         return Ok(new ResponseModel<DiaryWithMeasurementDto>(
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,

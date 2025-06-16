@@ -38,9 +38,9 @@ public class MeasurementDiaryService : IMeasurementDiaryService
         return responsePaginatedList;
     }
 
-    public async Task<DiaryWithMeasurementDto> GetDiaryByIdAsync(string id)
+    public async Task<DiaryWithMeasurementDto> GetDiaryByIdAsync(string id, DateTime? startDate, DateTime? endDate)
     {
-        var diary = await _unitOfWork.MeasurementDiaryRepository.GetDiaryByIdAsync(id);
+        var diary = await _unitOfWork.MeasurementDiaryRepository.GetDiaryByIdAsync(id, startDate, endDate);
         if (diary == null)
             throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Measurement diary not found");
         return _mapper.Map<DiaryWithMeasurementDto>(diary);

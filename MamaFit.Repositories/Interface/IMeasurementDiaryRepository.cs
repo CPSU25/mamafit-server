@@ -7,5 +7,5 @@ public interface IMeasurementDiaryRepository : IGenericRepository<MeasurementDia
 {
     Task<PaginatedList<MeasurementDiary>> GetAllDiariesAsync(int index, int pageSize, string? nameSearch);
     Task<List<MeasurementDiary>> GetByUserIdAsync(string userId);
-    Task<MeasurementDiary?> GetDiaryByIdAsync(string id);
+    Task<MeasurementDiary?> GetDiaryByIdAsync(string id, DateTime? startDate = null, DateTime? endDate = null);
 }

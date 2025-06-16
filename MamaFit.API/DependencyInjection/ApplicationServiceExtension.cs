@@ -9,6 +9,7 @@ using MamaFit.Services.ExternalService;
 using MamaFit.Services.Interface;
 using MamaFit.Services.Mapper;
 using MamaFit.Services.Service;
+using MamaFit.Services.Service.Caculator;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -47,6 +48,7 @@ namespace MamaFit.API.DependencyInjection
         {
             // Add your service registrations here
             //services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IBodyGrowthCalculator, BodyGrowthCalculator>();
             services.AddScoped<IValidationService, ValidationService>();
             services.AddScoped<IAppointmentService, AppointmentService>();
             services.AddScoped<IAuthService, AuthService>();

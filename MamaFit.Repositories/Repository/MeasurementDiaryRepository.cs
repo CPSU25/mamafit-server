@@ -34,9 +34,21 @@ public class MeasurementDiaryRepository : GenericRepository<MeasurementDiary>, I
             .ToListAsync();
     }
     
-    public async Task<MeasurementDiary?> GetDiaryByIdAsync(string id)
+    public async Task<MeasurementDiary?> GetDiaryByIdAsync(string id, DateTime? startDate = null, DateTime? endDate = null)
     {
-        return await _dbSet.Include(x => x.Measurements)
-            .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
+        var query = _dbSet.Include(x => x.Measurements)
+            .Where(x => x.Id == id && !x.IsDeleted);
+
+        if (startDate.HasValue)
+        {
+            query = query.Where(x => x.CreatedAt >= startDate.Value);
+        }
+
+        if (endDate.HasValue)
+        {
+            query = query.Where(x => x.CreatedAt <= endDate.Value);
+        }
+
+        return await query.FirstOrDefaultAsync();
     }
 }

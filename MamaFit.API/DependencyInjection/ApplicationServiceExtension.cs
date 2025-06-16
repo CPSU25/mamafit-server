@@ -96,6 +96,7 @@ namespace MamaFit.API.DependencyInjection
                     BearerFormat = "JWT",
                     Scheme = "Bearer"
                 });
+                options.EnableAnnotations();
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                 {

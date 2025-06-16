@@ -98,6 +98,8 @@ namespace MamaFit.Services.Mapper
             CreateMap<Measurement, UpdateMeasurementDto>().ReverseMap();
             CreateMap<Measurement, MeasurementResponseDto>().ReverseMap();
             CreateMap<MeasurementDiary, MeasurementDiaryResponseDto>().ReverseMap();
+            CreateMap<MeasurementDiary, DiaryWithMeasurementDto>()
+                .ReverseMap();
 
             //Chat Mapper 
             CreateMap<ChatMessage, ChatMessageCreateDto>().ReverseMap();

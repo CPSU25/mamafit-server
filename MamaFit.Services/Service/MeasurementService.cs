@@ -20,9 +20,9 @@ public class MeasurementService : IMeasurementService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<PaginatedList<MeasurementResponseDto>> GetAllMeasurementsAsync(int index, int pageSize)
+    public async Task<PaginatedList<MeasurementResponseDto>> GetAllMeasurementsAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate)
     {
-        var measurements = await _unitOfWork.MeasurementRepository.GetAllAsync(index, pageSize);
+        var measurements = await _unitOfWork.MeasurementRepository.GetAllAsync(index, pageSize, startDate, endDate);
         if (measurements == null)
             throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "No measurements found");
 
@@ -103,9 +103,13 @@ public class MeasurementService : IMeasurementService
     
     public async Task<MeasurementDto> GenerateMeasurementDiaryPreviewAsync(MeasurementDiaryDto dto)
     {
-        var user = await _unitOfWork.UserRepository.GetByIdAsync(dto.UserId);
-        if (user == null)
-            throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "User not found");
+        if (dto.UserId != null)
+        {
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(dto.UserId);
+            if (user == null)
+                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "User not found");
+        }
+
         var pregnancyStartDate = CalculatePregnancyStartDate(dto);
 
         var weeks = CalculateWeeksPregnant(pregnancyStartDate);
@@ -165,10 +169,13 @@ public class MeasurementService : IMeasurementService
         if (measurement == null)
             throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Measurement not found");
 
-        var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdAsync(measurement.MeasurementDiaryId);
-        if (diary == null)
-            throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Measurement Diary not found");
-        
+        if (measurement.MeasurementDiaryId != null)
+        {
+            var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdAsync(measurement.MeasurementDiaryId);
+            if (diary == null)
+                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Measurement Diary not found");
+        }
+
         _mapper.Map(dto, measurement);
         await _unitOfWork.MeasurementRepository.UpdateAsync(measurement);
         await _unitOfWork.SaveChangesAsync();
@@ -208,7 +215,7 @@ public class MeasurementService : IMeasurementService
     
     private async Task<bool> ValidateMeasurementExistenceAsync(string measurementDiaryId, int weekOfPregnancy)
     {
-        var existingMeasurement = await _unitOfWork.MeasurementRepository
+        await _unitOfWork.MeasurementRepository
             .FindAsync(m => m.MeasurementDiaryId == measurementDiaryId && m.WeekOfPregnancy == weekOfPregnancy);
         return true;
     }

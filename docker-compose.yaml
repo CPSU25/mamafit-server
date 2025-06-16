@@ -8,9 +8,16 @@ services:
       - "8080:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=${DB_CONN}
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}
       - JWT__SecretKey=${JWT_SECRET}
       - CLOUDINARY__ApiKey=${CLOUDINARY_API_KEY}
       - CLOUDINARY__ApiSecret=${CLOUDINARY_API_SECRET}
       - EmailSettings__ApiKey=${MAILGUN_API_KEY}
       - EmailSettings__Domain=${MAILGUN_DOMAIN}
+    networks:
+      - default
+
+networks:
+  default:
+    name: mamafit-network
+    driver: bridge

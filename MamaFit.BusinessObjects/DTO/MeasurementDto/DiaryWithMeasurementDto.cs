@@ -1,9 +1,6 @@
-
-using Swashbuckle.AspNetCore.Annotations;
-
 namespace MamaFit.BusinessObjects.DTO.MeasurementDto;
 
-public class MeasurementDiaryDto
+public class DiaryWithMeasurementDto
 {
     public string? UserId { get; set; }
     public string? Name { get; set; }
@@ -18,6 +15,6 @@ public class MeasurementDiaryDto
     public int? NumberOfPregnancy { get; set; }
     public DateTime? UltrasoundDate { get; set; }
     public int WeeksFromUltrasound { get; set; }
-    [SwaggerSchema(ReadOnly = true)]
     public DateTime? PregnancyStartDate { get; set; }
+    public List<MeasurementDto> Measurements { get; set; } = new List<MeasurementDto>();
 }

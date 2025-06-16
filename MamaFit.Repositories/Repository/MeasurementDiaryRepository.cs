@@ -4,6 +4,7 @@ using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace MamaFit.Repositories.Repository;
 
@@ -24,5 +25,18 @@ public class MeasurementDiaryRepository : GenericRepository<MeasurementDiary>, I
             query = query.Where(x => x.Name!.Contains(nameSearch));
         }
         return await query.GetPaginatedList(index, pageSize);
+    }
+    
+    public async Task<List<MeasurementDiary>> GetByUserIdAsync(string userId)
+    {
+        return await _dbSet
+            .Where(x => x.UserId == userId && !x.IsDeleted)
+            .ToListAsync();
+    }
+    
+    public async Task<MeasurementDiary?> GetDiaryByIdAsync(string id)
+    {
+        return await _dbSet.Include(x => x.Measurements)
+            .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
     }
 }

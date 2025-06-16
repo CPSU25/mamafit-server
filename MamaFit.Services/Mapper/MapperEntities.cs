@@ -14,6 +14,9 @@ using MamaFit.BusinessObjects.DTO.DesignRequestDto;
 using MamaFit.BusinessObjects.DTO.Appointment;
 using MamaFit.BusinessObjects.DTO.BranchDto;
 using MamaFit.BusinessObjects.DTO.MeasurementDto;
+using MamaFit.BusinessObjects.Entity.ChatEntity;
+using MamaFit.BusinessObjects.DTO.ChatMessageDto;
+using MamaFit.BusinessObjects.DTO.ChatRoomDto;
 
 namespace MamaFit.Services.Mapper
 {
@@ -47,7 +50,7 @@ namespace MamaFit.Services.Mapper
             //MaternityDress Mapper
             CreateMap<MaternityDress, MaternityDressRequestDto>().ReverseMap();
             CreateMap<MaternityDress, MaternityDressResponseDto>()
-                .ForMember(dest => dest.StyleName , otp => otp.MapFrom(x => x.Style!.Name))
+                .ForMember(dest => dest.StyleName, otp => otp.MapFrom(x => x.Style!.Name))
                 .ReverseMap();
 
             CreateMap<MaternityDress, GetAllResponseDto>()
@@ -84,8 +87,8 @@ namespace MamaFit.Services.Mapper
 
             //Branch Mapper
             CreateMap<Branch, BranchCreateDto>().ReverseMap();
-            CreateMap<Branch,BranchResponseDto>().ReverseMap();
-            
+            CreateMap<Branch, BranchResponseDto>().ReverseMap();
+
             //Measurement Mapper
             CreateMap<Measurement, MeasurementDto>().ReverseMap();
             CreateMap<MeasurementDiary, MeasurementDiaryDto>().ReverseMap();
@@ -95,6 +98,12 @@ namespace MamaFit.Services.Mapper
             CreateMap<Measurement, UpdateMeasurementDto>().ReverseMap();
             CreateMap<Measurement, MeasurementResponseDto>().ReverseMap();
             CreateMap<MeasurementDiary, MeasurementDiaryResponseDto>().ReverseMap();
+
+            //Chat Mapper 
+            CreateMap<ChatMessage, ChatMessageCreateDto>().ReverseMap();
+            CreateMap<ChatMessage, ChatMessageResponseDto>().ReverseMap();
+            CreateMap<ChatRoom, ChatRoomCreateDto>().ReverseMap();
+            CreateMap<ChatRoom, ChatRoomResponseDto>().ReverseMap();
         }
     }
 }

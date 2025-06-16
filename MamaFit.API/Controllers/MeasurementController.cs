@@ -19,9 +19,11 @@ public class MeasurementController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll(
         [FromQuery] int index = 1,
-        [FromQuery] int pageSize = 10)
+        [FromQuery] int pageSize = 10,
+        [FromQuery] DateTime? startDate = null,
+        [FromQuery] DateTime? endDate = null)
     {
-        var result = await _service.GetAllMeasurementsAsync(index, pageSize);
+        var result = await _service.GetAllMeasurementsAsync(index, pageSize, startDate, endDate);
         return Ok(new ResponseModel<PaginatedList<MeasurementResponseDto>>(
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,

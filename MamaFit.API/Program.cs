@@ -38,8 +38,6 @@ namespace MamaFit.API
                 builder.Services.AddValidatorsFromAssemblyContaining<ValidatorAssemblyReference>();
                 builder.Services.AddDatabase(builder.Configuration);
                 builder.Services.AddEndpointsApiExplorer();
-                builder.Services.AddSwaggerGen();
-
                 builder.Services.AddApplicationServices(builder.Configuration);
                 builder.Services.AddHttpClientServices();
                 builder.Services.AddConfigSwagger();
@@ -49,11 +47,12 @@ namespace MamaFit.API
                 // Configure the HTTP request pipeline.
                 if (app.Environment.IsDevelopment())
                 {
-
+                    app.UseSwagger();
                     app.UseSwaggerUI();
                 }
                 else
                 {
+                    app.UseSwagger();
                     app.UseSwaggerUI(c =>
                     {
                         c.SwaggerEndpoint("/swagger/v1/swagger.json", "MamaFit API V1");
@@ -74,6 +73,8 @@ namespace MamaFit.API
                 app.UseAuthentication();
 
                 app.UseAuthorization();
+
+                app.MapHub<ChatHub>("/chatHub");
 
                 app.MapControllers();
                 

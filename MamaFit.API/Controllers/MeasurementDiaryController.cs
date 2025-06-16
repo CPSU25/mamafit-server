@@ -20,9 +20,9 @@ public class MeasurementDiaryController : ControllerBase
     public async Task<IActionResult> GetAll(
         [FromQuery] int index = 1,
         [FromQuery] int pageSize = 10,
-        [FromQuery] string? search = null)
+        [FromQuery] string? nameSearch = null)
     {
-        var diaries = await _diaryService.GetAllAsync(index, pageSize, search);
+        var diaries = await _diaryService.GetAllAsync(index, pageSize, nameSearch);
         return Ok( new ResponseModel<PaginatedList<MeasurementDiaryResponseDto>>(
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,
@@ -34,11 +34,23 @@ public class MeasurementDiaryController : ControllerBase
     public async Task<IActionResult> GetById(string id)
     {
         var diary = await _diaryService.GetDiaryByIdAsync(id);
-        return Ok(new ResponseModel<MeasurementDiaryResponseDto>(
+        return Ok(new ResponseModel<DiaryWithMeasurementDto>(
             StatusCodes.Status200OK,
             ResponseCodeConstants.SUCCESS,
             diary,
             "Get measurement diary by ID successfully!"
+        ));
+    }
+    
+    [HttpGet("user/{userId}")]
+    public async Task<IActionResult> GetByUserId(string userId)
+    {
+        var diaries = await _diaryService.GetDiariesByUserIdAsync(userId);
+        return Ok(new ResponseModel<List<MeasurementDiaryResponseDto>>(
+            StatusCodes.Status200OK,
+            ResponseCodeConstants.SUCCESS,
+            diaries,
+            "Get measurement diaries by user ID successfully!"
         ));
     }
 

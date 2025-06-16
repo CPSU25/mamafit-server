@@ -5,6 +5,6 @@ namespace MamaFit.Repositories.Interface;
 
 public interface IMeasurementRepository : IGenericRepository<Measurement>
 {
-    Task<PaginatedList<Measurement>> GetAllAsync(int index, int pageSize);
+    Task<PaginatedList<Measurement>> GetAllAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate);
     Task<Measurement?> GetByIdAsync(string id);
 }

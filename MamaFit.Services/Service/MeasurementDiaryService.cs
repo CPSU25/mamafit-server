@@ -38,12 +38,21 @@ public class MeasurementDiaryService : IMeasurementDiaryService
         return responsePaginatedList;
     }
 
-    public async Task<MeasurementDiaryResponseDto> GetDiaryByIdAsync(string id)
+    public async Task<DiaryWithMeasurementDto> GetDiaryByIdAsync(string id)
     {
-        var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdNotDeletedAsync(id);
+        var diary = await _unitOfWork.MeasurementDiaryRepository.GetDiaryByIdAsync(id);
         if (diary == null)
             throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Measurement diary not found");
-        return _mapper.Map<MeasurementDiaryResponseDto>(diary);
+        return _mapper.Map<DiaryWithMeasurementDto>(diary);
+    }
+    
+    public async Task<List<MeasurementDiaryResponseDto>> GetDiariesByUserIdAsync(string userId)
+    {
+        var diaries = await _unitOfWork.MeasurementDiaryRepository.GetByUserIdAsync(userId);
+        if (diaries == null || !diaries.Any())
+            throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "No measurement diaries found for this user");
+        
+        return diaries.Select(diary => _mapper.Map<MeasurementDiaryResponseDto>(diary)).ToList();
     }
     
     public async Task<bool> DeleteDiaryAsync(string id)

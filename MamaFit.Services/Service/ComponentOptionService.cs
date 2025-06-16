@@ -25,7 +25,7 @@ namespace MamaFit.Services.Service
         {
             var component = await _unitOfWork.ComponentRepository.GetByIdAsync(requestDto.ComponentId);
             if (component == null || component.IsDeleted)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Component is not available");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Component is not available");
 
             var newOption = _mapper.Map<ComponentOption>(requestDto);
 
@@ -43,7 +43,7 @@ namespace MamaFit.Services.Service
 
             if (oldOption == null || oldOption.IsDeleted)
             {
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Component Option not found");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Component Option not found");
             }
 
             await _unitOfWork.ComponentOptionRepository.SoftDeleteAsync(id);
@@ -74,7 +74,7 @@ namespace MamaFit.Services.Service
 
             if (option == null || option.IsDeleted)
             {
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Component Option not found");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Component Option not found");
             }
 
             return _mapper.Map<ComponentOptionResponseDto>(option);
@@ -86,7 +86,7 @@ namespace MamaFit.Services.Service
 
             if (oldOption == null)
             {
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Component Option not found");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Component Option not found");
             }
 
             _mapper.Map(requestDto, oldOption);

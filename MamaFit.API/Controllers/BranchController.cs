@@ -26,7 +26,7 @@ namespace MamaFit.API.Controllers
             var branches = await _branchService.GetAllAsync(index, pageSize, search, sortBy);
             return Ok(new ResponseModel<PaginatedList<BranchResponseDto>>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 branches,
                 "Get all branches successfully!"
             ));
@@ -38,7 +38,7 @@ namespace MamaFit.API.Controllers
             var branch = await _branchService.GetByIdAsync(branchId);
             return Ok(new ResponseModel<BranchResponseDto>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 branch,
                 "Get branch successfully!"
             ));
@@ -51,7 +51,7 @@ namespace MamaFit.API.Controllers
             return StatusCode(StatusCodes.Status201Created,
                 new ResponseModel<string>(
                     StatusCodes.Status201Created,
-                    ResponseCodeConstants.CREATED,
+                    ApiCodes.CREATED,
                     null,
                     "Created branch successfully!"
                 ));
@@ -63,7 +63,7 @@ namespace MamaFit.API.Controllers
             await _branchService.UpdateAsync(branchId, requestDto);
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 null,
                 "Updated branch successfully!"
             ));
@@ -75,7 +75,7 @@ namespace MamaFit.API.Controllers
             await _branchService.DeleteAsync(branchId);
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 null,
                 "Deleted branch successfully!"
             ));

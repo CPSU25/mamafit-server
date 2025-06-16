@@ -26,7 +26,7 @@ namespace MamaFit.Services.Service
             var exists = await _unitOfWork.MaternityDressRepository.GetByIdAsync(requestDto.MaternityDressId);
 
             if (exists == null)
-                throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.NotFound, "Maternity dress does not exist.");
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.NOT_FOUND, "Maternity dress does not exist.");
 
             var entity = _mapper.Map<MaternityDressDetail>(requestDto);
 
@@ -44,7 +44,7 @@ namespace MamaFit.Services.Service
 
             if (entity == null)
             {
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Maternity dress detail not found.");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Maternity dress detail not found.");
             }
 
             await _unitOfWork.MaternityDressDetailRepository.SoftDeleteAsync(id);
@@ -76,7 +76,7 @@ namespace MamaFit.Services.Service
 
             if (entity == null)
             {
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Maternity dress detail not found.");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Maternity dress detail not found.");
             }
 
             return _mapper.Map<MaternityDressDetailResponseDto>(entity);
@@ -87,14 +87,14 @@ namespace MamaFit.Services.Service
             var entity = await _unitOfWork.MaternityDressDetailRepository.GetByIdAsync(id);
 
             if (entity.IsDeleted || entity == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Maternity dress detail not found.");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Maternity dress detail not found.");
 
             if (!string.IsNullOrWhiteSpace(requestDto.MaternityDressId) && requestDto.MaternityDressId != entity.MaternityDressId)
             {
                 var exists = await _unitOfWork.MaternityDressRepository.GetByIdAsync(id);
 
                 if (exists == null)
-                    throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.NotFound, "Maternity dress does not exist.");
+                    throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Maternity dress does not exist.");
             }
 
             _mapper.Map(requestDto, entity);

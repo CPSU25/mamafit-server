@@ -23,17 +23,20 @@ namespace MamaFit.Services.Service
 
         public async Task CreateAsync(StyleRequestDto requestDto)
         {
+            if (requestDto.CategoryId != null)
+            {
+                var category = await _unitOfWork.CategoryRepository.GetByIdAsync(requestDto.CategoryId); // Tìm category
+                if (category == null)
+                    throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Category is not available");
 
-            var category = await _unitOfWork.CategoryRepository.GetByIdAsync(requestDto.CategoryId); // Tìm category
-            if (category == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Category is not available");
+                var newStyle = _mapper.Map<Style>(requestDto); // Map Style
+                newStyle.Category = category;
+                newStyle.CreatedBy = GetCurrentUserName();
+                newStyle.CreatedAt = DateTime.UtcNow;
 
-            var newStyle = _mapper.Map<Style>(requestDto); // Map Style
-            newStyle.Category = category;
-            newStyle.CreatedBy = GetCurrentUserName();
-            newStyle.CreatedAt = DateTime.UtcNow;
+                await _unitOfWork.StyleRepository.InsertAsync(newStyle); // Tạo mới style
+            }
 
-            await _unitOfWork.StyleRepository.InsertAsync(newStyle); // Tạo mới style
             await _unitOfWork.SaveChangesAsync();
         }
 
@@ -42,7 +45,7 @@ namespace MamaFit.Services.Service
             var oldStyle = await _unitOfWork.StyleRepository.GetByIdAsync(id);
             if (oldStyle == null)
             {
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Style is not available");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Style is not available");
             }
             await _unitOfWork.StyleRepository.SoftDeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
@@ -71,11 +74,11 @@ namespace MamaFit.Services.Service
 
             var categpory = await _unitOfWork.CategoryRepository.GetByIdAsync(categoryId);
             if (categpory == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Category is not available");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Category is not available");
 
             var styleList = await _unitOfWork.StyleRepository.GetAllByCategoryAsync(categoryId,index, pageSize, search, sortBy);
             if (styleList == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "No record found");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "No record found");
 
             // Map từng phần tử trong danh sách Items
             var responseList = styleList.Items.Select(item => _mapper.Map<StyleResponseDto>(item)).ToList();
@@ -95,7 +98,7 @@ namespace MamaFit.Services.Service
         {
             var oldStyle = await _unitOfWork.StyleRepository.GetByIdAsync(id);
             if (oldStyle == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Style is not available");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Style is not available");
 
             return _mapper.Map<StyleResponseDto>(oldStyle);
         }
@@ -105,7 +108,7 @@ namespace MamaFit.Services.Service
             var oldStyle = await _unitOfWork.StyleRepository.GetByIdAsync(id);
             if (oldStyle == null)
             {
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Style is not available");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Style is not available");
             }
 
             _mapper.Map(requestDto, oldStyle); // Map request 
@@ -117,7 +120,7 @@ namespace MamaFit.Services.Service
 
         private string GetCurrentUserName()
         {
-            return _contextAccessor.HttpContext?.User?.FindFirst("name")?.Value ?? "System";
+            return _contextAccessor.HttpContext?.User.FindFirst("name")?.Value ?? "System";
         }
     }
 }

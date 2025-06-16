@@ -27,7 +27,7 @@ namespace MamaFit.API.Controllers
             var user = await _authService.GetCurrentUserAsync();
             return Ok(new ResponseModel<PermissionResponseDto>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 user,
                 "Get current user successfully!"
             ));
@@ -39,7 +39,7 @@ namespace MamaFit.API.Controllers
             await _authService.SendRegisterOtpAsync(model);
             return Ok(new ResponseModel<object>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 null,
                 "Send OTP successfully. Please check your email!"
             ));
@@ -52,7 +52,7 @@ namespace MamaFit.API.Controllers
             await _authService.ResendOtpAsync(model);
             return Ok(new ResponseModel<object>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 null,
                 "Resend OTP successfully!"
             ));
@@ -65,7 +65,7 @@ namespace MamaFit.API.Controllers
             await _authService.CompleteRegisterAsync(model);
             return Ok(new ResponseModel<object>(
                 StatusCodes.Status201Created,
-                ResponseCodeConstants.CREATED,
+                ApiCodes.CREATED,
                 null,
                 "Register user successfully!"));
         }
@@ -76,7 +76,7 @@ namespace MamaFit.API.Controllers
             var token = await _authService.SignInAsync(model);
             return Ok(new ResponseModel<TokenResponseDto>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 token,
                 "Login successfully!"
             ));
@@ -90,7 +90,7 @@ namespace MamaFit.API.Controllers
 
             var response = new ResponseModel<TokenResponseDto>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 tokenResponse,
                 "Login successfully!"
             );
@@ -106,7 +106,7 @@ namespace MamaFit.API.Controllers
             await _authService.LogoutAsync(model);
             return Ok(new ResponseModel<object>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 null,
                 "Logout successfully!"
             ));
@@ -118,7 +118,7 @@ namespace MamaFit.API.Controllers
             var token = await _authService.RefreshTokenAsync(model);
             return Ok(new ResponseModel<TokenResponseDto>(
                 StatusCodes.Status201Created,
-                ResponseCodeConstants.CREATED,
+                ApiCodes.CREATED,
                 token,
                 "Refresh token successfully!"
             ));
@@ -130,7 +130,7 @@ namespace MamaFit.API.Controllers
             await _authService.VerifyOtpAsync(model);
             return Ok(new ResponseModel<object>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 null,
                 "OTP verification successful!"
             ));
@@ -142,7 +142,7 @@ namespace MamaFit.API.Controllers
             var result = _authService.DecodePayload(jwtToken);
             return Ok(new ResponseModel<object>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 result,
                 "Decode successfully!"
             ));

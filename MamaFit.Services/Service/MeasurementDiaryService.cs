@@ -22,7 +22,7 @@ public class MeasurementDiaryService : IMeasurementDiaryService
         var diaries = await _unitOfWork.MeasurementDiaryRepository.GetAllDiariesAsync(index, pageSize, nameSearch);
         
         if (diaries == null)
-            throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "No measurement diaries found");
+            throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "No measurement diaries found");
         
         var responseItems = diaries.Items
             .Select(diary => _mapper.Map<MeasurementDiaryResponseDto>(diary))
@@ -42,7 +42,7 @@ public class MeasurementDiaryService : IMeasurementDiaryService
     {
         var diary = await _unitOfWork.MeasurementDiaryRepository.GetDiaryByIdAsync(id, startDate, endDate);
         if (diary == null)
-            throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Measurement diary not found");
+            throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Measurement diary not found");
         return _mapper.Map<DiaryWithMeasurementDto>(diary);
     }
     
@@ -50,7 +50,7 @@ public class MeasurementDiaryService : IMeasurementDiaryService
     {
         var diaries = await _unitOfWork.MeasurementDiaryRepository.GetByUserIdAsync(userId);
         if (diaries == null || !diaries.Any())
-            throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "No measurement diaries found for this user");
+            throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "No measurement diaries found for this user");
         
         return diaries.Select(diary => _mapper.Map<MeasurementDiaryResponseDto>(diary)).ToList();
     }
@@ -59,7 +59,7 @@ public class MeasurementDiaryService : IMeasurementDiaryService
     {
         var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdNotDeletedAsync(id);
         if (diary == null)
-            throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Measurement diary not found");
+            throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Measurement diary not found");
         
         await _unitOfWork.MeasurementDiaryRepository.SoftDeleteAsync(id);
         await _unitOfWork.SaveChangesAsync();

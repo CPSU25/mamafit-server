@@ -25,7 +25,7 @@ public class MeasurementDiaryController : ControllerBase
         var diaries = await _diaryService.GetAllAsync(index, pageSize, nameSearch);
         return Ok( new ResponseModel<PaginatedList<MeasurementDiaryResponseDto>>(
             StatusCodes.Status200OK,
-            ResponseCodeConstants.SUCCESS,
+            ApiCodes.SUCCESS,
             diaries, "Get all measurement diaries successfully!"
         ));
     }
@@ -38,7 +38,7 @@ public class MeasurementDiaryController : ControllerBase
         var diary = await _diaryService.GetDiaryByIdAsync(id, startDate, endDate);
         return Ok(new ResponseModel<DiaryWithMeasurementDto>(
             StatusCodes.Status200OK,
-            ResponseCodeConstants.SUCCESS,
+            ApiCodes.SUCCESS,
             diary,
             "Get measurement diary by ID successfully!"
         ));
@@ -50,7 +50,7 @@ public class MeasurementDiaryController : ControllerBase
         var diaries = await _diaryService.GetDiariesByUserIdAsync(userId);
         return Ok(new ResponseModel<List<MeasurementDiaryResponseDto>>(
             StatusCodes.Status200OK,
-            ResponseCodeConstants.SUCCESS,
+            ApiCodes.SUCCESS,
             diaries,
             "Get measurement diaries by user ID successfully!"
         ));
@@ -62,7 +62,7 @@ public class MeasurementDiaryController : ControllerBase
         await _diaryService.DeleteDiaryAsync(id);
         return Ok(new ResponseModel<string>(
             StatusCodes.Status200OK,
-            ResponseCodeConstants.SUCCESS,
+            ApiCodes.SUCCESS,
             null,
             "Measurement diary deleted successfully!"
         ));

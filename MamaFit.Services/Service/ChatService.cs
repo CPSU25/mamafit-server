@@ -24,11 +24,11 @@ namespace MamaFit.Services.Service
         {
             var sender = await _unitOfWork.UserRepository.GetByIdAsync(requestDto.SenderId);
             if(sender == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "User not found!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "User not found!");
 
             var chatroom = await _unitOfWork.ChatRepository.GetChatRoomById(requestDto.ChatRoomId);
             if(chatroom == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Chatroom is not avaiable!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Chatroom is not avaiable!");
 
             var chatMessage = _mapper.Map<ChatMessage>(requestDto);
             await _unitOfWork.ChatRepository.CreateChatMessageAsync(chatMessage);
@@ -40,11 +40,11 @@ namespace MamaFit.Services.Service
         {
             var user1 = await _unitOfWork.UserRepository.GetByIdAsync(userId1);
             if (user1 == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, $"User with id:{userId1} not found!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, $"User with id:{userId1} not found!");
 
             var user2 = await _unitOfWork.UserRepository.GetByIdAsync(userId2);
             if (user2 == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, $"User with id:{userId2} not found!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, $"User with id:{userId2} not found!");
 
             await _unitOfWork.ChatRepository.CreateChatRoomAsync(userId1, userId2);
         }
@@ -53,7 +53,7 @@ namespace MamaFit.Services.Service
         {
             var chatHistory = await _unitOfWork.ChatRepository.GetChatHistoryAsync(chatRoomId, index, pageSize);
             if (chatHistory == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Chat room not found!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Chat room not found!");
 
             return _mapper.Map<List<ChatMessageResponseDto>>(chatHistory);
         }
@@ -62,7 +62,7 @@ namespace MamaFit.Services.Service
         {
             var message = await _unitOfWork.ChatRepository.GetChatMessageById(messageId);
             if (message == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Message not found!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Message not found!");
 
             return _mapper.Map<ChatMessageResponseDto>(message);
         }
@@ -71,7 +71,7 @@ namespace MamaFit.Services.Service
         {
             var chatRoom = await _unitOfWork.ChatRepository.GetChatRoomById(chatRoomId);
             if (chatRoom == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "ChatRoom not found!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "ChatRoom not found!");
             return _mapper.Map<ChatRoomResponseDto>(chatRoom);
         }
 
@@ -79,7 +79,7 @@ namespace MamaFit.Services.Service
         {
             var chatRooms = await _unitOfWork.ChatRepository.GetUserChatRoom(userId);
             if (chatRooms == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "User has no Chat room!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "User has no Chat room!");
 
             return _mapper.Map<List<ChatRoomResponseDto>>(chatRooms);
         }

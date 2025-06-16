@@ -1,6 +1,4 @@
-using System.Security.Claims;
 using AutoMapper;
-using CloudinaryDotNet.Actions;
 using MamaFit.BusinessObjects.DTO.Role;
 using MamaFit.BusinessObjects.DTO.RoleDto;
 using MamaFit.BusinessObjects.Entity;
@@ -8,7 +6,6 @@ using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 namespace MamaFit.Services.Service;
 
@@ -30,7 +27,7 @@ public class RoleService : IRoleService
         var roles = await _unitOfWork.RoleRepository.GetRolesAsync(index, pageSize, nameSearch);
 
         if (roles == null)
-            throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "No roles found");
+            throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "No roles found");
         
         var responseItems = roles.Items
             .Select(role => _mapper.Map<RoleResponseDto>(role))
@@ -52,7 +49,7 @@ public class RoleService : IRoleService
         var role = await _unitOfWork.RoleRepository.GetByIdAsync(id);
         if (role == null)
             throw new ErrorException(StatusCodes.Status404NotFound,
-                ErrorCode.NotFound, "Role is not exist!"
+                ApiCodes.NOT_FOUND, "Role is not exist!"
                 );
         return _mapper.Map<RoleResponseDto>(role);
     }
@@ -63,7 +60,7 @@ public class RoleService : IRoleService
         var exist = await _unitOfWork.RoleRepository.IsRoleNameExistedAsync(model.RoleName);
         if (exist)
             throw new ErrorException(StatusCodes.Status409Conflict,
-                ErrorCode.Conflicted, "Role already existed");
+                ApiCodes.CONFLICT, "Role already existed");
         
         var role = _mapper.Map<ApplicationUserRole>(model);
         await _unitOfWork.RoleRepository.CreateAsync(role);
@@ -76,13 +73,13 @@ public class RoleService : IRoleService
         var role = await _unitOfWork.RoleRepository.GetByIdAsync(id);
         if (role == null)
             throw new ErrorException(StatusCodes.Status404NotFound,
-                ErrorCode.NotFound, "Role is not exist!"
+                ApiCodes.NOT_FOUND, "Role is not exist!"
             );
 
         bool exist = await _unitOfWork.RoleRepository.IsRoleNameExistedAsync(model.RoleName);
         if (exist)
             throw new ErrorException(StatusCodes.Status409Conflict,
-                ErrorCode.Conflicted, "Role already existed");
+                ApiCodes.CONFLICT, "Role already existed");
 
         role.RoleName = model.RoleName;
 
@@ -96,7 +93,7 @@ public class RoleService : IRoleService
         var role = await _unitOfWork.RoleRepository.GetByIdAsync(id);
         if (role == null)
             throw new ErrorException(StatusCodes.Status404NotFound,
-                ErrorCode.NotFound, "Role is not exist!"
+                ApiCodes.NOT_FOUND, "Role is not exist!"
             );
         
         await _unitOfWork.RoleRepository.DeleteAsync(role);

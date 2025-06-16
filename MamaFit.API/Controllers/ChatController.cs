@@ -41,12 +41,12 @@ namespace MamaFit.API.Controllers
 
                 await _hubContext.Clients.Group($"room_{messageDto.ChatRoomId}").SendAsync("ReceiveMessage", message);
 
-                return Ok(new ResponseModel<ChatMessageResponseDto>(StatusCodes.Status200OK, ResponseCodeConstants.SUCCESS, message, "Message sent successfully"));
+                return Ok(new ResponseModel<ChatMessageResponseDto>(StatusCodes.Status200OK, ApiCodes.SUCCESS, message, "Message sent successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating message");
-                return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, null, "Failed to create message"));
+                return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, null, "Failed to create message"));
             }
         }
 
@@ -58,16 +58,16 @@ namespace MamaFit.API.Controllers
                 var chatRoom = await _chatService.GetChatRoomById(roomId);
                 if (chatRoom == null)
                 {
-                    return NotFound(new ResponseModel<string>(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, null, "Chat room not found"));
+                    return NotFound(new ResponseModel<string>(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, null, "Chat room not found"));
                 }
 
                 var messages = await _chatService.GetChatHistoryAsync(roomId, index, pageSize);
-                return Ok(new ResponseModel<List<ChatMessageResponseDto>>(StatusCodes.Status200OK, ResponseCodeConstants.SUCCESS, messages, "Get chat history successfully"));
+                return Ok(new ResponseModel<List<ChatMessageResponseDto>>(StatusCodes.Status200OK, ApiCodes.SUCCESS, messages, "Get chat history successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error getting chat history for room {roomId}");
-                return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, null, "Failed to get chat history"));
+                return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, null, "Failed to get chat history"));
             }
         }
 
@@ -84,12 +84,12 @@ namespace MamaFit.API.Controllers
 
                 await _chatService.CreateChatRoomAsync(createDto.UserId1, createDto.UserId2);
 
-                return Ok(new ResponseModel<string>(StatusCodes.Status200OK, ResponseCodeConstants.SUCCESS, "Chat room created successfully", "Chat room created successfully"));
+                return Ok(new ResponseModel<string>(StatusCodes.Status200OK, ApiCodes.SUCCESS, "Chat room created successfully", "Chat room created successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating chat room");
-                return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, null, "Failed to create chat room"));
+                return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, null, "Failed to create chat room"));
             }
         }
 
@@ -105,12 +105,12 @@ namespace MamaFit.API.Controllers
                 }
 
                 var rooms = await _chatService.GetUserChatRoom(userId);
-                return Ok(new ResponseModel<List<ChatRoomResponseDto>>(StatusCodes.Status200OK, ResponseCodeConstants.SUCCESS, rooms, "Get all rooms successfully"));
+                return Ok(new ResponseModel<List<ChatRoomResponseDto>>(StatusCodes.Status200OK, ApiCodes.SUCCESS, rooms, "Get all rooms successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error getting chat rooms for user {userId}");
-                return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, null, "Failed to get chat rooms"));
+                return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, null, "Failed to get chat rooms"));
             }
         }
 
@@ -121,12 +121,12 @@ namespace MamaFit.API.Controllers
             {
                 var userId = User.FindFirst("userId")?.Value;
                 var rooms = await _chatService.GetUserChatRoom(userId);
-                return Ok(new ResponseModel<List<ChatRoomResponseDto>>(StatusCodes.Status200OK, ResponseCodeConstants.SUCCESS, rooms, "Get all rooms successfully"));
+                return Ok(new ResponseModel<List<ChatRoomResponseDto>>(StatusCodes.Status200OK, ApiCodes.SUCCESS, rooms, "Get all rooms successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting current user's chat rooms");
-                return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, null, "Failed to get chat rooms"));
+                return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, null, "Failed to get chat rooms"));
             }
         }
 
@@ -138,15 +138,15 @@ namespace MamaFit.API.Controllers
                 var chatRoom = await _chatService.GetChatRoomById(roomId);
                 if (chatRoom == null)
                 {
-                    return NotFound(new ResponseModel<string>(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, null, "Chat room not found"));
+                    return NotFound(new ResponseModel<string>(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, null, "Chat room not found"));
                 }
 
-                return Ok(new ResponseModel<ChatRoomResponseDto>(StatusCodes.Status200OK, ResponseCodeConstants.SUCCESS, chatRoom, "Get room successfully"));
+                return Ok(new ResponseModel<ChatRoomResponseDto>(StatusCodes.Status200OK, ApiCodes.SUCCESS, chatRoom, "Get room successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error getting chat room {roomId}");
-                return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, null, "Failed to get chat room"));
+                return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, null, "Failed to get chat room"));
             }
         }
 
@@ -158,15 +158,15 @@ namespace MamaFit.API.Controllers
                 var message = await _chatService.GetChatMessageById(messageId);
                 if (message == null)
                 {
-                    return NotFound(new ResponseModel<string>(StatusCodes.Status404NotFound, ResponseCodeConstants.NOT_FOUND, null, "Message not found"));
+                    return NotFound(new ResponseModel<string>(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, null, "Message not found"));
                 }
 
-                return Ok(new ResponseModel<ChatMessageResponseDto>(StatusCodes.Status200OK, ResponseCodeConstants.SUCCESS, message, "Get message successfully"));
+                return Ok(new ResponseModel<ChatMessageResponseDto>(StatusCodes.Status200OK, ApiCodes.SUCCESS, message, "Get message successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error getting message {messageId}");
-                return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, null, "Failed to get message"));
+                return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, null, "Failed to get message"));
             }
         }
 
@@ -180,7 +180,7 @@ namespace MamaFit.API.Controllers
                 user = User.FindFirst("userId")?.Value
             };
 
-            return Ok(new ResponseModel<object>(StatusCodes.Status200OK, ResponseCodeConstants.SUCCESS, health, "Health check success"));
+            return Ok(new ResponseModel<object>(StatusCodes.Status200OK, ApiCodes.SUCCESS, health, "Health check success"));
         }
 
         [HttpGet("rooms/{roomId}/online-users")]
@@ -188,7 +188,7 @@ namespace MamaFit.API.Controllers
         {
             try
             {
-                return Ok(new ResponseModel<object>(StatusCodes.Status200OK, ResponseCodeConstants.SUCCESS, new
+                return Ok(new ResponseModel<object>(StatusCodes.Status200OK, ApiCodes.SUCCESS, new
                 {
                     roomId,
                     onlineUsers = new List<string>(),
@@ -198,7 +198,7 @@ namespace MamaFit.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error getting online users for room {roomId}");
-                return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, null, "Failed to get online users"));
+                return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, null, "Failed to get online users"));
             }
         }
 
@@ -220,12 +220,12 @@ namespace MamaFit.API.Controllers
 
                 await _hubContext.Clients.Group($"room_{roomId}").SendAsync("ReceiveMessage", message);
 
-                return Ok(new ResponseModel<ChatMessageResponseDto>(StatusCodes.Status200OK, ResponseCodeConstants.SUCCESS, message, "System message sent successfully"));
+                return Ok(new ResponseModel<ChatMessageResponseDto>(StatusCodes.Status200OK, ApiCodes.SUCCESS, message, "System message sent successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error sending system message to room {roomId}");
-                return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, null, "Failed to send system message"));
+                return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, null, "Failed to send system message"));
             }
         }
 
@@ -236,12 +236,12 @@ namespace MamaFit.API.Controllers
             {
                 await _hubContext.Clients.User(userId).SendAsync("ReceiveNotification", notification);
 
-                return Ok(new ResponseModel<bool>(StatusCodes.Status200OK, ResponseCodeConstants.SUCCESS, true, "Notification sent successfully"));
+                return Ok(new ResponseModel<bool>(StatusCodes.Status200OK, ApiCodes.SUCCESS, true, "Notification sent successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error sending notification to user {userId}");
-                return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ResponseCodeConstants.BADREQUEST, null, "Failed to send notification"));
+                return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, null, "Failed to send notification"));
             }
         }
     }

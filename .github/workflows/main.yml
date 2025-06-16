@@ -93,14 +93,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            cd ~/mamafit
-            
-            # Stop and remove old containers if exist
-            docker compose down || true
-            
-            # Clean up old containers and networks
-            docker system prune -f || true
-            
+            cd ~/mamafit     
             # Login to Docker Hub securely
             echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
             
@@ -116,7 +109,7 @@ jobs:
             export MAILGUN_DOMAIN='${{ secrets.MAILGUN_DOMAIN }}'
             export REGISTRY_NAME='${{ secrets.REGISTRY_NAME }}'
             
-            docker compose up -d --force-recreate
+            docker compose up -d --pull always --no-deps --force-recreate mamafit-api
             
             # Verify the container is running
             docker ps -a | grep mamafit-api

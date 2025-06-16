@@ -74,6 +74,8 @@ namespace MamaFit.API
 
                 app.UseAuthorization();
 
+                app.MapHub<ChatHub>("/chatHub");
+
                 app.MapControllers();
                 
                 app.Run();

@@ -2,8 +2,9 @@
 
 namespace MamaFit.BusinessObjects.DTO.ChatMessageDto
 {
-    public class ChatMessageCreateDto
+    public class ChatMessageResponseDto
     {
+        public string? Id { get; set; }
         public string Message { get; set; } = string.Empty;
         public string SenderId { get; set; } = string.Empty;
         public string ChatRoomId { get; set; } = string.Empty;

@@ -26,7 +26,7 @@ namespace MamaFit.API.Controllers
             var options = await _componentOptionService.GetAllAsync(index, pageSize, search, sortBy);
             return Ok(new ResponseModel<PaginatedList<ComponentOptionResponseDto>>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 options,
                 "Get all component options successfully!"
             ));
@@ -38,7 +38,7 @@ namespace MamaFit.API.Controllers
             var option = await _componentOptionService.GetByIdAsync(id);
             return Ok(new ResponseModel<ComponentOptionResponseDto>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 option,
                 "Get component option successfully!"
             ));
@@ -51,7 +51,7 @@ namespace MamaFit.API.Controllers
             return StatusCode(StatusCodes.Status201Created,
                 new ResponseModel<string>(
                     StatusCodes.Status201Created,
-                    ResponseCodeConstants.CREATED,
+                    ApiCodes.CREATED,
                     null,
                     "Created component option successfully!"
                 ));
@@ -63,7 +63,7 @@ namespace MamaFit.API.Controllers
             await _componentOptionService.UpdateAsync(id, requestDto);
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.CREATED,
                 null,
                 "Updated component option successfully!"
             ));
@@ -75,7 +75,7 @@ namespace MamaFit.API.Controllers
             await _componentOptionService.DeleteAsync(id);
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 null,
                 "Deleted component option successfully!"
             ));

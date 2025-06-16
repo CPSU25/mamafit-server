@@ -22,11 +22,11 @@ namespace MamaFit.Services.Service
         {
             var branchManager = await _unitOfWork.UserRepository.GetByIdAsync(requestDto.BranchManagerId!);
             if (branchManager == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Branch Manager not found!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Branch Manager not found!");
 
 
             if(branchManager.Role!.RoleName != "BranchManager")
-                throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.BadRequest, "User is not a branch manager!");
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "User is not a branch manager!");
 
             var newBranch = _mapper.Map<Branch>(requestDto);
             newBranch.BranchManager = branchManager;
@@ -38,10 +38,10 @@ namespace MamaFit.Services.Service
         {
             var branch = await _unitOfWork.BranchRepository.GetByIdAsync(id);
             if (branch == null || branch.IsDeleted)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Branch not found!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Branch not found!");
 
             if( branch.Appointments.Any() || branch.BranchMaternityDressDetail.Any())
-                throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.BadRequest, "Cannot delete this branch due to policy restrict");
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Cannot delete this branch due to policy restrict");
 
             await _unitOfWork.BranchRepository.SoftDeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
@@ -51,7 +51,7 @@ namespace MamaFit.Services.Service
         {
             var branchList = await _unitOfWork.BranchRepository.GetAllAsync(index, pageSize, search, sortBy);
             if (branchList == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Branch not found!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Branch not found!");
 
             var responseList = branchList.Items.Select(item => _mapper.Map<BranchResponseDto>(item)).ToList();
 
@@ -70,7 +70,7 @@ namespace MamaFit.Services.Service
         {
             var branch = await _unitOfWork.BranchRepository.GetByIdAsync(id);
             if (branch == null || branch.IsDeleted)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Branch not found!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Branch not found!");
 
             return _mapper.Map<BranchResponseDto>(branch);
         }
@@ -79,7 +79,7 @@ namespace MamaFit.Services.Service
         {
             var oldBranch = await _unitOfWork.BranchRepository.GetByIdAsync(id);
             if (oldBranch == null || oldBranch.IsDeleted)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Branch not found!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Branch not found!");
 
             _mapper.Map(requestDto,oldBranch);
             await _unitOfWork.BranchRepository.UpdateAsync(oldBranch);

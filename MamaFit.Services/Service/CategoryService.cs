@@ -47,9 +47,9 @@ namespace MamaFit.Services.Service
             var oldCategory = await _unitOfWork.CategoryRepository.GetByIdAsync(id);
 
             if (oldCategory == null || oldCategory.IsDeleted)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Category not found!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Category not found!");
             if(oldCategory.Styles.Any())
-                throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.BadRequest, "Cannot delete this category as policy restrict");
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Cannot delete this category as policy restrict");
 
             await _unitOfWork.CategoryRepository.SoftDeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
@@ -79,7 +79,7 @@ namespace MamaFit.Services.Service
             var oldCategory = await _unitOfWork.CategoryRepository.GetById(id);
 
             if (oldCategory == null || oldCategory.IsDeleted)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Category not found!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Category not found!");
 
             return _mapper.Map<CategoryGetByIdResponse>(oldCategory);
         }
@@ -89,7 +89,7 @@ namespace MamaFit.Services.Service
             var oldCategory = await _unitOfWork.CategoryRepository.GetByIdAsync(id);
 
             if (oldCategory == null || oldCategory.IsDeleted)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Category not found!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Category not found!");
 
             _mapper.Map(requestDto, oldCategory);
             oldCategory.UpdatedAt = DateTime.UtcNow;

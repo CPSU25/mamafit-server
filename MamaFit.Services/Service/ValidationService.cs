@@ -1,6 +1,5 @@
 using FluentValidation;
 using MamaFit.Services.Interface;
-using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
 
 namespace MamaFit.Services.Service;
 
@@ -19,7 +18,7 @@ public class ValidationService : IValidationService
         {
             var result = await validator.ValidateAsync(instance, cancellationToken);
             if (!result.IsValid)
-                throw new FluentValidation.ValidationException(result.Errors);
+                throw new ValidationException(result.Errors);
         }
     }
 }

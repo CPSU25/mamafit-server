@@ -29,7 +29,7 @@ public class UserController : ControllerBase
         var pagedUsers = await _service.GetAllUsersAsync(index, pageSize, nameSearch, roleName);
         return Ok(new ResponseModel<PaginatedList<UserReponseDto>>(
             StatusCodes.Status200OK,
-            ResponseCodeConstants.SUCCESS,
+            ApiCodes.SUCCESS,
             pagedUsers, "Get all users successfully!"
         ));
     }
@@ -41,7 +41,7 @@ public class UserController : ControllerBase
         var user = await _service.GetUserByIdAsync(userId);
         return Ok(new ResponseModel<UserReponseDto>(
             StatusCodes.Status200OK,
-            ResponseCodeConstants.SUCCESS,
+            ApiCodes.SUCCESS,
             user,
             "Get user by ID successfully!"
         ));
@@ -53,7 +53,7 @@ public class UserController : ControllerBase
         var result = await _service.UpdateUserProfilePictureAsync(model);
         return Ok(new ResponseModel<PhotoUploadResult>(
             StatusCodes.Status200OK,
-            ResponseCodeConstants.SUCCESS,
+            ApiCodes.SUCCESS,
             result,
             "Update user profile picture successfully!"
         ));
@@ -65,7 +65,7 @@ public class UserController : ControllerBase
         var updatedUser = await _service.UpdateUserAsync(userId, model);
         return Ok(new ResponseModel<UserReponseDto>(
             StatusCodes.Status200OK,
-            ResponseCodeConstants.SUCCESS,
+            ApiCodes.SUCCESS,
             updatedUser,
             "Update user successfully!"
         ));
@@ -77,7 +77,7 @@ public class UserController : ControllerBase
         await _service.DeleteUserAsync(userId);
         return Ok(new ResponseModel<object>(
             StatusCodes.Status200OK,
-            ResponseCodeConstants.SUCCESS,
+            ApiCodes.SUCCESS,
             null,
             "Delete user successfully!"
         ));

@@ -26,7 +26,7 @@ namespace MamaFit.API.Controllers
             var requests = await _designRequestService.GetAllAsync(index, pageSize, search, sortBy);
             return Ok(new ResponseModel<PaginatedList<DesignResponseDto>>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 requests,
                 "Get all design requests successfully!"
             ));
@@ -38,7 +38,7 @@ namespace MamaFit.API.Controllers
             var request = await _designRequestService.GetByIdAsync(id);
             return Ok(new ResponseModel<DesignResponseDto>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 request,
                 "Get design request successfully!"
             ));
@@ -51,7 +51,7 @@ namespace MamaFit.API.Controllers
             return StatusCode(StatusCodes.Status201Created,
                 new ResponseModel<string>(
                     StatusCodes.Status201Created,
-                    ResponseCodeConstants.CREATED,
+                    ApiCodes.CREATED,
                     null,
                     "Created design request successfully!"
                 ));
@@ -63,7 +63,7 @@ namespace MamaFit.API.Controllers
             await _designRequestService.DeleteAsync(id);
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 null,
                 "Deleted design request successfully!"
             ));

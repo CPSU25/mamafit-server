@@ -26,7 +26,7 @@ public class RoleController : ControllerBase
         var pagedRoles = await _roleService.GetAllRolesAsync(index, pageSize, nameSearch);
         return Ok(new ResponseModel<PaginatedList<RoleResponseDto>>(
             StatusCodes.Status200OK,
-            ResponseCodeConstants.SUCCESS,
+            ApiCodes.SUCCESS,
             pagedRoles, "Get all roles successfully!"
         ));
     }
@@ -38,7 +38,7 @@ public class RoleController : ControllerBase
         var role = await _roleService.GetRoleByIdAsync(id);
         return Ok(new ResponseModel<RoleResponseDto>(
             StatusCodes.Status200OK,
-            ResponseCodeConstants.SUCCESS,
+            ApiCodes.SUCCESS,
             role, 
             "Get role by ID successfully!"
     ));
@@ -50,7 +50,7 @@ public class RoleController : ControllerBase
         var role = await _roleService.CreateRoleAsync(model);
         return Ok(new ResponseModel<RoleResponseDto>(
             StatusCodes.Status201Created,
-            ResponseCodeConstants.CREATED,
+            ApiCodes.CREATED,
             role,
             "Create role successfully!"
         ));
@@ -62,7 +62,7 @@ public class RoleController : ControllerBase
         var role = await _roleService.UpdateRoleAsync(id, model);
         return Ok(new ResponseModel<RoleResponseDto>(
             StatusCodes.Status200OK,
-            ResponseCodeConstants.SUCCESS,
+            ApiCodes.SUCCESS,
             role,
             "Update role successfully!"
         ));
@@ -74,7 +74,7 @@ public class RoleController : ControllerBase
         await _roleService.DeleteRoleAsync(id);
         return Ok(new ResponseModel<object>(
             StatusCodes.Status200OK,
-            ResponseCodeConstants.SUCCESS,
+            ApiCodes.SUCCESS,
             null,
             "Delete role successfully!"
         ));

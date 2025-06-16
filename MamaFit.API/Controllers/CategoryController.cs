@@ -26,7 +26,7 @@ namespace MamaFit.API.Controllers
             var categories = await _categoryService.GetAllAsync(index, pageSize, search, sortBy);
             return Ok(new ResponseModel<PaginatedList<CategoryResponseDto>>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 categories,
                 "Get all categories successfully!"
             ));
@@ -38,7 +38,7 @@ namespace MamaFit.API.Controllers
             var category = await _categoryService.GetByIdAsync(categoryId);
             return Ok(new ResponseModel<CategoryGetByIdResponse>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 category,
                 "Get category successfully!"
             ));
@@ -51,7 +51,7 @@ namespace MamaFit.API.Controllers
             return StatusCode(StatusCodes.Status201Created,
                 new ResponseModel<string>(
                     StatusCodes.Status201Created,
-                    ResponseCodeConstants.CREATED,
+                    ApiCodes.CREATED,
                     null,
                     "Created category successfully!"
                 ));
@@ -63,7 +63,7 @@ namespace MamaFit.API.Controllers
             await _categoryService.UpdateAsync(categoryId, requestDto);
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 null,
                 "Updated category successfully!"
             ));
@@ -75,7 +75,7 @@ namespace MamaFit.API.Controllers
             await _categoryService.DeleteAsync(categoryId);
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 null,
                 "Deleted category successfully!"
             ));

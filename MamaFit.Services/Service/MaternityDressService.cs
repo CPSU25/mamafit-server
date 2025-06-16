@@ -47,7 +47,7 @@ namespace MamaFit.Services.Service
 
             if (oldMaternityDress == null)
                 throw new ErrorException(StatusCodes.Status404NotFound,
-                ErrorCode.NotFound, "MaternityDress not found!");
+                    ApiCodes.NOT_FOUND, "MaternityDress not found!");
 
             foreach (MaternityDressDetail detail in oldMaternityDress.Details)
             {
@@ -83,7 +83,7 @@ namespace MamaFit.Services.Service
 
             if (oldMaternityDress == null)
                 throw new ErrorException(StatusCodes.Status404NotFound,
-                ErrorCode.NotFound, "MaternityDress not found!");
+                    ApiCodes.NOT_FOUND, "MaternityDress not found!");
 
             return _mapper.Map<MaternityDressResponseDto>(oldMaternityDress);
         }
@@ -95,7 +95,7 @@ namespace MamaFit.Services.Service
 
             if (oldMaternityDress.IsDeleted || oldMaternityDress == null)
                 throw new ErrorException(StatusCodes.Status404NotFound,
-                ErrorCode.NotFound, "MaternityDress not found!"); // Nếu không có
+                    ApiCodes.NOT_FOUND, "MaternityDress not found!"); // Nếu không có
 
             _mapper.Map(requestDto, oldMaternityDress); //Auto mapper Dto => dress
             oldMaternityDress.UpdatedAt = DateTime.UtcNow;

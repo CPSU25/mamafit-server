@@ -37,23 +37,28 @@ public class EmailSenderService : IEmailSenderSevice
         
         if (!response.IsSuccessful)
         {
-            string errorMsg = response.Content;
-
-            // Parse lấy trường "message" (nếu content là JSON)
-            try
+            if (response.Content != null)
             {
-                using var doc = JsonDocument.Parse(response.Content);
-                if (doc.RootElement.TryGetProperty("message", out var messageElement))
+                string errorMsg = response.Content;
+
+                // Parse lấy trường "message" (nếu content là JSON)
+                try
                 {
-                    errorMsg = messageElement.GetString();
+                    using var doc = JsonDocument.Parse(response.Content);
+                    if (doc.RootElement.TryGetProperty("message", out var messageElement))
+                    {
+                        errorMsg = messageElement.GetString()!;
+                    }
                 }
-            }
-            catch
-            {
-                // Nếu không parse được JSON, giữ nguyên errorMsg
-            }
+                catch
+                {
+                    // Nếu không parse được JSON, giữ nguyên errorMsg
+                }
 
-            throw new ErrorException(StatusCodes.Status500InternalServerError, ErrorCode.InternalServerError, errorMsg);
+                if (errorMsg != null)
+                    throw new ErrorException(StatusCodes.Status500InternalServerError, ApiCodes.INTERNAL_SERVER_ERROR,
+                        errorMsg);
+            }
         }
 
     }

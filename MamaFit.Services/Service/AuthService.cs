@@ -47,7 +47,7 @@ public class AuthService : IAuthService
 
         if (user == null)
             throw new ErrorException(StatusCodes.Status404NotFound,
-                ErrorCode.NotFound, "User not found!");
+                ApiCodes.NOT_FOUND, "User not found!");
 
         return _mapper.Map<PermissionResponseDto>(user);
     }
@@ -79,7 +79,7 @@ public class AuthService : IAuthService
         string loginKey = model.Identifier?.Trim();
         if (string.IsNullOrWhiteSpace(loginKey))
             throw new ErrorException(StatusCodes.Status400BadRequest,
-                ErrorCode.BadRequest,
+                ApiCodes.BAD_REQUEST,
                 "You must enter an email or username!");
 
         if (loginKey.Contains("@"))
@@ -94,26 +94,26 @@ public class AuthService : IAuthService
 
         if (user == null)
             throw new ErrorException(StatusCodes.Status401Unauthorized,
-                ErrorCode.UnAuthorized,
+                ApiCodes.UNAUTHORIZED,
                 $"No account found with the provided information: {loginKey}");
 
         if (user.IsDeleted)
             throw new ErrorException(StatusCodes.Status403Forbidden,
-                ErrorCode.Forbidden, "Your account has been locked or deleted.");
+                ApiCodes.FORBIDDEN, "Your account has been locked or deleted.");
         if (!user.IsVerify)
-            throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.UnAuthorized,
+            throw new ErrorException(StatusCodes.Status401Unauthorized, ApiCodes.UNAUTHORIZED,
                 "The account has not been verified via email or phone.");
 
         if (!VerifyPassword(model.Password, user.HashPassword, user.Salt))
             throw new ErrorException(StatusCodes.Status401Unauthorized,
-                ErrorCode.UnAuthorized, "Incorrect password!");
+                ApiCodes.UNAUTHORIZED, "Incorrect password!");
 
         var role = await _unitOfWork.RoleRepository.GetByIdAsync(user.RoleId);
 
         if (role == null)
         {
             throw new ErrorException(StatusCodes.Status404NotFound,
-                ErrorCode.NotFound,
+                ApiCodes.NOT_FOUND,
                 $"No role found for this account! RoleId: {user.RoleId}");
         }
 
@@ -137,17 +137,17 @@ public class AuthService : IAuthService
         var userToken = await _unitOfWork.TokenRepository.GetTokenAsync(model.RefreshToken, TokenType.REFRESH_TOKEN);
 
         if (userToken == null)
-            throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.UnAuthorized,
+            throw new ErrorException(StatusCodes.Status401Unauthorized, ApiCodes.UNAUTHORIZED,
                 "Invalid refresh token!");
 
         if (userToken.ExpiredAt < DateTime.UtcNow)
-            throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.TokenExpired,
+            throw new ErrorException(StatusCodes.Status401Unauthorized, ApiCodes.TOKEN_EXPIRED,
                 "Refresh token has expired!");
 
         var user = await _unitOfWork.UserRepository.GetByIdAsync(userToken.UserId);
         if (user == null || user.IsDeleted == true)
             throw new ErrorException(StatusCodes.Status404NotFound,
-                ErrorCode.NotFound, "User not found or account has been deleted.");
+                ApiCodes.NOT_FOUND, "User not found or account has been deleted.");
 
         var role = await _unitOfWork.RoleRepository.GetByIdAsync(user.RoleId);
         string roleName = role.RoleName;
@@ -167,14 +167,14 @@ public class AuthService : IAuthService
 
         if (user == null)
             throw new ErrorException(StatusCodes.Status404NotFound,
-                ErrorCode.NotFound, "User not found with the provided email.");
+                ApiCodes.NOT_FOUND, "User not found with the provided email.");
 
         string otpInputHash = HashHelper.HashOtp(model.Code);
 
         var otp = await _unitOfWork.OTPRepository.GetOTPAsync(user.Id, otpInputHash, OTPType.REGISTER);
         if (otp == null)
             throw new ErrorException(StatusCodes.Status400BadRequest,
-                ErrorCode.BadRequest, "Invalid or expired OTP code.");
+                ApiCodes.BAD_REQUEST, "Invalid or expired OTP code.");
 
         user.IsVerify = true;
         await _unitOfWork.UserRepository.UpdateUserAsync(user);
@@ -187,10 +187,10 @@ public class AuthService : IAuthService
         var user = await _unitOfWork.UserRepository.GetByEmailPhoneAsync(model.Email,model.PhoneNumber);
         if (user == null)
             throw new ErrorException(StatusCodes.Status404NotFound,
-                ErrorCode.NotFound, "User not found!");
+                ApiCodes.NOT_FOUND, "User not found!");
         if (user.IsVerify)
             throw new ErrorException(StatusCodes.Status400BadRequest,
-                ErrorCode.BadRequest, "User is already verified!");
+                ApiCodes.BAD_REQUEST, "User is already verified!");
         
         string otpCode = GenerateOtpCode();
         var otp = new OTP
@@ -237,19 +237,19 @@ public class AuthService : IAuthService
             if ((isExist.PhoneNumber == model.PhoneNumber || isExist.UserEmail == model.Email) && isExist.IsVerify)
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest,
-                    ErrorCode.BadRequest, "Email or phone number has already been registered!");
+                    ApiCodes.BAD_REQUEST, "Email or phone number has already been registered!");
             }
             var isEmailUsed = await _unitOfWork.UserRepository.GetByEmailAsync(model.Email);
             if (isEmailUsed != null && isEmailUsed.IsVerify)
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest,
-                    ErrorCode.BadRequest, "Email has already been registered by another user!");
+                    ApiCodes.BAD_REQUEST, "Email has already been registered by another user!");
             }
             var isPhoneUsed = await _unitOfWork.UserRepository.GetByPhoneNumberAsync(model.PhoneNumber);
             if (isPhoneUsed != null && isPhoneUsed.IsVerify)
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest,
-                    ErrorCode.BadRequest, "Phone number has already been registered by another user!");
+                    ApiCodes.BAD_REQUEST, "Phone number has already been registered by another user!");
             }
             
             var oldOtps = await _unitOfWork.OTPRepository.GetOTPAsync(isExist.Id, null, OTPType.REGISTER);
@@ -278,10 +278,10 @@ public class AuthService : IAuthService
 
         if (user == null)
             throw new ErrorException(StatusCodes.Status400BadRequest,
-                ErrorCode.BadRequest, "Invalid email or phone number. Please check your information and try again.");
+                ApiCodes.BAD_REQUEST, "Invalid email or phone number. Please check your information and try again.");
         if(user.IsVerify == false)
             throw new ErrorException(StatusCodes.Status400BadRequest,
-                ErrorCode.BadRequest, "User is not verified! Please verify your account first.");
+                ApiCodes.BAD_REQUEST, "User is not verified! Please verify your account first.");
         
         var salt = HashHelper.GenerateSalt();
         var hashPassword = HashHelper.HashPassword(model.Password, salt);
@@ -418,7 +418,7 @@ public class AuthService : IAuthService
         var userByEmail = await _unitOfWork.UserRepository.GetByEmailAsync(payload.email.ToLower());
         if (userByEmail != null && userByEmail.IsVerify && userByEmail.CreatedBy != "GoogleOAuth")
         {
-            throw new ErrorException(StatusCodes.Status409Conflict, ErrorCode.Conflicted,
+            throw new ErrorException(StatusCodes.Status409Conflict, ApiCodes.CONFLICT,
                 "Email has been aldready registered!");
         }
 
@@ -462,17 +462,17 @@ public class AuthService : IAuthService
 
         if (string.IsNullOrWhiteSpace(user.RoleId))
             throw new ErrorException(StatusCodes.Status409Conflict,
-                ErrorCode.Conflicted,
+                ApiCodes.CONFLICT,
                 "The user's RoleId is null or empty. Please check the account data!");
 
         var userRole = await _unitOfWork.RoleRepository.GetByIdAsync(user.RoleId);
 
         if (userRole == null)
             throw new ErrorException(StatusCodes.Status404NotFound,
-                ErrorCode.NotFound,
+                ApiCodes.NOT_FOUND,
                 $"No role found for this account! RoleId: {user.RoleId}");
 
-        string role = userRole.RoleName;
+        string? role = userRole.RoleName;
 
         var token = GenerateTokens(user, role);
         
@@ -493,14 +493,14 @@ public class AuthService : IAuthService
         var existingToken = await _unitOfWork.TokenRepository.GetTokenByUserIdAsync(userId, tokenType);
         if (existingToken != null)
         { 
-            _unitOfWork.TokenRepository.DeleteAsync(existingToken);
+            await _unitOfWork.TokenRepository.DeleteAsync(existingToken);
             await _unitOfWork.SaveChangesAsync();
         }
         
         DateTime? expiredAt = null;
         if (tokenType == TokenType.REFRESH_TOKEN)
         {
-            expiredAt = DateTime.UtcNow.AddDays(int.Parse(_configuration["JWT:RefreshTokenExpirationDays"]));
+            expiredAt = DateTime.UtcNow.AddDays(int.Parse(_configuration["JWT:RefreshTokenExpirationDays"] ?? string.Empty));
         }
         if (tokenType == TokenType.NOTIFICATION_TOKEN)
         {

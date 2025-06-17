@@ -26,7 +26,7 @@ namespace MamaFit.API.Controllers
             var styles = await _styleService.GetAllAsync(index, pageSize, search, sortBy);
             return Ok(new ResponseModel<PaginatedList<StyleResponseDto>>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 styles,
                 "Get all styles successfully!"
             ));
@@ -43,7 +43,7 @@ namespace MamaFit.API.Controllers
             var styles = await _styleService.GetAllByCategoryAsync(categoryId, index, pageSize, search, sortBy);
             return Ok(new ResponseModel<PaginatedList<StyleResponseDto>>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 styles,
                 "Get all styles successfully!"
             ));
@@ -55,7 +55,7 @@ namespace MamaFit.API.Controllers
             var style = await _styleService.GetByIdAsync(styleId);
             return Ok(new ResponseModel<StyleResponseDto>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 style,
                 "Get style successfully!"
             ));
@@ -68,7 +68,7 @@ namespace MamaFit.API.Controllers
             return StatusCode(StatusCodes.Status201Created,
                 new ResponseModel<string>(
                     StatusCodes.Status201Created,
-                    ResponseCodeConstants.CREATED,
+                    ApiCodes.CREATED,
                     null,
                     "Created style successfully!"
                 ));
@@ -80,7 +80,7 @@ namespace MamaFit.API.Controllers
             await _styleService.UpdateAsync(styleId, requestDto);
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 null,
                 "Updated style successfully!"
             ));
@@ -92,7 +92,7 @@ namespace MamaFit.API.Controllers
             await _styleService.DeleteAsync(styleId);
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 null,
                 "Deleted style successfully!"
             ));

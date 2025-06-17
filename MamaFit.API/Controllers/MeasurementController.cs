@@ -26,7 +26,7 @@ public class MeasurementController : ControllerBase
         var result = await _service.GetAllMeasurementsAsync(index, pageSize, startDate, endDate);
         return Ok(new ResponseModel<PaginatedList<MeasurementResponseDto>>(
             StatusCodes.Status200OK,
-            ResponseCodeConstants.SUCCESS,
+            ApiCodes.SUCCESS,
             result,
             "Get all measurements successfully!"
         ));
@@ -38,7 +38,7 @@ public class MeasurementController : ControllerBase
         var result = await _service.GetMeasurementByIdAsync(id);
         return Ok(new ResponseModel<MeasurementResponseDto>(
             StatusCodes.Status200OK,
-            ResponseCodeConstants.SUCCESS,
+            ApiCodes.SUCCESS,
             result,
             "Get measurement successfully!"
         ));
@@ -50,7 +50,7 @@ public class MeasurementController : ControllerBase
         var result = await _service.GenerateMeasurementPreviewAsync(dto);
         return Ok(new ResponseModel<MeasurementDto>(
             StatusCodes.Status200OK,
-            ResponseCodeConstants.SUCCESS,
+            ApiCodes.SUCCESS,
             result,
             "Preview measurement successfully!"
         ));
@@ -62,7 +62,7 @@ public class MeasurementController : ControllerBase
         var result = await _service.CreateMeasurementAsync(dto);
         return Ok(new ResponseModel<MeasurementDto>(
             StatusCodes.Status201Created,
-            ResponseCodeConstants.CREATED,
+            ApiCodes.CREATED,
             result,
             "Measurement created successfully!"
         ));
@@ -74,7 +74,7 @@ public class MeasurementController : ControllerBase
         var result = await _service.GenerateMeasurementDiaryPreviewAsync(dto);
         return Ok(new ResponseModel<MeasurementDto>(
             StatusCodes.Status200OK,
-            ResponseCodeConstants.SUCCESS,
+            ApiCodes.SUCCESS,
             result,
             "Preview measurement successfully!"
         ));
@@ -86,7 +86,7 @@ public class MeasurementController : ControllerBase
         var diaryId = await _service.CreateDiaryWithMeasurementAsync(request);
         return Ok(new ResponseModel<object>(
             StatusCodes.Status201Created,
-            ResponseCodeConstants.CREATED,
+            ApiCodes.CREATED,
             new { diaryId },
             "Measurement diary and measurement created successfully!"
         ));
@@ -98,7 +98,7 @@ public class MeasurementController : ControllerBase
         var result = await _service.UpdateMeasurementAsync(id, dto);
         return Ok(new ResponseModel<MeasurementDto>(
             StatusCodes.Status200OK,
-            ResponseCodeConstants.SUCCESS,
+            ApiCodes.SUCCESS,
             result,
             "Measurement updated successfully!"
         ));
@@ -112,7 +112,7 @@ public class MeasurementController : ControllerBase
         {
             return NotFound(new ResponseModel<string>(
                 StatusCodes.Status404NotFound,
-                ResponseCodeConstants.NOT_FOUND,
+                ApiCodes.NOT_FOUND,
                 null,
                 "Measurement not found!"
             ));
@@ -120,7 +120,7 @@ public class MeasurementController : ControllerBase
         
         return Ok(new ResponseModel<string>(
             StatusCodes.Status200OK,
-            ResponseCodeConstants.SUCCESS,
+            ApiCodes.SUCCESS,
             null,
             "Measurement deleted successfully!"
         ));

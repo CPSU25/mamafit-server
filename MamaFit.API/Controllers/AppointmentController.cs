@@ -28,7 +28,7 @@ namespace MamaFit.API.Controllers
             var appointments = await _appointmentService.GetAllAsync(index, pageSize, search, sortBy);
             return Ok(new ResponseModel<PaginatedList<AppointmentResponseDto>>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 appointments,
                 "Get all appointments successfully!"
             ));
@@ -41,7 +41,7 @@ namespace MamaFit.API.Controllers
             var appointment = await _appointmentService.GetByIdAsync(appointmentId);
             return Ok(new ResponseModel<AppointmentResponseDto>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 appointment,
                 "Get appointment successfully!"
             ));
@@ -54,7 +54,7 @@ namespace MamaFit.API.Controllers
             return StatusCode(StatusCodes.Status201Created,
                 new ResponseModel<string>(
                     StatusCodes.Status201Created,
-                    ResponseCodeConstants.CREATED,
+                    ApiCodes.CREATED,
                     null,
                     "Created appointment successfully!"
                 ));
@@ -67,7 +67,7 @@ namespace MamaFit.API.Controllers
             await _appointmentService.UpdateAsync(appointmentId, requestDto);
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 null,
                 "Updated appointment successfully!"
             ));
@@ -80,7 +80,7 @@ namespace MamaFit.API.Controllers
             await _appointmentService.DeleteAsync(appointmentId);
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 null,
                 "Deleted appointment successfully!"
             ));
@@ -93,7 +93,7 @@ namespace MamaFit.API.Controllers
             await _appointmentService.CheckInAsync(id);
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 null,
                 "Checked-in appointment successfully!"
             ));
@@ -106,7 +106,7 @@ namespace MamaFit.API.Controllers
             await _appointmentService.CheckOutAsync(id);
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 null,
                 "Checked-out appointment successfully!"
             ));
@@ -120,7 +120,7 @@ namespace MamaFit.API.Controllers
             {
                 return BadRequest(new ResponseModel<string>(
                     StatusCodes.Status400BadRequest,
-                    ResponseCodeConstants.BADREQUEST,
+                    ApiCodes.BAD_REQUEST,
                     null,
                     "Cancel reason is required."
                 ));
@@ -129,7 +129,7 @@ namespace MamaFit.API.Controllers
             await _appointmentService.CancelAppointment(id, request);
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 null,
                 "Cancelled appointment successfully!"
             ));

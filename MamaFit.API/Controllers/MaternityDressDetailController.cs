@@ -27,7 +27,7 @@ namespace MamaFit.API.Controllers
 
             return Ok(new ResponseModel<PaginatedList<MaternityDressDetailResponseDto>>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 result,
                 "Get all maternity dress details successfully!"
             ));
@@ -40,7 +40,7 @@ namespace MamaFit.API.Controllers
 
             return Ok(new ResponseModel<MaternityDressDetailResponseDto>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 result,
                 "Get maternity dress detail successfully!"
             ));
@@ -53,7 +53,7 @@ namespace MamaFit.API.Controllers
 
             return StatusCode(StatusCodes.Status201Created, new ResponseModel<string>(
                 StatusCodes.Status201Created,
-                ResponseCodeConstants.CREATED,
+                ApiCodes.CREATED,
                 null,
                 "Created maternity dress detail successfully!"
             ));
@@ -66,7 +66,7 @@ namespace MamaFit.API.Controllers
 
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 null,
                 "Updated maternity dress detail successfully!"
             ));
@@ -79,7 +79,7 @@ namespace MamaFit.API.Controllers
 
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 null,
                 "Deleted maternity dress detail successfully!"
             ));

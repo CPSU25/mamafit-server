@@ -26,12 +26,12 @@ namespace MamaFit.Services.Service
             // Kiểm tra User tồn tại
             var user = await _unitOfWork.UserRepository.GetByIdAsync(requestDto.UserId);
             if (user == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "User is not available");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "User is not available");
 
             // Kiểm tra OrderItem tồn tại
             var orderItem = await _unitOfWork.OrderItemRepository.GetByIdAsync(requestDto.OrderItemId);
             if (orderItem == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Order item is not available");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Order item is not available");
 
             var newRequest = _mapper.Map<DesignRequest>(requestDto);
             newRequest.User = user;
@@ -48,7 +48,7 @@ namespace MamaFit.Services.Service
             var request = await _unitOfWork.DesignRequestRepository.GetByIdAsync(id);
 
             if (request == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Design request is not available");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Design request is not available");
 
             return _mapper.Map<DesignResponseDto>(request);
         }
@@ -75,7 +75,7 @@ namespace MamaFit.Services.Service
         {
             var request = await _unitOfWork.DesignRequestRepository.GetByIdAsync(id);
             if (request == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Design request is not available");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Design request is not available");
 
             await _unitOfWork.DesignRequestRepository.SoftDeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();

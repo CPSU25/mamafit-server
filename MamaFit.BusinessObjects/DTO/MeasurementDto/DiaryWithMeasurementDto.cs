@@ -16,5 +16,9 @@ public class DiaryWithMeasurementDto
     public DateTime? UltrasoundDate { get; set; }
     public int WeeksFromUltrasound { get; set; }
     public DateTime? PregnancyStartDate { get; set; }
-    public List<MeasurementDto> Measurements { get; set; } = new List<MeasurementDto>();
+    public string? CreatedBy { get; set; }
+    public string? UpdatedBy { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+    public List<MeasurementResponseDto> Measurements { get; set; } = [];
 }

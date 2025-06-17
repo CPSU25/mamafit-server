@@ -7,6 +7,8 @@ public interface IMeasurementDiaryService
 {
     Task<PaginatedList<MeasurementDiaryResponseDto>> GetAllAsync(int index, int pageSize, string? nameSearch);
     Task<DiaryWithMeasurementDto> GetDiaryByIdAsync(string id, DateTime? startDate, DateTime? endDate);
-    Task<List<MeasurementDiaryResponseDto>> GetDiariesByUserIdAsync(string userId);
+
+    Task<PaginatedList<MeasurementDiaryResponseDto>> GetDiariesByUserIdAsync(int index, int pageSize, string userId,
+        string? nameSearch = null);
     Task<bool> DeleteDiaryAsync(string id);
 }

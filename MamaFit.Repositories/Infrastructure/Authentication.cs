@@ -163,7 +163,7 @@ namespace MamaFit.Repositories.Infrastructure
         public static async Task HandleForbiddenRequest(HttpContext context)
         {
             int code = (int)HttpStatusCode.Forbidden;
-            var error = new ErrorException(code, ResponseCodeConstants.FORBIDDEN, "You don't have permission to access this feature");
+            var error = new ErrorException(code, ApiCodes.FORBIDDEN, "You don't have permission to access this feature");
             string result = JsonSerializer.Serialize(error);
 
             context.Response.ContentType = "application/json";

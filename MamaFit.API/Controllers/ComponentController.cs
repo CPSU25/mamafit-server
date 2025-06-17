@@ -26,7 +26,7 @@ namespace MamaFit.API.Controllers
             var components = await _componentService.GetAllAsync(index, pageSize, search, sortBy);
             return Ok(new ResponseModel<PaginatedList<ComponentResponseDto>>(
                 StatusCodes.Status200OK,
-                ResponseCodeConstants.SUCCESS,
+                ApiCodes.SUCCESS,
                 components
             ));
         }

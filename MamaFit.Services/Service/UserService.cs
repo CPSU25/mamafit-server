@@ -52,7 +52,7 @@ public class UserService : IUserService
         var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
         if (user == null)
             throw new ErrorException(StatusCodes.Status404NotFound,
-                ErrorCode.NotFound, "User not found!");
+                ApiCodes.NOT_FOUND, "User not found!");
 
         return _mapper.Map<UserReponseDto>(user);
     }
@@ -62,7 +62,7 @@ public class UserService : IUserService
         var userRepo = await _unitOfWork.UserRepository.GetByIdAsync(userId);
         if (userRepo == null)
             throw new ErrorException(StatusCodes.Status404NotFound,
-                ErrorCode.NotFound, "User not found!");
+                ApiCodes.NOT_FOUND, "User not found!");
 
         var user = _mapper.Map<ApplicationUser>(model);
 
@@ -79,7 +79,7 @@ public class UserService : IUserService
 
         if (user == null)
             throw new ErrorException(StatusCodes.Status404NotFound,
-                ErrorCode.NotFound, "User not found!");
+                ApiCodes.NOT_FOUND, "User not found!");
 
         await _unitOfWork.UserRepository.DeleteUserAsync(user);
         await _unitOfWork.SaveChangesAsync();
@@ -89,7 +89,7 @@ public class UserService : IUserService
     {
         var user = await _unitOfWork.UserRepository.GetByIdAsync(model.Id);
         if (user == null)
-            throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "User not found.");
+            throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "User not found.");
 
         if (!string.IsNullOrEmpty(user.ProfilePicture))
         {
@@ -103,7 +103,7 @@ public class UserService : IUserService
         var uploadResult = await _cloudinaryService.AddPhotoAsync(model.NewImage);
 
         if (!uploadResult.IsSuccess)
-            throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.BadRequest, uploadResult.ErrorMessage);
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.NOT_FOUND, uploadResult.ErrorMessage);
 
         user.ProfilePicture = uploadResult.Url;
         await _unitOfWork.UserRepository.UpdateUserAsync(user);

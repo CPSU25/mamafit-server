@@ -44,4 +44,11 @@ public class MeasurementRepository : GenericRepository<Measurement>, IMeasuremen
             .OrderByDescending(m => m.WeekOfPregnancy)
             .FirstOrDefaultAsync();
     }
+    
+    public async Task<bool> ValidateMeasurementExistenceAsync(string measurementDiaryId, int weekOfPregnancy)
+    {
+        return await _dbSet.AnyAsync(m => m.MeasurementDiaryId == measurementDiaryId && 
+                                      m.WeekOfPregnancy == weekOfPregnancy && 
+                                      !m.IsDeleted);
+    }
 }

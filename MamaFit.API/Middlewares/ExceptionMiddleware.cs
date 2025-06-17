@@ -26,7 +26,7 @@ namespace MamaFit.API.Middlewares
             {
                 _logger.LogError(ex, ex.Message);
                 context.Response.StatusCode = ex.StatusCode;
-                var result = JsonSerializer.Serialize(new { ex.Code, ex.Message, ex.AdditionalData });
+                var result = JsonSerializer.Serialize(new { ex.Code, ex.Message });
                 context.Response.ContentType = "application/json";
                 await context.Response.WriteAsync(result);
             }

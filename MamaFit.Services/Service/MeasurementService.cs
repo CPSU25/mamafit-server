@@ -57,11 +57,11 @@ public class MeasurementService : IMeasurementService
                         "Measurement Diary not found");
 
         var weeksPregnant = CalculateWeeksPregnant(diary.PregnancyStartDate);
-        
+
         if (await ValidateMeasurementExistenceAsync(dto.MeasurementDiaryId, weeksPregnant))
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.NOT_FOUND,
                 "Measurement for this week already exists");
-        
+
         bool hasManualInput = dto.Weight > 0 && dto.Bust > 0 && dto.Waist > 0 && dto.Hip > 0;
 
         float weight, bust, waist, hip;
@@ -83,7 +83,7 @@ public class MeasurementService : IMeasurementService
             float baseWeight = last?.Weight ?? diary.Weight;
 
             int baseWeek = last!.WeekOfPregnancy;
-            
+
             bust = _calculator.CalculateBust(baseBust, baseWeek, weeksPregnant);
             waist = _calculator.CalculateWaist(baseWaist, baseWeek, weeksPregnant);
             hip = _calculator.CalculateHip(baseHip, baseWeek, weeksPregnant);
@@ -125,7 +125,7 @@ public class MeasurementService : IMeasurementService
         if (await ValidateMeasurementExistenceAsync(dto.MeasurementDiaryId, weeksPregnant))
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                 "Measurement for this week already exists");
-        
+
         var measurementEntity = _mapper.Map<Measurement>(dto);
         measurementEntity.MeasurementDiaryId = diary.Id;
         measurementEntity.WeekOfPregnancy = weeksPregnant;
@@ -147,12 +147,12 @@ public class MeasurementService : IMeasurementService
 
         var pregnancyStartDate = CalculatePregnancyStartDate(dto);
         var currentWeek = CalculateWeeksPregnant(pregnancyStartDate);
-        
+
         float baseBust = dto.Bust;
         float baseWaist = dto.Waist;
         float baseHip = dto.Hip;
         float height = dto.Height;
-        
+
         float bust = _calculator.CalculateBust(baseBust, 0, currentWeek);
         float waist = _calculator.CalculateWaist(baseWaist, 0, currentWeek);
         float hip = _calculator.CalculateHip(baseHip, 0, currentWeek);

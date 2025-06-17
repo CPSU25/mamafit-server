@@ -80,6 +80,7 @@ namespace MamaFit.Repositories.Repository
         public async Task<ChatRoom> GetChatRoomById(string chatRoomId)
         {
             var chatroom = await _context.ChatRooms
+                .Include(r => r.Messages)
                 .Include(r => r.Members)
                 .ThenInclude(m => m.User)
                 .FirstOrDefaultAsync(r => r.Id == chatRoomId);
@@ -89,6 +90,9 @@ namespace MamaFit.Repositories.Repository
         public async Task<List<ChatRoom>> GetUserChatRoom(string userId)
         {
             return await _context.ChatRooms
+                .Include(r => r.Messages)
+                .Include(r => r.Members)
+                .ThenInclude(m => m.User)
                 .Where(c => c.Members.Select(m => m.UserId).Contains(userId))
                 .ToListAsync();
         }

@@ -20,9 +20,6 @@ namespace MamaFit.Repositories.Infrastructure
         public string Code { get; }
 
         public int StatusCode { get; set; }
-
-        [JsonExtensionData] public Dictionary<string, object> AdditionalData { get; set; }
-
     }
 
     public class ErrorException : Exception
@@ -54,37 +51,6 @@ namespace MamaFit.Repositories.Infrastructure
 
         [JsonPropertyName("errorMessage")] public required string ErrorMessage { get; set; }
     }
-    // public static class ErrorCode
-    // {
-    //     public const string Forbidden = "Forbidden";
-    //     public const string BadRequest = "Bad Request";
-    //     public const string InternalServerError = "Internal Server Error";
-    //     public const string UnAuthenticated = "Un-Authenticate";
-    //     public const string UnAuthorized = "Un-Authorized";
-    //     public const string NotFound = "Not Found";
-    //     public const string Unknown = "Oops! Something went wrong, please try again later.";
-    //     public const string NotUnique = "The resource is already, please try another.";
-    //     public const string TokenExpired = "The TokenDto is already expired.";
-    //     public const string TokenInvalid = "The TokenDto is invalid.";
-    //     public const string Validated = "Validated.";
-    //     public const string Conflicted = "Conflicted.";
-    //     public const string InvalidInput = "Invalid input!";
-    //     public const string Duplicate = "Duplicate!";
-    // }
-    // public static class ResponseCodeConstants
-    // {
-    //     public const string CREATED = "Created!";
-    //     public const string NOT_FOUND = "Not found!";
-    //     public const string SUCCESS = "Success!";
-    //     public const string FAILED = "Failed!";
-    //     public const string EXISTED = "Existed!";
-    //     public const string DUPLICATE = "Duplicate!";
-    //     public const string INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
-    //     public const string INVALID_INPUT = "Invalid input!";
-    //     public const string UNAUTHORIZED = "Unauthorized!";
-    //     public const string BADREQUEST = "Bad request!";
-    //     public const string FORBIDDEN = "Forbidden!";
-    // }
     
     public static class ApiCodes
     {

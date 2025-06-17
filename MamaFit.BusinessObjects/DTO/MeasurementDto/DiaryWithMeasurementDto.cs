@@ -2,6 +2,7 @@ namespace MamaFit.BusinessObjects.DTO.MeasurementDto;
 
 public class DiaryWithMeasurementDto
 {
+    public string Id { get; set; } = string.Empty;
     public string? UserId { get; set; }
     public string? Name { get; set; }
     public int? Age { get; set; }

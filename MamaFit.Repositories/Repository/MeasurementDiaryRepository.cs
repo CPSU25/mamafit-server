@@ -27,11 +27,17 @@ public class MeasurementDiaryRepository : GenericRepository<MeasurementDiary>, I
         return await query.GetPaginatedList(index, pageSize);
     }
     
-    public async Task<List<MeasurementDiary>> GetByUserIdAsync(string userId)
+    public async Task<PaginatedList<MeasurementDiary>> GetByUserIdAsync(int index, int pageSize, string userId, string? nameSearch)
     {
-        return await _dbSet
-            .Where(x => x.UserId == userId && !x.IsDeleted)
-            .ToListAsync();
+        var query = _dbSet
+            .Where(x => x.UserId == userId && !x.IsDeleted);
+
+        if (!string.IsNullOrWhiteSpace(nameSearch))
+        {
+            query = query.Where(x => x.Name!.Contains(nameSearch));
+        }
+
+        return await query.GetPaginatedList(index, pageSize);
     }
     
     public async Task<MeasurementDiary?> GetDiaryByIdAsync(string id, DateTime? startDate = null, DateTime? endDate = null)

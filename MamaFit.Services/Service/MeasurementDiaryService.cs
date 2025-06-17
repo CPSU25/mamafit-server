@@ -46,13 +46,25 @@ public class MeasurementDiaryService : IMeasurementDiaryService
         return _mapper.Map<DiaryWithMeasurementDto>(diary);
     }
     
-    public async Task<List<MeasurementDiaryResponseDto>> GetDiariesByUserIdAsync(string userId)
+    public async Task<PaginatedList<MeasurementDiaryResponseDto>> GetDiariesByUserIdAsync(int index, int pageSize, string userId, string? nameSearch = null)
     {
-        var diaries = await _unitOfWork.MeasurementDiaryRepository.GetByUserIdAsync(userId);
-        if (diaries == null || !diaries.Any())
+        var diaries = await _unitOfWork.MeasurementDiaryRepository.GetByUserIdAsync(index, pageSize, userId, nameSearch);
+        
+        if (diaries == null)
             throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "No measurement diaries found for this user");
         
-        return diaries.Select(diary => _mapper.Map<MeasurementDiaryResponseDto>(diary)).ToList();
+        var responseItems = diaries.Items
+            .Select(diary => _mapper.Map<MeasurementDiaryResponseDto>(diary))
+            .ToList();
+        
+        var responsePaginatedList = new PaginatedList<MeasurementDiaryResponseDto>(
+            responseItems,
+            diaries.TotalCount,
+            diaries.PageNumber,
+            pageSize
+        );
+        
+        return responsePaginatedList;
     }
     
     public async Task<bool> DeleteDiaryAsync(string id)

@@ -36,4 +36,12 @@ public class MeasurementRepository : GenericRepository<Measurement>, IMeasuremen
     {
         return await GetByIdNotDeletedAsync(id);   
     }
+    
+    public async Task<Measurement?> GetLatestMeasurementByDiaryIdAsync(string diaryId)
+    {
+        return await _dbSet
+            .Where(m => m.MeasurementDiaryId == diaryId && !m.IsDeleted)
+            .OrderByDescending(m => m.WeekOfPregnancy)
+            .FirstOrDefaultAsync();
+    }
 }

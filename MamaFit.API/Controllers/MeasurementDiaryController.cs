@@ -44,11 +44,15 @@ public class MeasurementDiaryController : ControllerBase
         ));
     }
     
-    [HttpGet("user/{userId}")]
-    public async Task<IActionResult> GetByUserId(string userId)
+    [HttpGet("userId")]
+    public async Task<IActionResult> GetByUserId(
+        [FromQuery]string userId,
+        [FromQuery]int index = 1,
+        [FromQuery]int pageSize = 10,
+        [FromQuery]string? nameSearch = null)
     {
-        var diaries = await _diaryService.GetDiariesByUserIdAsync(userId);
-        return Ok(new ResponseModel<List<MeasurementDiaryResponseDto>>(
+        var diaries = await _diaryService.GetDiariesByUserIdAsync(index,pageSize, userId, nameSearch);
+        return Ok(new ResponseModel<PaginatedList<MeasurementDiaryResponseDto>>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
             diaries,

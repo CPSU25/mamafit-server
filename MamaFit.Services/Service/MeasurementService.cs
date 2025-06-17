@@ -75,10 +75,7 @@ public class MeasurementService : IMeasurementService
         }
         else
         {
-            var last = (await _unitOfWork.MeasurementRepository
-                    .FindListAsync(m => m.MeasurementDiaryId == diary.Id))
-                .OrderByDescending(m => m.WeekOfPregnancy)
-                .FirstOrDefault();
+            var last = await _unitOfWork.MeasurementRepository.GetLatestMeasurementByDiaryIdAsync(diary.Id);
 
             float baseBust = last?.Bust ?? diary.Bust;
             float baseWaist = last?.Waist ?? diary.Waist;

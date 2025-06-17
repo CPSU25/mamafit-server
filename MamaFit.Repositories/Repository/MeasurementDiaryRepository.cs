@@ -42,18 +42,13 @@ public class MeasurementDiaryRepository : GenericRepository<MeasurementDiary>, I
     
     public async Task<MeasurementDiary?> GetDiaryByIdAsync(string id, DateTime? startDate = null, DateTime? endDate = null)
     {
-        var query = _dbSet.Include(x => x.Measurements)
-            .Where(x => x.Id == id && !x.IsDeleted);
-
-        if (startDate.HasValue)
-        {
-            query = query.Where(x => x.CreatedAt >= startDate.Value);
-        }
-
-        if (endDate.HasValue)
-        {
-            query = query.Where(x => x.CreatedAt <= endDate.Value);
-        }
+        var query = _dbSet
+            .Where(x => x.Id == id && !x.IsDeleted)
+            .Include(x => x.Measurements
+                .Where(m =>
+                    (!startDate.HasValue || m.CreatedAt >= startDate.Value) &&
+                    (!endDate.HasValue || m.CreatedAt <= endDate.Value)
+                ));
 
         return await query.FirstOrDefaultAsync();
     }

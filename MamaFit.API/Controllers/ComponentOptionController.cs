@@ -63,7 +63,7 @@ namespace MamaFit.API.Controllers
             await _componentOptionService.UpdateAsync(id, requestDto);
             return Ok(new ResponseModel<string>(
                 StatusCodes.Status200OK,
-                ApiCodes.CREATED,
+                ApiCodes.SUCCESS,
                 null,
                 "Updated component option successfully!"
             ));

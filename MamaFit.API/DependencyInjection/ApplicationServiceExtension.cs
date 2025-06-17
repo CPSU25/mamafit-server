@@ -10,6 +10,7 @@ using MamaFit.Services.Interface;
 using MamaFit.Services.Mapper;
 using MamaFit.Services.Service;
 using MamaFit.Services.Service.Caculator;
+using MamaFit.Services.Service.Job;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

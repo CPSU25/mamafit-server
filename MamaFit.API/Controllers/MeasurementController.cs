@@ -44,6 +44,18 @@ public class MeasurementController : ControllerBase
         ));
     }
     
+    [HttpPost("generate-missing")]
+    public async Task<IActionResult> GenerateMissingMeasurements()
+    {
+        await _service.GenerateMissingMeasurementsAsync();
+        return Ok(new ResponseModel<string>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            null,
+            "Generate missing measurements successfully!"
+        ));
+    }
+    
     [HttpPost("preview-measurement")]
     public async Task<IActionResult> Preview([FromBody] MeasurementCreateDto dto)
     {

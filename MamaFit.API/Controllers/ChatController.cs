@@ -1,4 +1,5 @@
-﻿using MamaFit.BusinessObjects.DTO.ChatMessageDto;
+﻿using MamaFit.API.Middlewares;
+using MamaFit.BusinessObjects.DTO.ChatMessageDto;
 using MamaFit.BusinessObjects.DTO.ChatRoomDto;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;

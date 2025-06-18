@@ -108,6 +108,7 @@ namespace MamaFit.Services.Mapper
             CreateMap<ChatMessage, ChatMessageResponseDto>()
                 .ForMember(dest => dest.SenderName, otp => otp.MapFrom(src => src.Sender.FullName))
                 .ForMember(dest => dest.SenderAvatar, otp => otp.MapFrom(src => src.Sender.ProfilePicture))
+                .ForMember(dest => dest.MessageTimestamp, otp => otp.MapFrom(src => src.CreatedAt))
                 .ReverseMap();
             CreateMap<ChatRoom, ChatRoomCreateDto>().ReverseMap();
             CreateMap<ChatRoom, ChatRoomResponseDto>()

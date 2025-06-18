@@ -1,13 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using Microsoft.AspNetCore.Authorization;
 using MamaFit.BusinessObjects.DTO.ChatMessageDto;
 using MamaFit.Services.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Presentation.Hubs
+namespace MamaFit.API.Middlewares
 {
     public class ChatHub : Hub
     {
@@ -170,15 +164,7 @@ namespace Presentation.Hubs
 
             try
             {
-                var message = await _chatService.GetChatMessageById(messageId);
-                if (message == null || message.SenderId == userId)
-                {
-                    await Clients.Caller.SendAsync("Error", "Invalid message or unauthorized");
-                    return;
-                }
-
                 await _chatService.MarkMessageAsReadAsync(messageId, userId, chatRoomId);
-                await Clients.Group($"room_{chatRoomId}").SendAsync("MessageRead", messageId, userId);
                 _logger.LogInformation($"Message {messageId} marked as read by user {userId} in room {chatRoomId}");
             }
             catch (Exception ex)

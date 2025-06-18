@@ -24,7 +24,15 @@ public class VoucherBatchService : IVoucherBatchService
         int pageSize = 10, string? nameSearch = null)
     {
         var voucherBatches = await _unitOfWork.VoucherBatchRepository.GetAllAsync(index, pageSize, nameSearch);
-        return _mapper.Map<PaginatedList<VoucherBatchResponseDto>>(voucherBatches);
+        var responseItems = voucherBatches.Items
+            .Select(batch => _mapper.Map<VoucherBatchResponseDto>(batch))
+            .ToList();
+        return new PaginatedList<VoucherBatchResponseDto>(
+            responseItems,
+            voucherBatches.TotalCount,
+            voucherBatches.PageNumber,
+            pageSize
+        );
     }
 
     public async Task<VoucherBatchResponseDto?> GetVoucherBatchByIdAsync(string id)

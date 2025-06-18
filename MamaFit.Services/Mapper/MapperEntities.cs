@@ -105,7 +105,10 @@ namespace MamaFit.Services.Mapper
 
             //Chat Mapper 
             CreateMap<ChatMessage, ChatMessageCreateDto>().ReverseMap();
-            CreateMap<ChatMessage, ChatMessageResponseDto>().ReverseMap();
+            CreateMap<ChatMessage, ChatMessageResponseDto>()
+                .ForMember(dest => dest.SenderName, otp => otp.MapFrom(src => src.Sender.FullName))
+                .ForMember(dest => dest.SenderAvatar, otp => otp.MapFrom(src => src.Sender.ProfilePicture))
+                .ReverseMap();
             CreateMap<ChatRoom, ChatRoomCreateDto>().ReverseMap();
             CreateMap<ChatRoom, ChatRoomResponseDto>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
@@ -129,6 +132,7 @@ namespace MamaFit.Services.Mapper
                 .FirstOrDefault() ?? string.Empty));
             CreateMap<ChatRoomMember, ChatRoomMemberResponseDto>()
             .ForMember(dest => dest.MemberId, opt => opt.MapFrom(src => src.UserId))
+            .ForMember(dest => dest.MemberAvatar, otp => otp.MapFrom(src => src.User.ProfilePicture))
             .ForMember(dest => dest.MemberName, opt => opt.MapFrom(src => src.User.FullName));
 
             //MaternityDressTask Mapper

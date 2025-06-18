@@ -71,7 +71,7 @@ namespace MamaFit.Repositories.Repository
 
         public async Task<ChatMessage> GetChatMessageById(string messageId)
         {
-            var message =  await _context.ChatMessages
+            var message = await _context.ChatMessages
                 .Include(m => m.Sender)
                 .FirstOrDefaultAsync(m => m.Id.Equals(messageId));
             return message;
@@ -95,6 +95,12 @@ namespace MamaFit.Repositories.Repository
                 .ThenInclude(m => m.User)
                 .Where(c => c.Members.Select(m => m.UserId).Contains(userId))
                 .ToListAsync();
+        }
+
+        public async Task UpdateMessageAsync(ChatMessage message)
+        {
+            _context.Entry(message).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
     }
 }

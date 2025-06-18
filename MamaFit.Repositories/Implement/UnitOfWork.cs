@@ -1,12 +1,12 @@
-﻿using MamaFit.Repositories.Interface;
-using MamaFit.BusinessObjects.DBContext;
+﻿using MamaFit.BusinessObjects.DbContext;
+using MamaFit.Repositories.Interface;
 
 namespace MamaFit.Repositories.Implement
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
-        private bool _disposed = false;
+        private bool _disposed;
         public IUserRepository UserRepository { get; }
         public IRoleRepository RoleRepository { get; }
         public ITokenRepository TokenRepository { get; }
@@ -24,6 +24,7 @@ namespace MamaFit.Repositories.Implement
         public IMeasurementRepository MeasurementRepository { get; }
         public IMeasurementDiaryRepository MeasurementDiaryRepository { get; }
         public IChatRepository ChatRepository { get; }
+        public IVoucherBatchRepository VoucherBatchRepository { get; }
 
         public UnitOfWork(ApplicationDbContext context,
             IUserRepository userRepository,
@@ -42,7 +43,8 @@ namespace MamaFit.Repositories.Implement
             IOrderItemRepository orderItemRepository,
             IMeasurementRepository measurementRepository,
             IMeasurementDiaryRepository measurementDiaryRepository,
-            IChatRepository chatRepository)
+            IChatRepository chatRepository,
+            IVoucherBatchRepository voucherBatchRepository)
         {
             _context = context;
             UserRepository = userRepository;
@@ -62,11 +64,12 @@ namespace MamaFit.Repositories.Implement
             MeasurementRepository = measurementRepository;
             MeasurementDiaryRepository = measurementDiaryRepository;
             ChatRepository = chatRepository;
+            VoucherBatchRepository = voucherBatchRepository;
         }
 
         public int SaveChanges()
         {
-            int result = -1;
+            int result;
 
             using (var transaction = _context.Database.BeginTransaction())
             {
@@ -87,7 +90,7 @@ namespace MamaFit.Repositories.Implement
 
         public async Task<int> SaveChangesAsync()
         {
-            int result = -1;
+            int result;
 
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {

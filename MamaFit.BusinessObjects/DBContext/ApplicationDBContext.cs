@@ -2,11 +2,10 @@
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Entity.ChatEntity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
-namespace MamaFit.BusinessObjects.DBContext
+namespace MamaFit.BusinessObjects.DbContext
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : Microsoft.EntityFrameworkCore.DbContext
     {
         public ApplicationDbContext()
         {

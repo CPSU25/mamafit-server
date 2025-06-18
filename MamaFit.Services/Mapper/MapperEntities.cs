@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using MamaFit.BusinessObjects.DTO.Role;
+using MamaFit.BusinessObjects.DTO.AppointmentDto;
 using MamaFit.BusinessObjects.DTO.RoleDto;
-using MamaFit.BusinessObjects.DTO.Token;
 using MamaFit.BusinessObjects.DTO.UserDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.DTO.MaternityDressDto;
@@ -11,12 +10,13 @@ using MamaFit.BusinessObjects.DTO.ComponentDto;
 using MamaFit.BusinessObjects.DTO.ComponentOptionDto;
 using MamaFit.BusinessObjects.DTO.MaternityDressDetailDto;
 using MamaFit.BusinessObjects.DTO.DesignRequestDto;
-using MamaFit.BusinessObjects.DTO.Appointment;
 using MamaFit.BusinessObjects.DTO.BranchDto;
 using MamaFit.BusinessObjects.DTO.MeasurementDto;
 using MamaFit.BusinessObjects.Entity.ChatEntity;
 using MamaFit.BusinessObjects.DTO.ChatMessageDto;
 using MamaFit.BusinessObjects.DTO.ChatRoomDto;
+using MamaFit.BusinessObjects.DTO.TokenDto;
+using MamaFit.BusinessObjects.DTO.VoucherBatchDto;
 
 namespace MamaFit.Services.Mapper
 {
@@ -106,6 +106,11 @@ namespace MamaFit.Services.Mapper
             CreateMap<ChatMessage, ChatMessageResponseDto>().ReverseMap();
             CreateMap<ChatRoom, ChatRoomCreateDto>().ReverseMap();
             CreateMap<ChatRoom, ChatRoomResponseDto>().ReverseMap();
+            
+            //VoucherBatch Mapper
+            CreateMap<VoucherBatch, VoucherBatchCreateDto>().ReverseMap();
+            CreateMap<VoucherBatch, VoucherBatchUpdateDto>().ReverseMap();
+            CreateMap<VoucherBatch, VoucherBatchResponseDto>().ReverseMap();
         }
     }
 }

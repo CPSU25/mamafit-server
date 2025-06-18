@@ -1,4 +1,4 @@
-﻿using MamaFit.BusinessObjects.DBContext;
+﻿using MamaFit.BusinessObjects.DbContext;
 using MamaFit.BusinessObjects.Entity.ChatEntity;
 using MamaFit.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;

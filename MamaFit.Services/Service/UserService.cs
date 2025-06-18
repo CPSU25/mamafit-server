@@ -9,6 +9,7 @@ using MamaFit.Repositories.Helper;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using MamaFit.Services.ExternalService;
+using MamaFit.Services.ExternalService.CloudinaryService;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;

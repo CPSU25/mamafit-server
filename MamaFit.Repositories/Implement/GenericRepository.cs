@@ -2,8 +2,8 @@
 using MamaFit.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using MamaFit.BusinessObjects.DBContext;
 using MamaFit.BusinessObjects.Base;
+using MamaFit.BusinessObjects.DbContext;
 using Microsoft.AspNetCore.Http;
 
 namespace MamaFit.Repositories.Implement

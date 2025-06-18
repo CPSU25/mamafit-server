@@ -19,6 +19,7 @@
         public IMeasurementRepository MeasurementRepository { get; }
         public IMeasurementDiaryRepository MeasurementDiaryRepository { get; }
         public IChatRepository ChatRepository { get; }
+        public IVoucherBatchRepository VoucherBatchRepository { get; }
         int SaveChanges();
         Task<int> SaveChangesAsync();
         void BeginTransaction();

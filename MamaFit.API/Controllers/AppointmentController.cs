@@ -1,6 +1,6 @@
-﻿using MamaFit.BusinessObjects.DTO.Appointment;
-using MamaFit.BusinessObjects.DTO.AppointmentDto;
+﻿using MamaFit.BusinessObjects.DTO.AppointmentDto;
 using MamaFit.Repositories.Infrastructure;
+using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

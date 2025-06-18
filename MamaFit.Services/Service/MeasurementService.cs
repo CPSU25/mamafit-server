@@ -14,13 +14,15 @@ public class MeasurementService : IMeasurementService
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IBodyGrowthCalculator _calculator;
+    private readonly IValidationService _validation;
 
     public MeasurementService(IMapper mapper,
-        IUnitOfWork unitOfWork, IBodyGrowthCalculator calculator)
+        IUnitOfWork unitOfWork, IBodyGrowthCalculator calculator, IValidationService validation)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
         _calculator = calculator;
+        _validation = validation;
     }
 
     public async Task GenerateMissingMeasurementsAsync()
@@ -113,10 +115,9 @@ public class MeasurementService : IMeasurementService
 
     public async Task<MeasurementDto> GenerateMeasurementPreviewAsync(MeasurementCreateDto dto)
     {
-        var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdAsync(dto.MeasurementDiaryId)
-                    ?? throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND,
-                        "Measurement Diary not found");
-
+        await _validation.ValidateAndThrowAsync(dto);
+        var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdNotDeletedAsync(dto.MeasurementDiaryId); 
+        _validation.CheckNotFound(diary, "Measurement diary not found");
         var weeksPregnant = CalculateWeeksPregnant(diary.PregnancyStartDate);
 
         if (await _unitOfWork.MeasurementRepository.ValidateMeasurementExistenceAsync(dto.MeasurementDiaryId,
@@ -177,10 +178,9 @@ public class MeasurementService : IMeasurementService
 
     public async Task<MeasurementDto> CreateMeasurementAsync(CreateMeasurementDto dto)
     {
-        var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdAsync(dto.MeasurementDiaryId);
-        if (diary == null)
-            throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Measurement Diary not found");
-
+        await _validation.ValidateAndThrowAsync(dto);
+        var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdNotDeletedAsync(dto.MeasurementDiaryId);
+        _validation.CheckNotFound(diary, "Measurement diary not found");
         var pregnancyStartDate = diary.PregnancyStartDate;
         var weeksPregnant = CalculateWeeksPregnant(pregnancyStartDate);
 
@@ -201,11 +201,11 @@ public class MeasurementService : IMeasurementService
 
     public async Task<MeasurementDto> GenerateMeasurementDiaryPreviewAsync(MeasurementDiaryDto dto)
     {
+        await _validation.ValidateAndThrowAsync(dto);
         if (dto.UserId != null)
         {
-            var user = await _unitOfWork.UserRepository.GetByIdAsync(dto.UserId);
-            if (user == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "User not found");
+            var user = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(dto.UserId);
+            _validation.CheckNotFound(user, "User not found");;
         }
 
         var pregnancyStartDate = CalculatePregnancyStartDate(dto);

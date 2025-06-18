@@ -113,38 +113,36 @@ namespace MamaFit.Services.Mapper
             CreateMap<ChatRoom, ChatRoomCreateDto>().ReverseMap();
             CreateMap<ChatRoom, ChatRoomResponseDto>().ReverseMap();
             CreateMap<ChatRoom, ChatRoomResponseDto>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
-            .ForMember(dest => dest.MemberCount, opt => opt.MapFrom(src => src.Members.Count))
-            .ForMember(dest => dest.Members, opt => opt.MapFrom(src => src.Members))
-            .ForMember(dest => dest.LastMessage, opt => opt.MapFrom(src => src.Messages
-                .OrderByDescending(m => m.CreatedAt)
-                .Select(m => m.Message)
-                .FirstOrDefault() ?? string.Empty))
-            .ForMember(dest => dest.LastTimestamp, opt => opt.MapFrom(src => src.Messages
-                .OrderByDescending(m => m.CreatedAt)
-                .Select(m => m.CreatedAt)
-                .FirstOrDefault()))
-            .ForMember(dest => dest.LastUserId, opt => opt.MapFrom(src => src.Messages
-                .OrderByDescending(m => m.CreatedAt)
-                .Select(m => m.SenderId)
-                .FirstOrDefault() ?? string.Empty))
-            .ForMember(dest => dest.LastUserName, opt => opt.MapFrom(src => src.Messages
-                .OrderByDescending(m => m.CreatedAt)
-                .Select(m => m.Sender.FullName)
-                .FirstOrDefault() ?? string.Empty));
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
+                .ForMember(dest => dest.MemberCount, opt => opt.MapFrom(src => src.Members.Count))
+                .ForMember(dest => dest.Members, opt => opt.MapFrom(src => src.Members))
+                .ForMember(dest => dest.LastMessage, opt => opt.MapFrom(src => src.Messages
+                    .OrderByDescending(m => m.CreatedAt)
+                    .Select(m => m.Message)
+                    .FirstOrDefault() ?? string.Empty))
+                .ForMember(dest => dest.LastTimestamp, opt => opt.MapFrom(src => src.Messages
+                    .OrderByDescending(m => m.CreatedAt)
+                    .Select(m => m.CreatedAt)
+                    .FirstOrDefault()))
+                .ForMember(dest => dest.LastUserId, opt => opt.MapFrom(src => src.Messages
+                    .OrderByDescending(m => m.CreatedAt)
+                    .Select(m => m.SenderId)
+                    .FirstOrDefault() ?? string.Empty))
+                .ForMember(dest => dest.LastUserName, opt => opt.MapFrom(src => src.Messages
+                    .OrderByDescending(m => m.CreatedAt)
+                    .Select(m => m.Sender.FullName)
+                    .FirstOrDefault() ?? string.Empty));
             CreateMap<ChatRoomMember, ChatRoomMemberResponseDto>()
-            .ForMember(dest => dest.MemberId, opt => opt.MapFrom(src => src.UserId))
-            .ForMember(dest => dest.MemberAvatar, otp => otp.MapFrom(src => src.User.ProfilePicture))
-            .ForMember(dest => dest.MemberName, opt => opt.MapFrom(src => src.User.FullName));
+                .ForMember(dest => dest.MemberId, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.MemberAvatar, otp => otp.MapFrom(src => src.User.ProfilePicture))
+                .ForMember(dest => dest.MemberName, opt => opt.MapFrom(src => src.User.FullName));
 
             //MaternityDressTask Mapper
             CreateMap<MaternityDressTask, MaternityDressTaskRequestDto>().ReverseMap();
             CreateMap<MaternityDressTask, MaternityDressTaskResponseDto>().ReverseMap();
             
-                        
             //VoucherBatch Mapper
-            CreateMap<VoucherBatch, VoucherBatchCreateDto>().ReverseMap();
-            CreateMap<VoucherBatch, VoucherBatchUpdateDto>().ReverseMap();
+            CreateMap<VoucherBatch, VoucherBatchDto>().ReverseMap();
             CreateMap<VoucherBatch, VoucherBatchResponseDto>().ReverseMap();
         }
     }

@@ -3,9 +3,9 @@ using MamaFit.BusinessObjects.DTO.VoucherBatchDto;
 
 namespace MamaFit.Services.Validator.VoucherBatch;
 
-public class VoucherBatchCreateDtoValidator : AbstractValidator<VoucherBatchCreateDto>
+public class VoucherBatchDtoValidator : AbstractValidator<VoucherBatchDto>
 {
-    public VoucherBatchCreateDtoValidator()
+    public VoucherBatchDtoValidator()
     {
         RuleFor(x => x.BatchName)
             .NotEmpty().WithMessage("Name is required.")

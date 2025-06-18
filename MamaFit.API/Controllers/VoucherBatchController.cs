@@ -43,7 +43,7 @@ public class VoucherBatchController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] VoucherBatchCreateDto requestDto)
+    public async Task<IActionResult> Create([FromBody] VoucherBatchDto requestDto)
     {
         var createdVoucherBatch = await _service.CreateVoucherBatchAsync(requestDto);
         return StatusCode(StatusCodes.Status201Created,
@@ -56,7 +56,7 @@ public class VoucherBatchController : ControllerBase
     }
     
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromRoute] string id, [FromBody] VoucherBatchUpdateDto requestDto)
+    public async Task<IActionResult> Update([FromRoute] string id, [FromBody] VoucherBatchDto requestDto)
     {
         var updatedVoucherBatch = await _service.UpdateVoucherBatchAsync(id, requestDto);
         return Ok(new ResponseModel<VoucherBatchResponseDto>(

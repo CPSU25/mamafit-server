@@ -66,6 +66,7 @@ public class RoleService : IRoleService
     
     public async Task<RoleResponseDto> UpdateRoleAsync(string id, RoleRequestDto model)
     {
+        await _validation.ValidateAndThrowAsync(model);
         var role = await _unitOfWork.RoleRepository.GetByIdAsync(id);
         if (role == null)
             throw new ErrorException(StatusCodes.Status404NotFound,

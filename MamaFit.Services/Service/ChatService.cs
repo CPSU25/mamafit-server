@@ -6,6 +6,7 @@ using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SignalR;
 
 namespace MamaFit.Services.Service
 {
@@ -23,14 +24,15 @@ namespace MamaFit.Services.Service
         public async Task<ChatMessageResponseDto> CreateChatMessageAsync(ChatMessageCreateDto requestDto)
         {
             var sender = await _unitOfWork.UserRepository.GetByIdAsync(requestDto.SenderId);
-            if(sender == null)
+            if (sender == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "User not found!");
 
             var chatroom = await _unitOfWork.ChatRepository.GetChatRoomById(requestDto.ChatRoomId);
-            if(chatroom == null)
+            if (chatroom == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Chatroom is not avaiable!");
 
             var chatMessage = _mapper.Map<ChatMessage>(requestDto);
+            chatMessage.IsRead = false;
             await _unitOfWork.ChatRepository.CreateChatMessageAsync(chatMessage);
 
             return _mapper.Map<ChatMessageResponseDto>(chatMessage);
@@ -82,6 +84,18 @@ namespace MamaFit.Services.Service
                 throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "User has no Chat room!");
 
             return _mapper.Map<List<ChatRoomResponseDto>>(chatRooms);
+        }
+
+        public async Task MarkMessageAsReadAsync(string messageId, string userId, string chatRoomId)
+        {
+            var message = await _unitOfWork.ChatRepository.GetChatMessageById(messageId);
+            if (message == null)
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, $"Message with id:{messageId} is not found!");
+            if (message.IsRead)
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, $"Message with id:{messageId} is read!");
+
+            message.IsRead = true;
+            await _unitOfWork.ChatRepository.UpdateMessageAsync(message);
         }
     }
 }

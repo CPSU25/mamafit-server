@@ -1,4 +1,4 @@
-namespace MamaFit.BusinessObjects.DTO.Role;
+namespace MamaFit.BusinessObjects.DTO.RoleDto;
 
 public class RoleResponseDto
 {

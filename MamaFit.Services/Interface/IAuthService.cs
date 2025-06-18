@@ -1,6 +1,6 @@
 using MamaFit.BusinessObjects.DTO.AuthDto;
 using MamaFit.BusinessObjects.DTO.OTPDto;
-using MamaFit.BusinessObjects.DTO.Token;
+using MamaFit.BusinessObjects.DTO.TokenDto;
 using MamaFit.BusinessObjects.DTO.UserDto;
 using MamaFit.BusinessObjects.Entity;
 

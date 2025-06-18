@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using MamaFit.BusinessObjects.DTO.Role;
+using MamaFit.BusinessObjects.DTO.AppointmentDto;
 using MamaFit.BusinessObjects.DTO.RoleDto;
-using MamaFit.BusinessObjects.DTO.Token;
 using MamaFit.BusinessObjects.DTO.UserDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.DTO.MaternityDressDto;
@@ -11,12 +10,13 @@ using MamaFit.BusinessObjects.DTO.ComponentDto;
 using MamaFit.BusinessObjects.DTO.ComponentOptionDto;
 using MamaFit.BusinessObjects.DTO.MaternityDressDetailDto;
 using MamaFit.BusinessObjects.DTO.DesignRequestDto;
-using MamaFit.BusinessObjects.DTO.Appointment;
 using MamaFit.BusinessObjects.DTO.BranchDto;
 using MamaFit.BusinessObjects.DTO.MeasurementDto;
 using MamaFit.BusinessObjects.Entity.ChatEntity;
 using MamaFit.BusinessObjects.DTO.ChatMessageDto;
 using MamaFit.BusinessObjects.DTO.ChatRoomDto;
+using MamaFit.BusinessObjects.DTO.TokenDto;
+using MamaFit.BusinessObjects.DTO.VoucherBatchDto;
 using MamaFit.BusinessObjects.DTO.MaternityDressTask;
 using MamaFit.BusinessObjects.DTO.ChatRoomMemberDto;
 
@@ -105,8 +105,12 @@ namespace MamaFit.Services.Mapper
 
             //Chat Mapper 
             CreateMap<ChatMessage, ChatMessageCreateDto>().ReverseMap();
-            CreateMap<ChatMessage, ChatMessageResponseDto>().ReverseMap();
+            CreateMap<ChatMessage, ChatMessageResponseDto>()
+                .ForMember(dest => dest.SenderName, otp => otp.MapFrom(src => src.Sender.FullName))
+                .ForMember(dest => dest.SenderAvatar, otp => otp.MapFrom(src => src.Sender.ProfilePicture))
+                .ReverseMap();
             CreateMap<ChatRoom, ChatRoomCreateDto>().ReverseMap();
+            CreateMap<ChatRoom, ChatRoomResponseDto>().ReverseMap();
             CreateMap<ChatRoom, ChatRoomResponseDto>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
             .ForMember(dest => dest.MemberCount, opt => opt.MapFrom(src => src.Members.Count))
@@ -129,11 +133,18 @@ namespace MamaFit.Services.Mapper
                 .FirstOrDefault() ?? string.Empty));
             CreateMap<ChatRoomMember, ChatRoomMemberResponseDto>()
             .ForMember(dest => dest.MemberId, opt => opt.MapFrom(src => src.UserId))
+            .ForMember(dest => dest.MemberAvatar, otp => otp.MapFrom(src => src.User.ProfilePicture))
             .ForMember(dest => dest.MemberName, opt => opt.MapFrom(src => src.User.FullName));
 
             //MaternityDressTask Mapper
             CreateMap<MaternityDressTask, MaternityDressTaskRequestDto>().ReverseMap();
             CreateMap<MaternityDressTask, MaternityDressTaskResponseDto>().ReverseMap();
+            
+                        
+            //VoucherBatch Mapper
+            CreateMap<VoucherBatch, VoucherBatchCreateDto>().ReverseMap();
+            CreateMap<VoucherBatch, VoucherBatchUpdateDto>().ReverseMap();
+            CreateMap<VoucherBatch, VoucherBatchResponseDto>().ReverseMap();
         }
     }
 }

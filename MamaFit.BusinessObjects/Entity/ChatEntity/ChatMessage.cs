@@ -9,6 +9,7 @@ namespace MamaFit.BusinessObjects.Entity.ChatEntity
         public string SenderId { get; set; } = string.Empty;
         public string ChatRoomId { get; set; } = string.Empty;
         public MessageType Type { get; set; } = MessageType.Text;
+        public bool IsRead { get; set; } = false;
 
         //
 

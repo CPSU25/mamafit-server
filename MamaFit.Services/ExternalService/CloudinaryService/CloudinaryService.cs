@@ -4,7 +4,7 @@ using MamaFit.Repositories.Helper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
-namespace MamaFit.Services.ExternalService;
+namespace MamaFit.Services.ExternalService.CloudinaryService;
 
 public class CloudinaryService : ICloudinaryService
 {

@@ -5,7 +5,7 @@ using NLog.Web;
 using System.Text.Json.Serialization;
 using FluentValidation;
 using MamaFit.Repositories.Helper;
-using MamaFit.Services.Service.Job;
+using MamaFit.Services.ExternalService.CronJob;
 using MamaFit.Services.Validator;
 using NLog;
 

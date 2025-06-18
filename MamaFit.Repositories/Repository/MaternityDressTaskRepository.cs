@@ -1,17 +1,11 @@
-﻿using MamaFit.BusinessObjects.DBContext;
-using MamaFit.BusinessObjects.DTO.AppointmentDto;
-using MamaFit.BusinessObjects.Entity;
+﻿using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MamaFit.BusinessObjects.DbContext;
 
 namespace MamaFit.Repositories.Repository
 {

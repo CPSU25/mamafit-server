@@ -1,7 +1,7 @@
 ﻿using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 
-namespace MamaFit.BusinessObjects.DTO.Appointment
+namespace MamaFit.BusinessObjects.DTO.AppointmentDto
 {
     public class AppointmentResponseDto
     {

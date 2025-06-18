@@ -1,16 +1,16 @@
 ﻿using System.Text;
 using System.Text.Json;
-using MamaFit.BusinessObjects.DBContext;
+using MamaFit.BusinessObjects.DbContext;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using MamaFit.Repositories.Repository;
 using MamaFit.Services.ExternalService;
+using MamaFit.Services.ExternalService.CloudinaryService;
 using MamaFit.Services.Interface;
 using MamaFit.Services.Mapper;
 using MamaFit.Services.Service;
 using MamaFit.Services.Service.Caculator;
-using MamaFit.Services.Service.Job;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -25,13 +25,13 @@ namespace MamaFit.API.DependencyInjection
         {
             // Add your repository registrations here
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();
             services.AddScoped<IOTPRepository, OTPRepository>();
             services.AddScoped<IBranchRepository, BranchRepository>();
-            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IDesignRequestRepository, DesignRequestRepository>();
             services.AddScoped<IMaternityDressRepository, MaternityDressRepository>();
             services.AddScoped<IMaternityDressDetailRepository, MaternityDressDetailRepository>();
@@ -43,12 +43,12 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IMeasurementRepository, MeasurementRepository>();
             services.AddScoped<IMeasurementDiaryRepository, MeasurementDiaryRepository>();
             services.AddScoped<IChatRepository, ChatRepository>();
+            services.AddScoped<IVoucherBatchRepository, VoucherBatchRepository>();
         }
 
         public static void AddServices(this IServiceCollection services)
         {
             // Add your service registrations here
-            //services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IBodyGrowthCalculator, BodyGrowthCalculator>();
             services.AddScoped<IValidationService, ValidationService>();
             services.AddScoped<IAppointmentService, AppointmentService>();
@@ -68,6 +68,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IMeasurementDiaryService, MeasurementDiaryService>();
             services.AddScoped<IMeasurementService, MeasurementService>();
             services.AddScoped<IChatService, ChatService>();
+            services.AddScoped<IVoucherBatchService, VoucherBatchService>();
         }
 
         public static IServiceCollection AddHttpClientServices(this IServiceCollection services)

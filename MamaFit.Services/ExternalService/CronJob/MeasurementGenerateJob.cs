@@ -1,8 +1,8 @@
 using MamaFit.Services.Interface;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-namespace MamaFit.Services.Service.Job;
+namespace MamaFit.Services.ExternalService.CronJob;
 
 public class MeasurementGenerationJob : BackgroundService
 {

@@ -1,5 +1,4 @@
 using AutoMapper;
-using MamaFit.BusinessObjects.DTO.Role;
 using MamaFit.BusinessObjects.DTO.RoleDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.Repositories.Infrastructure;
@@ -25,9 +24,6 @@ public class RoleService : IRoleService
     public async Task<PaginatedList<RoleResponseDto>> GetAllRolesAsync(int index = 1, int pageSize = 10, string? nameSearch = null)
     {
         var roles = await _unitOfWork.RoleRepository.GetRolesAsync(index, pageSize, nameSearch);
-
-        if (roles == null)
-            throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "No roles found");
         
         var responseItems = roles.Items
             .Select(role => _mapper.Map<RoleResponseDto>(role))

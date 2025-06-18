@@ -60,6 +60,18 @@ public class MeasurementDiaryController : ControllerBase
         ));
     }
 
+    [HttpGet("weeks-pregnant/{diaryId}")]
+    public async Task<IActionResult> GetWeeksPregnant(string diaryId)
+    {
+        var weeks = await _diaryService.CalculateWeeksPregnantByDiaryIdAsync(diaryId);
+        return Ok(new ResponseModel<string>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            "weeksOfPregnancy: " + weeks,
+            "Weeks pregnant calculated successfully!"
+        ));
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {

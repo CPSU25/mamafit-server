@@ -1,5 +1,4 @@
-﻿using MamaFit.BusinessObjects.DBContext;
-using MamaFit.BusinessObjects.DTO.ComponentDto;
+﻿using MamaFit.BusinessObjects.DTO.ComponentDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
@@ -11,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MamaFit.BusinessObjects.DbContext;
 
 namespace MamaFit.Repositories.Repository
 {

@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.SignalR;
 using MamaFit.BusinessObjects.DTO.ChatMessageDto;
 using MamaFit.Services.Interface;
+using Microsoft.AspNetCore.SignalR;
+
 namespace MamaFit.API.Middlewares
 {
     public class ChatHub : Hub

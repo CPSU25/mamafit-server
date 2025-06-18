@@ -1,4 +1,3 @@
-using MamaFit.BusinessObjects.DTO.Role;
 using MamaFit.BusinessObjects.DTO.RoleDto;
 using MamaFit.Repositories.Infrastructure;
 

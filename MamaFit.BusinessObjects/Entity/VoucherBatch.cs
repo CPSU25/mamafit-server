@@ -4,6 +4,7 @@ namespace MamaFit.BusinessObjects.Entity
 {
     public class VoucherBatch : BaseEntity
     {
+        public string BatchName { get; set; }
         public string? BatchCode { get; set; }
         public string? Description { get; set; }
         public DateTime? StartDate { get; set; }

@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using MamaFit.BusinessObjects.DTO.Appointment;
 using MamaFit.BusinessObjects.DTO.AppointmentDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
+using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
 
 namespace MamaFit.Services.Service

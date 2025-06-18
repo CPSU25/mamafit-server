@@ -11,10 +11,21 @@ public class MeasurementDiaryService : IMeasurementDiaryService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
-    public MeasurementDiaryService(IUnitOfWork unitOfWork, IMapper mapper)
+    private readonly IValidationService _validation;
+    public MeasurementDiaryService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _validation = validation;
+    }
+    
+    public async Task<int> CalculateWeeksPregnantByDiaryIdAsync(string diaryId)
+    {
+        var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdNotDeletedAsync(diaryId);
+        _validation.CheckNotFound(diary, "Measurement diary not found");
+        
+        var weeks = (int)((DateTime.UtcNow - diary.PregnancyStartDate.Value).TotalDays / 7);
+        return weeks;
     }
     
     public async Task<PaginatedList<MeasurementDiaryResponseDto>> GetAllAsync(int index = 1, int pageSize = 10, string? nameSearch = null)

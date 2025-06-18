@@ -1,4 +1,3 @@
-using MamaFit.BusinessObjects.DTO.Role;
 using MamaFit.BusinessObjects.DTO.RoleDto;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
@@ -39,10 +38,10 @@ public class RoleController : ControllerBase
         return Ok(new ResponseModel<RoleResponseDto>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
-            role, 
+            role,
             "Get role by ID successfully!"
-    ));
-}
+        ));
+    }
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] RoleRequestDto model)

@@ -1,4 +1,4 @@
-namespace MamaFit.BusinessObjects.DTO.Token;
+namespace MamaFit.BusinessObjects.DTO.TokenDto;
 
 public class TokenResponseDto
 {

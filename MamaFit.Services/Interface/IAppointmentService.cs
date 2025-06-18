@@ -1,6 +1,7 @@
-﻿using MamaFit.BusinessObjects.DTO.Appointment;
-using MamaFit.BusinessObjects.DTO.AppointmentDto;
+﻿using MamaFit.BusinessObjects.DTO.AppointmentDto;
 using MamaFit.Repositories.Infrastructure;
+
+namespace MamaFit.Services.Interface;
 
 public interface IAppointmentService
 {

@@ -27,15 +27,17 @@ public class AuthService : IAuthService
     private readonly IEmailSenderSevice _emailSenderService;
     private readonly IConfiguration _configuration;
     private readonly IMapper _mapper;
+    private readonly IValidationService _validation;
 
     public AuthService(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor, IConfiguration configuration,
-        IMapper mapper, IEmailSenderSevice emailSenderService)
+        IMapper mapper, IEmailSenderSevice emailSenderService, IValidationService validation)
     {
         _unitOfWork = unitOfWork;
         _httpContextAccessor = httpContextAccessor;
         _configuration = configuration;
         _mapper = mapper;
         _emailSenderService = emailSenderService;
+        _validation = validation;
     }
 
     public async Task<PermissionResponseDto> GetCurrentUserAsync()
@@ -61,13 +63,13 @@ public class AuthService : IAuthService
 
         if (!string.IsNullOrWhiteSpace(model.RefreshToken))
         {
-                await _unitOfWork.TokenRepository.DeleteTokenAsync(userId, model.RefreshToken, TokenType.REFRESH_TOKEN);
+            await _unitOfWork.TokenRepository.DeleteTokenAsync(userId, model.RefreshToken, TokenType.REFRESH_TOKEN);
         }
 
         if (!string.IsNullOrWhiteSpace(model.NotificationToken))
         {
-                await _unitOfWork.TokenRepository.DeleteTokenAsync(userId, model.NotificationToken,
-                    TokenType.NOTIFICATION_TOKEN);
+            await _unitOfWork.TokenRepository.DeleteTokenAsync(userId, model.NotificationToken,
+                TokenType.NOTIFICATION_TOKEN);
         }
 
         await _unitOfWork.SaveChangesAsync();
@@ -85,7 +87,7 @@ public class AuthService : IAuthService
 
         if (loginKey.Contains("@"))
         {
-            string email = loginKey.ToLower(); 
+            string email = loginKey.ToLower();
             user = await _unitOfWork.UserRepository.GetByEmailAsync(email);
         }
         else
@@ -126,6 +128,7 @@ public class AuthService : IAuthService
         {
             await HandleTokenAsync(user.Id, model.NotificationToken, TokenType.NOTIFICATION_TOKEN);
         }
+
         return new TokenResponseDto
         {
             AccessToken = token.AccessToken,
@@ -185,14 +188,14 @@ public class AuthService : IAuthService
 
     public async Task ResendOtpAsync(SendOTPRequestDto model)
     {
-        var user = await _unitOfWork.UserRepository.GetByEmailPhoneAsync(model.Email,model.PhoneNumber);
+        var user = await _unitOfWork.UserRepository.GetByEmailPhoneAsync(model.Email, model.PhoneNumber);
         if (user == null)
             throw new ErrorException(StatusCodes.Status404NotFound,
                 ApiCodes.NOT_FOUND, "User not found!");
         if (user.IsVerify)
             throw new ErrorException(StatusCodes.Status400BadRequest,
                 ApiCodes.BAD_REQUEST, "User is already verified!");
-        
+
         string otpCode = GenerateOtpCode();
         var otp = new OTP
         {
@@ -209,6 +212,7 @@ public class AuthService : IAuthService
 
     public async Task SendRegisterOtpAsync(SendOTPRequestDto model)
     {
+        await _validation.ValidateAndThrowAsync(model);
         var isExist = await _unitOfWork.UserRepository.GetByEmailPhoneAsync(model.Email, model.PhoneNumber);
         if (isExist == null)
         {
@@ -218,7 +222,7 @@ public class AuthService : IAuthService
             user.IsVerify = false;
             await _unitOfWork.UserRepository.CreateUserAsync(user);
             await _unitOfWork.SaveChangesAsync();
-            
+
             string otpCode = GenerateOtpCode();
             string otpHash = HashHelper.HashOtp(otpCode);
             var otp = new OTP
@@ -240,23 +244,25 @@ public class AuthService : IAuthService
                 throw new ErrorException(StatusCodes.Status400BadRequest,
                     ApiCodes.BAD_REQUEST, "Email or phone number has already been registered!");
             }
+
             var isEmailUsed = await _unitOfWork.UserRepository.GetByEmailAsync(model.Email);
             if (isEmailUsed != null && isEmailUsed.IsVerify)
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest,
                     ApiCodes.BAD_REQUEST, "Email has already been registered by another user!");
             }
+
             var isPhoneUsed = await _unitOfWork.UserRepository.GetByPhoneNumberAsync(model.PhoneNumber);
             if (isPhoneUsed != null && isPhoneUsed.IsVerify)
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest,
                     ApiCodes.BAD_REQUEST, "Phone number has already been registered by another user!");
             }
-            
+
             var oldOtps = await _unitOfWork.OTPRepository.GetOTPAsync(isExist.Id, null, OTPType.REGISTER);
             await _unitOfWork.OTPRepository.DeleteOTPAsync(oldOtps);
             await _unitOfWork.SaveChangesAsync();
-            
+
             string otpCode = GenerateOtpCode();
             string otpHash = HashHelper.HashOtp(otpCode);
             var otp = new OTP
@@ -275,21 +281,22 @@ public class AuthService : IAuthService
 
     public async Task CompleteRegisterAsync(RegisterUserRequestDto model)
     {
+        await _validation.ValidateAndThrowAsync(model);
         var user = await _unitOfWork.UserRepository.GetByEmailPhoneAsync(model.Email, model.PhoneNumber);
 
         if (user == null)
             throw new ErrorException(StatusCodes.Status400BadRequest,
                 ApiCodes.BAD_REQUEST, "Invalid email or phone number. Please check your information and try again.");
-        if(user.IsVerify == false)
+        if (user.IsVerify == false)
             throw new ErrorException(StatusCodes.Status400BadRequest,
                 ApiCodes.BAD_REQUEST, "User is not verified! Please verify your account first.");
-        
+
         var salt = HashHelper.GenerateSalt();
         var hashPassword = HashHelper.HashPassword(model.Password, salt);
 
         user.HashPassword = hashPassword;
         user.Salt = salt;
-        
+
         var userRole = await _unitOfWork.RoleRepository.GetByNameAsync("User");
         if (userRole != null)
             user.RoleId = userRole.Id;
@@ -298,7 +305,7 @@ public class AuthService : IAuthService
         await _unitOfWork.SaveChangesAsync();
     }
 
-    
+
     public async Task SendOtpEmailAsync(string email, string otpCode)
     {
         string subject = "Your OTP Code - MamaFit";
@@ -348,7 +355,7 @@ public class AuthService : IAuthService
         var code = random.Next(min, max + 1);
         return code.ToString();
     }
-    
+
     private bool VerifyPassword(string password, string storedHash, string storedSalt)
     {
         var saltBytes = Convert.FromBase64String(storedSalt);
@@ -476,38 +483,41 @@ public class AuthService : IAuthService
         string? role = userRole.RoleName;
 
         var token = GenerateTokens(user, role);
-        
+
         await HandleTokenAsync(user.Id, token.RefreshToken, TokenType.REFRESH_TOKEN);
         if (!string.IsNullOrWhiteSpace(notificationToken))
         {
             await HandleTokenAsync(user.Id, notificationToken, TokenType.NOTIFICATION_TOKEN);
         }
+
         return new TokenResponseDto
         {
             AccessToken = token.AccessToken,
             RefreshToken = token.RefreshToken
         };
     }
-    
+
     private async Task HandleTokenAsync(string userId, string token, TokenType tokenType)
     {
         var existingToken = await _unitOfWork.TokenRepository.GetTokenByUserIdAsync(userId, tokenType);
         if (existingToken != null)
-        { 
+        {
             await _unitOfWork.TokenRepository.DeleteAsync(existingToken);
             await _unitOfWork.SaveChangesAsync();
         }
-        
+
         DateTime? expiredAt = null;
         if (tokenType == TokenType.REFRESH_TOKEN)
         {
-            expiredAt = DateTime.UtcNow.AddDays(int.Parse(_configuration["JWT:RefreshTokenExpirationDays"] ?? string.Empty));
+            expiredAt = DateTime.UtcNow.AddDays(int.Parse(_configuration["JWT:RefreshTokenExpirationDays"] ??
+                                                          string.Empty));
         }
+
         if (tokenType == TokenType.NOTIFICATION_TOKEN)
         {
             expiredAt = null;
         }
-        
+
         var tokenEntity = new ApplicationUserToken
         {
             UserId = userId,

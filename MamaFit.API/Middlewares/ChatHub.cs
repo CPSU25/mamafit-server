@@ -1,4 +1,4 @@
-﻿using MamaFit.BusinessObjects.DTO.ChatMessageDto;
+using MamaFit.BusinessObjects.DTO.ChatMessageDto;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.SignalR;
 
@@ -165,15 +165,7 @@ namespace MamaFit.API.Middlewares
 
             try
             {
-                var message = await _chatService.GetChatMessageById(messageId);
-                if (message == null || message.SenderId == userId)
-                {
-                    await Clients.Caller.SendAsync("Error", "Invalid message or unauthorized");
-                    return;
-                }
-
                 await _chatService.MarkMessageAsReadAsync(messageId, userId, chatRoomId);
-                await Clients.Group($"room_{chatRoomId}").SendAsync("MessageRead", messageId, userId);
                 _logger.LogInformation($"Message {messageId} marked as read by user {userId} in room {chatRoomId}");
             }
             catch (Exception ex)

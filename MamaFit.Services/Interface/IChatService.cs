@@ -1,7 +1,6 @@
 ﻿
 using MamaFit.BusinessObjects.DTO.ChatMessageDto;
 using MamaFit.BusinessObjects.DTO.ChatRoomDto;
-using MamaFit.BusinessObjects.Entity.ChatEntity;
 
 namespace MamaFit.Services.Interface
 {
@@ -13,5 +12,6 @@ namespace MamaFit.Services.Interface
         Task<List<ChatRoomResponseDto>> GetUserChatRoom(string userId);
         Task<ChatMessageResponseDto> GetChatMessageById(string messageId);
         Task<ChatRoomResponseDto> GetChatRoomById(string chatRoomId);
+        Task MarkMessageAsReadAsync(string messageId, string userId, string chatRoomId);
     }
 }

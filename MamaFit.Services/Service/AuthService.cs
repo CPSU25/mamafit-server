@@ -381,7 +381,7 @@ public class AuthService : IAuthService
 
         var keyString = _configuration["JWT:SecretKey"];
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyString));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.Sha256);
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
 
         var accessToken = new JwtSecurityToken(
             issuer: _configuration["JWT:Issuer"],

@@ -129,7 +129,6 @@ public class MeasurementController : ControllerBase
                 "Measurement not found!"
             ));
         }
-        
         return Ok(new ResponseModel<string>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,

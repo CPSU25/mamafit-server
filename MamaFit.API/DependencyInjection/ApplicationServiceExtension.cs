@@ -73,6 +73,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IVoucherBatchService, VoucherBatchService>();
             services.AddScoped<IVoucherDiscountService, VoucherDiscountService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IOrderItemService, OrderItemService>();
         }
 
         public static IServiceCollection AddHttpClientServices(this IServiceCollection services)

@@ -21,12 +21,15 @@ public class UserService : IUserService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly ICloudinaryService _cloudinaryService;
+    private readonly IValidationService _validation;
 
-    public UserService(IUnitOfWork unitOfWork, IMapper mapper, ICloudinaryService cloudinaryService)
+    public UserService(IUnitOfWork unitOfWork, IMapper mapper, ICloudinaryService cloudinaryService,
+        IValidationService validation)
     {
-        _cloudinaryService = cloudinaryService;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _cloudinaryService = cloudinaryService;
+        _validation = validation;
     }
 
     public async Task<PaginatedList<UserReponseDto>> GetAllUsersAsync(
@@ -60,10 +63,9 @@ public class UserService : IUserService
 
     public async Task<UserReponseDto> UpdateUserAsync(string userId, UpdateUserRequestDto model)
     {
-        var userRepo = await _unitOfWork.UserRepository.GetByIdAsync(userId);
-        if (userRepo == null)
-            throw new ErrorException(StatusCodes.Status404NotFound,
-                ApiCodes.NOT_FOUND, "User not found!");
+        await _validation.ValidateAndThrowAsync(model);
+        var userRepo = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(userId);
+        _validation.CheckNotFound(userRepo, "User not found!");
 
         var user = _mapper.Map<ApplicationUser>(model);
 
@@ -77,11 +79,7 @@ public class UserService : IUserService
     public async Task DeleteUserAsync(string userId)
     {
         var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
-
-        if (user == null)
-            throw new ErrorException(StatusCodes.Status404NotFound,
-                ApiCodes.NOT_FOUND, "User not found!");
-
+        _validation.CheckNotFound(user, "User not found!");
         await _unitOfWork.UserRepository.DeleteUserAsync(user);
         await _unitOfWork.SaveChangesAsync();
     }
@@ -89,9 +87,7 @@ public class UserService : IUserService
     public async Task<PhotoUploadResult> UpdateUserProfilePictureAsync(UploadImageDto model)
     {
         var user = await _unitOfWork.UserRepository.GetByIdAsync(model.Id);
-        if (user == null)
-            throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "User not found.");
-
+        _validation.CheckNotFound(user, "User not found!");
         if (!string.IsNullOrEmpty(user.ProfilePicture))
         {
             var publicId = _cloudinaryService.GetCloudinaryPublicIdFromUrl(user.ProfilePicture);

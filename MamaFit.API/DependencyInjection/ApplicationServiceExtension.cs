@@ -44,7 +44,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IMeasurementDiaryRepository, MeasurementDiaryRepository>();
             services.AddScoped<IChatRepository, ChatRepository>();
             services.AddScoped<IVoucherBatchRepository, VoucherBatchRepository>();
-            services.AddScoped<IMaternityDressTaskRepository, MaternityDressTaskRepository>();
+            services.AddScoped<IVoucherDiscountRepository, VoucherDiscountRepository>();
         }
 
         public static void AddServices(this IServiceCollection services)
@@ -70,7 +70,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IMeasurementService, MeasurementService>();
             services.AddScoped<IChatService, ChatService>();
             services.AddScoped<IVoucherBatchService, VoucherBatchService>();
-            services.AddScoped<IMaternityDressTaskService, MaternityDressTaskService>();
+            services.AddScoped<IVoucherDiscountService, VoucherDiscountService>();
         }
 
         public static IServiceCollection AddHttpClientServices(this IServiceCollection services)
@@ -201,17 +201,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddRepositories();
             services.AddServices();
             services.AddAutoMapper();
-            services.AddSignalR(options =>
-            {
-                options.EnableDetailedErrors = true;
-            });
-            services.AddLogging(loggingBuilder =>
-            {
-                loggingBuilder.ClearProviders();
-                loggingBuilder.AddConsole();
-                loggingBuilder.AddDebug();
-                loggingBuilder.SetMinimumLevel(LogLevel.Debug);
-            });
+            services.AddSignalR();
         }
 
         private static void AddAutoMapper(this IServiceCollection services)

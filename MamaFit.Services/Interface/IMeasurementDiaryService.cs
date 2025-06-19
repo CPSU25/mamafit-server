@@ -11,5 +11,5 @@ public interface IMeasurementDiaryService
     Task<PaginatedList<MeasurementDiaryResponseDto>> GetDiariesByUserIdAsync(int index, int pageSize, string userId,
         string? nameSearch = null);
     Task<bool> DeleteDiaryAsync(string id);
-    Task<int> CalculateWeeksPregnantByDiaryIdAsync(string diaryId);
+    Task<MeasurementResponseDto> CalculateWeeksPregnantByDiaryIdAsync(string diaryId);
 }

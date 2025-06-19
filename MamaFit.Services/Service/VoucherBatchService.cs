@@ -42,7 +42,7 @@ public class VoucherBatchService : IVoucherBatchService
         return _mapper.Map<VoucherBatchResponseDto>(voucherBatch);
     }
     
-    public async Task<VoucherBatchResponseDto> CreateVoucherBatchAsync(VoucherBatchCreateDto requestDto)
+    public async Task<VoucherBatchResponseDto> CreateVoucherBatchAsync(VoucherBatchDto requestDto)
     {
         await _validation.ValidateAndThrowAsync(requestDto);
         var existedBatch = await _unitOfWork.VoucherBatchRepository.IsBatchExistedAsync(requestDto.BatchCode, requestDto.BatchName);
@@ -53,7 +53,7 @@ public class VoucherBatchService : IVoucherBatchService
         return _mapper.Map<VoucherBatchResponseDto>(voucherBatch);
     }
     
-    public async Task<VoucherBatchResponseDto> UpdateVoucherBatchAsync(string id, VoucherBatchUpdateDto requestDto)
+    public async Task<VoucherBatchResponseDto> UpdateVoucherBatchAsync(string id, VoucherBatchDto requestDto)
     {
         await _validation.ValidateAndThrowAsync(requestDto);
         var voucherBatch = await _unitOfWork.VoucherBatchRepository.GetByIdNotDeletedAsync(id);
@@ -63,7 +63,7 @@ public class VoucherBatchService : IVoucherBatchService
         _validation.CheckConflict(existedBatch, "Voucher batch with the same code and name already exists");
         
         voucherBatch = _mapper.Map(requestDto, voucherBatch);
-        _unitOfWork.VoucherBatchRepository.Update(voucherBatch);
+        await _unitOfWork.VoucherBatchRepository.UpdateAsync(voucherBatch);
         await _unitOfWork.SaveChangesAsync();
         return _mapper.Map<VoucherBatchResponseDto>(voucherBatch);
     }
@@ -72,7 +72,7 @@ public class VoucherBatchService : IVoucherBatchService
     {
         var voucherBatch = await _unitOfWork.VoucherBatchRepository.GetByIdNotDeletedAsync(id);
         _validation.CheckNotFound(voucherBatch, "Voucher batch not found");
-        await _unitOfWork.VoucherBatchRepository.SoftDeleteAsync(voucherBatch);
+        await _unitOfWork.VoucherBatchRepository.SoftDeleteAsync(voucherBatch.Id);
         await _unitOfWork.SaveChangesAsync();
     }
 }

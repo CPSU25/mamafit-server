@@ -1,6 +1,7 @@
 using AutoMapper;
 using MamaFit.BusinessObjects.DTO.MeasurementDto;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using MamaFit.Services.Interface;
@@ -192,7 +193,7 @@ public class MeasurementService : IMeasurementService
         var measurementEntity = _mapper.Map<Measurement>(dto);
         measurementEntity.MeasurementDiaryId = diary.Id;
         measurementEntity.WeekOfPregnancy = weeksPregnant;
-
+        diary.UpdatedAt = DateTime.UtcNow;
         await _unitOfWork.MeasurementRepository.InsertAsync(measurementEntity);
         await _unitOfWork.SaveChangesAsync();
 

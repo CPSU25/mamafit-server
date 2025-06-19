@@ -45,6 +45,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IChatRepository, ChatRepository>();
             services.AddScoped<IVoucherBatchRepository, VoucherBatchRepository>();
             services.AddScoped<IVoucherDiscountRepository, VoucherDiscountRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
         }
 
         public static void AddServices(this IServiceCollection services)
@@ -71,6 +72,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IChatService, ChatService>();
             services.AddScoped<IVoucherBatchService, VoucherBatchService>();
             services.AddScoped<IVoucherDiscountService, VoucherDiscountService>();
+            services.AddScoped<IOrderService, OrderService>();
         }
 
         public static IServiceCollection AddHttpClientServices(this IServiceCollection services)

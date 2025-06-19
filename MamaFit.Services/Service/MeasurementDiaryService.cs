@@ -1,5 +1,6 @@
 using AutoMapper;
 using MamaFit.BusinessObjects.DTO.MeasurementDto;
+using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using MamaFit.Services.Interface;

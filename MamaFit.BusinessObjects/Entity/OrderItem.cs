@@ -10,7 +10,7 @@ namespace MamaFit.BusinessObjects.Entity
         public ItemType? ItemType { get; set; }
         public float Price { get; set; }
         public int Quantity { get; set; }
-        public DateTime WarrantyDate { get; set; }
+        public DateTime? WarrantyDate { get; set; }
         public int WarrantyNumber { get; set; } = 3;
 
         //Navigation property

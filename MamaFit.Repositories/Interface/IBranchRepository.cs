@@ -1,4 +1,5 @@
 ﻿using MamaFit.BusinessObjects.Entity;
+using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 
 namespace MamaFit.Repositories.Interface

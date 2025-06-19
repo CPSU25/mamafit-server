@@ -1,5 +1,6 @@
 ﻿using MamaFit.BusinessObjects.DTO.AppointmentDto;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 
 

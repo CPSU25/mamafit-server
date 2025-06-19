@@ -2,6 +2,7 @@
 using MamaFit.Repositories.Interface;
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using MamaFit.Repositories.Implement;
 
 namespace MamaFit.API.Middlewares
 {

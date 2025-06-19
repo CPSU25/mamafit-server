@@ -172,5 +172,10 @@ namespace MamaFit.Repositories.Implement
         {
             return await _dbSet.ToListAsync();
         }
+        
+        public async Task<bool> IsEntityExistsAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.AnyAsync(predicate);
+        }
     }
 }

@@ -2,6 +2,7 @@
 using MamaFit.BusinessObjects.DTO.ChatMessageDto;
 using MamaFit.BusinessObjects.DTO.ChatRoomDto;
 using MamaFit.BusinessObjects.Entity.ChatEntity;
+using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using MamaFit.Services.Interface;

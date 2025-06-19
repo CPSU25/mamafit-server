@@ -10,6 +10,7 @@ namespace MamaFit.BusinessObjects.DTO.ChatMessageDto
         public string SenderName { get; set; } = string.Empty;
         public string SenderAvatar { get; set; } = string.Empty;
         public DateTime MessageTimestamp { get; set; }
+        public bool IsRead { get; set; }
         public string ChatRoomId { get; set; } = string.Empty;
         public MessageType Type { get; set; } = MessageType.Text;
     }

@@ -34,19 +34,34 @@ namespace MamaFit.Services.Service
             await _maternityDressTaskRepository.DeleteAsync(task);
         }
 
-        public Task<PaginatedList<MaternityDressTaskResponseDto>> GetAllAsync(int index, int pageSize, string search, EntitySortBy? sortBy)
+        public async Task<PaginatedList<MaternityDressTaskResponseDto>> GetAllAsync(int index, int pageSize, string search, EntitySortBy? sortBy)
         {
-            throw new NotImplementedException();
+            var taskList = await _maternityDressTaskRepository.GetAllAsync(index, pageSize, search, sortBy);
+
+            var responseList = _mapper.Map<PaginatedList<MaternityDressTaskResponseDto>>(taskList.Items);
+
+            return responseList;
         }
 
-        public Task<MaternityDressTaskResponseDto> GetById(string? id)
+        public async Task<MaternityDressTaskResponseDto> GetById(string? id)
         {
-            throw new NotImplementedException();
+            var task = await _maternityDressTaskRepository.GetByIdAsync(id);
+            if (task == null)
+                throw new Exception($"Not found task with id:{id}");
+
+            return _mapper.Map<MaternityDressTaskResponseDto>(task);
         }
 
-        public Task UpdateAsync(string id, MaternityDressTaskRequestDto request)
+        public async Task UpdateAsync(string id, MaternityDressTaskRequestDto request)
         {
-            throw new NotImplementedException();
+            var task = await _maternityDressTaskRepository.GetByIdAsync(id);
+
+            if (task == null)
+                throw new Exception($"Not found task with id:{id}");
+
+            _mapper.Map(request, task);
+
+            await _maternityDressTaskRepository.UpdateAsync(task);
         }
     }
 }

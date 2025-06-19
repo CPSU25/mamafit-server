@@ -40,7 +40,7 @@ namespace MamaFit.API.Controllers
                 var response = await _chatService.CreateChatMessageAsync(messageDto);
                 var message = await _chatService.GetChatMessageById(response.Id);
 
-                await _hubContext.Clients.Group($"room_{messageDto.ChatRoomId}").SendAsync("ReceiveMessage", message);
+                await _hubContext.Clients.Group(messageDto.ChatRoomId).SendAsync("ReceiveMessage", message);
 
                 return Ok(new ResponseModel<ChatMessageResponseDto>(StatusCodes.Status200OK, ApiCodes.SUCCESS, message, "Message sent successfully"));
             }
@@ -219,7 +219,7 @@ namespace MamaFit.API.Controllers
                 var response = await _chatService.CreateChatMessageAsync(messageDto);
                 var message = await _chatService.GetChatMessageById(response.Id);
 
-                await _hubContext.Clients.Group($"room_{roomId}").SendAsync("ReceiveMessage", message);
+                await _hubContext.Clients.Group(roomId).SendAsync("ReceiveMessage", message);
 
                 return Ok(new ResponseModel<ChatMessageResponseDto>(StatusCodes.Status200OK, ApiCodes.SUCCESS, message, "System message sent successfully"));
             }

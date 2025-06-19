@@ -88,13 +88,13 @@ namespace MamaFit.API.Middlewares
                 var chatRoom = await _chatService.GetChatRoomById(roomId);
                 if (chatRoom == null) return;
 
-                await Groups.AddToGroupAsync(Context.ConnectionId, $"room_{roomId}");
+                await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
 
                 if (!_roomConnections.ContainsKey(roomId))
                     _roomConnections[roomId] = new HashSet<string>();
                 _roomConnections[roomId].Add(userId);
 
-                await Clients.Group($"room_{roomId}").SendAsync("UserJoinedRoom", userId, roomId);
+                await Clients.Group(roomId).SendAsync("UserJoinedRoom", userId, roomId);
             }
             catch (Exception ex)
             {
@@ -107,7 +107,7 @@ namespace MamaFit.API.Middlewares
             var userId = Context.User?.FindFirst("userId")?.Value;
             if (string.IsNullOrEmpty(userId)) return;
 
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"room_{roomId}");
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
 
             if (_roomConnections.ContainsKey(roomId))
             {
@@ -119,10 +119,10 @@ namespace MamaFit.API.Middlewares
             if (_typingUsers.ContainsKey(roomId))
             {
                 _typingUsers[roomId].Remove(userId);
-                await Clients.Group($"room_{roomId}").SendAsync("UserStoppedTyping", userId);
+                await Clients.Group(roomId).SendAsync("UserStoppedTyping", userId);
             }
 
-            await Clients.Group($"room_{roomId}").SendAsync("UserLeftRoom", userId, roomId);
+            await Clients.Group(roomId).SendAsync("UserLeftRoom", userId, roomId);
         }
 
         public async Task SendMessage(ChatMessageCreateDto messageDto)
@@ -137,14 +137,13 @@ namespace MamaFit.API.Middlewares
             try
             {
                 var response = await _chatService.CreateChatMessageAsync(messageDto);
-                var message = await _chatService.GetChatMessageById(response.Id);
 
-                await Clients.Group($"room_{messageDto.ChatRoomId}").SendAsync("ReceiveMessage", message);
+                await Clients.Group(messageDto.ChatRoomId).SendAsync("ReceiveMessage", response);
 
                 if (_typingUsers.ContainsKey(messageDto.ChatRoomId))
                 {
                     _typingUsers[messageDto.ChatRoomId].Remove(userId);
-                    await Clients.Group($"room_{messageDto.ChatRoomId}").SendAsync("UserStoppedTyping", userId);
+                    await Clients.Group(messageDto.ChatRoomId).SendAsync("UserStoppedTyping", userId);
                 }
             }
             catch (Exception ex)
@@ -188,13 +187,13 @@ namespace MamaFit.API.Middlewares
                 if (isTyping)
                 {
                     _typingUsers[roomId][userId] = true;
-                    await Clients.GroupExcept($"room_{roomId}", Context.ConnectionId)
+                    await Clients.GroupExcept(roomId, Context.ConnectionId)
                         .SendAsync("UserStartedTyping", userId);
                 }
                 else
                 {
                     _typingUsers[roomId].Remove(userId);
-                    await Clients.GroupExcept($"room_{roomId}", Context.ConnectionId)
+                    await Clients.GroupExcept(roomId, Context.ConnectionId)
                         .SendAsync("UserStoppedTyping", userId);
                 }
             }

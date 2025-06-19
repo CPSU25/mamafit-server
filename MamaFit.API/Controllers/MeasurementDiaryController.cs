@@ -63,11 +63,11 @@ public class MeasurementDiaryController : ControllerBase
     [HttpGet("weeks-pregnant/{diaryId}")]
     public async Task<IActionResult> GetWeeksPregnant(string diaryId)
     {
-        var weeks = await _diaryService.CalculateWeeksPregnantByDiaryIdAsync(diaryId);
-        return Ok(new ResponseModel<string>(
+        var measurement = await _diaryService.CalculateWeeksPregnantByDiaryIdAsync(diaryId);
+        return Ok(new ResponseModel<MeasurementResponseDto>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
-            "weeksOfPregnancy: " + weeks,
+            measurement,
             "Weeks pregnant calculated successfully!"
         ));
     }

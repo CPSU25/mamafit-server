@@ -19,14 +19,32 @@ public class MeasurementDiaryService : IMeasurementDiaryService
         _validation = validation;
     }
     
-    public async Task<int> CalculateWeeksPregnantByDiaryIdAsync(string diaryId)
+    public async Task<MeasurementResponseDto> CalculateWeeksPregnantByDiaryIdAsync(string diaryId)
     {
         var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdNotDeletedAsync(diaryId);
         _validation.CheckNotFound(diary, "Measurement diary not found");
-        
+    
+        if (diary.PregnancyStartDate == null)
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Missing pregnancy start date");
+
         var weeks = (int)((DateTime.UtcNow - diary.PregnancyStartDate.Value).TotalDays / 7);
-        return weeks;
+
+        var measurement = await _unitOfWork.MeasurementRepository
+            .FindAsync(m => m.MeasurementDiaryId == diaryId &&
+                            m.WeekOfPregnancy == weeks &&
+                            !m.IsDeleted);
+
+        if (measurement != null)
+        {
+            return _mapper.Map<MeasurementResponseDto>(measurement);
+        }
+        
+        return new MeasurementResponseDto
+        {
+            WeekOfPregnancy = weeks
+        };
     }
+
     
     public async Task<PaginatedList<MeasurementDiaryResponseDto>> GetAllAsync(int index = 1, int pageSize = 10, string? nameSearch = null)
     {

@@ -25,6 +25,7 @@ namespace MamaFit.Repositories.Implement
         public IMeasurementDiaryRepository MeasurementDiaryRepository { get; }
         public IChatRepository ChatRepository { get; }
         public IVoucherBatchRepository VoucherBatchRepository { get; }
+        public IVoucherDiscountRepository VoucherDiscountRepository { get; }
 
         public UnitOfWork(ApplicationDbContext context,
             IUserRepository userRepository,
@@ -44,7 +45,8 @@ namespace MamaFit.Repositories.Implement
             IMeasurementRepository measurementRepository,
             IMeasurementDiaryRepository measurementDiaryRepository,
             IChatRepository chatRepository,
-            IVoucherBatchRepository voucherBatchRepository)
+            IVoucherBatchRepository voucherBatchRepository,
+            IVoucherDiscountRepository voucherDiscountRepository)
         {
             _context = context;
             UserRepository = userRepository;
@@ -65,6 +67,7 @@ namespace MamaFit.Repositories.Implement
             MeasurementDiaryRepository = measurementDiaryRepository;
             ChatRepository = chatRepository;
             VoucherBatchRepository = voucherBatchRepository;
+            VoucherDiscountRepository = voucherDiscountRepository;
         }
 
         public int SaveChanges()

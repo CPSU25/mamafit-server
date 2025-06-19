@@ -7,6 +7,24 @@ public class MeasurementDiaryDtoValidator : AbstractValidator<MeasurementDiaryDt
 {
     public MeasurementDiaryDtoValidator()
     {
+        RuleFor(x => x.Age)
+            .InclusiveBetween(18, 60)
+            .WithMessage("Age must be between 18 and 60 years.");
+        RuleFor(x => x.Weight)
+            .GreaterThan(0)
+            .WithMessage("Weight must be greater than 0.");
+        RuleFor(x => x.Height)
+            .GreaterThan(0)
+            .WithMessage("Height must be greater than 0.");
+        RuleFor(x => x.Hip)
+            .GreaterThan(0)
+            .WithMessage("Hip must be greater than 0.");
+        RuleFor(x => x.Bust)
+            .GreaterThan(0)
+            .WithMessage("Bust must be greater than 0.");
+        RuleFor(x => x.Waist)
+            .GreaterThan(0)
+            .WithMessage("Waist must be greater than 0.");
         RuleFor(x => x.UltrasoundDate)
             .NotNull()
             .When(x => x.WeeksFromUltrasound > 0)
@@ -29,7 +47,7 @@ public class MeasurementDiaryDtoValidator : AbstractValidator<MeasurementDiaryDt
         
         RuleFor(x => x.AverageMenstrualCycle)
             .InclusiveBetween(21, 35)
-            .When(x => x.AverageMenstrualCycle.HasValue)
+            .When(x => x.AverageMenstrualCycle.HasValue && x.AverageMenstrualCycle != 0)
             .WithMessage("Average menstrual cycle should be between 21 and 35 days.");
         
         RuleFor(x => x.FirstDateOfLastPeriod)

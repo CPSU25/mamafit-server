@@ -17,5 +17,4 @@ public class MeasurementDto
     public float Waist { get; set; }
     public float LegLength { get; set; }
     public float Hip { get; set; }
-    
 }

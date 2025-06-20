@@ -19,7 +19,7 @@ namespace MamaFit.Repositories.Repository
         public async Task<PaginatedList<Appointment>> GetAllAsync(int index, int pageSize, string? search, AppointmentOrderBy? sortBy)
         {
             var query = _dbSet.AsNoTracking()
-                .Where(a => a.IsDeleted.Equals(false));
+                .Where(a => !a.IsDeleted);
 
             query = sortBy switch
             {

@@ -13,29 +13,19 @@ namespace MamaFit.Services.Service
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IValidationService _validation;
 
-        public MaternityDressService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public MaternityDressService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _httpContextAccessor = httpContextAccessor;
+            _validation = validation;
         }
 
         public async Task CreateAsync(MaternityDressRequestDto requestDto)
         {
-
-            var newMaternityDress = new MaternityDress // Tạo mới Dress kèm với DressDetail
-            {
-                StyleId = requestDto.StyleId,
-                Name = requestDto.Name,
-                Description = requestDto.Description,
-                Images = requestDto.Images,
-                Slug = requestDto.Slug,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
-                CreatedBy = GetCurrentUserName()
-            };
+            await _validation.ValidateAndThrowAsync(requestDto);
+            var newMaternityDress = _mapper.Map<MaternityDress>(requestDto);
 
             await _unitOfWork.MaternityDressRepository.InsertAsync(newMaternityDress); // Insert + Save changes
             await _unitOfWork.SaveChangesAsync();
@@ -43,12 +33,9 @@ namespace MamaFit.Services.Service
 
         public async Task DeleteAsync(string id)
         {
-
             var oldMaternityDress = await _unitOfWork.MaternityDressRepository.GetById(id);// Tìm oldMaternity
+            _validation.CheckNotFound(oldMaternityDress, "MaternityDress not found!");
 
-            if (oldMaternityDress == null)
-                throw new ErrorException(StatusCodes.Status404NotFound,
-                    ApiCodes.NOT_FOUND, "MaternityDress not found!");
 
             foreach (MaternityDressDetail detail in oldMaternityDress.Details)
             {
@@ -81,34 +68,22 @@ namespace MamaFit.Services.Service
         public async Task<MaternityDressResponseDto> GetByIdAsync(string id)
         {
             var oldMaternityDress = await _unitOfWork.MaternityDressRepository.GetById(id);
-
-            if (oldMaternityDress == null)
-                throw new ErrorException(StatusCodes.Status404NotFound,
-                    ApiCodes.NOT_FOUND, "MaternityDress not found!");
+            _validation.CheckNotFound(oldMaternityDress, "MaternityDress not found!");
 
             return _mapper.Map<MaternityDressResponseDto>(oldMaternityDress);
         }
 
         public async Task UpdateAsync(string id, MaternityDressRequestDto requestDto)
         {
+            await _validation.ValidateAndThrowAsync(requestDto);
 
             var oldMaternityDress = await _unitOfWork.MaternityDressRepository.GetByIdAsync(id);
-
-            if (oldMaternityDress.IsDeleted || oldMaternityDress == null)
-                throw new ErrorException(StatusCodes.Status404NotFound,
-                    ApiCodes.NOT_FOUND, "MaternityDress not found!"); // Nếu không có
+            _validation.CheckNotFound(oldMaternityDress, "MaternityDress not found!");
 
             _mapper.Map(requestDto, oldMaternityDress); //Auto mapper Dto => dress
-            oldMaternityDress.UpdatedAt = DateTime.UtcNow;
-            oldMaternityDress.UpdatedBy = GetCurrentUserName();
 
             await _unitOfWork.MaternityDressRepository.UpdateAsync(oldMaternityDress); //Update + Save changes
             await _unitOfWork.SaveChangesAsync();
-        }
-
-        private string GetCurrentUserName()
-        {
-            return _httpContextAccessor.HttpContext?.User?.FindFirst("name")?.Value ?? "System";
         }
     }
 }

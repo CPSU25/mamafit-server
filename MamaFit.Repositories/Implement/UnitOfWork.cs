@@ -8,6 +8,7 @@ namespace MamaFit.Repositories.Implement
         private readonly ApplicationDbContext _context;
         private bool _disposed;
         public IUserRepository UserRepository { get; }
+        public IAddressRepository AddressRepository { get; } 
         public IRoleRepository RoleRepository { get; }
         public ITokenRepository TokenRepository { get; }
         public IOTPRepository OTPRepository { get; }
@@ -27,9 +28,13 @@ namespace MamaFit.Repositories.Implement
         public IVoucherBatchRepository VoucherBatchRepository { get; }
         public IVoucherDiscountRepository VoucherDiscountRepository { get; }
         public IOrderRepository OrderRepository { get; }
+        public IMaternityDressTaskRepository MaternityDressTaskRepository { get; }
+        public IMilestoneRepository MilestoneRepository { get; }
+        public INotificationRepository NotificationRepository { get; }
 
         public UnitOfWork(ApplicationDbContext context,
             IUserRepository userRepository,
+            IAddressRepository addressRepository,
             IRoleRepository roleRepository,
             ITokenRepository tokenRepository,
             IOTPRepository otpRepository,
@@ -48,10 +53,14 @@ namespace MamaFit.Repositories.Implement
             IChatRepository chatRepository,
             IVoucherBatchRepository voucherBatchRepository,
             IVoucherDiscountRepository voucherDiscountRepository,
-            IOrderRepository orderRepository)
+            IOrderRepository orderRepository,
+            IMaternityDressTaskRepository maternityDressTaskRepository,
+            IMilestoneRepository milestoneRepository,
+            INotificationRepository notificationRepository)
         {
             _context = context;
             UserRepository = userRepository;
+            AddressRepository = addressRepository;
             RoleRepository = roleRepository;
             TokenRepository = tokenRepository;
             OTPRepository = otpRepository;
@@ -71,6 +80,9 @@ namespace MamaFit.Repositories.Implement
             VoucherBatchRepository = voucherBatchRepository;
             VoucherDiscountRepository = voucherDiscountRepository;
             OrderRepository = orderRepository;
+            MaternityDressTaskRepository = maternityDressTaskRepository;
+            MilestoneRepository = milestoneRepository;
+            NotificationRepository = notificationRepository;
         }
 
         public int SaveChanges()

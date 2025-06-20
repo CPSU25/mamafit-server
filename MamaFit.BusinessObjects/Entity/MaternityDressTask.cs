@@ -5,10 +5,12 @@ namespace MamaFit.BusinessObjects.Entity;
 
 public class MaternityDressTask : BaseEntity
 {
+    public string? MilestoneId { get; set; }
     public string? Name { get; set; }
     public string? Description { get; set; }
     public DressTaskType? Type { get; set; }
-    
+
     // Navigation properties
-    public virtual ICollection<Milestone> Milestones { get; set; } = new List<Milestone>();
+    public Milestone? Milestone { get; set; }
+    public virtual ICollection<OrderItemTask> OrderItemTasks { get; set; } = new List<OrderItemTask>();
 }

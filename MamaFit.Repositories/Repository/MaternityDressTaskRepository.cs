@@ -47,7 +47,7 @@ namespace MamaFit.Repositories.Repository
 
         public async Task<MaternityDressTask> GetByIdAsync(string id)
         {
-            var result = await _dbSet.FirstOrDefaultAsync(x => x.Id.Equals(id));
+            var result = await _dbSet.FirstOrDefaultAsync(x => x.Id.Equals(id) && !x.IsDeleted);
             return result;
         }
     }

@@ -10,12 +10,12 @@ namespace MamaFit.API.Controllers;
 public class OrderController : ControllerBase
 {
     private readonly IOrderService _service;
-    
+
     public OrderController(IOrderService service)
     {
         _service = service;
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> GetAll(
         [FromQuery] int index = 1,
@@ -31,7 +31,7 @@ public class OrderController : ControllerBase
             "Get all orders successfully!"
         ));
     }
-    
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById([FromRoute] string id)
     {
@@ -43,7 +43,7 @@ public class OrderController : ControllerBase
             "Get order successfully!"
         ));
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> CreateOrder([FromBody] OrderRequestDto model)
     {
@@ -55,7 +55,20 @@ public class OrderController : ControllerBase
             "Create order successfully!"
         ));
     }
-    
+
+    [HttpPost]
+    [Route("ready-to-buy")]
+    public async Task<IActionResult> CreateOrderReadyToBuy([FromBody] OrderReadyToBuyRequestDto model)
+    {
+        await _service.CreateReadyToBuyOrderAsync(model);
+        return Ok(new ResponseModel<OrderResponseDto>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            null,
+            "Create order ready to buy successfully!"
+        ));
+    }
+
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateOrder([FromRoute] string id, [FromBody] OrderRequestDto model)
     {
@@ -67,7 +80,7 @@ public class OrderController : ControllerBase
             "Update order successfully!"
         ));
     }
-    
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteOrder([FromRoute] string id)
     {

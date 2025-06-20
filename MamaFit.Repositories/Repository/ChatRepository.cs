@@ -73,7 +73,7 @@ namespace MamaFit.Repositories.Repository
         {
             var message = await _context.ChatMessages
                 .Include(m => m.Sender)
-                .FirstOrDefaultAsync(m => m.Id.Equals(messageId));
+                .FirstOrDefaultAsync(m => m.Id.Equals(messageId) && !m.IsDeleted);
             return message;
         }
 
@@ -83,7 +83,7 @@ namespace MamaFit.Repositories.Repository
                 .Include(r => r.Messages)
                 .Include(r => r.Members)
                 .ThenInclude(m => m.User)
-                .FirstOrDefaultAsync(r => r.Id == chatRoomId);
+                .FirstOrDefaultAsync(r => r.Id == chatRoomId && !r.IsDeleted);
             return chatroom!;
         }
 
@@ -93,7 +93,7 @@ namespace MamaFit.Repositories.Repository
                 .Include(r => r.Messages)
                 .Include(r => r.Members)
                 .ThenInclude(m => m.User)
-                .Where(c => c.Members.Select(m => m.UserId).Contains(userId))
+                .Where(c => c.Members.Select(m => m.UserId).Contains(userId) && !c.IsDeleted)
                 .ToListAsync();
         }
 

@@ -76,10 +76,10 @@ namespace MamaFit.API
 
                 app.UseAuthorization();
 
+                app.MapControllers();
+
                 app.MapHub<ChatHub>("/chatHub");
 
-                app.MapControllers();
-                
                 app.Run();
             }
             catch (Exception exception)

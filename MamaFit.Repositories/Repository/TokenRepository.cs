@@ -25,6 +25,13 @@ public class TokenRepository : GenericRepository<ApplicationUserToken>, ITokenRe
         return await _dbSet.FirstOrDefaultAsync(t => t.UserId == userId && t.TokenType == tokenType);
     }
 
+    public async Task<ApplicationUserToken?> GetNotificationTokensAsync(string userId)
+    {
+        var token = await _dbSet
+            .Where(t => t.UserId == userId && t.TokenType == TokenType.NOTIFICATION_TOKEN)
+            .FirstOrDefaultAsync();
+        return token;
+    }
     public async Task CreateTokenAsync(ApplicationUserToken userToken)
     {
         await InsertAsync(userToken);

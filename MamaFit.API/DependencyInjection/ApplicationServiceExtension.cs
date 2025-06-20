@@ -7,6 +7,7 @@ using MamaFit.Repositories.Interface;
 using MamaFit.Repositories.Repository;
 using MamaFit.Services.ExternalService;
 using MamaFit.Services.ExternalService.CloudinaryService;
+using MamaFit.Services.ExternalService.ExpoNotification;
 using MamaFit.Services.Interface;
 using MamaFit.Services.Mapper;
 using MamaFit.Services.Service;
@@ -28,6 +29,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAddressRepository, AddressRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();
             services.AddScoped<IOTPRepository, OTPRepository>();
@@ -45,7 +47,10 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IChatRepository, ChatRepository>();
             services.AddScoped<IVoucherBatchRepository, VoucherBatchRepository>();
             services.AddScoped<IVoucherDiscountRepository, VoucherDiscountRepository>();
+            services.AddScoped<IMaternityDressTaskRepository, MaternityDressTaskRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IMilestoneRepository, MilestoneRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
         }
 
         public static void AddServices(this IServiceCollection services)
@@ -72,8 +77,12 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IChatService, ChatService>();
             services.AddScoped<IVoucherBatchService, VoucherBatchService>();
             services.AddScoped<IVoucherDiscountService, VoucherDiscountService>();
+            services.AddScoped<IMaternityDressTaskService, MaternityDressTaskService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IOrderItemService, OrderItemService>();
+            services.AddScoped<IMilestoneService, MilestoneService>();
+            services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IExpoNotificationService, ExpoNotificationService>();
         }
 
         public static IServiceCollection AddHttpClientServices(this IServiceCollection services)

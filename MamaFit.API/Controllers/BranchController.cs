@@ -7,7 +7,7 @@ namespace MamaFit.API.Controllers
 {
     [ApiController]
     [Route("api/branch")]
-    public class BranchController : Controller
+    public class BranchController : ControllerBase
     {
         private readonly IBranchService _branchService;
 

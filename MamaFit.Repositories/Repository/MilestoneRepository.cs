@@ -1,21 +1,21 @@
-﻿using MamaFit.BusinessObjects.Entity;
+﻿using MamaFit.BusinessObjects.DbContext;
+using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using MamaFit.BusinessObjects.DbContext;
 
 namespace MamaFit.Repositories.Repository
 {
-    public class MaternityDressTaskRepository : GenericRepository<MaternityDressTask>, IMaternityDressTaskRepository
+    public class MilestoneRepository : GenericRepository<Milestone>, IMilestoneRepository
     {
-        public MaternityDressTaskRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+        public MilestoneRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
 
-        public async Task<PaginatedList<MaternityDressTask>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
+        public async Task<PaginatedList<Milestone>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
         {
             var query = _dbSet.AsNoTracking()
                 .Where(a => a.IsDeleted.Equals(false));
@@ -39,16 +39,10 @@ namespace MamaFit.Repositories.Repository
             var listResult = pagedResult.Items
                 .ToList();
 
-            var responseList = new PaginatedList<MaternityDressTask>
+            var responseList = new PaginatedList<Milestone>
                 (listResult, pagedResult.TotalCount, pagedResult.PageNumber, pageSize);
 
             return responseList;
-        }
-
-        public async Task<MaternityDressTask> GetByIdAsync(string id)
-        {
-            var result = await _dbSet.FirstOrDefaultAsync(x => x.Id.Equals(id) && !x.IsDeleted);
-            return result;
         }
     }
 }

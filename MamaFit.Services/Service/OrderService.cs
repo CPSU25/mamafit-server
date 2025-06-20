@@ -4,7 +4,6 @@ using MamaFit.BusinessObjects.Entity;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
-using Microsoft.AspNetCore.Http;
 
 namespace MamaFit.Services.Service;
 

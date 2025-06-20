@@ -4,10 +4,8 @@ using MamaFit.BusinessObjects.DTO.ChatRoomDto;
 using MamaFit.BusinessObjects.Entity.ChatEntity;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
-using MamaFit.Repositories.Interface;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.SignalR;
 
 namespace MamaFit.Services.Service
 {

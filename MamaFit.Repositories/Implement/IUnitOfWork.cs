@@ -24,6 +24,8 @@ namespace MamaFit.Repositories.Implement
         public IVoucherBatchRepository VoucherBatchRepository { get; }
         public IVoucherDiscountRepository VoucherDiscountRepository { get; }
         public IOrderRepository OrderRepository { get; }
+        public IMaternityDressTaskRepository MaternityDressTaskRepository { get; }
+        public IMilestoneRepository MilestoneRepository { get; }
         int SaveChanges();
         Task<int> SaveChangesAsync();
         void BeginTransaction();

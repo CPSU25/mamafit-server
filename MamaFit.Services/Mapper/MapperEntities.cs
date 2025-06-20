@@ -20,9 +20,11 @@ using MamaFit.BusinessObjects.DTO.VoucherBatchDto;
 using MamaFit.BusinessObjects.DTO.MaternityDressTask;
 using MamaFit.BusinessObjects.DTO.ChatRoomMemberDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
+using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.DTO.VoucherDiscountDto;
 using MamaFit.BusinessObjects.DTO.MilestoneDto;
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
+using MamaFit.BusinessObjects.DTO.NotificationDto;
 
 namespace MamaFit.Services.Mapper
 {
@@ -165,6 +167,14 @@ namespace MamaFit.Services.Mapper
             //Milestone Mapper
             CreateMap<Milestone, MilestoneRequestDto>().ReverseMap();
             CreateMap<Milestone, MilestoneResponseDto>().ReverseMap();
+
+            //OrderItem Mapper
+            CreateMap<OrderItem, OrderItemRequestDto>().ReverseMap();
+            CreateMap<OrderItem, OrderItemResponseDto>().ReverseMap();
+            
+            //Notification Mapper
+            CreateMap<Notification, NotificationRequestDto>().ReverseMap();
+            CreateMap<Notification, NotificationResponseDto>().ReverseMap();
         }
     }
 }

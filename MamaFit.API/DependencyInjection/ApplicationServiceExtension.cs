@@ -45,6 +45,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IChatRepository, ChatRepository>();
             services.AddScoped<IVoucherBatchRepository, VoucherBatchRepository>();
             services.AddScoped<IVoucherDiscountRepository, VoucherDiscountRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
         }
 
         public static void AddServices(this IServiceCollection services)
@@ -71,6 +72,8 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IChatService, ChatService>();
             services.AddScoped<IVoucherBatchService, VoucherBatchService>();
             services.AddScoped<IVoucherDiscountService, VoucherDiscountService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IOrderItemService, OrderItemService>();
         }
 
         public static IServiceCollection AddHttpClientServices(this IServiceCollection services)
@@ -156,6 +159,20 @@ namespace MamaFit.API.DependencyInjection
 
                     options.Events = new JwtBearerEvents
                     {
+                        OnMessageReceived = context =>
+                        {
+                            // Read the token from query string for SignalR
+                            var accessToken = context.Request.Query["access_token"];
+
+                            // If the request is for our hub...
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/chatHub")))
+                            {
+                                // Read the token out of the query string
+                                context.Token = accessToken;
+                            }
+                            return Task.CompletedTask;
+                        },
                         OnChallenge = async context =>
                         {
                             context.HandleResponse(); // Ngăn hệ thống trả lỗi mặc định

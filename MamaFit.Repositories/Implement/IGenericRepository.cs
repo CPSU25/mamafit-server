@@ -1,8 +1,8 @@
-﻿using MamaFit.BusinessObjects.Base;
+﻿using System.Linq.Expressions;
+using MamaFit.BusinessObjects.Base;
 using MamaFit.Repositories.Infrastructure;
-using System.Linq.Expressions;
 
-namespace MamaFit.Repositories.Interface
+namespace MamaFit.Repositories.Implement
 {
     public interface IGenericRepository<T> where T : BaseEntity
     {
@@ -32,6 +32,6 @@ namespace MamaFit.Repositories.Interface
         Task<IQueryable<T>> FindAllAsync(Expression<Func<T, bool>> predicate);
         Task<IQueryable<T>> GetAllQueryableAsync();
         Task<List<T>> FindListAsync(Expression<Func<T, bool>> predicate);
-
+        Task<bool> IsEntityExistsAsync(Expression<Func<T, bool>> predicate);
     }
 }

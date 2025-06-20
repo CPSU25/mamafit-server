@@ -1,17 +1,150 @@
-name: CI/CD Pipeline
+name: Build, Test & Deploy MamaFit API
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
-jobs: 
-  docker-compose:
-    runs-on: self-hosted
-    environment: docker
+env:
+  REGISTRY_NAME: ${{ secrets.REGISTRY_NAME }}
+  IMAGE_NAME: ${{ secrets.REGISTRY_NAME }}/mamafit-api:latest
+
+jobs:
+  test:
+    name: Run .NET Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout source code
+        uses: actions/checkout@v4
 
-    - name: Run `docker compose`
-      run: docker compose up --build -d
+      - name: Setup .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build solution
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test --configuration Release --no-build --verbosity normal
+
+  build-and-push:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    needs: test
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t $IMAGE_NAME .
+          docker push $IMAGE_NAME
+
+  deploy:
+    name: Deploy to VPS
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify docker-compose file exists
+        run: |
+          ls -la
+          if [ ! -f "docker-compose.yaml" ]; then
+            echo "docker-compose.yaml not found!"
+            exit 1
+          fi
+
+      - name: Copy docker-compose.yaml to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: "docker-compose.yaml"
+          target: "~/mamafit"
+          overwrite: true
+
+      - name: Deploy on VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd ~/mamafit
+
+            # 📝 Tạo file .env từ GitHub Secrets
+            echo "REGISTRY_NAME=${{ secrets.REGISTRY_NAME }}" > .env
+            echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+            echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+            echo "CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}" >> .env
+            echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> .env
+            echo "MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }}" >> .env
+            echo "MAILGUN_DOMAIN=${{ secrets.MAILGUN_DOMAIN }}" >> .env
+            echo "VPS_HOST=${{ secrets.VPS_HOST }}" >> .env
+
+            # 🐳 Pull image và deploy bằng Docker Compose
+            echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+            docker pull $IMAGE_NAME || true
+            docker compose up -d --pull always --no-deps --force-recreate mamafit-api
+
+            # ✅ Kiểm tra container đang chạy
+            docker ps -a | grep mamafit-api
+
+      - name: Notify Discord (Success)
+        if: success()
+        run: |
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d "{\"embeds\": [{
+                 \"title\": \"✅ MamaFit API deployed successfully!\",
+                 \"color\": 5763719,
+                 \"fields\": [
+                   { \"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true },
+                   { \"name\": \"Commit\", \"value\": \"[${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\", \"inline\": true },
+                   { \"name\": \"CI/CD Run\", \"value\": \"[View Logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\" }
+                 ],
+                 \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
+               }]}" \
+               ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+      - name: Notify Discord (Failure)
+        if: failure()
+        run: |
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d "{\"embeds\": [{
+                 \"title\": \"❌ MamaFit API deploy failed!\",
+                 \"color\": 15158332,
+                 \"fields\": [
+                   { \"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true },
+                   { \"name\": \"Commit\", \"value\": \"[${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\", \"inline\": true },
+                   { \"name\": \"CI/CD Run\", \"value\": \"[View Logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\" }
+                 ],
+                 \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
+               }]}" \
+               ${{ secrets.DISCORD_WEBHOOK_URL }}

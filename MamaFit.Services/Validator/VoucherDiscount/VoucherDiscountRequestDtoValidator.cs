@@ -7,6 +7,11 @@ public class VoucherDiscountRequestDtoValidator : AbstractValidator<VoucherDisco
 {
     public VoucherDiscountRequestDtoValidator()
     {
+        RuleFor(x => x.VoucherBatchId)
+            .NotEmpty().WithMessage("VoucherBatchId is required.");
+
+        RuleFor(x => x.UserId)
+            .NotEmpty().WithMessage("UserId is required.");
         RuleFor(x => x.Code)
             .NotEmpty().WithMessage("Code is required.")
             .MaximumLength(50).WithMessage("Code must not exceed 50 characters.");

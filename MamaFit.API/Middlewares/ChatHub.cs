@@ -1,6 +1,7 @@
 using MamaFit.BusinessObjects.DTO.ChatMessageDto;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.SignalR;
+using System.Security.Claims;
 
 namespace MamaFit.API.Middlewares
 {
@@ -22,7 +23,7 @@ namespace MamaFit.API.Middlewares
 
         public override async Task OnConnectedAsync()
         {
-            var userId = Context.User?.FindFirst("userId")?.Value;
+            var userId = GetCurrentUserId();
             if (!string.IsNullOrEmpty(userId))
             {
                 _userConnections[userId] = Context.ConnectionId;
@@ -31,7 +32,7 @@ namespace MamaFit.API.Middlewares
                 var userRooms = await _chatService.GetUserChatRoom(userId);
                 foreach (var room in userRooms)
                 {
-                    await Groups.AddToGroupAsync(Context.ConnectionId, $"room_{room.Id}");
+                    await Groups.AddToGroupAsync(Context.ConnectionId, room.Id);
 
                     // Track room connections
                     if (!_roomConnections.ContainsKey(room.Id))
@@ -47,9 +48,9 @@ namespace MamaFit.API.Middlewares
             await base.OnConnectedAsync();
         }
 
-        public override async Task OnDisconnectedAsync(Exception exception)
+        public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            var userId = Context.User?.FindFirst("userId")?.Value;
+            var userId = GetCurrentUserId();
             if (!string.IsNullOrEmpty(userId))
             {
                 _userConnections.Remove(userId);
@@ -80,31 +81,26 @@ namespace MamaFit.API.Middlewares
 
         public async Task JoinRoom(string roomId)
         {
-            var userId = Context.User?.FindFirst("userId")?.Value;
-            if (string.IsNullOrEmpty(userId)) return;
+            var userId = GetCurrentUserId();
 
-            try
+            if (string.IsNullOrEmpty(userId))
             {
-                var chatRoom = await _chatService.GetChatRoomById(roomId);
-                if (chatRoom == null) return;
-
-                await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
-
-                if (!_roomConnections.ContainsKey(roomId))
-                    _roomConnections[roomId] = new HashSet<string>();
-                _roomConnections[roomId].Add(userId);
-
-                await Clients.Group(roomId).SendAsync("UserJoinedRoom", userId, roomId);
+                await Clients.Caller.SendAsync("Error", "Invalid user or room");
+                return;
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error joining room {roomId} for user {userId}");
-            }
+
+            await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
+            _logger.LogInformation($"User {userId} joined room {roomId}");
+
+            // Confirm join
+            await Clients.Caller.SendAsync("JoinedRoom", roomId);
         }
+
+        
 
         public async Task LeaveRoom(string roomId)
         {
-            var userId = Context.User?.FindFirst("userId")?.Value;
+            var userId = GetCurrentUserId();
             if (string.IsNullOrEmpty(userId)) return;
 
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
@@ -127,35 +123,101 @@ namespace MamaFit.API.Middlewares
 
         public async Task SendMessage(ChatMessageCreateDto messageDto)
         {
-            var userId = Context.User?.FindFirst("userId")?.Value;
-            if (string.IsNullOrEmpty(userId) || messageDto.SenderId != userId)
+            var userId = GetCurrentUserId(); 
+
+            _logger.LogInformation($"SendMessage called by user {userId} in room {messageDto.ChatRoomId}");
+
+            // Validate user authentication
+            if (string.IsNullOrEmpty(userId))
             {
-                await Clients.Caller.SendAsync("Error", "Unauthorized");
+                _logger.LogWarning("SendMessage: User not authenticated");
+                await Clients.Caller.SendAsync("Error", "Unauthorized: User not authenticated");
+                return;
+            }
+
+            // Validate input
+            if (string.IsNullOrEmpty(messageDto.ChatRoomId))
+            {
+                _logger.LogWarning($"SendMessage: Invalid ChatRoomId for user {userId}");
+                await Clients.Caller.SendAsync("Error", "Invalid room ID");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(messageDto.Message?.Trim()))
+            {
+                _logger.LogWarning($"SendMessage: Empty message from user {userId}");
+                await Clients.Caller.SendAsync("Error", "Message cannot be empty");
                 return;
             }
 
             try
             {
+                // Set the SenderId from authenticated user (security measure)
+                messageDto.SenderId = userId;
+
+                _logger.LogInformation(
+                    $"Creating message: User={userId}, Room={messageDto.ChatRoomId}, Message='{messageDto.Message}'");
+
+                // Create message in database
                 var response = await _chatService.CreateChatMessageAsync(messageDto);
 
-                await Clients.Group(messageDto.ChatRoomId).SendAsync("ReceiveMessage", response);
-
-                if (_typingUsers.ContainsKey(messageDto.ChatRoomId))
+                if (response == null)
                 {
-                    _typingUsers[messageDto.ChatRoomId].Remove(userId);
-                    await Clients.Group(messageDto.ChatRoomId).SendAsync("UserStoppedTyping", userId);
+                    _logger.LogError($"Failed to create message in database for user {userId}");
+                    await Clients.Caller.SendAsync("Error", "Failed to save message");
+                    return;
                 }
+
+                _logger.LogInformation($"Message created with ID: {response.Id}");
+
+                // Get the complete message object for broadcasting
+                var message = await _chatService.GetChatMessageById(response.Id);
+
+                if (message == null)
+                {
+                    _logger.LogError($"Failed to retrieve created message {response.Id}");
+                    await Clients.Caller.SendAsync("Error", "Failed to retrieve message");
+                    return;
+                }
+
+                _logger.LogInformation(
+                    $"Broadcasting ReceiveMessage to room {messageDto.ChatRoomId}: MessageId={message.Id}, SenderId={message.SenderId}, SenderName={message.SenderName}");
+
+                // Broadcast message to all users in the room (including sender for confirmation)
+                await Clients.Group(messageDto.ChatRoomId).SendAsync("ReceiveMessage", new
+                {
+                    id = message.Id,
+                    message = message.Message,
+                    senderId = message.SenderId,
+                    senderName = message.SenderName,
+                    senderAvatar = message.SenderAvatar,
+                    chatRoomId = message.ChatRoomId,
+                    type = message.Type,
+                    messageTimestamp = message.MessageTimestamp.ToString("O") // For backward compatibility
+                });
+
+                _logger.LogInformation(
+                    $"✅ Message {message.Id} successfully broadcasted to room {messageDto.ChatRoomId}");
+
+                // Optional: Send confirmation to sender only
+                await Clients.Caller.SendAsync("MessageSent", new
+                {
+                    tempId = messageDto.SenderId, // If you're using temp IDs on client
+                    messageId = message.Id,
+                    status = "success"
+                });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error sending message for user {userId}");
-                await Clients.Caller.SendAsync("Error", "Failed to send message");
+                _logger.LogError(ex,
+                    $"❌ Error sending message for user {userId} in room {messageDto.ChatRoomId}: {ex.Message}");
+                await Clients.Caller.SendAsync("Error", $"Failed to send message: {ex.Message}");
             }
         }
 
         public async Task MarkAsRead(string messageId, string chatRoomId)
         {
-            var userId = Context.User?.FindFirst("userId")?.Value;
+            var userId = GetCurrentUserId();
             if (string.IsNullOrEmpty(userId))
             {
                 await Clients.Caller.SendAsync("Error", "Unauthorized");
@@ -245,7 +307,7 @@ namespace MamaFit.API.Middlewares
 
         public async Task SendPrivateMessage(string targetUserId, string message)
         {
-            var senderId = Context.User?.FindFirst("userId")?.Value;
+            var senderId = GetCurrentUserId();
             if (string.IsNullOrEmpty(senderId)) return;
 
             try
@@ -260,6 +322,20 @@ namespace MamaFit.API.Middlewares
             {
                 _logger.LogError(ex, $"Error sending private message from {senderId} to {targetUserId}");
             }
+        }
+
+        // Debug method to check available claims
+        
+        private string? GetCurrentUserId()
+        {
+            // Try multiple claim types to ensure compatibility
+            var userId = Context.User?.FindFirst("userId")?.Value ??
+                        Context.User?.FindFirst("sub")?.Value ??
+                        Context.User?.FindFirst("nameid")?.Value ??
+                        Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            
+            _logger.LogInformation($"GetCurrentUserId: Retrieved userId={userId} for ConnectionId={Context.ConnectionId}");
+            return userId;
         }
     }
 }

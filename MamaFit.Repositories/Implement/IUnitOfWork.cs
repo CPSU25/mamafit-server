@@ -1,4 +1,6 @@
-﻿namespace MamaFit.Repositories.Interface
+﻿using MamaFit.Repositories.Interface;
+
+namespace MamaFit.Repositories.Implement
 {
     public interface IUnitOfWork
     {
@@ -21,6 +23,7 @@
         public IChatRepository ChatRepository { get; }
         public IVoucherBatchRepository VoucherBatchRepository { get; }
         public IVoucherDiscountRepository VoucherDiscountRepository { get; }
+        public IOrderRepository OrderRepository { get; }
         int SaveChanges();
         Task<int> SaveChangesAsync();
         void BeginTransaction();

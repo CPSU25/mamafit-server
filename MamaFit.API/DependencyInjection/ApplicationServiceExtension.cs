@@ -28,6 +28,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAddressRepository, AddressRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();
             services.AddScoped<IOTPRepository, OTPRepository>();

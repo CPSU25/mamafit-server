@@ -8,6 +8,7 @@ namespace MamaFit.Repositories.Implement
         private readonly ApplicationDbContext _context;
         private bool _disposed;
         public IUserRepository UserRepository { get; }
+        public IAddressRepository AddressRepository { get; } 
         public IRoleRepository RoleRepository { get; }
         public ITokenRepository TokenRepository { get; }
         public IOTPRepository OTPRepository { get; }
@@ -33,6 +34,7 @@ namespace MamaFit.Repositories.Implement
 
         public UnitOfWork(ApplicationDbContext context,
             IUserRepository userRepository,
+            IAddressRepository addressRepository,
             IRoleRepository roleRepository,
             ITokenRepository tokenRepository,
             IOTPRepository otpRepository,
@@ -57,6 +59,7 @@ namespace MamaFit.Repositories.Implement
         {
             _context = context;
             UserRepository = userRepository;
+            AddressRepository = addressRepository;
             RoleRepository = roleRepository;
             TokenRepository = tokenRepository;
             OTPRepository = otpRepository;

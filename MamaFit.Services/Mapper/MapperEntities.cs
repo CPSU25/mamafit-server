@@ -22,6 +22,7 @@ using MamaFit.BusinessObjects.DTO.ChatRoomMemberDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.DTO.VoucherDiscountDto;
 using MamaFit.BusinessObjects.DTO.MilestoneDto;
+using MamaFit.BusinessObjects.DTO.OrderItemDto;
 
 namespace MamaFit.Services.Mapper
 {
@@ -154,7 +155,12 @@ namespace MamaFit.Services.Mapper
             
             //Order Mapper
             CreateMap<Order, OrderRequestDto>().ReverseMap();
+            CreateMap<Order, OrderReadyToBuyRequestDto>().ReverseMap();
             CreateMap<Order, OrderResponseDto>().ReverseMap();
+
+            //OrderItem Mapper
+            CreateMap<OrderItem, OrderItemReadyToBuyRequestDto>().ReverseMap();
+            CreateMap<OrderItem, OrderItemResponseDto>().ReverseMap();
 
             //Milestone Mapper
             CreateMap<Milestone, MilestoneRequestDto>().ReverseMap();

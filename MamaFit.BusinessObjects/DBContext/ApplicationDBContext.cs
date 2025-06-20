@@ -164,7 +164,7 @@ namespace MamaFit.BusinessObjects.DbContext
                     .WithOne(l => l.User)
                     .HasForeignKey(l => l.UserId)
                     .OnDelete(DeleteBehavior.NoAction);
-                
+
                 options.HasMany(u => u.Branch)
                     .WithOne(b => b.BranchManager)
                     .HasForeignKey(b => b.BranchManagerId)
@@ -183,6 +183,15 @@ namespace MamaFit.BusinessObjects.DbContext
                     .WithOne(oi => oi.Order)
                     .HasForeignKey(oi => oi.OrderId)
                     .OnDelete(DeleteBehavior.NoAction);
+
+                options.OwnsOne(x => x.Address, address =>
+                       {
+                           address.Property(a => a.MapId).HasColumnName("MapId");
+                           address.Property(a => a.ShortName).HasColumnName("ShortName");
+                           address.Property(a => a.LongName).HasColumnName("LongName");
+                           address.Property(a => a.Latitude).HasColumnName("Latitude");
+                           address.Property(a => a.Longitude).HasColumnName("Longitude");
+                       });
             });
 
             modelBuilder.Entity<OrderItem>(options =>
@@ -206,13 +215,13 @@ namespace MamaFit.BusinessObjects.DbContext
                     .WithOne(mdc => mdc.OrderItem)
                     .HasForeignKey<MaternityDressCustomization>(ot => ot.OrderItemId)
                     .OnDelete(DeleteBehavior.NoAction);
-                
+
                 options.HasMany(ot => ot.WarrantyRequests)
                     .WithOne(wh => wh.OriginalOrderItem)
                     .HasForeignKey(wh => wh.OriginalOrderItemId)
                     .OnDelete(DeleteBehavior.NoAction);
             });
-            
+
             modelBuilder.Entity<BranchMaternityDressDetail>(options =>
             {
                 options.HasKey(bmdd => new { bmdd.BranchId, bmdd.MaternityDressDetailId });
@@ -222,7 +231,9 @@ namespace MamaFit.BusinessObjects.DbContext
             {
                 options.HasKey(oit => new
                 {
-                    oit.UserId, oit.OrderItemId, oit.MilestoneId
+                    oit.UserId,
+                    oit.OrderItemId,
+                    oit.MilestoneId
                 });
             });
             modelBuilder.Entity<OrderItemServiceOption>(options =>
@@ -236,6 +247,15 @@ namespace MamaFit.BusinessObjects.DbContext
                     .WithOne(bmdd => bmdd.Branch)
                     .HasForeignKey(bmdd => bmdd.BranchId)
                     .OnDelete(DeleteBehavior.NoAction);
+
+                options.OwnsOne(x => x.Address, address =>
+                       {
+                           address.Property(a => a.MapId).HasColumnName("MapId");
+                           address.Property(a => a.ShortName).HasColumnName("ShortName");
+                           address.Property(a => a.LongName).HasColumnName("LongName");
+                           address.Property(a => a.Latitude).HasColumnName("Latitude");
+                           address.Property(a => a.Longitude).HasColumnName("Longitude");
+                       });
             });
 
             modelBuilder.Entity<MaternityDressDetail>(options =>

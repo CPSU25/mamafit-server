@@ -11,6 +11,7 @@ using MamaFit.BusinessObjects.DTO.ComponentOptionDto;
 using MamaFit.BusinessObjects.DTO.MaternityDressDetailDto;
 using MamaFit.BusinessObjects.DTO.DesignRequestDto;
 using MamaFit.BusinessObjects.DTO.BranchDto;
+using MamaFit.BusinessObjects.DTO.BranchMaternityDressDetailDto;
 using MamaFit.BusinessObjects.DTO.MeasurementDto;
 using MamaFit.BusinessObjects.Entity.ChatEntity;
 using MamaFit.BusinessObjects.DTO.ChatMessageDto;
@@ -175,6 +176,9 @@ namespace MamaFit.Services.Mapper
             //Notification Mapper
             CreateMap<Notification, NotificationRequestDto>().ReverseMap();
             CreateMap<Notification, NotificationResponseDto>().ReverseMap();
+            
+            //BranchMaternityDressDetail Mapper
+            CreateMap<BranchMaternityDressDetail, BranchMaternityDressDetailDto>().ReverseMap();
         }
     }
 }

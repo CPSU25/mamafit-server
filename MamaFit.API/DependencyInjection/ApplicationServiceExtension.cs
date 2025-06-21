@@ -51,6 +51,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IMilestoneRepository, MilestoneRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<IBranchMaternityDressDetailRepository, BranchMaternityDressDetailRepository>();
         }
 
         public static void AddServices(this IServiceCollection services)
@@ -83,6 +84,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IMilestoneService, MilestoneService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IExpoNotificationService, ExpoNotificationService>();
+            services.AddScoped<IBranchMaternityDressDetailService, BranchMaternityDressDetailService>();
         }
 
         public static IServiceCollection AddHttpClientServices(this IServiceCollection services)

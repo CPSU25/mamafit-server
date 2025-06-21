@@ -106,6 +106,7 @@ jobs:
             echo "MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }}" >> .env
             echo "MAILGUN_DOMAIN=${{ secrets.MAILGUN_DOMAIN }}" >> .env
             echo "VPS_HOST=${{ secrets.VPS_HOST }}" >> .env
+            echo "REDIS_CONN=${{ secrets.REDIS_CONN }}" >> .env
 
             # 🐳 Pull image và deploy bằng Docker Compose
             echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin

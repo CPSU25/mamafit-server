@@ -4,6 +4,7 @@ using MamaFit.BusinessObjects.Entity;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
+using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
 
@@ -14,16 +15,23 @@ public class RoleService : IRoleService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IValidationService _validation;
+    private readonly ICacheService _cache;
 
-    public RoleService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation)
+    public RoleService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation, ICacheService cache)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _validation = validation;
+        _cache = cache;
     }
     
     public async Task<PaginatedList<RoleResponseDto>> GetAllRolesAsync(int index = 1, int pageSize = 10, string? nameSearch = null)
     {
+        string cacheKey = $"roles:{index}:{pageSize}:{nameSearch ?? ""}";
+        var cached = await _cache.GetAsync<PaginatedList<RoleResponseDto>>(cacheKey);
+        if (cached != null)
+            return cached;
+        
         var roles = await _unitOfWork.RoleRepository.GetRolesAsync(index, pageSize, nameSearch);
         
         var responseItems = roles.Items
@@ -37,18 +45,27 @@ public class RoleService : IRoleService
             pageSize
         );
 
+        await _cache.SetAsync(cacheKey, responsePaginatedList, TimeSpan.FromMinutes(15));
         return responsePaginatedList;
     }
 
 
     public async Task<RoleResponseDto> GetRoleByIdAsync(string id)
     {
+        string cacheKey = $"role:{id}";
+        var cached = await _cache.GetAsync<RoleResponseDto>(cacheKey);
+        if (cached != null)
+            return cached;
+        
         var role = await _unitOfWork.RoleRepository.GetByIdAsync(id);
         if (role == null)
             throw new ErrorException(StatusCodes.Status404NotFound,
                 ApiCodes.NOT_FOUND, "Role is not exist!"
                 );
-        return _mapper.Map<RoleResponseDto>(role);
+        
+        var mapped = _mapper.Map<RoleResponseDto>(role);
+        await _cache.SetAsync(cacheKey, mapped, TimeSpan.FromMinutes(15));
+        return mapped;
     }
     
     public async Task<RoleResponseDto> CreateRoleAsync(RoleRequestDto model)
@@ -62,6 +79,7 @@ public class RoleService : IRoleService
         var role = _mapper.Map<ApplicationUserRole>(model);
         await _unitOfWork.RoleRepository.CreateAsync(role);
         await _unitOfWork.SaveChangesAsync();
+        await InvalidateRoleCache(role.Id);
         return _mapper.Map<RoleResponseDto>(role);
     }
     
@@ -83,6 +101,7 @@ public class RoleService : IRoleService
 
         await _unitOfWork.RoleRepository.UpdateRoleAsync(role);
         await _unitOfWork.SaveChangesAsync();
+        await InvalidateRoleCache(id);
         return _mapper.Map<RoleResponseDto>(role);
     }
     
@@ -96,5 +115,22 @@ public class RoleService : IRoleService
         
         await _unitOfWork.RoleRepository.DeleteAsync(role);
         await _unitOfWork.SaveChangesAsync();
+        await InvalidateRoleCache(id);
+    }
+
+    private async Task InvalidateRoleCache(string? id = null)
+    {
+        if(!string.IsNullOrEmpty(id))
+            await _cache.RemoveAsync($"role:{id}");
+        
+        var pageSize = new [] { 10, 20, 50 };
+        for (int i = 1; i <= 10; i++)
+        {
+            foreach (var size in pageSize)
+            {
+                string key = $"roles:{i}:{size}:";
+                await _cache.RemoveAsync(key);
+            }
+        }
     }
 }

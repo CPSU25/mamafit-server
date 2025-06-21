@@ -8,6 +8,7 @@ using MamaFit.Repositories.Repository;
 using MamaFit.Services.ExternalService;
 using MamaFit.Services.ExternalService.CloudinaryService;
 using MamaFit.Services.ExternalService.ExpoNotification;
+using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.Interface;
 using MamaFit.Services.Mapper;
 using MamaFit.Services.Service;
@@ -87,6 +88,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IExpoNotificationService, ExpoNotificationService>();
             services.AddScoped<IBranchMaternityDressDetailService, BranchMaternityDressDetailService>();
             services.AddScoped<IWarrantyHistoryService, WarrantyHistoryService>();
+            services.AddScoped<ICacheService, CacheService>();
         }
 
         public static IServiceCollection AddHttpClientServices(this IServiceCollection services)

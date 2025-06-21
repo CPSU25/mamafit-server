@@ -26,6 +26,7 @@ using MamaFit.BusinessObjects.DTO.VoucherDiscountDto;
 using MamaFit.BusinessObjects.DTO.MilestoneDto;
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
+using MamaFit.BusinessObjects.DTO.WarrantyHistoryDto;
 
 namespace MamaFit.Services.Mapper
 {
@@ -179,6 +180,10 @@ namespace MamaFit.Services.Mapper
             
             //BranchMaternityDressDetail Mapper
             CreateMap<BranchMaternityDressDetail, BranchMaternityDressDetailDto>().ReverseMap();
+            
+            //WarrantyHistory Mapper
+            CreateMap<WarrantyHistory, WarrantyHistoryRequestDto>().ReverseMap();
+            CreateMap<WarrantyHistory, WarrantyHistoryResponseDto>().ReverseMap();
         }
     }
 }

@@ -41,4 +41,16 @@ public class NotificationController : ControllerBase
             "Get notification successfully!"
         ));
     }
+    
+    [HttpPost]
+    public async Task<IActionResult> SendAndSaveNotification([FromBody] NotificationRequestDto model)
+    {
+        await _notificationService.SendAndSaveNotificationAsync(model);
+        return Ok(new ResponseModel<string>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            null,
+            "Send and save notification successfully!"
+        ));
+    }
 }

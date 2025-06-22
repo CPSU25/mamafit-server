@@ -27,13 +27,14 @@ public class RoleService : IRoleService
     
     public async Task<PaginatedList<RoleResponseDto>> GetAllRolesAsync(int index = 1, int pageSize = 10, string? nameSearch = null)
     {
-        string cacheKey = $"roles:{index}:{pageSize}:{nameSearch ?? ""}";
+        int version = await _cache.GetVersionAsync("roles");
+        string cacheKey = $"roles:v{version}:{index}:{pageSize}:{nameSearch ?? ""}";
+        
         var cached = await _cache.GetAsync<PaginatedList<RoleResponseDto>>(cacheKey);
         if (cached != null)
             return cached;
         
         var roles = await _unitOfWork.RoleRepository.GetRolesAsync(index, pageSize, nameSearch);
-        
         var responseItems = roles.Items
             .Select(role => _mapper.Map<RoleResponseDto>(role))
             .ToList();
@@ -79,7 +80,7 @@ public class RoleService : IRoleService
         var role = _mapper.Map<ApplicationUserRole>(model);
         await _unitOfWork.RoleRepository.CreateAsync(role);
         await _unitOfWork.SaveChangesAsync();
-        await InvalidateRoleCache(role.Id);
+        await _cache.IncreaseVersionAsync("roles");
         return _mapper.Map<RoleResponseDto>(role);
     }
     
@@ -101,7 +102,8 @@ public class RoleService : IRoleService
 
         await _unitOfWork.RoleRepository.UpdateRoleAsync(role);
         await _unitOfWork.SaveChangesAsync();
-        await InvalidateRoleCache(id);
+        await _cache.IncreaseVersionAsync("roles");
+        await _cache.RemoveAsync($"role:{id}");
         return _mapper.Map<RoleResponseDto>(role);
     }
     
@@ -115,22 +117,7 @@ public class RoleService : IRoleService
         
         await _unitOfWork.RoleRepository.DeleteAsync(role);
         await _unitOfWork.SaveChangesAsync();
-        await InvalidateRoleCache(id);
-    }
-
-    private async Task InvalidateRoleCache(string? id = null)
-    {
-        if(!string.IsNullOrEmpty(id))
-            await _cache.RemoveAsync($"role:{id}");
-        
-        var pageSize = new [] { 10, 20, 50 };
-        for (int i = 1; i <= 10; i++)
-        {
-            foreach (var size in pageSize)
-            {
-                string key = $"roles:{i}:{size}:";
-                await _cache.RemoveAsync(key);
-            }
-        }
+        await _cache.IncreaseVersionAsync("roles");
+        await _cache.RemoveAsync($"role:{id}");
     }
 }

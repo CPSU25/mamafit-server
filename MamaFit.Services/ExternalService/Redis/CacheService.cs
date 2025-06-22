@@ -11,12 +11,35 @@ public class CacheService : ICacheService
     {
         _cache = cache;
     }
+    
+    public async Task<int> GetVersionAsync(string resource)
+    {
+        string key = $"{resource}:version";
+        int? version = await GetAsync<int?>(key);
+        return version ?? 1;
+    }
+    
+    public async Task IncreaseVersionAsync(string resource, TimeSpan? expiry = null)
+    {
+        string key = $"{resource}:version";
+        int version = await GetAsync<int?>(key) ?? 1;
+        version++;
+        await SetAsync(key, version, expiry ?? TimeSpan.FromDays(7));
+    }
 
     public async Task<T?> GetAsync<T>(string key)
     {
         var data = await _cache.GetStringAsync(key);
         if (string.IsNullOrEmpty(data)) 
             return default;
+        if (typeof(T) == typeof(int) && int.TryParse(data, out var intValue))
+            return (T?)(object)intValue;
+
+        if (typeof(T) == typeof(long) && long.TryParse(data, out var longValue))
+            return (T?)(object)longValue;
+
+        if (typeof(T) == typeof(bool) && bool.TryParse(data, out var boolValue))
+            return (T?)(object)boolValue;
         return JsonConvert.DeserializeObject<T>(data);
     }
 

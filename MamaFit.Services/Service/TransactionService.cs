@@ -6,6 +6,7 @@ using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.Interface;
+using Microsoft.AspNetCore.Http;
 
 namespace MamaFit.Services.Service;
 
@@ -48,6 +49,14 @@ public class TransactionService : ITransactionService
     
     public async Task CreateTransactionAsync(SepayWebhookPayload payload, string orderId, string paymentCode)
     {
+        var exist = await _unitOfWork.TransactionRepository
+            .FindAsync(x => x.SepayId == payload.id);
+
+        if (exist != null)
+        {
+            throw new ErrorException(StatusCodes.Status409Conflict, ApiCodes.CONFLICT, "Transaction already exists");
+        }
+        
         var transaction = new Transaction
         {
             OrderId = orderId,
@@ -68,6 +77,21 @@ public class TransactionService : ITransactionService
         await _unitOfWork.TransactionRepository.InsertAsync(transaction);
         await _unitOfWork.SaveChangesAsync();
     }
+    
+    public async Task CreateQrTransactionAsync(string orderId, SepayQrResponse qrResponse)
+    {
+        var transaction = new Transaction
+        {
+            OrderId = orderId,
+            Code = qrResponse.code,
+            Description = $"QR code generated for payment",
+            TransactionDate = DateTime.UtcNow
+        };
+
+        await _unitOfWork.TransactionRepository.InsertAsync(transaction);
+        await _unitOfWork.SaveChangesAsync();
+    }
+    
     
     private string GeneratePaymentCode() 
     {

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MamaFit.API.Controllers;
 
 [ApiController]
-[Microsoft.AspNetCore.Components.Route("api/transaction")]
+[Route("api/transaction")]
 public class TransactionController : ControllerBase
 {
     private readonly ITransactionService _transactionService;

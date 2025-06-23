@@ -16,7 +16,7 @@ public class SepayController : ControllerBase
         _sepayService = sepayService;
     }
 
-    [HttpPost("webhook")]
+    [HttpPost]
     public async Task<IActionResult> ProcessPaymentWebhook([FromBody] SepayWebhookPayload payload,
         [FromHeader(Name = "Authorization")] string authHeader)
     {
@@ -26,6 +26,20 @@ public class SepayController : ControllerBase
             ApiCodes.SUCCESS,
             null,
             "Payment processed successfully!"
+        ));
+    }
+    
+    [HttpGet("qr/{orderId}")]
+    public async Task<IActionResult> GeneratePaymentQr(string orderId)
+    {
+        var callbackUrl = $"{Request.Scheme}://{Request.Host}/api/sepay-auth";
+        var qrResponse = await _sepayService.CreatePaymentQrAsync(orderId, callbackUrl);
+    
+        return Ok(new ResponseModel<SepayQrResponse>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            qrResponse,
+            "QR code generated successfully"
         ));
     }
 }

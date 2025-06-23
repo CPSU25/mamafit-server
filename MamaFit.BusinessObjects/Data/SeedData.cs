@@ -10,31 +10,38 @@ namespace MamaFit.BusinessObjects.Data
             modelBuilder.Entity<ApplicationUserRole>().HasData(
                 new ApplicationUserRole
                 {
-                    Id = "b8d237b8b6f849988d60c6c3c1d0a943", RoleName = "User"
+                    Id = "b8d237b8b6f849988d60c6c3c1d0a943",
+                    RoleName = "User"
                 },
                 new ApplicationUserRole
                 {
-                    Id = "bf081015e17a41b8b1cae65b1b17cfdb", RoleName = "BranchManager"
+                    Id = "bf081015e17a41b8b1cae65b1b17cfdb",
+                    RoleName = "BranchManager"
                 },
                 new ApplicationUserRole
                 {
-                    Id = "c9118b99c0ad486dbb18560a916b630c", RoleName = "BranchStaff"
+                    Id = "c9118b99c0ad486dbb18560a916b630c",
+                    RoleName = "BranchStaff"
                 },
                 new ApplicationUserRole
                 {
-                    Id = "e5b0f987fbf44608b7a6a2d0e313b3b2", RoleName = "Designer"
+                    Id = "e5b0f987fbf44608b7a6a2d0e313b3b2",
+                    RoleName = "Designer"
                 },
                 new ApplicationUserRole
                 {
-                    Id = "a3cb88edaf2b4718a9986010c5b9c1d7", RoleName = "Manager"
+                    Id = "a3cb88edaf2b4718a9986010c5b9c1d7",
+                    RoleName = "Manager"
                 },
                 new ApplicationUserRole
                 {
-                    Id = "5ed8cfa9b62d433c88ab097b6d2baccd", RoleName = "Staff"
+                    Id = "5ed8cfa9b62d433c88ab097b6d2baccd",
+                    RoleName = "Staff"
                 },
                 new ApplicationUserRole
                 {
-                    Id = "2e7b5a97e42e4e84a08ffbe0bc05d2ea", RoleName = "Admin"
+                    Id = "2e7b5a97e42e4e84a08ffbe0bc05d2ea",
+                    RoleName = "Admin"
                 }
             );
 
@@ -117,6 +124,85 @@ namespace MamaFit.BusinessObjects.Data
                     RoleId = "b8d237b8b6f849988d60c6c3c1d0a943",
                 }
             );
+
+            #region Seed Category,Style,Component,ComponentOption
+            var createdAt = DateTime.UtcNow;
+
+            var categories = new List<Category>();
+            var styles = new List<Style>();
+            var components = new List<Component>();
+            var options = new List<ComponentOption>();
+
+            for (int i = 1; i <= 5; i++)
+            {
+                var categoryId = $"cat{i}";
+                categories.Add(new Category
+                {
+                    Id = categoryId,
+                    Name = $"Category {i}",
+                    Description = $"Description for Category {i}",
+                    Images = new List<string> { $"https://example.com/category{i}.jpg" },
+                    CreatedAt = createdAt,
+                    UpdatedAt = createdAt,
+                    IsDeleted = false
+                });
+
+                for (int j = 1; j <= 4; j++)
+                {
+                    var styleId = $"style{i}{j}";
+                    styles.Add(new Style
+                    {
+                        Id = styleId,
+                        CategoryId = categoryId,
+                        Name = $"Style {i}-{j}",
+                        Description = $"Description for Style {i}-{j}",
+                        IsCustom = j % 2 == 0,
+                        Images = new List<string> { $"https://example.com/style{i}{j}.jpg" },
+                        CreatedAt = createdAt,
+                        UpdatedAt = createdAt,
+                        IsDeleted = false
+                    });
+
+                    for (int k = 1; k <= 4; k++)
+                    {
+                        var componentId = $"comp{i}{j}{k}";
+                        components.Add(new Component
+                        {
+                            Id = componentId,
+                            StyleId = styleId,
+                            Name = $"Component {i}-{j}-{k}",
+                            Description = $"Description for Component {i}-{j}-{k}",
+                            Images = new List<string> { $"https://example.com/component{i}{j}{k}.jpg" },
+                            CreatedAt = createdAt,
+                            UpdatedAt = createdAt,
+                            IsDeleted = false
+                        });
+
+                        for (int l = 1; l <= 5; l++)
+                        {
+                            var optionId = $"opt{i}{j}{k}{l}";
+                            options.Add(new ComponentOption
+                            {
+                                Id = optionId,
+                                ComponentId = componentId,
+                                Name = $"Option {i}-{j}-{k}-{l}",
+                                Price = new Random().Next(50000, 100001),
+                                Description = $"Description for Option {i}-{j}-{k}-{l}",
+                                Images = new List<string> { $"https://example.com/option{i}{j}{k}{l}.jpg" },
+                                CreatedAt = createdAt,
+                                UpdatedAt = createdAt,
+                                IsDeleted = false
+                            });
+                        }
+                    }
+                }
+            }
+
+            modelBuilder.Entity<Category>().HasData(categories);
+            modelBuilder.Entity<Style>().HasData(styles);
+            modelBuilder.Entity<Component>().HasData(components);
+            modelBuilder.Entity<ComponentOption>().HasData(options);
+            #endregion
         }
     }
 }

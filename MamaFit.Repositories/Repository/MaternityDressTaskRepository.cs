@@ -22,12 +22,6 @@ namespace MamaFit.Repositories.Repository
 
             query = sortBy switch
             {
-                EntitySortBy.NAME_ASC => query
-                .OrderBy(u => u.Name),
-
-                EntitySortBy.NAME_DESC => query
-                .OrderByDescending(u => u.Name),
-
                 EntitySortBy.CREATED_AT_ASC => query.OrderBy(u => u.CreatedAt),
 
                 EntitySortBy.CREATED_AT_DESC => query.OrderByDescending(u => u.CreatedAt),

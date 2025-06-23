@@ -5,7 +5,6 @@ using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
-using MamaFit.Repositories.Interface;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
@@ -161,14 +160,7 @@ public class OrderService : IOrderService
             var address = await _unitOfWork.AddressRepository.GetByIdAsync(request.AddressId!);
             _validation.CheckNotFound(address, $"Address with id: {request.AddressId} not found");
 
-            order.Address = new OrderAddress
-            {
-                MapId = address.MapId,
-                ShortName = address.ShortName,
-                LongName = address.LongName,
-                Latitude = address.Latitude,
-                Longitude = address.Longitude,
-            };
+            order.Address = address;
             await _unitOfWork.OrderRepository.InsertAsync(order);
             await _unitOfWork.SaveChangesAsync();
             return;
@@ -179,14 +171,6 @@ public class OrderService : IOrderService
             var branch = await _unitOfWork.BranchRepository.GetByIdAsync(request.BranchId!);
             _validation.CheckNotFound(branch, $"Branch with id: {request.BranchId} not found");
             order.Branch = branch;
-            order.Address = new OrderAddress
-            {
-                MapId = branch.Address!.MapId,
-                ShortName = branch.Address.ShortName,
-                LongName = branch.Address.LongName,
-                Latitude = branch.Address.Latitude,
-                Longitude = branch.Address.Longitude,
-            };
         }
         await _unitOfWork.OrderRepository.InsertAsync(order);
         await _unitOfWork.SaveChangesAsync();

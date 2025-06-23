@@ -6,22 +6,28 @@ using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MamaFit.Repositories.Repository
 {
-    public class MilestoneRepository : GenericRepository<Milestone>, IMilestoneRepository
+    public class MaternityDressCustomizationRepository : GenericRepository<MaternityDressCustomization>, IMaternityDressCustomizationRepository
     {
-        public MilestoneRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+        public MaternityDressCustomizationRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
 
-        public async Task<PaginatedList<Milestone>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
+        public async Task<PaginatedList<MaternityDressCustomization>> GetAll(int index, int pageSize, string? search, EntitySortBy? sortBy)
         {
             var query = _dbSet.AsNoTracking()
                 .Where(a => a.IsDeleted.Equals(false));
 
             query = sortBy switch
             {
+
                 EntitySortBy.CREATED_AT_ASC => query.OrderBy(u => u.CreatedAt),
 
                 EntitySortBy.CREATED_AT_DESC => query.OrderByDescending(u => u.CreatedAt),
@@ -33,10 +39,20 @@ namespace MamaFit.Repositories.Repository
             var listResult = pagedResult.Items
                 .ToList();
 
-            var responseList = new PaginatedList<Milestone>
+            var responseList = new PaginatedList<MaternityDressCustomization>
                 (listResult, pagedResult.TotalCount, pagedResult.PageNumber, pageSize);
 
             return responseList;
+        }
+
+        public async Task<MaternityDressCustomization?> GetDetailById(string id)
+        {
+            var result = await _context.DressCustomizations
+                .Include(x => x.MaternityDressSelections)
+                .ThenInclude(x => x.ComponentOption)
+                .FirstOrDefaultAsync(x => x.Id.Equals(id) && !x.IsDeleted);
+
+            return result;
         }
     }
 }

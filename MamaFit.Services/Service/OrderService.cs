@@ -17,13 +17,15 @@ public class OrderService : IOrderService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IValidationService _validation;
+    private readonly IHttpContextAccessor _contextAccessor;
     private readonly INotificationService _notificationService;
 
-    public OrderService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation, INotificationService notificationService)
+    public OrderService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation, INotificationService notificationService,IHttpContextAccessor contextAccessor)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _validation = validation;
+        _contextAccessor = contextAccessor;
         _notificationService = notificationService;
     }
 
@@ -148,7 +150,10 @@ public class OrderService : IOrderService
             MaternityDressDetailId = d.Id,
             ItemType = ItemType.READY_TO_BUY,
             Price = d.Price,
-            Quantity = request.OrderItems.First(i => i.MaternityDressDetailId == d.Id).Quantity
+            Quantity = request.OrderItems.First(i => i.MaternityDressDetailId == d.Id).Quantity,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
+            CreatedBy = "System"
         }).ToList();
 
         if (request.DeliveryMethod == DeliveryMethod.DELIVERY && request.IsOnline)
@@ -193,5 +198,55 @@ public class OrderService : IOrderService
         string datePart = DateTime.UtcNow.ToString("yyyyMMdd");
         string randomPart = new Random().Next(1000, 9999).ToString();
         return $"{prefix}-{datePart}-{randomPart}";
+    }
+
+    private string GetCurrentUserId()
+    {
+        return _contextAccessor.HttpContext?.User?.FindFirst("userId")?.Value ?? string.Empty;
+    }
+
+    public async Task CreateDesignRequestAsync(OrderDesignRequestDto request)
+    {
+        var userId = GetCurrentUserId();
+        var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+        _validation.CheckNotFound(user, $"User with id: {userId} not found");
+
+        var designFee = 100000; // Phí dịch vụ mặc định
+
+        var order = new Order
+        {
+            UserId = userId,
+            User = user!,
+            Type = OrderType.NORMAL,
+            Code = GenerateOrderCode(),
+            Status = OrderStatus.CREATED,
+            TotalAmount = designFee,
+            SubTotalAmount = designFee,
+            PaymentStatus = PaymentStatus.PENDING,
+            PaymentType = PaymentType.FULL,
+            OrderItems = new List<OrderItem>
+            {
+                new OrderItem
+                {
+                    DesignRequest = new DesignRequest
+                    {
+                        Images = request.Images ?? new List<string>(),
+                        Description = request.Description ?? string.Empty,
+                        User = user,
+                        CreatedAt = DateTime.UtcNow,
+                        CreatedBy = user!.UserName,
+                        UpdatedAt = DateTime.UtcNow
+                    },
+                ItemType = ItemType.DESIGN_REQUEST,
+                Price = designFee,
+                Quantity = 1,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                CreatedBy = user!.UserName
+                }
+            }
+        };
+        await _unitOfWork.OrderRepository.InsertAsync(order);
+        await _unitOfWork.SaveChangesAsync();
     }
 }

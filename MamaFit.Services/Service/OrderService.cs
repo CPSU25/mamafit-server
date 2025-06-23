@@ -27,6 +27,27 @@ public class OrderService : IOrderService
         _notificationService = notificationService;
     }
 
+    public async Task UpdateOrderStatusAsync(string id, OrderStatus orderStatus, PaymentStatus paymentStatus)
+    {
+        var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
+        _validation.CheckNotFound(order, "Order not found");
+        order.PaymentStatus = paymentStatus;
+        order.Status = orderStatus;
+        await _unitOfWork.OrderRepository.UpdateAsync(order);
+        await _unitOfWork.SaveChangesAsync();
+        
+        var notification = new NotificationRequestDto()
+        {
+            ReceiverId = order.UserId,
+            NotificationTitle = "Order Status Updated",
+            NotificationContent = $"Your order with code {order.Code} has been updated to {orderStatus.ToString().ToLowerInvariant()}.",
+            Type = NotificationType.ORDER_PROGRESS,
+            ActionUrl = $"/order/{order.Id}",
+            Metadata = JsonConvert.SerializeObject(new { orderId = order.Id, orderCode = order.Code }),
+        };
+        
+        await _notificationService.SendAndSaveNotificationAsync(notification);
+    }
     public async Task<PaginatedList<OrderResponseDto>> GetAllAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate)
     {
         var orders = await _unitOfWork.OrderRepository.GetAllAsync(index, pageSize, startDate, endDate);
@@ -51,11 +72,10 @@ public class OrderService : IOrderService
     public async Task<OrderResponseDto> CreateOrderAsync(OrderRequestDto model)
     {
         await _validation.ValidateAndThrowAsync(model);
-        var exist = await _unitOfWork.OrderRepository.IsEntityExistsAsync(x => x.Code == model.Code);
-        _validation.CheckConflict(exist, "Order with the same code already exists");
         var user = await _unitOfWork.UserRepository.GetByIdAsync(model.UserId);
         _validation.CheckNotFound(user, "User not found");
         var order = _mapper.Map<Order>(model);
+        order.Code = GenerateOrderCode();
         await _unitOfWork.OrderRepository.InsertAsync(order);
         await _unitOfWork.SaveChangesAsync();
         var notification = new NotificationRequestDto()
@@ -77,8 +97,6 @@ public class OrderService : IOrderService
         await _validation.ValidateAndThrowAsync(model);
         var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
         _validation.CheckNotFound(order, "Order not found");
-        var exist = await _unitOfWork.OrderRepository.IsEntityExistsAsync(x => x.Code == model.Code && x.Id != id);
-        _validation.CheckConflict(exist, "Order with the same code already exists");
         var user = await _unitOfWork.UserRepository.GetByIdAsync(model.UserId);
         _validation.CheckNotFound(user, "User not found");
         order = _mapper.Map(model, order);

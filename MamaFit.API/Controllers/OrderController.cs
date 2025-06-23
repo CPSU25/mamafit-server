@@ -69,6 +69,19 @@ public class OrderController : ControllerBase
         ));
     }
 
+    [HttpPost]
+    [Route("design-request")]
+    public async Task<IActionResult> CreateDesignRequest([FromBody] OrderDesignRequestDto model)
+    {
+        await _service.CreateDesignRequestAsync(model);
+        return Ok(new ResponseModel<OrderResponseDto>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            null,
+            "Create design request successfully!"
+        ));
+    }
+
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateOrder([FromRoute] string id, [FromBody] OrderRequestDto model)
     {

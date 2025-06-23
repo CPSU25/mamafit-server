@@ -86,6 +86,7 @@ namespace MamaFit.Services.Mapper
             //DesignRequest Mapper
             CreateMap<DesignRequest, DesignRequestCreateDto>().ReverseMap();
             CreateMap<DesignRequest, DesignResponseDto>().ReverseMap();
+            CreateMap<DesignRequest, OrderDesignRequestDto>().ReverseMap();
 
             //Appointment Mapper 
             CreateMap<Appointment, AppointmentRequestDto>().ReverseMap();

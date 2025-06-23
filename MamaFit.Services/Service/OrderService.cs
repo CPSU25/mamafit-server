@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
+using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
+using MamaFit.Repositories.Interface;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace MamaFit.Services.Service;
 
@@ -15,13 +18,15 @@ public class OrderService : IOrderService
     private readonly IMapper _mapper;
     private readonly IValidationService _validation;
     private readonly IHttpContextAccessor _contextAccessor;
+    private readonly INotificationService _notificationService;
 
-    public OrderService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation, IHttpContextAccessor contextAccessor)
+    public OrderService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation, INotificationService notificationService,IHttpContextAccessor contextAccessor)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _validation = validation;
         _contextAccessor = contextAccessor;
+        _notificationService = notificationService;
     }
 
     public async Task<PaginatedList<OrderResponseDto>> GetAllAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate)
@@ -55,6 +60,17 @@ public class OrderService : IOrderService
         var order = _mapper.Map<Order>(model);
         await _unitOfWork.OrderRepository.InsertAsync(order);
         await _unitOfWork.SaveChangesAsync();
+        var notification = new NotificationRequestDto()
+        {
+            ReceiverId = model.UserId,
+            NotificationTitle = "New Order Created",
+            NotificationContent = $"Order with code {order.Code} has been created.",
+            Type = NotificationType.ORDER_PROGRESS,
+            ActionUrl = $"/order/{order.Id}",
+            Metadata = JsonConvert.SerializeObject(new { orderId = order.Id, orderCode = order.Code }),
+        };
+        
+        await _notificationService.SendAndSaveNotificationAsync(notification);
         return _mapper.Map<OrderResponseDto>(order);
     }
 

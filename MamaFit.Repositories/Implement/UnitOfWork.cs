@@ -30,7 +30,8 @@ namespace MamaFit.Repositories.Implement
         public IOrderRepository OrderRepository { get; }
         public IMaternityDressTaskRepository MaternityDressTaskRepository { get; }
         public IMilestoneRepository MilestoneRepository { get; }
-
+        public INotificationRepository NotificationRepository { get; }
+        public IWarrantyHistoryRepository WarrantyHistoryRepository { get; }
 
         public UnitOfWork(ApplicationDbContext context,
             IUserRepository userRepository,
@@ -55,7 +56,9 @@ namespace MamaFit.Repositories.Implement
             IVoucherDiscountRepository voucherDiscountRepository,
             IOrderRepository orderRepository,
             IMaternityDressTaskRepository maternityDressTaskRepository,
-            IMilestoneRepository milestoneRepository)
+            IMilestoneRepository milestoneRepository,
+            INotificationRepository notificationRepository,
+            IWarrantyHistoryRepository warrantyHistoryRepository)
         {
             _context = context;
             UserRepository = userRepository;
@@ -81,6 +84,8 @@ namespace MamaFit.Repositories.Implement
             OrderRepository = orderRepository;
             MaternityDressTaskRepository = maternityDressTaskRepository;
             MilestoneRepository = milestoneRepository;
+            NotificationRepository = notificationRepository;
+            WarrantyHistoryRepository = warrantyHistoryRepository;
         }
 
         public int SaveChanges()

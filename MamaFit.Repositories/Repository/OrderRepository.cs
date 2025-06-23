@@ -4,6 +4,7 @@ using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace MamaFit.Repositories.Repository;
 
@@ -27,5 +28,4 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
         }
         return await query.GetPaginatedList(index, pageSize);
     }
-    
 }

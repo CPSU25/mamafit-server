@@ -38,6 +38,7 @@ namespace MamaFit.API
                 {
                     options.Configuration = builder.Configuration["RedisSettings:ConnectionString"];
                 });
+                builder.Services.Configure<SepaySettings>(builder.Configuration.GetSection("SepaySettings"));
                 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
                 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
                 builder.Services.AddHostedService<MeasurementGenerationJob>();

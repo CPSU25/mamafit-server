@@ -10,7 +10,6 @@ public class OrderBaseDto
     public string? AddressId { get; set; }
     public string? VoucherDiscountId { get; set; }
     public OrderType Type { get; set; }
-    public string? Code { get; set; }
     public OrderStatus? Status { get; set; }
     public float TotalAmount { get; set; }
     public float ShippingFee { get; set; }

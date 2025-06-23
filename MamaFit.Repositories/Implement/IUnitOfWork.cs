@@ -29,6 +29,7 @@ namespace MamaFit.Repositories.Implement
         public IMilestoneRepository MilestoneRepository { get; }
         public INotificationRepository NotificationRepository { get; }
         public IWarrantyHistoryRepository WarrantyHistoryRepository { get; }
+        public ITransactionRepository TransactionRepository { get; }
         int SaveChanges();
         Task<int> SaveChangesAsync();
         void BeginTransaction();

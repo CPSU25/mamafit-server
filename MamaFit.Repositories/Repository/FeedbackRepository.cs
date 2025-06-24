@@ -4,18 +4,16 @@ using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 namespace MamaFit.Repositories.Repository;
 
-public class OrderRepository : GenericRepository<Order>, IOrderRepository
+public class FeedbackRepository : GenericRepository<Feedback>, IFeedbackRepository
 {
-    public OrderRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor) 
-        : base(context, httpContextAccessor)
+    public FeedbackRepository(ApplicationDbContext context, IHttpContextAccessor accessor) : base(context, accessor)
     {
     }
 
-    public async Task<PaginatedList<Order>> GetAllAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate)
+    public async Task<PaginatedList<Feedback>> GetAllAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate)
     {
         var query = _dbSet.Where(x => !x.IsDeleted);
         if (startDate.HasValue)
@@ -26,6 +24,6 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
         {
             query = query.Where(x => x.CreatedAt <= endDate.Value);
         }
-        return await query.GetPaginatedList(index, pageSize);
+        return await PaginatedList<Feedback>.CreateAsync(query, index, pageSize);
     }
 }

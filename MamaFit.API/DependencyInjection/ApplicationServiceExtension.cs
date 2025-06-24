@@ -8,6 +8,7 @@ using MamaFit.Repositories.Repository;
 using MamaFit.Services.ExternalService.CloudinaryService;
 using MamaFit.Services.ExternalService.ExpoNotification;
 using MamaFit.Services.ExternalService.Redis;
+using MamaFit.Services.ExternalService.Sepay;
 using MamaFit.Services.Interface;
 using MamaFit.Services.Mapper;
 using MamaFit.Services.Service;
@@ -55,6 +56,9 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IWarrantyHistoryRepository, WarrantyHistoryRepository>();
             services.AddScoped<IMaternityDressCustomizationRepository, MaternityDressCustomizationRepository>();
             services.AddScoped<IMaternityDressSelectionRepository, MaternityDressSelectionRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+            services.AddScoped<ICartItemRepository, CartItemRepository>();
         }
 
         public static void AddServices(this IServiceCollection services)
@@ -91,6 +95,11 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IWarrantyHistoryService, WarrantyHistoryService>();
             services.AddScoped<ICacheService, CacheService>();
             services.AddScoped<IMaternityDressCustomizationService, MaternityDressCustomizationService>();
+            services.AddScoped<ITransactionService, TransactionService>();
+            services.AddScoped<ISepayService, SepayService>();
+            services.AddScoped<IAddressService, AddressService>();
+            services.AddScoped<IFeedbackService, FeedbackService>();
+            services.AddScoped<ICartItemService, CartItemService>();
         }
 
         public static IServiceCollection AddHttpClientServices(this IServiceCollection services)

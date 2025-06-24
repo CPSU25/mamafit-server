@@ -86,6 +86,7 @@ namespace MamaFit.Repositories.Infrastructure
         // 💥 SERVER ERRORS (5xx)
         // ───────────────────────────────
         public const string INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
+        public const string EXTERNAL_SERVICE_ERROR = "EXTERNAL_SERVICE_ERROR";
         public const string UNKNOWN_ERROR = "UNKNOWN_ERROR";
     }
 }

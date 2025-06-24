@@ -1,4 +1,5 @@
 using MamaFit.BusinessObjects.DTO.OrderDto;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
@@ -94,6 +95,21 @@ public class OrderController : ControllerBase
         ));
     }
 
+    [HttpPut("{id}/status")]
+    public async Task<IActionResult> UpdateOrderStatus(
+        [FromRoute] string id,
+        [FromQuery] OrderStatus orderStatus,
+        [FromQuery] PaymentStatus paymentStatus)
+    {
+        await _service.UpdateOrderStatusAsync(id, orderStatus, paymentStatus);
+        return Ok(new ResponseModel<string>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            null,
+            "Update order status successfully!"
+        ));
+    }
+    
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteOrder([FromRoute] string id)
     {

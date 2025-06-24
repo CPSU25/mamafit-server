@@ -92,6 +92,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<ICacheService, CacheService>();
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<ISepayService, SepayService>();
+            services.AddScoped<IAddressService, AddressService>();
         }
 
         public static IServiceCollection AddHttpClientServices(this IServiceCollection services)

@@ -34,6 +34,7 @@ namespace MamaFit.Repositories.Implement
         public IWarrantyHistoryRepository WarrantyHistoryRepository { get; }
         public ITransactionRepository TransactionRepository { get; }
         public IFeedbackRepository FeedbackRepository { get; }
+        public ICartItemRepository CartItemRepository { get; }
 
         public UnitOfWork(ApplicationDbContext context,
             IUserRepository userRepository,
@@ -62,7 +63,8 @@ namespace MamaFit.Repositories.Implement
             INotificationRepository notificationRepository,
             IWarrantyHistoryRepository warrantyHistoryRepository,
             ITransactionRepository transactionRepository,
-            IFeedbackRepository feedbackRepository)
+            IFeedbackRepository feedbackRepository,
+            ICartItemRepository cartItemRepository)
         {
             _context = context;
             UserRepository = userRepository;
@@ -92,6 +94,7 @@ namespace MamaFit.Repositories.Implement
             WarrantyHistoryRepository = warrantyHistoryRepository;
             TransactionRepository = transactionRepository;
             FeedbackRepository = feedbackRepository;
+            CartItemRepository = cartItemRepository;
         }
 
         public int SaveChanges()

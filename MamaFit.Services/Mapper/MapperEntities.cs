@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MamaFit.BusinessObjects.DTO.AddressDto;
 using MamaFit.BusinessObjects.DTO.AppointmentDto;
 using MamaFit.BusinessObjects.DTO.RoleDto;
 using MamaFit.BusinessObjects.DTO.UserDto;
@@ -185,6 +186,10 @@ namespace MamaFit.Services.Mapper
             //WarrantyHistory Mapper
             CreateMap<WarrantyHistory, WarrantyHistoryRequestDto>().ReverseMap();
             CreateMap<WarrantyHistory, WarrantyHistoryResponseDto>().ReverseMap();
+            
+            //Address Mapper
+            CreateMap<Address, AddressRequestDto>().ReverseMap();
+            CreateMap<OrderAddress, AddressResponseDto>().ReverseMap();
         }
     }
 }

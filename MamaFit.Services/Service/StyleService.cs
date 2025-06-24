@@ -13,12 +13,35 @@ namespace MamaFit.Services.Service
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IMapper _mapper;
+        private readonly IValidationService _validationService;
 
-        public StyleService(IUnitOfWork unitOfWork, IHttpContextAccessor contextAccessor, IMapper mapper)
+        public StyleService(IUnitOfWork unitOfWork, IHttpContextAccessor contextAccessor, IMapper mapper, IValidationService validationService)
         {
             _unitOfWork = unitOfWork;
             _contextAccessor = contextAccessor;
             _mapper = mapper;
+            _validationService = validationService;
+        }
+
+        public async Task AssignComponentToStyle(string styleId, List<string> componentIds)
+        {
+            var style = _unitOfWork.StyleRepository.GetByIdAsync(styleId);
+            _validationService.CheckNotFound(style, $"Style with ID {styleId} not found.");
+
+            var componentList = new List<Component>();
+
+            foreach (var componentId in componentIds)
+            {
+                var component = await _unitOfWork.ComponentRepository.GetByIdAsync(componentId);
+                _validationService.CheckNotFound(component, $"Component with ID {componentId} not found.");
+
+                componentList.Add(component);
+            }
+
+            style.Result.Components = componentList;
+            await _unitOfWork.StyleRepository.UpdateAsync(style.Result);
+            await _unitOfWork.SaveChangesAsync();
+
         }
 
         public async Task CreateAsync(StyleRequestDto requestDto)

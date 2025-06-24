@@ -86,6 +86,19 @@ namespace MamaFit.API.Controllers
             ));
         }
 
+        [HttpPut]
+        [Route("assign-components")]
+        public async Task<IActionResult> AssignComponentsToStyle([FromBody] StyleAssignComponentRequestDto request)
+        {
+            await _styleService.AssignComponentToStyle(request.StyleId, request.ComponentIds);
+            return Ok(new ResponseModel<string>(
+                StatusCodes.Status200OK,
+                ApiCodes.SUCCESS,
+                null,
+                "Assigned components to style successfully!"
+            ));
+        }
+
         [HttpDelete("{styleId}")]
         public async Task<IActionResult> Delete([FromRoute] string styleId)
         {

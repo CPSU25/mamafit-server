@@ -7,9 +7,6 @@ namespace MamaFit.Services.Validator.Component
     {
         public ComponentRequestValidator()
         {
-            RuleFor(x => x.StyleId)
-                .NotEmpty().WithMessage("Component ID is required.");
-
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Component name is required.")
                 .MaximumLength(100).WithMessage("Component name must not exceed 100 characters.");

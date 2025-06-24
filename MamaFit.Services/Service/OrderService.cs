@@ -97,7 +97,7 @@ public class OrderService : IOrderService
         return true;
     }
 
-    public async Task CreateReadyToBuyOrderAsync(OrderReadyToBuyRequestDto request)
+    public async Task<string> CreateReadyToBuyOrderAsync(OrderReadyToBuyRequestDto request)
     {
         var user = await _unitOfWork.UserRepository.GetByIdAsync(request.UserId!);
         _validation.CheckNotFound(user, $"User with id: {request.UserId} not found");
@@ -155,25 +155,32 @@ public class OrderService : IOrderService
             CreatedBy = "System"
         }).ToList();
 
-        if (request.DeliveryMethod == DeliveryMethod.DELIVERY && request.IsOnline)
+        if (request.DeliveryMethod == DeliveryMethod.DELIVERY)
         {
-            var address = await _unitOfWork.AddressRepository.GetByIdAsync(request.AddressId!);
+            if(request.AddressId == null)
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Address ID is required for delivery orders.");
+
+            var address = await _unitOfWork.AddressRepository.GetByIdAsync(request.AddressId);
             _validation.CheckNotFound(address, $"Address with id: {request.AddressId} not found");
 
             order.Address = address;
             await _unitOfWork.OrderRepository.InsertAsync(order);
             await _unitOfWork.SaveChangesAsync();
-            return;
+            return order.Id;
         }
 
         if (request.DeliveryMethod == DeliveryMethod.PICK_UP)
         {
-            var branch = await _unitOfWork.BranchRepository.GetByIdAsync(request.BranchId!);
+            if (request.BranchId == null)
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Branch ID is required for pick-up orders.");
+
+            var branch = await _unitOfWork.BranchRepository.GetByIdAsync(request.BranchId);
             _validation.CheckNotFound(branch, $"Branch with id: {request.BranchId} not found");
             order.Branch = branch;
         }
         await _unitOfWork.OrderRepository.InsertAsync(order);
         await _unitOfWork.SaveChangesAsync();
+        return order.Id;
     }
 
     private string GenerateOrderCode()
@@ -189,7 +196,7 @@ public class OrderService : IOrderService
         return _contextAccessor.HttpContext?.User?.FindFirst("userId")?.Value ?? string.Empty;
     }
 
-    public async Task CreateDesignRequestAsync(OrderDesignRequestDto request)
+    public async Task<string> CreateDesignRequestAsync(OrderDesignRequestDto request)
     {
         var userId = GetCurrentUserId();
         var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
@@ -204,6 +211,7 @@ public class OrderService : IOrderService
             Type = OrderType.NORMAL,
             Code = GenerateOrderCode(),
             Status = OrderStatus.CREATED,
+            IsOnline = true,
             TotalAmount = designFee,
             SubTotalAmount = designFee,
             PaymentStatus = PaymentStatus.PENDING,
@@ -232,5 +240,6 @@ public class OrderService : IOrderService
         };
         await _unitOfWork.OrderRepository.InsertAsync(order);
         await _unitOfWork.SaveChangesAsync();
+        return order.Id;
     }
 }

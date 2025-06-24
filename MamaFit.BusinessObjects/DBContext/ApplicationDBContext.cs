@@ -227,6 +227,7 @@ namespace MamaFit.BusinessObjects.DbContext
                     oit.MilestoneId
                 });
             });
+
             modelBuilder.Entity<OrderItemServiceOption>(options =>
             {
                 options.HasKey(ois => new { ois.MaternityDressServiceOptionId, ois.OrderItemId });

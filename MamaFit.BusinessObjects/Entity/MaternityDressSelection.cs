@@ -5,6 +5,7 @@ namespace MamaFit.BusinessObjects.Entity;
 public class MaternityDressSelection : BaseEntity
 {
     public string? ComponentOptionId { get; set; }
+    public float Price { get; set; }
     public string? MaternityDressCustomizationId { get; set; }
     public string? Description { get; set; }
 

@@ -54,6 +54,8 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<IBranchMaternityDressDetailRepository, BranchMaternityDressDetailRepository>();
             services.AddScoped<IWarrantyHistoryRepository, WarrantyHistoryRepository>();
+            services.AddScoped<IMaternityDressCustomizationRepository, MaternityDressCustomizationRepository>();
+            services.AddScoped<IMaternityDressSelectionRepository, MaternityDressSelectionRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             services.AddScoped<ICartItemRepository, CartItemRepository>();
@@ -92,6 +94,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IBranchMaternityDressDetailService, BranchMaternityDressDetailService>();
             services.AddScoped<IWarrantyHistoryService, WarrantyHistoryService>();
             services.AddScoped<ICacheService, CacheService>();
+            services.AddScoped<IMaternityDressCustomizationService, MaternityDressCustomizationService>();
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<ISepayService, SepayService>();
             services.AddScoped<IAddressService, AddressService>();
@@ -107,7 +110,7 @@ namespace MamaFit.API.DependencyInjection
 
         public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnection") ;
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(connectionString)
             );

@@ -6,10 +6,11 @@ namespace MamaFit.BusinessObjects.Entity
     public class Order : BaseEntity
     {
         public string? ParentOrderId { get; set; }
+        public string? AddressId { get; set; }
         public string? BranchId { get; set; }
         public string? UserId { get; set; }
         public string? VoucherDiscountId { get; set; }
-        public bool? IsOnline { get; set; } = false;
+        public bool? IsOnline { get; set; } = true;
         public OrderType Type { get; set; }
         public string? Code { get; set; }
         public OrderStatus? Status { get; set; }
@@ -26,21 +27,12 @@ namespace MamaFit.BusinessObjects.Entity
 
         // Navigation properties
         public ApplicationUser User { get; set; } = new ApplicationUser();
-        public OrderAddress Address { get; set; } = new OrderAddress();
+        public Address Address { get; set; } = new Address();
         public MeasurementDiary MeasurementDiary { get; set; } = new MeasurementDiary();
         public VoucherDiscount? VoucherDiscount { get; set; }
         public Branch? Branch { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public virtual ICollection<Transaction>? Transactions { get; set; } = [];
         public Order? ParentOrder { get; set; }
-    }
-
-    public class OrderAddress
-    {
-        public string? MapId { get; set; }
-        public string? ShortName { get; set; }
-        public string? LongName { get; set; }
-        public float? Latitude { get; set; }
-        public float? Longitude { get; set; }
     }
 }

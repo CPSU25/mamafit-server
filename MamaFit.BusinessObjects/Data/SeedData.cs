@@ -10,31 +10,38 @@ namespace MamaFit.BusinessObjects.Data
             modelBuilder.Entity<ApplicationUserRole>().HasData(
                 new ApplicationUserRole
                 {
-                    Id = "b8d237b8b6f849988d60c6c3c1d0a943", RoleName = "User"
+                    Id = "b8d237b8b6f849988d60c6c3c1d0a943",
+                    RoleName = "User"
                 },
                 new ApplicationUserRole
                 {
-                    Id = "bf081015e17a41b8b1cae65b1b17cfdb", RoleName = "BranchManager"
+                    Id = "bf081015e17a41b8b1cae65b1b17cfdb",
+                    RoleName = "BranchManager"
                 },
                 new ApplicationUserRole
                 {
-                    Id = "c9118b99c0ad486dbb18560a916b630c", RoleName = "BranchStaff"
+                    Id = "c9118b99c0ad486dbb18560a916b630c",
+                    RoleName = "BranchStaff"
                 },
                 new ApplicationUserRole
                 {
-                    Id = "e5b0f987fbf44608b7a6a2d0e313b3b2", RoleName = "Designer"
+                    Id = "e5b0f987fbf44608b7a6a2d0e313b3b2",
+                    RoleName = "Designer"
                 },
                 new ApplicationUserRole
                 {
-                    Id = "a3cb88edaf2b4718a9986010c5b9c1d7", RoleName = "Manager"
+                    Id = "a3cb88edaf2b4718a9986010c5b9c1d7",
+                    RoleName = "Manager"
                 },
                 new ApplicationUserRole
                 {
-                    Id = "5ed8cfa9b62d433c88ab097b6d2baccd", RoleName = "Staff"
+                    Id = "5ed8cfa9b62d433c88ab097b6d2baccd",
+                    RoleName = "Staff"
                 },
                 new ApplicationUserRole
                 {
-                    Id = "2e7b5a97e42e4e84a08ffbe0bc05d2ea", RoleName = "Admin"
+                    Id = "2e7b5a97e42e4e84a08ffbe0bc05d2ea",
+                    RoleName = "Admin"
                 }
             );
 
@@ -117,6 +124,7 @@ namespace MamaFit.BusinessObjects.Data
                     RoleId = "b8d237b8b6f849988d60c6c3c1d0a943",
                 }
             );
+
         }
     }
 }

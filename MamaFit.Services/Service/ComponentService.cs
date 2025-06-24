@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MamaFit.BusinessObjects.DTO.ComponentDto;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
@@ -23,24 +24,8 @@ namespace MamaFit.Services.Service
 
         public async Task CreateAsync(ComponentRequestDto requestDto)
         {
-            var style = await _unitOfWork.StyleRepository.GetByIdAsync(requestDto.StyleId);
-            if (style == null || style.IsDeleted)
-                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Style not found!");
-
-            if (style.IsCustom == false)
-                throw new ErrorException(StatusCodes.Status400BadRequest,ApiCodes.BAD_REQUEST, "Cannot create component on this style as policy restrict");
-
-            var newComponent = new Component
-            {
-                Name = requestDto.Name,
-                Description = requestDto.Description,
-                Images = requestDto.Images,
-                StyleId = requestDto.StyleId,
-                Style = style,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
-                CreatedBy = GetCurrentUserName()
-            };
+            var newComponent = _mapper.Map<Component>(requestDto);
+            newComponent.GlobalStatus = GlobalStatus.INACTIVE;
 
             await _unitOfWork.ComponentRepository.InsertAsync(newComponent);
             await _unitOfWork.SaveChangesAsync();

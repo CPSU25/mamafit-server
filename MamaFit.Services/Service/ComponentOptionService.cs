@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MamaFit.BusinessObjects.DTO.ComponentOptionDto;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
@@ -27,11 +28,13 @@ namespace MamaFit.Services.Service
             if (component == null || component.IsDeleted)
                 throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Component is not available");
 
+            component.GlobalStatus = GlobalStatus.ACTIVE;
+            await _unitOfWork.ComponentRepository.UpdateAsync(component);
+
             var newOption = _mapper.Map<ComponentOption>(requestDto);
 
             newOption.Component = component;
-            newOption.CreatedAt = DateTime.UtcNow;
-            newOption.CreatedBy = GetCurrentUserName();
+            newOption.GlobalStatus = GlobalStatus.ACTIVE;
 
             await _unitOfWork.ComponentOptionRepository.InsertAsync(newOption);
             await _unitOfWork.SaveChangesAsync();

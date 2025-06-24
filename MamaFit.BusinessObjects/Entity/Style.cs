@@ -1,4 +1,5 @@
 ﻿using MamaFit.BusinessObjects.Base;
+using MamaFit.BusinessObjects.Enum;
 
 namespace MamaFit.BusinessObjects.Entity
 {
@@ -10,6 +11,7 @@ namespace MamaFit.BusinessObjects.Entity
         public bool? IsCustom { get; set; }
         public string? Description { get; set; }
         public List<string>? Images { get; set; } = [];
+        public GlobalStatus GlobalStatus { get; set; } = GlobalStatus.ACTIVE;
         public virtual ICollection<Component> Components { get; set; } = [];
     }
 }

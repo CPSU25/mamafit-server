@@ -183,15 +183,6 @@ namespace MamaFit.BusinessObjects.DbContext
                     .WithOne(oi => oi.Order)
                     .HasForeignKey(oi => oi.OrderId)
                     .OnDelete(DeleteBehavior.NoAction);
-
-                options.OwnsOne(x => x.Address, address =>
-                       {
-                           address.Property(a => a.MapId).HasColumnName("MapId");
-                           address.Property(a => a.ShortName).HasColumnName("ShortName");
-                           address.Property(a => a.LongName).HasColumnName("LongName");
-                           address.Property(a => a.Latitude).HasColumnName("Latitude");
-                           address.Property(a => a.Longitude).HasColumnName("Longitude");
-                       });
             });
 
             modelBuilder.Entity<OrderItem>(options =>
@@ -236,6 +227,7 @@ namespace MamaFit.BusinessObjects.DbContext
                     oit.MilestoneId
                 });
             });
+
             modelBuilder.Entity<OrderItemServiceOption>(options =>
             {
                 options.HasKey(ois => new { ois.MaternityDressServiceOptionId, ois.OrderItemId });
@@ -247,15 +239,6 @@ namespace MamaFit.BusinessObjects.DbContext
                     .WithOne(bmdd => bmdd.Branch)
                     .HasForeignKey(bmdd => bmdd.BranchId)
                     .OnDelete(DeleteBehavior.NoAction);
-
-                options.OwnsOne(x => x.Address, address =>
-                       {
-                           address.Property(a => a.MapId).HasColumnName("MapId");
-                           address.Property(a => a.ShortName).HasColumnName("ShortName");
-                           address.Property(a => a.LongName).HasColumnName("LongName");
-                           address.Property(a => a.Latitude).HasColumnName("Latitude");
-                           address.Property(a => a.Longitude).HasColumnName("Longitude");
-                       });
             });
 
             modelBuilder.Entity<MaternityDressDetail>(options =>

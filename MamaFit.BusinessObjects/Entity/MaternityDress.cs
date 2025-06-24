@@ -1,4 +1,5 @@
 ﻿using MamaFit.BusinessObjects.Base;
+using MamaFit.BusinessObjects.Enum;
 
 namespace MamaFit.BusinessObjects.Entity
 {
@@ -12,6 +13,7 @@ namespace MamaFit.BusinessObjects.Entity
         public int TotalRating { get; set; }
         public int? Rating { get; set; }
         public string? StyleId { get; set; }
+        public GlobalStatus GlobalStatus { get; set; } = GlobalStatus.INACTIVE;
 
         // Navigation properties
         public Style? Style { get; set; }

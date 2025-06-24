@@ -21,6 +21,8 @@ namespace MamaFit.Repositories.Implement
         public IDesignRequestRepository DesignRequestRepository { get; }
         public IMaternityDressRepository MaternityDressRepository { get; }
         public IMaternityDressDetailRepository MaternityDressDetailRepository { get; }
+        public IMaternityDressSelectionRepository MaternityDressSelectionRepository { get; }
+        public IMaternityDressCustomizationRepository MaternityDressCustomizationRepository { get; }
         public IOrderItemRepository OrderItemRepository { get; }
         public IMeasurementRepository MeasurementRepository { get; }
         public IMeasurementDiaryRepository MeasurementDiaryRepository { get; }
@@ -62,6 +64,8 @@ namespace MamaFit.Repositories.Implement
             IMilestoneRepository milestoneRepository,
             INotificationRepository notificationRepository,
             IWarrantyHistoryRepository warrantyHistoryRepository,
+            IMaternityDressSelectionRepository maternityDressSelectionRepository,
+            IMaternityDressCustomizationRepository maternityDressCustomizationRepository,
             ITransactionRepository transactionRepository,
             IFeedbackRepository feedbackRepository,
             ICartItemRepository cartItemRepository)
@@ -92,6 +96,8 @@ namespace MamaFit.Repositories.Implement
             MilestoneRepository = milestoneRepository;
             NotificationRepository = notificationRepository;
             WarrantyHistoryRepository = warrantyHistoryRepository;
+            MaternityDressSelectionRepository = maternityDressSelectionRepository;
+            MaternityDressCustomizationRepository = maternityDressCustomizationRepository;
             TransactionRepository = transactionRepository;
             FeedbackRepository = feedbackRepository;
             CartItemRepository = cartItemRepository;

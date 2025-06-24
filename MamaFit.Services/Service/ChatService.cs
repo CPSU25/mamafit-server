@@ -50,9 +50,9 @@ namespace MamaFit.Services.Service
             await _unitOfWork.ChatRepository.CreateChatRoomAsync(userId1, userId2);
         }
 
-        public async Task<List<ChatMessageResponseDto>> GetChatHistoryAsync(string chatRoomId, int index, int pageSize)
+        public async Task<List<ChatMessageResponseDto>> GetChatHistoryAsync(string chatRoomId, int page, int pageSize)
         {
-            var chatHistory = await _unitOfWork.ChatRepository.GetChatHistoryAsync(chatRoomId, index, pageSize);
+            var chatHistory = await _unitOfWork.ChatRepository.GetChatHistoryAsync(chatRoomId, page, pageSize);
             if (chatHistory == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Chat room not found!");
 

@@ -56,6 +56,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IWarrantyHistoryRepository, WarrantyHistoryRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+            services.AddScoped<ICartItemRepository, CartItemRepository>();
         }
 
         public static void AddServices(this IServiceCollection services)
@@ -95,6 +96,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<ISepayService, SepayService>();
             services.AddScoped<IAddressService, AddressService>();
             services.AddScoped<IFeedbackService, FeedbackService>();
+            services.AddScoped<ICartItemService, CartItemService>();
         }
 
         public static IServiceCollection AddHttpClientServices(this IServiceCollection services)

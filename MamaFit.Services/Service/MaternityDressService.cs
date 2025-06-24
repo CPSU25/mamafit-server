@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MamaFit.BusinessObjects.DTO.MaternityDressDto;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
@@ -26,6 +27,7 @@ namespace MamaFit.Services.Service
         {
             await _validation.ValidateAndThrowAsync(requestDto);
             var newMaternityDress = _mapper.Map<MaternityDress>(requestDto);
+            newMaternityDress.GlobalStatus = GlobalStatus.INACTIVE;
 
             await _unitOfWork.MaternityDressRepository.InsertAsync(newMaternityDress); // Insert + Save changes
             await _unitOfWork.SaveChangesAsync();

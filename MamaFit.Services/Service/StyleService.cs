@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MamaFit.BusinessObjects.DTO.StyleDto;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
@@ -25,7 +26,7 @@ namespace MamaFit.Services.Service
 
         public async Task AssignComponentToStyle(string styleId, List<string> componentIds)
         {
-            var style = _unitOfWork.StyleRepository.GetByIdAsync(styleId);
+            var style = await _unitOfWork.StyleRepository.GetByIdAsync(styleId);
             _validationService.CheckNotFound(style, $"Style with ID {styleId} not found.");
 
             var componentList = new List<Component>();
@@ -36,12 +37,14 @@ namespace MamaFit.Services.Service
                 _validationService.CheckNotFound(component, $"Component with ID {componentId} not found.");
 
                 componentList.Add(component);
+                component.GlobalStatus = GlobalStatus.ACTIVE;
+                await _unitOfWork.ComponentRepository.UpdateAsync(component);
             }
 
-            style.Result.Components = componentList;
-            await _unitOfWork.StyleRepository.UpdateAsync(style.Result);
+            style.Components = componentList;
+            style.GlobalStatus = GlobalStatus.ACTIVE;
+            await _unitOfWork.StyleRepository.UpdateAsync(style);
             await _unitOfWork.SaveChangesAsync();
-
         }
 
         public async Task CreateAsync(StyleRequestDto requestDto)
@@ -52,11 +55,12 @@ namespace MamaFit.Services.Service
                 if (category == null)
                     throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Category is not available");
 
+                category.Status = GlobalStatus.ACTIVE;
+                await _unitOfWork.CategoryRepository.UpdateAsync(category);
+
                 var newStyle = _mapper.Map<Style>(requestDto); // Map Style
                 newStyle.Category = category;
-                newStyle.CreatedBy = GetCurrentUserName();
-                newStyle.CreatedAt = DateTime.UtcNow;
-
+                newStyle.GlobalStatus = GlobalStatus.INACTIVE;
                 await _unitOfWork.StyleRepository.InsertAsync(newStyle); // Tạo mới style
             }
 
@@ -99,7 +103,7 @@ namespace MamaFit.Services.Service
             if (categpory == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Category is not available");
 
-            var styleList = await _unitOfWork.StyleRepository.GetAllByCategoryAsync(categoryId,index, pageSize, search, sortBy);
+            var styleList = await _unitOfWork.StyleRepository.GetAllByCategoryAsync(categoryId, index, pageSize, search, sortBy);
             if (styleList == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "No record found");
 

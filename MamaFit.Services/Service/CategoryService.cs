@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MamaFit.BusinessObjects.DTO.CategoryDto;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
@@ -28,14 +29,8 @@ namespace MamaFit.Services.Service
 
         public async Task CreateAsync(CategoryRequestDto requestDto)
         {
-            var newCategory = new Category
-            {
-                Name = requestDto.Name,
-                Description = requestDto.Description,
-                Images = requestDto.Images,
-                CreatedAt = DateTime.UtcNow,
-                CreatedBy = GetCurrentUserName()
-            };
+            var newCategory = _mapper.Map<Category>(requestDto);
+            newCategory.Status = GlobalStatus.INACTIVE;
 
             await _unitOfWork.CategoryRepository.InsertAsync(newCategory);
             await _unitOfWork.SaveChangesAsync();
@@ -48,7 +43,7 @@ namespace MamaFit.Services.Service
 
             if (oldCategory == null || oldCategory.IsDeleted)
                 throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Category not found!");
-            if(oldCategory.Styles.Any())
+            if (oldCategory.Styles.Any())
                 throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Cannot delete this category as policy restrict");
 
             await _unitOfWork.CategoryRepository.SoftDeleteAsync(id);

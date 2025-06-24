@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MamaFit.BusinessObjects.DTO.ComponentDto;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
@@ -24,6 +25,8 @@ namespace MamaFit.Services.Service
         public async Task CreateAsync(ComponentRequestDto requestDto)
         {
             var newComponent = _mapper.Map<Component>(requestDto);
+            newComponent.GlobalStatus = GlobalStatus.INACTIVE;
+
             await _unitOfWork.ComponentRepository.InsertAsync(newComponent);
             await _unitOfWork.SaveChangesAsync();
         }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MamaFit.BusinessObjects.DTO.MaternityDressDetailDto;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
@@ -23,14 +24,16 @@ namespace MamaFit.Services.Service
 
         public async Task CreateAsync(MaternityDressDetailRequestDto requestDto)
         {
-            var exists = await _unitOfWork.MaternityDressRepository.GetByIdAsync(requestDto.MaternityDressId);
+            var dress = await _unitOfWork.MaternityDressRepository.GetByIdAsync(requestDto.MaternityDressId);
 
-            if (exists == null)
+            if (dress == null)
                 throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.NOT_FOUND, "Maternity dress does not exist.");
 
-            var entity = _mapper.Map<MaternityDressDetail>(requestDto);
+            dress.GlobalStatus = GlobalStatus.ACTIVE;
+            await _unitOfWork.MaternityDressRepository.UpdateAsync(dress);
 
-            entity.MaternityDress = exists;
+            var entity = _mapper.Map<MaternityDressDetail>(requestDto);
+            entity.MaternityDress = dress;
             entity.CreatedAt = DateTime.UtcNow;
             entity.CreatedBy = GetCurrentUserName();
 

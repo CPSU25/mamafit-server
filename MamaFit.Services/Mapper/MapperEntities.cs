@@ -204,7 +204,6 @@ namespace MamaFit.Services.Mapper
             
             //Address Mapper
             CreateMap<Address, AddressRequestDto>().ReverseMap();
-            CreateMap<OrderAddress, AddressResponseDto>().ReverseMap();
             
             //Feedback Mapper
             CreateMap<Feedback, FeedbackRequestDto>().ReverseMap();

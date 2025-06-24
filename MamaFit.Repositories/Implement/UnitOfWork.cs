@@ -65,7 +65,7 @@ namespace MamaFit.Repositories.Implement
             INotificationRepository notificationRepository,
             IWarrantyHistoryRepository warrantyHistoryRepository,
             IMaternityDressSelectionRepository maternityDressSelectionRepository,
-            IMaternityDressCustomizationRepository maternityDressCustomizationRepository)
+            IMaternityDressCustomizationRepository maternityDressCustomizationRepository,
             ITransactionRepository transactionRepository,
             IFeedbackRepository feedbackRepository,
             ICartItemRepository cartItemRepository)

@@ -56,20 +56,24 @@ namespace MamaFit.Repositories.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<ChatMessage>> GetChatHistoryAsync(string chatRoomId, int index, int pageSize)
+        public async Task<List<ChatMessage>> GetChatHistoryAsync(string chatRoomId, int page, int pageSize)
         {
+            int skip = (page - 1) * pageSize;
+            
             var chatMessages = await _context.ChatMessages
                 .Where(m => m.ChatRoomId == chatRoomId && !m.IsDeleted)
                 .Include(m => m.Sender)
-                .OrderByDescending(m => m.CreatedAt)
-                .Skip((index - 1) * pageSize)
+                .OrderByDescending(m => m.CreatedAt) 
+                .Skip(skip)
                 .Take(pageSize)
                 .ToListAsync();
 
+            chatMessages.Reverse();
+            
             return chatMessages;
         }
 
-        public async Task<ChatMessage> GetChatMessageById(string messageId)
+        public async Task<ChatMessage?> GetChatMessageById(string messageId)
         {
             var message = await _context.ChatMessages
                 .Include(m => m.Sender)

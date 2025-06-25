@@ -19,7 +19,7 @@ public class SepayService : ISepayService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly SepaySettings _sepaySettings;
-    private readonly IMapper _mapprer;
+    private readonly IMapper _mapper;
     private readonly IValidationService _validationService;
     private readonly IOrderService _orderService;
     private readonly ITransactionService _transactionService;
@@ -36,7 +36,7 @@ public class SepayService : ISepayService
         _validationService = validationService;
         _orderService = orderService;
         _transactionService = transactionService;
-        _mapprer = mapper;
+        _mapper = mapper;
     }
 
     public async Task ProcessPaymentWebhookAsync(SepayWebhookPayload payload, string authHeader)
@@ -88,7 +88,7 @@ public class SepayService : ISepayService
     var qrResponse = new SepayQrResponse
     {
         QrUrl = qrUrl,
-        OrderWithItem = _mapprer.Map<OrderWithItemResponseDto>(order),
+        OrderWithItem = _mapper.Map<OrderWithItemResponseDto>(order),
     };
     return qrResponse;
 }

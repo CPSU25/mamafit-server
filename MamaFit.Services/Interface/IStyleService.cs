@@ -5,7 +5,7 @@ namespace MamaFit.Services.Interface
 {
     public interface IStyleService
     {
-        Task<StyleResponseDto> GetByIdAsync(string id);
+        Task<StyleGetByIdResponseDto> GetByIdAsync(string id);
         Task<PaginatedList<StyleResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy);
         Task<PaginatedList<StyleResponseDto>> GetAllByCategoryAsync(string categoryId, int index, int pageSize, string? search, string? sortBy);
         Task AssignComponentToStyle(string styleId, List<string> componentIds);

@@ -121,13 +121,13 @@ namespace MamaFit.Services.Service
             return paginatedResponse;
         }
 
-        public async Task<StyleResponseDto> GetByIdAsync(string id)
+        public async Task<StyleGetByIdResponseDto> GetByIdAsync(string id)
         {
             var oldStyle = await _unitOfWork.StyleRepository.GetByIdAsync(id);
             if (oldStyle == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Style is not available");
 
-            return _mapper.Map<StyleResponseDto>(oldStyle);
+            return _mapper.Map<StyleGetByIdResponseDto>(oldStyle);
         }
 
         public async Task UpdateAsync(string id, StyleRequestDto requestDto)

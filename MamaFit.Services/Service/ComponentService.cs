@@ -63,14 +63,14 @@ namespace MamaFit.Services.Service
             return paginatedResponse;
         }
 
-        public async Task<ComponentResponseDto> GetByIdAsync(string id)
+        public async Task<ComponentGetByIdResponseDto> GetByIdAsync(string id)
         {
             var component = await _unitOfWork.ComponentRepository.GetById(id);
 
             if (component == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Component not found!");
 
-            return _mapper.Map<ComponentResponseDto>(component);
+            return _mapper.Map<ComponentGetByIdResponseDto>(component);
         }
 
         public async Task UpdateAsync(string id, ComponentRequestDto requestDto)

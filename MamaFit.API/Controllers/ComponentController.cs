@@ -35,7 +35,7 @@ namespace MamaFit.API.Controllers
         public async Task<IActionResult> GetById([FromRoute] string componentId)
         {
             var component = await _componentService.GetByIdAsync(componentId);
-            return Ok(ResponseModel<ComponentResponseDto>.OkResponseModel(component));
+            return Ok(ResponseModel<ComponentGetByIdResponseDto>.OkResponseModel(component));
         }
 
         [HttpPost]

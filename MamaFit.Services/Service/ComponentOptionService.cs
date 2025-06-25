@@ -14,17 +14,20 @@ namespace MamaFit.Services.Service
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IMapper _mapper;
-
-        public ComponentOptionService(IUnitOfWork unitOfWork, IHttpContextAccessor contextAccessor, IMapper mapper)
+        private readonly IValidationService _validation;
+        public ComponentOptionService(IUnitOfWork unitOfWork, IHttpContextAccessor contextAccessor, IMapper mapper, IValidationService validation)
         {
             _unitOfWork = unitOfWork;
             _contextAccessor = contextAccessor;
             _mapper = mapper;
+            _validation = validation;
         }
 
         public async Task CreateAsync(ComponentOptionRequestDto requestDto)
         {
-            var component = await _unitOfWork.ComponentRepository.GetByIdAsync(requestDto.ComponentId);
+            await _validation.ValidateAndThrowAsync(requestDto);
+
+            var component = await _unitOfWork.ComponentRepository.GetByIdAsync(requestDto.ComponentId!);
             if (component == null || component.IsDeleted)
                 throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Component is not available");
 
@@ -85,6 +88,7 @@ namespace MamaFit.Services.Service
 
         public async Task UpdateAsync(string id, ComponentOptionRequestDto requestDto)
         {
+            await _validation.ValidateAndThrowAsync(requestDto);
             var oldOption = await _unitOfWork.ComponentOptionRepository.GetByIdAsync(id);
 
             if (oldOption == null)

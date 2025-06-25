@@ -14,16 +14,19 @@ namespace MamaFit.Services.Service
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IMapper _mapper;
-
-        public ComponentService(IUnitOfWork unitOfWork, IHttpContextAccessor contextAccessor, IMapper mapper)
+        private readonly IValidationService _validation;
+        public ComponentService(IUnitOfWork unitOfWork, IHttpContextAccessor contextAccessor, IMapper mapper, IValidationService validation)
         {
             _unitOfWork = unitOfWork;
             _contextAccessor = contextAccessor;
             _mapper = mapper;
+            _validation = validation;
         }
 
         public async Task CreateAsync(ComponentRequestDto requestDto)
         {
+            await _validation.ValidateAndThrowAsync(requestDto);
+
             var newComponent = _mapper.Map<Component>(requestDto);
             newComponent.GlobalStatus = GlobalStatus.INACTIVE;
 
@@ -75,7 +78,7 @@ namespace MamaFit.Services.Service
 
         public async Task UpdateAsync(string id, ComponentRequestDto requestDto)
         {
-
+            await _validation.ValidateAndThrowAsync(requestDto);
             var component = await _unitOfWork.ComponentRepository.GetByIdAsync(id);
 
             if (component == null)

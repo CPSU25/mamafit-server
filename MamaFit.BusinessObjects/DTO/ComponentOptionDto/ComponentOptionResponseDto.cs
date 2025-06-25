@@ -1,4 +1,5 @@
-﻿using MamaFit.BusinessObjects.Enum;
+﻿using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Enum;
 
 namespace MamaFit.BusinessObjects.DTO.ComponentOptionDto
 {
@@ -7,6 +8,7 @@ namespace MamaFit.BusinessObjects.DTO.ComponentOptionDto
         public string? Id { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
+        public Tag? Tag { get; set; }
         public List<string>? Images { get; set; } = [];
         public ComponentOptionType? ComponentOptionType { get; set; }
         public string? CreatedBy { get; set; }

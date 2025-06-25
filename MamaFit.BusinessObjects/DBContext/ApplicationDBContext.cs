@@ -2,6 +2,7 @@
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Entity.ChatEntity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace MamaFit.BusinessObjects.DbContext
 {
@@ -297,6 +298,15 @@ namespace MamaFit.BusinessObjects.DbContext
                       .WithMany(r => r.Members)
                       .HasForeignKey(m => m.ChatRoomId)
                       .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<ComponentOption>(options =>
+            {
+                options.OwnsOne(Tag => Tag.Tag, tag =>
+                {
+                    tag.Property(t => t.ParentTag).HasColumnName("ParentTag");
+                    tag.Property(t => t.ChildTag).HasColumnName("ChildTag");
+                });
             });
 
             SeedData.Seed(modelBuilder);

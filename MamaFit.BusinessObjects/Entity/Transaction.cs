@@ -5,7 +5,7 @@ namespace MamaFit.BusinessObjects.Entity
     public class Transaction : BaseEntity
     {
         public string? OrderId { get; set; }
-        public string? SepayId { get; set; }
+        public int? SepayId { get; set; }
         public string? Gateway { get; set; }
         public DateTime? TransactionDate { get; set; }
         public string? AccountNumber { get; set; }

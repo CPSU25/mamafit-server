@@ -39,12 +39,12 @@ public class SepayService : ISepayService
         _mapper = mapper;
     }
 
-    public async Task ProcessPaymentWebhookAsync(SepayWebhookPayload payload, string authHeader)
+    public async Task ProcessPaymentWebhookAsync(SepayWebhookPayload payload)
     {
-        if (!ValidateAuthHeader(authHeader))
-        {
-            throw new ErrorException(StatusCodes.Status401Unauthorized, ApiCodes.UNAUTHORIZED, "Invalid API key");
-        }
+        // if (!ValidateAuthHeader(authHeader))
+        // {
+        //     throw new ErrorException(StatusCodes.Status401Unauthorized, ApiCodes.UNAUTHORIZED, "Invalid API key");
+        // }
         
         
         var orderCode = ExtractOrderCodeFromContent(payload.content);
@@ -53,8 +53,8 @@ public class SepayService : ISepayService
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT, "No order code found in payment content");
         }
         
-        var order = await _unitOfWork.TransactionRepository.GetOrderByPaymentCodeAsync(orderCode);
-        
+        var order = await _unitOfWork.OrderRepository.GetByCodeAsync(orderCode);
+        _validationService.CheckNotFound(order, $"Order with code {orderCode} not found");
         await _transactionService.CreateTransactionAsync(payload, order.Id, order.Code);
         
         await _orderService.UpdateOrderStatusAsync(

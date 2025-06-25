@@ -78,8 +78,6 @@ public class TransactionService : ITransactionService
         await _unitOfWork.SaveChangesAsync();
     }
     
-    
-    
     private string GeneratePaymentCode() 
     {
         string prefix = "PAY";

@@ -4,7 +4,7 @@ namespace MamaFit.BusinessObjects.DTO.SepayDto;
 
 public class SepayWebhookPayload
 {
-    public string id { get; set; }
+    public int id { get; set; }
     public string gateway { get; set; }
     public string transactionDate { get; set; }
     public string? accountNumber { get; set; }

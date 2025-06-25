@@ -9,5 +9,5 @@ public interface ITransactionService
     Task<PaginatedList<TransactionResponseDto>> GetTransactionsAsync(int index, int pageSize,
         DateTime? startDate = null, DateTime? endDate = null);
     Task<TransactionResponseDto?> GetTransactionByOrderIdAsync(string orderId);
-    Task CreateTransactionAsync(SepayWebhookPayload payload, string orderId, string paymentCode);
+    Task CreateTransactionAsync(SepayWebhookPayload payload, string orderId, string orderCode);
 }    

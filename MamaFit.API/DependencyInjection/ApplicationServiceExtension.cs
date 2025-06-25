@@ -200,7 +200,7 @@ namespace MamaFit.API.DependencyInjection
                         },
                         OnChallenge = async context =>
                         {
-                            context.HandleResponse(); // Ngăn hệ thống trả lỗi mặc định
+                            context.HandleResponse();
 
                             var response = context.Response;
                             response.ContentType = "application/json";

@@ -170,7 +170,7 @@ namespace MamaFit.Services.Mapper
             CreateMap<Order, OrderRequestDto>().ReverseMap();
             CreateMap<Order, OrderReadyToBuyRequestDto>().ReverseMap();
             CreateMap<Order, OrderResponseDto>().ReverseMap();
-
+            
             //OrderItem Mapper
             CreateMap<OrderItem, OrderItemReadyToBuyRequestDto>().ReverseMap();
             CreateMap<OrderItem, OrderItemResponseDto>().ReverseMap();
@@ -183,11 +183,7 @@ namespace MamaFit.Services.Mapper
             //Milestone Mapper
             CreateMap<Milestone, MilestoneRequestDto>().ReverseMap();
             CreateMap<Milestone, MilestoneResponseDto>().ReverseMap();
-
-            //OrderItem Mapper
-            CreateMap<OrderItem, OrderItemRequestDto>().ReverseMap();
-            CreateMap<OrderItem, OrderItemResponseDto>().ReverseMap();
-
+            
             //Notification Mapper
             CreateMap<Notification, NotificationRequestDto>().ReverseMap();
             CreateMap<Notification, NotificationResponseDto>().ReverseMap();
@@ -212,7 +208,8 @@ namespace MamaFit.Services.Mapper
 
             //Address Mapper
             CreateMap<Address, AddressRequestDto>().ReverseMap();
-
+            CreateMap<Address, AddressResponseDto>().ReverseMap();
+            
             //Feedback Mapper
             CreateMap<Feedback, FeedbackRequestDto>().ReverseMap();
             CreateMap<Feedback, FeedbackResponseDto>().ReverseMap();

@@ -51,18 +51,21 @@ public class TransactionService : ITransactionService
     {
         var exist = await _unitOfWork.TransactionRepository
             .FindAsync(x => x.SepayId == payload.id);
-
         if (exist != null)
         {
-            throw new ErrorException(StatusCodes.Status409Conflict, ApiCodes.CONFLICT, "Transaction already exists");
+            throw new ErrorException(StatusCodes.Status409Conflict, ApiCodes.CONFLICT, "Transaction already processed");
         }
+        
+        DateTime? transactionDateUtc = DateTime.TryParse(payload.transactionDate, out var parsedDate)
+            ? parsedDate.ToUniversalTime()
+            : null;
         
         var transaction = new Transaction
         {
             OrderId = orderId,
             SepayId = payload.id,
             Gateway = payload.gateway,
-            TransactionDate = DateTime.Parse(payload.transactionDate),
+            TransactionDate = transactionDateUtc,
             AccountNumber = payload.accountNumber,
             Code = payload.code,
             Content = payload.content,

@@ -135,14 +135,13 @@ namespace MamaFit.Repositories.Implement
                     result = await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    //Log exception handling message
+                    Console.WriteLine($"Error during SaveChangesAsync: {ex.Message}");
                     result = -1;
                     await transaction.RollbackAsync();
                 }
             }
-
             return result;
         }
 

@@ -53,14 +53,10 @@ public class SepayService : ISepayService
 
         var order = await _unitOfWork.OrderRepository.GetByCodeAsync(orderCode);
         _validationService.CheckNotFound(order, $"Order with code {orderCode} not found");
-        await _transactionService.CreateTransactionAsync(payload, order.Id, order.Code);
-
-        await _orderService.UpdateOrderStatusAsync(
-            order.Id,
-            OrderStatus.CONFIRMED,
-            PaymentStatus.PAID);
+        
+            await _transactionService.CreateTransactionAsync(payload, order.Id, order.Code);
+            await _orderService.UpdateOrderStatusAsync(order.Id, OrderStatus.CONFIRMED, PaymentStatus.PAID);
     }
-
     public async Task<SepayQrResponse> CreatePaymentQrAsync(string orderId, string callbackUrl)
     {
         var order = await _unitOfWork.OrderRepository.GetByIdWithItems(orderId);
@@ -139,7 +135,7 @@ public class SepayService : ISepayService
 
     private string ExtractOrderCodeFromContent(string content)
     {
-        var match = Regex.Match(content, @"ORD-\d{8}-\d{4}");
+        var match = Regex.Match(content, @"ORD\d{3}");
         return match.Success ? match.Value : null;
     }
 }

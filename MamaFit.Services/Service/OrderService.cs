@@ -220,10 +220,9 @@ public class OrderService : IOrderService
 
     private string GenerateOrderCode()
     {
-        string prefix = "ORD";
-        string datePart = DateTime.UtcNow.ToString("yyyyMMdd");
-        string randomPart = new Random().Next(1000, 9999).ToString();
-        return $"{prefix}-{datePart}-{randomPart}";
+        string prefix = "O";
+        string randomPart = new Random().Next(10000, 99999).ToString();
+        return $"{prefix}{randomPart}";
     }
 
     private string GetCurrentUserId()

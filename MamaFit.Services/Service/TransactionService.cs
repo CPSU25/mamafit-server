@@ -47,7 +47,7 @@ public class TransactionService : ITransactionService
         return _mapper.Map<TransactionResponseDto>(transaction);
     }
     
-    public async Task CreateTransactionAsync(SepayWebhookPayload payload, string orderId, string paymentCode)
+    public async Task CreateTransactionAsync(SepayWebhookPayload payload, string orderId, string orderCode)
     {
         var exist = await _unitOfWork.TransactionRepository
             .FindAsync(x => x.SepayId == payload.id);
@@ -62,35 +62,22 @@ public class TransactionService : ITransactionService
             OrderId = orderId,
             SepayId = payload.id,
             Gateway = payload.gateway,
-            TransactionDate = payload.transactionDate,
+            TransactionDate = DateTime.Parse(payload.transactionDate),
             AccountNumber = payload.accountNumber,
-            Code = GeneratePaymentCode(),
+            Code = payload.code,
             Content = payload.content,
             TransferType = payload.transferType,
             TransferAmount = payload.transferAmount,
             Accumulated = payload.accumulated,
             SubAccount = payload.subAccount,
             ReferenceCode = payload.referenceCode,
-            Description = $"Payment received via {payload.gateway} for order {paymentCode}"
+            Description = $"Payment received via {payload.gateway} for order {orderCode}"
         };
 
         await _unitOfWork.TransactionRepository.InsertAsync(transaction);
         await _unitOfWork.SaveChangesAsync();
     }
     
-    public async Task CreateQrTransactionAsync(string orderId, SepayQrResponse qrResponse)
-    {
-        var transaction = new Transaction
-        {
-            OrderId = orderId,
-            Code = qrResponse.code,
-            Description = $"QR code generated for payment",
-            TransactionDate = DateTime.UtcNow
-        };
-
-        await _unitOfWork.TransactionRepository.InsertAsync(transaction);
-        await _unitOfWork.SaveChangesAsync();
-    }
     
     
     private string GeneratePaymentCode() 

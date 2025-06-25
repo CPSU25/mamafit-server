@@ -1,5 +1,8 @@
+using System.Globalization;
 using System.Net.Http.Json;
 using System.Text.RegularExpressions;
+using AutoMapper;
+using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.DTO.SepayDto;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Helper;
@@ -16,6 +19,7 @@ public class SepayService : ISepayService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly SepaySettings _sepaySettings;
+    private readonly IMapper _mapper;
     private readonly IValidationService _validationService;
     private readonly IOrderService _orderService;
     private readonly ITransactionService _transactionService;
@@ -24,13 +28,15 @@ public class SepayService : ISepayService
         IOptions<SepaySettings> sepaySettings,
         IValidationService validationService,
         IOrderService orderService,
-        ITransactionService transactionService)
+        ITransactionService transactionService,
+        IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _sepaySettings = sepaySettings.Value;
         _validationService = validationService;
         _orderService = orderService;
         _transactionService = transactionService;
+        _mapper = mapper;
     }
 
     public async Task ProcessPaymentWebhookAsync(SepayWebhookPayload payload, string authHeader)
@@ -41,15 +47,15 @@ public class SepayService : ISepayService
         }
         
         
-        var paymentCode = ExtractPaymentCode(payload.content);
-        if (string.IsNullOrEmpty(paymentCode))
+        var orderCode = ExtractOrderCodeFromContent(payload.content);
+        if (string.IsNullOrEmpty(orderCode))
         {
-            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT, "No payment code found");
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT, "No order code found in payment content");
         }
         
-        var order = await _unitOfWork.TransactionRepository.GetOrderByPaymentCodeAsync(paymentCode);
+        var order = await _unitOfWork.TransactionRepository.GetOrderByPaymentCodeAsync(orderCode);
         
-        await _transactionService.CreateTransactionAsync(payload, order.Id, paymentCode);
+        await _transactionService.CreateTransactionAsync(payload, order.Id, order.Code);
         
         await _orderService.UpdateOrderStatusAsync(
             order.Id, 
@@ -59,8 +65,7 @@ public class SepayService : ISepayService
     
     public async Task<SepayQrResponse> CreatePaymentQrAsync(string orderId, string callbackUrl)
 {
-    // 1. Kiểm tra đơn hàng
-    var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(orderId);
+    var order = await _unitOfWork.OrderRepository.GetByIdWithItems(orderId);
     if (order == null)
     {
         throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Order not found");
@@ -70,36 +75,27 @@ public class SepayService : ISepayService
     {
         throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Order is not in pending payment status");
     }
-
-    // 2. Tạo URL QR code theo docs Sepay
+    
+    
     var qrUrl = GenerateSepayQrUrl(
         accountNumber: _sepaySettings.AccountNumber,
         bankCode: _sepaySettings.BankCode,
         amount: order.TotalAmount,
-        description: $"DH{order.Code}", // Format theo yêu cầu Sepay: DH + mã đơn
-        template: "compact");
-
-    // 3. Tạo response object
+        description: $"SEVQR{order.Code}",
+        template: "qronly",
+        download: "true");
+    
     var qrResponse = new SepayQrResponse
     {
-        code = "SUCCESS",
-        desc = "QR code generated successfully",
-        data = new QrData
-        {
-            qrCode = qrUrl,
-            qrDataURL = qrUrl
-        }
+        QrUrl = qrUrl,
+        OrderWithItem = _mapper.Map<OrderWithItemResponseDto>(order),
     };
-
-    // 4. Lưu transaction (nếu cần)
-    await _transactionService.CreateQrTransactionAsync(orderId, qrResponse);
-
     return qrResponse;
 }
 
-private string GenerateSepayQrUrl(string accountNumber, string bankCode, float amount, string description, string template = "compact")
+private string GenerateSepayQrUrl(string accountNumber, string bankCode, float amount, string description, string template, string download)
 {
-    var baseUrl = "https://qr.sepay.vn/img";
+    var baseUrl = $"{_sepaySettings.ApiBaseUri}";
     
     var queryParams = new Dictionary<string, string>
     {
@@ -108,7 +104,7 @@ private string GenerateSepayQrUrl(string accountNumber, string bankCode, float a
         ["amount"] = amount.ToString("0"), 
         ["des"] = description,
         ["template"] = template,
-        ["download"] = "false"
+        ["download"] = download
     };
 
     // Tạo query string
@@ -124,6 +120,13 @@ private string GenerateSepayQrUrl(string accountNumber, string bankCode, float a
         return authHeader == $"ApiKey {_sepaySettings.ApiKey}";
     }
 
+    private string ExtractOrderCodeFromContent(string content)
+    {
+        // Tìm mã đơn hàng theo format SEVQR{orderCode}
+        var match = Regex.Match(content, @"SEVQR(\w+)");
+        return match.Success ? match.Groups[1].Value : null;
+    }
+    
     private string ExtractPaymentCode(string content)
     {
         var match = Regex.Match(content, @"PAY\d+");

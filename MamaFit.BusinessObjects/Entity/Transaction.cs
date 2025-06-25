@@ -13,7 +13,7 @@ namespace MamaFit.BusinessObjects.Entity
         public string? Content { get; set; }
         public string? TransferType { get; set; }
         public float? TransferAmount { get; set; }
-        public string? Accumulated { get; set; }
+        public decimal? Accumulated { get; set; }
         public string? SubAccount { get; set; }
         public string? ReferenceCode { get; set; }
         public string? Description { get; set; }

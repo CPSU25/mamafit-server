@@ -53,7 +53,7 @@ namespace MamaFit.API.Controllers
         public async Task<IActionResult> GetById([FromRoute] string styleId)
         {
             var style = await _styleService.GetByIdAsync(styleId);
-            return Ok(new ResponseModel<StyleResponseDto>(
+            return Ok(new ResponseModel<StyleGetByIdResponseDto>(
                 StatusCodes.Status200OK,
                 ApiCodes.SUCCESS,
                 style,

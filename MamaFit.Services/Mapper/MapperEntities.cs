@@ -79,14 +79,17 @@ namespace MamaFit.Services.Mapper
             //Category Mapper
             CreateMap<Category, CategoryRequestDto>().ReverseMap();
             CreateMap<Category, CategoryResponseDto>().ReverseMap();
+            CreateMap<Category, CategoryGetByIdResponse>().ReverseMap();
 
             //Style Mapper
             CreateMap<Style, StyleRequestDto>().ReverseMap();
             CreateMap<Style, StyleResponseDto>().ReverseMap();
+            CreateMap<Style, StyleGetByIdResponseDto>().ReverseMap();
 
             //Component Mapper
             CreateMap<Component, ComponentRequestDto>().ReverseMap();
             CreateMap<Component, ComponentResponseDto>().ReverseMap();
+            CreateMap<Component, ComponentGetByIdResponseDto>().ReverseMap();
 
             //ComponentOption Mapper
             CreateMap<ComponentOption, ComponentOptionRequestDto>().ReverseMap();
@@ -154,15 +157,15 @@ namespace MamaFit.Services.Mapper
             //MaternityDressTask Mapper
             CreateMap<MaternityDressTask, MaternityDressTaskRequestDto>().ReverseMap();
             CreateMap<MaternityDressTask, MaternityDressTaskResponseDto>().ReverseMap();
-            
+
             //VoucherBatch Mapper
             CreateMap<VoucherBatch, VoucherBatchDto>().ReverseMap();
             CreateMap<VoucherBatch, VoucherBatchResponseDto>().ReverseMap();
-            
+
             //VoucherDiscount Mapper
             CreateMap<VoucherDiscount, VoucherDiscountRequestDto>().ReverseMap();
             CreateMap<VoucherDiscount, VoucherDiscountResponseDto>().ReverseMap();
-            
+
             //Order Mapper
             CreateMap<Order, OrderRequestDto>().ReverseMap();
             CreateMap<Order, OrderReadyToBuyRequestDto>().ReverseMap();
@@ -179,14 +182,14 @@ namespace MamaFit.Services.Mapper
             //OrderItem Mapper
             CreateMap<OrderItem, OrderItemRequestDto>().ReverseMap();
             CreateMap<OrderItem, OrderItemResponseDto>().ReverseMap();
-            
+
             //Notification Mapper
             CreateMap<Notification, NotificationRequestDto>().ReverseMap();
             CreateMap<Notification, NotificationResponseDto>().ReverseMap();
-            
+
             //BranchMaternityDressDetail Mapper
             CreateMap<BranchMaternityDressDetail, BranchMaternityDressDetailDto>().ReverseMap();
-            
+
             //WarrantyHistory Mapper
             CreateMap<WarrantyHistory, WarrantyHistoryRequestDto>().ReverseMap();
             CreateMap<WarrantyHistory, WarrantyHistoryResponseDto>().ReverseMap();
@@ -201,14 +204,14 @@ namespace MamaFit.Services.Mapper
                 .ReverseMap();
             CreateMap<MaternityDressCustomization, CustomResponseDto>().ReverseMap();
             CreateMap<MaternityDressCustomization, CustomUpdateRequestDto>().ReverseMap();
-            
+
             //Address Mapper
             CreateMap<Address, AddressRequestDto>().ReverseMap();
-            
+
             //Feedback Mapper
             CreateMap<Feedback, FeedbackRequestDto>().ReverseMap();
             CreateMap<Feedback, FeedbackResponseDto>().ReverseMap();
-            
+
             //CartItem Mapper
             CreateMap<CartItem, CartItemRequestDto>().ReverseMap();
             CreateMap<CartItem, CartItemResponseDto>().ReverseMap();

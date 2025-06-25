@@ -10,6 +10,7 @@ namespace MamaFit.BusinessObjects.Entity
         public string? BranchId { get; set; }
         public string? UserId { get; set; }
         public string? VoucherDiscountId { get; set; }
+        public string? MeasurementDiaryId { get; set; }
         public bool? IsOnline { get; set; } = true;
         public OrderType Type { get; set; }
         public string? Code { get; set; }

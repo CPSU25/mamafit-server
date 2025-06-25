@@ -19,7 +19,7 @@ public class OrderService : IOrderService
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly INotificationService _notificationService;
 
-    public OrderService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation, INotificationService notificationService,IHttpContextAccessor contextAccessor)
+    public OrderService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation, INotificationService notificationService, IHttpContextAccessor contextAccessor)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -36,7 +36,7 @@ public class OrderService : IOrderService
         order.Status = orderStatus;
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
-        
+
         var notification = new NotificationRequestDto()
         {
             ReceiverId = order.UserId,
@@ -46,7 +46,7 @@ public class OrderService : IOrderService
             ActionUrl = $"/order/{order.Id}",
             Metadata = JsonConvert.SerializeObject(new { orderId = order.Id, orderCode = order.Code }),
         };
-        
+
         await _notificationService.SendAndSaveNotificationAsync(notification);
     }
     public async Task<PaginatedList<OrderResponseDto>> GetAllAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate)
@@ -88,7 +88,7 @@ public class OrderService : IOrderService
             ActionUrl = $"/order/{order.Id}",
             Metadata = JsonConvert.SerializeObject(new { orderId = order.Id, orderCode = order.Code }),
         };
-        
+
         await _notificationService.SendAndSaveNotificationAsync(notification);
         return _mapper.Map<OrderResponseDto>(order);
     }
@@ -117,10 +117,26 @@ public class OrderService : IOrderService
 
     public async Task<string> CreateReadyToBuyOrderAsync(OrderReadyToBuyRequestDto request)
     {
+        await _validation.ValidateAndThrowAsync(request);
+
         var user = await _unitOfWork.UserRepository.GetByIdAsync(request.UserId!);
         _validation.CheckNotFound(user, $"User with id: {request.UserId} not found");
 
-        var voucher = await _unitOfWork.VoucherDiscountRepository.GetByIdAsync(request.VoucherDiscountId);
+        var voucher = new VoucherDiscount();
+        var measurement = new MeasurementDiary();
+
+        if (request.VoucherDiscountId != null)
+        {
+            voucher = await _unitOfWork.VoucherDiscountRepository.GetByIdAsync(request.VoucherDiscountId);
+            _validation.CheckNotFound(voucher, $"Voucher with id: {request.VoucherDiscountId} not found");
+
+        }
+
+        if (request.MeasurementDiaryId != null)
+        {
+            measurement = await _unitOfWork.MeasurementDiaryRepository.GetByIdAsync(request.MeasurementDiaryId);
+            _validation.CheckNotFound(measurement, $"Measurement diary with id: {request.MeasurementDiaryId} not found");
+        }
 
         var dressDetails = new List<MaternityDressDetail>();
 
@@ -148,15 +164,16 @@ public class OrderService : IOrderService
             var dress = dressDetails.FirstOrDefault(d => d.Id == item.MaternityDressDetailId);
             return dress != null ? dress.Price * item.Quantity : 0;
         });
+
         var shippingFee = request.DeliveryMethod == DeliveryMethod.DELIVERY ? 30000 : 0;
 
         var order = _mapper.Map<Order>(request);
-
         order.User = user!;
         order.VoucherDiscount = voucher;
         order.Type = OrderType.NORMAL;
         order.Code = GenerateOrderCode();
         order.Status = OrderStatus.CREATED;
+        order.MeasurementDiary = measurement;
         order.ShippingFee = shippingFee;
         order.SubTotalAmount = subTotalAmount;
         order.TotalAmount = (subTotalAmount - ((voucher?.VoucherBatch?.DiscountPercentValue ?? 0) * subTotalAmount) + shippingFee);
@@ -175,7 +192,7 @@ public class OrderService : IOrderService
 
         if (request.DeliveryMethod == DeliveryMethod.DELIVERY)
         {
-            if(request.AddressId == null)
+            if (request.AddressId == null)
                 throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Address ID is required for delivery orders.");
 
             var address = await _unitOfWork.AddressRepository.GetByIdAsync(request.AddressId);
@@ -216,12 +233,13 @@ public class OrderService : IOrderService
 
     public async Task<string> CreateDesignRequestAsync(OrderDesignRequestDto request)
     {
+        await _validation.ValidateAndThrowAsync(request);
+
         var userId = GetCurrentUserId();
         var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
         _validation.CheckNotFound(user, $"User with id: {userId} not found");
 
         var designFee = 100000; // Phí dịch vụ mặc định
-
         var order = new Order
         {
             UserId = userId,
@@ -256,6 +274,7 @@ public class OrderService : IOrderService
                 }
             }
         };
+
         await _unitOfWork.OrderRepository.InsertAsync(order);
         await _unitOfWork.SaveChangesAsync();
         return order.Id;

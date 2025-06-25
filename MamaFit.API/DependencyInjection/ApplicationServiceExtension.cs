@@ -189,7 +189,6 @@ namespace MamaFit.API.DependencyInjection
                         {
                             // Read the token from query string for SignalR
                             var accessToken = context.Request.Query["access_token"];
-
                             // If the request is for our hub...
                             var path = context.HttpContext.Request.Path;
                             if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/chatHub")))

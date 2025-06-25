@@ -19,7 +19,6 @@ namespace MamaFit.BusinessObjects.DbContext
         public DbSet<ChatMessage> ChatMessages { get; set; }
         public DbSet<ChatRoom> ChatRooms { get; set; }
         public DbSet<ChatRoomMember> ChatRoomMembers { get; set; }
-
         public DbSet<OTP> OTPs { get; set; }
         public DbSet<ApplicationUser> Users { get; set; }
         public DbSet<ApplicationUserToken> UserTokens { get; set; }

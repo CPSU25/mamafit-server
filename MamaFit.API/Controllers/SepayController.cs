@@ -18,10 +18,9 @@ public class SepayController : ControllerBase
 
     [HttpPost]
     public async Task<IActionResult> ProcessPaymentWebhook(
-        [FromBody] SepayWebhookPayload payload,
-        [FromHeader(Name = "Authorization")] string authHeader)
+        [FromBody] SepayWebhookPayload payload)
     {
-        await _sepayService.ProcessPaymentWebhookAsync(payload, authHeader);
+        await _sepayService.ProcessPaymentWebhookAsync(payload);
         return Ok(new ResponseModel<string>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,

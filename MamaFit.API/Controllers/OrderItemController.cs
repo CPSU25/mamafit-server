@@ -10,12 +10,12 @@ namespace MamaFit.API.Controllers;
 public class OrderItemController : ControllerBase
 {
     private readonly IOrderItemService _service;
-    
+
     public OrderItemController(IOrderItemService service)
     {
         _service = service;
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> GetAll(
         [FromQuery] int index = 1,
@@ -31,19 +31,19 @@ public class OrderItemController : ControllerBase
             "Get all order items successfully!"
         ));
     }
-    
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById([FromRoute] string id)
     {
         var result = await _service.GetOrderItemByIdAsync(id);
-        return Ok(new ResponseModel<OrderItemResponseDto>(
+        return Ok(new ResponseModel<OrderItemGetByIdResponseDto>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
             result,
             "Get order item successfully!"
         ));
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] OrderItemRequestDto model)
     {
@@ -55,7 +55,7 @@ public class OrderItemController : ControllerBase
             "Create order item successfully!"
         ));
     }
-    
+
     [HttpPut("{id}")]
     public async Task<IActionResult> Update([FromRoute] string id, [FromBody] OrderItemRequestDto model)
     {
@@ -67,7 +67,7 @@ public class OrderItemController : ControllerBase
             "Update order item successfully!"
         ));
     }
-    
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete([FromRoute] string id)
     {

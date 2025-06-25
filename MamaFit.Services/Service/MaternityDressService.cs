@@ -49,15 +49,15 @@ namespace MamaFit.Services.Service
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<PaginatedList<GetAllResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
+        public async Task<PaginatedList<MaternityDressGetAllResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
         {
             var maternityDressList = await _unitOfWork.MaternityDressRepository.GetAllAsync(index, pageSize, search, sortBy);
 
             // Map từng phần tử trong danh sách Items
-            var responseList = maternityDressList.Items.Select(item => _mapper.Map<GetAllResponseDto>(item)).ToList();
+            var responseList = maternityDressList.Items.Select(item => _mapper.Map<MaternityDressGetAllResponseDto>(item)).ToList();
 
             // Tạo PaginatedList mới với các đối tượng đã map
-            var paginatedResponse = new PaginatedList<GetAllResponseDto>(
+            var paginatedResponse = new PaginatedList<MaternityDressGetAllResponseDto>(
                 responseList,
                 maternityDressList.TotalCount,
                 maternityDressList.PageNumber,

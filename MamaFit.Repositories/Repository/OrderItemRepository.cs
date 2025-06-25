@@ -28,6 +28,16 @@ namespace MamaFit.Repositories.Repository
             }
             return await query.GetPaginatedList(index, pageSize);
         }
-        
+
+        public async Task<OrderItem> GetDetailById(string orderItemId)
+        {
+            var result = await _dbSet
+                .Include(x => x.DesignRequest)
+                .Include(x => x.MaternityDressDetail)
+                .Include(x => x.MaternityDressCustomization)
+                .FirstOrDefaultAsync(x => x.Id == orderItemId && !x.IsDeleted);
+
+            return result!;
+        }
     }
 }

@@ -6,7 +6,6 @@ namespace MamaFit.BusinessObjects.DTO.DesignRequestDto
     {
         public string? Id { get; set; }
         public ApplicationUser? User { get; set; }
-        public OrderItem? OrderItem { get; set; }
         public string? Description { get; set; }
         public List<string>? Images { get; set; } = new List<string>();
         public DateTime? CreatedAt { get; set; }

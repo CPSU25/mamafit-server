@@ -37,11 +37,11 @@ public class OrderItemService : IOrderItemService
         return responsePaginatedList;
     }
     
-    public async Task<OrderItemResponseDto> GetOrderItemByIdAsync(string id)
+    public async Task<OrderItemGetByIdResponseDto> GetOrderItemByIdAsync(string id)
     {
-        var orderItem = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(id);
+        var orderItem = await _unitOfWork.OrderItemRepository.GetDetailById(id);
         _validation.CheckNotFound(orderItem, "Order item is not exist!");
-        return _mapper.Map<OrderItemResponseDto>(orderItem);
+        return _mapper.Map<OrderItemGetByIdResponseDto>(orderItem);
     }
     
     public async Task<OrderItemResponseDto> CreateOrderItemAsync(OrderItemRequestDto model)

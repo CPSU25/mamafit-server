@@ -1,5 +1,6 @@
 ﻿using MamaFit.BusinessObjects.DTO.MaternityDressDetailDto;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Enum;
 
 namespace MamaFit.BusinessObjects.DTO.MaternityDressDto
 {
@@ -10,6 +11,7 @@ namespace MamaFit.BusinessObjects.DTO.MaternityDressDto
         public string? Name { get; set; }
         public string? Description { get; set; }
         public List<string> Images { get; set; } = new List<string>();
+        public GlobalStatus GlobalStatus { get; set; }
         public string? Slug { get; set; }
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }

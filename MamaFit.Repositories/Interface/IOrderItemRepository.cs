@@ -8,5 +8,7 @@ namespace MamaFit.Repositories.Interface
     {
         Task<PaginatedList<OrderItem>> GetAllAsync(int index, int pageSize, DateTime? startDate,
             DateTime? endDate);
+
+        Task<OrderItem> GetDetailById(string orderItemId);
     }
 }

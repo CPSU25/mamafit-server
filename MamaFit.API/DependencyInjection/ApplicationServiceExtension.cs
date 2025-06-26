@@ -54,11 +54,10 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<IBranchMaternityDressDetailRepository, BranchMaternityDressDetailRepository>();
             services.AddScoped<IWarrantyHistoryRepository, WarrantyHistoryRepository>();
-            services.AddScoped<IMaternityDressCustomizationRepository, MaternityDressCustomizationRepository>();
-            services.AddScoped<IMaternityDressSelectionRepository, MaternityDressSelectionRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             services.AddScoped<ICartItemRepository, CartItemRepository>();
+            services.AddScoped<IPresetRepository, PresetRepository>();
         }
 
         public static void AddServices(this IServiceCollection services)
@@ -94,12 +93,12 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IBranchMaternityDressDetailService, BranchMaternityDressDetailService>();
             services.AddScoped<IWarrantyHistoryService, WarrantyHistoryService>();
             services.AddScoped<ICacheService, CacheService>();
-            services.AddScoped<IMaternityDressCustomizationService, MaternityDressCustomizationService>();
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<ISepayService, SepayService>();
             services.AddScoped<IAddressService, AddressService>();
             services.AddScoped<IFeedbackService, FeedbackService>();
             services.AddScoped<ICartItemService, CartItemService>();
+            services.AddScoped<IPresetService, PresetService>();
         }
 
         public static IServiceCollection AddHttpClientServices(this IServiceCollection services)

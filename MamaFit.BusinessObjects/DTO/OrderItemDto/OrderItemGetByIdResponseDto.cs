@@ -1,5 +1,4 @@
 ﻿using MamaFit.BusinessObjects.DTO.DesignRequestDto;
-using MamaFit.BusinessObjects.DTO.MaternityDressCustomizationDto;
 using MamaFit.BusinessObjects.DTO.MaternityDressDetailDto;
 
 namespace MamaFit.BusinessObjects.DTO.OrderItemDto
@@ -8,6 +7,5 @@ namespace MamaFit.BusinessObjects.DTO.OrderItemDto
     {
         public DesignResponseDto? Desisgn { get; set; }
         public MaternityDressDetailResponseDto? MaternityDressDetail { get; set; }
-        public CustomResponseDto? MaternityDressCustom { get; set; }
     }
 }

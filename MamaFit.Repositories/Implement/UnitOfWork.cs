@@ -21,8 +21,6 @@ namespace MamaFit.Repositories.Implement
         public IDesignRequestRepository DesignRequestRepository { get; }
         public IMaternityDressRepository MaternityDressRepository { get; }
         public IMaternityDressDetailRepository MaternityDressDetailRepository { get; }
-        public IMaternityDressSelectionRepository MaternityDressSelectionRepository { get; }
-        public IMaternityDressCustomizationRepository MaternityDressCustomizationRepository { get; }
         public IOrderItemRepository OrderItemRepository { get; }
         public IMeasurementRepository MeasurementRepository { get; }
         public IMeasurementDiaryRepository MeasurementDiaryRepository { get; }
@@ -37,6 +35,7 @@ namespace MamaFit.Repositories.Implement
         public ITransactionRepository TransactionRepository { get; }
         public IFeedbackRepository FeedbackRepository { get; }
         public ICartItemRepository CartItemRepository { get; }
+        public IPresetRepository PresetRepository { get; }
 
         public UnitOfWork(ApplicationDbContext context,
             IUserRepository userRepository,
@@ -64,11 +63,10 @@ namespace MamaFit.Repositories.Implement
             IMilestoneRepository milestoneRepository,
             INotificationRepository notificationRepository,
             IWarrantyHistoryRepository warrantyHistoryRepository,
-            IMaternityDressSelectionRepository maternityDressSelectionRepository,
-            IMaternityDressCustomizationRepository maternityDressCustomizationRepository,
             ITransactionRepository transactionRepository,
             IFeedbackRepository feedbackRepository,
-            ICartItemRepository cartItemRepository)
+            ICartItemRepository cartItemRepository,
+            IPresetRepository presetRepository)
         {
             _context = context;
             UserRepository = userRepository;
@@ -96,11 +94,10 @@ namespace MamaFit.Repositories.Implement
             MilestoneRepository = milestoneRepository;
             NotificationRepository = notificationRepository;
             WarrantyHistoryRepository = warrantyHistoryRepository;
-            MaternityDressSelectionRepository = maternityDressSelectionRepository;
-            MaternityDressCustomizationRepository = maternityDressCustomizationRepository;
             TransactionRepository = transactionRepository;
             FeedbackRepository = feedbackRepository;
             CartItemRepository = cartItemRepository;
+            PresetRepository = presetRepository;
         }
 
         public int SaveChanges()

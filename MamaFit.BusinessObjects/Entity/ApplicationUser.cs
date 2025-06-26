@@ -32,11 +32,10 @@ namespace MamaFit.BusinessObjects.Entity
         public virtual ICollection<DesignRequest>? DesignRequests { get; set; } = new List<DesignRequest>();
         public virtual ICollection<Appointment>? Appointments { get; set; } = new List<Appointment>();
         public virtual ICollection<CartItem>? CartItems { get; set; } = new List<CartItem>();
-        public virtual ICollection<MaternityDressCustomization>? DressCustomizations { get; set; } = [];
         public virtual ICollection<Order>? Orders { get; set; } = [];
         public virtual ICollection<VoucherDiscount>? VoucherDiscounts { get; set; } = [];
         public virtual ICollection<OrderItemTask>? OrderItemTasks { get; set; } = [];
-
+        public virtual ICollection<Preset>? Presets { get; set; } = [];
         //Related chat navigation 
         public virtual ICollection<ChatRoom> CreatedChatRooms { get; set; } = new List<ChatRoom>();
         public virtual ICollection<ChatRoomMember> ChatRoomMemberships { get; set; } = new List<ChatRoomMember>();

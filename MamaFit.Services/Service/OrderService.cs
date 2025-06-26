@@ -32,6 +32,10 @@ public class OrderService : IOrderService
     {
         var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
         _validation.CheckNotFound(order, "Order not found");
+        if (order.Status == OrderStatus.CONFIRMED && order.PaymentStatus == PaymentStatus.PAID)
+        {
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Order is already confirmed and paid.");
+        }
         order.PaymentStatus = paymentStatus;
         order.Status = orderStatus;
         await _unitOfWork.OrderRepository.UpdateAsync(order);

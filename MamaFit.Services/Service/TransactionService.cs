@@ -80,12 +80,4 @@ public class TransactionService : ITransactionService
         await _unitOfWork.TransactionRepository.InsertAsync(transaction);
         await _unitOfWork.SaveChangesAsync();
     }
-    
-    private string GeneratePaymentCode() 
-    {
-        string prefix = "PAY";
-        string datePart = DateTime.UtcNow.ToString("yyyyMMdd");
-        string randomPart = new Random().Next(1000, 9999).ToString();
-        return $"{prefix}-{datePart}-{randomPart}";
-    }
 }

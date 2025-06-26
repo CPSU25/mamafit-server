@@ -19,7 +19,7 @@ services:
       - SepaySettings__ApiBaseUri=${SEPAY_API_BASE_URI}
       - SepaySettings__AccountNumber=${SEPAY_ACCOUNT_NUMBER}
       - SepaySettings__AccountName=${SEPAY_ACCOUNT_NAME}
-      - SepaySettings__BankCode=${SEPAY_BankCode}
+      - SepaySettings__BankCode=${SEPAY_BANK_CODE}
     networks:
       - default
 

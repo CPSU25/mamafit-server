@@ -95,7 +95,6 @@ jobs:
           script: |
             cd ~/mamafit
 
-            # 📝 Tạo file .env từ GitHub Secrets
             echo "REGISTRY_NAME=${{ secrets.REGISTRY_NAME }}" > .env
             echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
             echo "DB_USER=${{ secrets.DB_USER }}" >> .env
@@ -107,6 +106,11 @@ jobs:
             echo "MAILGUN_DOMAIN=${{ secrets.MAILGUN_DOMAIN }}" >> .env
             echo "VPS_HOST=${{ secrets.VPS_HOST }}" >> .env
             echo "REDIS_CONN=${{ secrets.REDIS_CONN }}" >> .env
+            echo "SEPAY_API_KEY=${{ secrets.SEPAY_API_KEY }}" >> .env
+            echo "SEPAY_API_BASE_URI=${{ secrets.SEPAY_API_BASE_URI }}" >> .env
+            echo "SEPAY_ACCOUNT_NUMBER=${{ secrets.SEPAY_ACCOUNT_NUMBER }}" >> .env
+            echo "SEPAY_ACCOUNT_NAME=${{ secrets.SEPAY_ACCOUNT_NAME }}" >> .env
+            echo "SEPAY_BANK_CODE=${{ secrets.SEPAY_BANK_CODE }}" >> .env
 
             # 🐳 Pull image và deploy bằng Docker Compose
             echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
@@ -116,36 +120,183 @@ jobs:
             # ✅ Kiểm tra container đang chạy
             docker ps -a | grep mamafit-api
 
-      - name: Notify Discord (Success)
+      - name: Get advanced deployment info
+        id: advanced-info
+        run: |
+          echo "deployment_time=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_OUTPUT
+          echo "deployment_duration=$((SECONDS / 60))m $((SECONDS % 60))s" >> $GITHUB_OUTPUT
+          echo "actor_avatar=https://github.com/${{ github.actor }}.png" >> $GITHUB_OUTPUT
+          echo "repo_url=https://github.com/${{ github.repository }}" >> $GITHUB_OUTPUT
+          echo "short_sha=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+          echo "deployment_url=https://api.mamafit.studio/" >> $GITHUB_OUTPUT
+          echo "files_changed=$(git diff --name-only HEAD~1 HEAD | wc -l)" >> $GITHUB_OUTPUT
+
+      - name: Notify Discord (Success) - Advanced
         if: success()
         run: |
           curl -H "Content-Type: application/json" \
                -X POST \
-               -d "{\"embeds\": [{
-                 \"title\": \"✅ MamaFit API deployed successfully!\",
-                 \"color\": 5763719,
-                 \"fields\": [
-                   { \"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true },
-                   { \"name\": \"Commit\", \"value\": \"[${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\", \"inline\": true },
-                   { \"name\": \"CI/CD Run\", \"value\": \"[View Logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\" }
-                 ],
-                 \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
-               }]}" \
+               -d "{
+                 \"content\": \"@here 🎉 **MamaFit API** has been successfully deployed!\",
+                 \"embeds\": [{
+                   \"title\": \"🚀 Deployment Successful\",
+                   \"description\": \"✨ Your application is now live and ready to serve users!\",
+                   \"color\": 5763719,
+                   \"thumbnail\": {
+                     \"url\": \"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg\"
+                   },
+                   \"author\": {
+                     \"name\": \"${{ github.actor }}\",
+                     \"icon_url\": \"${{ steps.advanced-info.outputs.actor_avatar }}\",
+                     \"url\": \"https://github.com/${{ github.actor }}\"
+                   },
+                   \"fields\": [
+                     {
+                       \"name\": \"🌐 Live Application\",
+                       \"value\": \"[🔗 Visit App](${{ steps.advanced-info.outputs.deployment_url }})\",
+                       \"inline\": false
+                     },
+                     {
+                       \"name\": \"📂 Repository\",
+                       \"value\": \"[${{ github.repository }}](${{ steps.advanced-info.outputs.repo_url }})\",
+                       \"inline\": true
+                     },
+                     {
+                       \"name\": \"🌿 Branch\",
+                       \"value\": \"\`${{ github.ref_name }}\`\",
+                       \"inline\": true
+                     },
+                     {
+                       \"name\": \"🔄 Workflow\",
+                       \"value\": \"${{ github.workflow }}\",
+                       \"inline\": true
+                     },
+                     {
+                       \"name\": \"📝 Latest Changes\",
+                       \"value\": \"${{ github.event.head_commit.message }}\",
+                       \"inline\": false
+                     },
+                     {
+                       \"name\": \"🔗 Commit\",
+                       \"value\": \"[\`${{ steps.advanced-info.outputs.short_sha }}\`](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\",
+                       \"inline\": true
+                     },
+                     {
+                       \"name\": \"⏱️ Build Time\",
+                       \"value\": \"${{ steps.advanced-info.outputs.deployment_duration }}\",
+                       \"inline\": true
+                     },
+                     {
+                       \"name\": \"📊 Run #\",
+                       \"value\": \"${{ github.run_number }}\",
+                       \"inline\": true
+                     },
+                     {
+                       \"name\": \"📁 Files Changed\",
+                       \"value\": \"${{ steps.advanced-info.outputs.files_changed }} files\",
+                       \"inline\": true
+                     },
+                     {
+                       \"name\": \"🎯 Trigger\",
+                       \"value\": \"${{ github.event_name }}\",
+                       \"inline\": true
+                     },
+                     {
+                       \"name\": \"🔍 Logs\",
+                       \"value\": \"[View Details](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\",
+                       \"inline\": true
+                     }
+                   ],
+                   \"footer\": {
+                     \"text\": \"MamaFit CI/CD Pipeline • Powered by GitHub Actions\",
+                     \"icon_url\": \"https://github.githubassets.com/images/modules/logos_page/Octocat.png\"
+                   },
+                   \"timestamp\": \"${{ steps.advanced-info.outputs.deployment_time }}\"
+                 }]
+               }" \
                ${{ secrets.DISCORD_WEBHOOK_URL }}
 
-      - name: Notify Discord (Failure)
+      - name: Notify Discord (Failure) - Advanced
         if: failure()
         run: |
           curl -H "Content-Type: application/json" \
                -X POST \
-               -d "{\"embeds\": [{
-                 \"title\": \"❌ MamaFit API deploy failed!\",
-                 \"color\": 15158332,
-                 \"fields\": [
-                   { \"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true },
-                   { \"name\": \"Commit\", \"value\": \"[${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\", \"inline\": true },
-                   { \"name\": \"CI/CD Run\", \"value\": \"[View Logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\" }
-                 ],
-                 \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
-               }]}" \
+               -d "{
+                 \"content\": \"@here 🚨 **MamaFit API** deployment failed!\",
+                 \"embeds\": [{
+                   \"title\": \"💥 Deployment Failed\",
+                   \"description\": \"❌ The deployment process encountered an error. Immediate attention required!\",
+                   \"color\": 15158332,
+                   \"thumbnail\": {
+                     \"url\": \"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg\"
+                   },
+                   \"author\": {
+                     \"name\": \"${{ github.actor }}\",
+                     \"icon_url\": \"${{ steps.advanced-info.outputs.actor_avatar }}\",
+                     \"url\": \"https://github.com/${{ github.actor }}\"
+                   },
+                   \"fields\": [
+                     {
+                       \"name\": \"📂 Repository\",
+                       \"value\": \"[${{ github.repository }}](${{ steps.advanced-info.outputs.repo_url }})\",
+                       \"inline\": true
+                     },
+                     {
+                       \"name\": \"🌿 Branch\",
+                       \"value\": \"\`${{ github.ref_name }}\`\",
+                       \"inline\": true
+                     },
+                     {
+                       \"name\": \"🔄 Workflow\",
+                       \"value\": \"${{ github.workflow }}\",
+                       \"inline\": true
+                     },
+                     {
+                       \"name\": \"📝 Failed Changes\",
+                       \"value\": \"${{ github.event.head_commit.message }}\",
+                       \"inline\": false
+                     },
+                     {
+                       \"name\": \"🔗 Failed Commit\",
+                       \"value\": \"[\`${{ steps.advanced-info.outputs.short_sha }}\`](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\",
+                       \"inline\": true
+                     },
+                     {
+                       \"name\": \"⏱️ Failed After\",
+                       \"value\": \"${{ steps.advanced-info.outputs.deployment_duration }}\",
+                       \"inline\": true
+                     },
+                     {
+                       \"name\": \"📊 Run #\",
+                       \"value\": \"${{ github.run_number }}\",
+                       \"inline\": true
+                     },
+                     {
+                       \"name\": \"📁 Files in Commit\",
+                       \"value\": \"${{ steps.advanced-info.outputs.files_changed }} files\",
+                       \"inline\": true
+                     },
+                     {
+                       \"name\": \"🎯 Trigger\",
+                       \"value\": \"${{ github.event_name }}\",
+                       \"inline\": true
+                     },
+                     {
+                       \"name\": \"🔍 Debug Logs\",
+                       \"value\": \"[Investigate Issue](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\",
+                       \"inline\": true
+                     },
+                     {
+                       \"name\": \"🆘 Quick Actions\",
+                       \"value\": \"• [Rerun Workflow](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\\n• [View Recent Commits](https://github.com/${{ github.repository }}/commits/${{ github.ref_name }})\\n• [Check Issues](https://github.com/${{ github.repository }}/issues)\",
+                       \"inline\": false
+                     }
+                   ],
+                   \"footer\": {
+                     \"text\": \"MamaFit CI/CD Pipeline • Powered by GitHub Actions\",
+                     \"icon_url\": \"https://github.githubassets.com/images/modules/logos_page/Octocat.png\"
+                   },
+                   \"timestamp\": \"${{ steps.advanced-info.outputs.deployment_time }}\"
+                 }]
+               }" \
                ${{ secrets.DISCORD_WEBHOOK_URL }}

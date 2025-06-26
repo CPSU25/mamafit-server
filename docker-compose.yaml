@@ -15,6 +15,11 @@ services:
       - EmailSettings__ApiKey=${MAILGUN_API_KEY}
       - EmailSettings__Domain=${MAILGUN_DOMAIN}
       - RedisSettings__ConnectionString=${REDIS_CONN}
+      - SepaySettings__ApiKey=${SEPAY_API_KEY}
+      - SepaySettings__ApiBaseUri=${SEPAY_API_BASE_URI}
+      - SepaySettings__AccountNumber=${SEPAY_ACCOUNT_NUMBER}
+      - SepaySettings__AccountName=${SEPAY_ACCOUNT_NAME}
+      - SepaySettings__BankCode=${SEPAY_BankCode}
     networks:
       - default
 

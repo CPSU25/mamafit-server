@@ -1,5 +1,3 @@
-using System.Globalization;
-using System.Net.Http.Json;
 using System.Text.RegularExpressions;
 using AutoMapper;
 using MamaFit.BusinessObjects.DTO.OrderDto;
@@ -11,7 +9,6 @@ using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 
 namespace MamaFit.Services.ExternalService.Sepay;
 
@@ -45,75 +42,91 @@ public class SepayService : ISepayService
         // {
         //     throw new ErrorException(StatusCodes.Status401Unauthorized, ApiCodes.UNAUTHORIZED, "Invalid API key");
         // }
-        
-        
+
+
         var orderCode = ExtractOrderCodeFromContent(payload.content);
         if (string.IsNullOrEmpty(orderCode))
         {
-            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT, "No order code found in payment content");
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
+                "No order code found in payment content");
         }
-        
+
         var order = await _unitOfWork.OrderRepository.GetByCodeAsync(orderCode);
         _validationService.CheckNotFound(order, $"Order with code {orderCode} not found");
-        await _transactionService.CreateTransactionAsync(payload, order.Id, order.Code);
         
-        await _orderService.UpdateOrderStatusAsync(
-            order.Id, 
-            OrderStatus.CONFIRMED,
-            PaymentStatus.PAID);
+            await _transactionService.CreateTransactionAsync(payload, order.Id, order.Code);
+            await _orderService.UpdateOrderStatusAsync(order.Id, OrderStatus.CONFIRMED, PaymentStatus.PAID);
     }
-    
     public async Task<SepayQrResponse> CreatePaymentQrAsync(string orderId, string callbackUrl)
-{
-    var order = await _unitOfWork.OrderRepository.GetByIdWithItems(orderId);
-    if (order == null)
     {
-        throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Order not found");
+        var order = await _unitOfWork.OrderRepository.GetByIdWithItems(orderId);
+        if (order == null)
+        {
+            throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Order not found");
+        }
+
+        if (order.PaymentStatus != PaymentStatus.PENDING)
+        {
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                "Order is not in pending payment status");
+        }
+
+
+        var qrUrl = GenerateSepayQrUrl(
+            accountNumber: _sepaySettings.AccountNumber,
+            bankCode: _sepaySettings.BankCode,
+            amount: order.TotalAmount,
+            description: $"SEVQR{order.Code}",
+            template: "qronly",
+            download: "true");
+
+        var qrResponse = new SepayQrResponse
+        {
+            QrUrl = qrUrl,
+            OrderWithItem = _mapper.Map<OrderWithItemResponseDto>(order),
+        };
+        return qrResponse;
     }
 
-    if (order.PaymentStatus != PaymentStatus.PENDING)
+    private string GenerateSepayQrUrl(string accountNumber, string bankCode, float amount, string description,
+        string template, string download)
     {
-        throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Order is not in pending payment status");
+        string paymentCode = GeneratePaymentCode();
+        string fullDescription = $"{paymentCode}{description}";
+        var baseUrl = $"{_sepaySettings.ApiBaseUri}";
+
+        var queryParams = new Dictionary<string, string>
+        {
+            ["acc"] = accountNumber,
+            ["bank"] = bankCode,
+            ["amount"] = amount.ToString("0"),
+            ["des"] = fullDescription,
+            ["template"] = template,
+            ["download"] = download
+        };
+        
+        var queryString = string.Join("&", queryParams
+            .Where(kv => !string.IsNullOrEmpty(kv.Value))
+            .Select(kv => $"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(kv.Value)}"));
+
+        return $"{baseUrl}?{queryString}";
     }
     
-    
-    var qrUrl = GenerateSepayQrUrl(
-        accountNumber: _sepaySettings.AccountNumber,
-        bankCode: _sepaySettings.BankCode,
-        amount: order.TotalAmount,
-        description: $"SEVQR{order.Code}",
-        template: "qronly",
-        download: "true");
-    
-    var qrResponse = new SepayQrResponse
+    private string GeneratePaymentCode()
     {
-        QrUrl = qrUrl,
-        OrderWithItem = _mapper.Map<OrderWithItemResponseDto>(order),
-    };
-    return qrResponse;
-}
-
-private string GenerateSepayQrUrl(string accountNumber, string bankCode, float amount, string description, string template, string download)
-{
-    var baseUrl = $"{_sepaySettings.ApiBaseUri}";
+        var prefix = "PAY";
+        var randomPart = GenerateRandomString(7); 
+        return $"{prefix}{randomPart}";
+    }
     
-    var queryParams = new Dictionary<string, string>
+    private string GenerateRandomString(int length)
     {
-        ["acc"] = accountNumber,
-        ["bank"] = bankCode,
-        ["amount"] = amount.ToString("0"), 
-        ["des"] = description,
-        ["template"] = template,
-        ["download"] = download
-    };
-
-    // Tạo query string
-    var queryString = string.Join("&", queryParams
-        .Where(kv => !string.IsNullOrEmpty(kv.Value))
-        .Select(kv => $"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(kv.Value)}"));
-
-    return $"{baseUrl}?{queryString}";
-}
+        const string chars = "0123456789";
+        var random = new Random();
+        return new string(Enumerable.Repeat(chars, length)
+            .Select(s => s[random.Next(s.Length)])
+            .ToArray());
+    }
     
     private bool ValidateAuthHeader(string authHeader)
     {
@@ -122,14 +135,7 @@ private string GenerateSepayQrUrl(string accountNumber, string bankCode, float a
 
     private string ExtractOrderCodeFromContent(string content)
     {
-        // Tìm mã đơn hàng theo format SEVQR{orderCode}
-        var match = Regex.Match(content, @"SEVQR(\w+)");
-        return match.Success ? match.Groups[1].Value : null;
-    }
-    
-    private string ExtractPaymentCode(string content)
-    {
-        var match = Regex.Match(content, @"PAY\d+");
+        var match = Regex.Match(content, @"ORD\d{3}");
         return match.Success ? match.Value : null;
     }
 }

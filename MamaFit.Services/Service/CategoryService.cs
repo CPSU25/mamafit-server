@@ -14,12 +14,14 @@ namespace MamaFit.Services.Service
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IValidationService _validation;
 
-        public CategoryService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor contextAccessor)
+        public CategoryService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor contextAccessor, IValidationService validation)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _contextAccessor = contextAccessor;
+            _validation = validation;
         }
 
         private string GetCurrentUserName()
@@ -29,6 +31,8 @@ namespace MamaFit.Services.Service
 
         public async Task CreateAsync(CategoryRequestDto requestDto)
         {
+            await _validation.ValidateAndThrowAsync(requestDto);
+
             var newCategory = _mapper.Map<Category>(requestDto);
             newCategory.Status = GlobalStatus.INACTIVE;
 
@@ -81,6 +85,7 @@ namespace MamaFit.Services.Service
 
         public async Task UpdateAsync(string id, CategoryRequestDto requestDto)
         {
+            await _validation.ValidateAndThrowAsync(requestDto);
             var oldCategory = await _unitOfWork.CategoryRepository.GetByIdAsync(id);
 
             if (oldCategory == null || oldCategory.IsDeleted)

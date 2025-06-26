@@ -36,14 +36,13 @@ public class SepayService : ISepayService
         _mapper = mapper;
     }
 
-    public async Task ProcessPaymentWebhookAsync(SepayWebhookPayload payload)
+    public async Task ProcessPaymentWebhookAsync(SepayWebhookPayload payload, string authHeader)
     {
-        // if (!ValidateAuthHeader(authHeader))
-        // {
-        //     throw new ErrorException(StatusCodes.Status401Unauthorized, ApiCodes.UNAUTHORIZED, "Invalid API key");
-        // }
-
-
+        if (!ValidateAuthHeader(authHeader))
+        {
+            throw new ErrorException(StatusCodes.Status401Unauthorized, ApiCodes.UNAUTHORIZED, "Invalid API key");
+        }
+        
         var orderCode = ExtractOrderCodeFromContent(payload.content);
         if (string.IsNullOrEmpty(orderCode))
         {
@@ -68,10 +67,9 @@ public class SepayService : ISepayService
         if (order.PaymentStatus != PaymentStatus.PENDING)
         {
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
-                "Order is not in pending payment status");
+                "Order is not in pending payment status or already paid");
         }
-
-
+        
         var qrUrl = GenerateSepayQrUrl(
             accountNumber: _sepaySettings.AccountNumber,
             bankCode: _sepaySettings.BankCode,
@@ -114,7 +112,7 @@ public class SepayService : ISepayService
     
     private string GeneratePaymentCode()
     {
-        var prefix = "PAY";
+        var prefix = "TRF";
         var randomPart = GenerateRandomString(7); 
         return $"{prefix}{randomPart}";
     }
@@ -135,7 +133,11 @@ public class SepayService : ISepayService
 
     private string ExtractOrderCodeFromContent(string content)
     {
-        var match = Regex.Match(content, @"ORD\d{3}");
-        return match.Success ? match.Value : null;
+        if (content.Length > 15)
+        {
+            return content.Substring(15);
+        }
+        return null;
     }
+
 }

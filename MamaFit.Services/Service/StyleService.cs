@@ -123,7 +123,7 @@ namespace MamaFit.Services.Service
 
         public async Task<StyleGetByIdResponseDto> GetByIdAsync(string id)
         {
-            var oldStyle = await _unitOfWork.StyleRepository.GetByIdAsync(id);
+            var oldStyle = await _unitOfWork.StyleRepository.GetDetailById(id);
             if (oldStyle == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Style is not available");
 

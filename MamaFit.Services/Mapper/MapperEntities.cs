@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MamaFit.BusinessObjects.DTO.AddressDto;
 using MamaFit.BusinessObjects.DTO.AppointmentDto;
-using MamaFit.BusinessObjects.DTO.RoleDto;
 using MamaFit.BusinessObjects.DTO.UserDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.DTO.MaternityDressDto;
@@ -30,8 +29,8 @@ using MamaFit.BusinessObjects.DTO.MilestoneDto;
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.DTO.WarrantyHistoryDto;
-using MamaFit.BusinessObjects.DTO.MaternityDressSelectionDto;
-using MamaFit.BusinessObjects.DTO.MaternityDressCustomizationDto;
+using MamaFit.BusinessObjects.DTO.RoleDto;
+using MamaFit.BusinessObjects.DTO.PresetDto;
 
 namespace MamaFit.Services.Mapper
 {
@@ -178,7 +177,6 @@ namespace MamaFit.Services.Mapper
             CreateMap<OrderItem, OrderItemGetByIdResponseDto>()
                 .ForMember(dest => dest.Desisgn, opt => opt.MapFrom(src => src.DesignRequest))
                 .ForMember(dest => dest.MaternityDressDetail, opt => opt.MapFrom(src => src.MaternityDressDetail))
-                .ForMember(dest => dest.MaternityDressCustom, opt => opt.MapFrom(src => src.MaternityDressCustomization))
                 .ReverseMap();
 
             //Milestone Mapper
@@ -196,17 +194,6 @@ namespace MamaFit.Services.Mapper
             CreateMap<WarrantyHistory, WarrantyHistoryRequestDto>().ReverseMap();
             CreateMap<WarrantyHistory, WarrantyHistoryResponseDto>().ReverseMap();
 
-            //MaternityDressSelection Mapper
-            CreateMap<MaternityDressSelection, SelectionCreateRequestDto>().ReverseMap();
-            CreateMap<MaternityDressSelection, SelectionResponseDto>().ReverseMap();
-
-            //MaternityDessCustomization Mapper
-            CreateMap<MaternityDressCustomization, CustomCreateRequestDto>()
-                .ForMember(dest => dest.Selections, opt => opt.MapFrom(src => src.MaternityDressSelections))
-                .ReverseMap();
-            CreateMap<MaternityDressCustomization, CustomResponseDto>().ReverseMap();
-            CreateMap<MaternityDressCustomization, CustomUpdateRequestDto>().ReverseMap();
-
             //Address Mapper
             CreateMap<Address, AddressRequestDto>().ReverseMap();
             CreateMap<Address, AddressResponseDto>().ReverseMap();
@@ -218,6 +205,12 @@ namespace MamaFit.Services.Mapper
             //CartItem Mapper
             CreateMap<CartItem, CartItemRequestDto>().ReverseMap();
             CreateMap<CartItem, CartItemResponseDto>().ReverseMap();
+
+            //Preset Mapper
+            CreateMap<Preset, PresetCreateRequestDto>().ReverseMap();
+            CreateMap<Preset, PresetUpdateRequestDto>().ReverseMap();
+            CreateMap<Preset, PresetGetAllResponseDto>().ReverseMap();
+            CreateMap<Preset, PresetGetByIdResponseDto>().ReverseMap();
         }
     }
 }

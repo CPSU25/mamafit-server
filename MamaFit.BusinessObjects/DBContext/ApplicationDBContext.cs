@@ -2,6 +2,7 @@
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Entity.ChatEntity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace MamaFit.BusinessObjects.DbContext
 {
@@ -29,7 +30,6 @@ namespace MamaFit.BusinessObjects.DbContext
         public DbSet<Component> Components { get; set; }
         public DbSet<ComponentOption> ComponentOptions { get; set; }
         public DbSet<DesignRequest> DesignRequests { get; set; }
-        public DbSet<MaternityDressCustomization> DressCustomizations { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<MaternityDress> MaternityDresses { get; set; }
@@ -71,7 +71,6 @@ namespace MamaFit.BusinessObjects.DbContext
             modelBuilder.Entity<Component>().ToTable("Component");
             modelBuilder.Entity<ComponentOption>().ToTable("ComponentOption");
             modelBuilder.Entity<DesignRequest>().ToTable("DesignRequest");
-            modelBuilder.Entity<MaternityDressCustomization>().ToTable("MaternityDressCustomization");
             modelBuilder.Entity<Feedback>().ToTable("Feedback");
             modelBuilder.Entity<Address>().ToTable("Address");
             modelBuilder.Entity<MaternityDress>().ToTable("MaternityDress");
@@ -149,11 +148,6 @@ namespace MamaFit.BusinessObjects.DbContext
                     .HasForeignKey(o => o.UserId)
                     .OnDelete(DeleteBehavior.NoAction);
 
-                options.HasMany(u => u.DressCustomizations)
-                    .WithOne(o => o.User)
-                    .HasForeignKey(o => o.UserId)
-                    .OnDelete(DeleteBehavior.NoAction);
-
                 options.HasMany(u => u.VoucherDiscounts)
                     .WithOne(o => o.User)
                     .HasForeignKey(o => o.UserId)
@@ -167,6 +161,11 @@ namespace MamaFit.BusinessObjects.DbContext
                 options.HasMany(u => u.Branch)
                     .WithOne(b => b.BranchManager)
                     .HasForeignKey(b => b.BranchManagerId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                options.HasMany(u => u.Presets)
+                    .WithOne(p => p.User)
+                    .HasForeignKey(p => p.UserId)
                     .OnDelete(DeleteBehavior.NoAction);
 
             });
@@ -201,14 +200,14 @@ namespace MamaFit.BusinessObjects.DbContext
                     .HasForeignKey<DesignRequest>(ot => ot.OrderItemId)
                     .OnDelete(DeleteBehavior.NoAction);
 
-                options.HasOne(ot => ot.MaternityDressCustomization)
-                    .WithOne(mdc => mdc.OrderItem)
-                    .HasForeignKey<MaternityDressCustomization>(ot => ot.OrderItemId)
-                    .OnDelete(DeleteBehavior.NoAction);
-
                 options.HasMany(ot => ot.WarrantyRequests)
                     .WithOne(wh => wh.OriginalOrderItem)
                     .HasForeignKey(wh => wh.OriginalOrderItemId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                options.HasOne(ot => ot.Preset)
+                    .WithMany(p => p.OrderItems)
+                    .HasForeignKey(ot => ot.PresetId)
                     .OnDelete(DeleteBehavior.NoAction);
             });
 
@@ -297,6 +296,15 @@ namespace MamaFit.BusinessObjects.DbContext
                       .WithMany(r => r.Members)
                       .HasForeignKey(m => m.ChatRoomId)
                       .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<ComponentOption>(options =>
+            {
+                options.OwnsOne(Tag => Tag.Tag, tag =>
+                {
+                    tag.Property(t => t.ParentTag).HasColumnName("ParentTag");
+                    tag.Property(t => t.ChildTag).HasColumnName("ChildTag");
+                });
             });
 
             SeedData.Seed(modelBuilder);

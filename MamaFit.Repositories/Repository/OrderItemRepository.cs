@@ -34,7 +34,7 @@ namespace MamaFit.Repositories.Repository
             var result = await _dbSet
                 .Include(x => x.DesignRequest)
                 .Include(x => x.MaternityDressDetail)
-                .Include(x => x.MaternityDressCustomization)
+                .Include(x => x.Preset)
                 .FirstOrDefaultAsync(x => x.Id == orderItemId && !x.IsDeleted);
 
             return result!;

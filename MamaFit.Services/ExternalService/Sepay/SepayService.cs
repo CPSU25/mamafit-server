@@ -42,7 +42,7 @@ public class SepayService : ISepayService
         {
             throw new ErrorException(StatusCodes.Status401Unauthorized, ApiCodes.UNAUTHORIZED, "Invalid API key");
         }
-        
+
         var orderCode = ExtractOrderCodeFromContent(payload.content);
         if (string.IsNullOrEmpty(orderCode))
         {
@@ -52,10 +52,11 @@ public class SepayService : ISepayService
 
         var order = await _unitOfWork.OrderRepository.GetByCodeAsync(orderCode);
         _validationService.CheckNotFound(order, $"Order with code {orderCode} not found");
-        
-            await _transactionService.CreateTransactionAsync(payload, order.Id, order.Code);
-            await _orderService.UpdateOrderStatusAsync(order.Id, OrderStatus.CONFIRMED, PaymentStatus.PAID);
+
+        await _transactionService.CreateTransactionAsync(payload, order.Id, order.Code);
+        await _orderService.UpdateOrderStatusAsync(order.Id, OrderStatus.CONFIRMED, PaymentStatus.PAID);
     }
+
     public async Task<SepayQrResponse> CreatePaymentQrAsync(string orderId, string callbackUrl)
     {
         var order = await _unitOfWork.OrderRepository.GetByIdWithItems(orderId);
@@ -69,7 +70,7 @@ public class SepayService : ISepayService
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                 "Order is not in pending payment status or already paid");
         }
-        
+
         var qrUrl = GenerateSepayQrUrl(
             accountNumber: _sepaySettings.AccountNumber,
             bankCode: _sepaySettings.BankCode,
@@ -102,21 +103,21 @@ public class SepayService : ISepayService
             ["template"] = template,
             ["download"] = download
         };
-        
+
         var queryString = string.Join("&", queryParams
             .Where(kv => !string.IsNullOrEmpty(kv.Value))
             .Select(kv => $"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(kv.Value)}"));
 
         return $"{baseUrl}?{queryString}";
     }
-    
+
     private string GeneratePaymentCode()
     {
         var prefix = "TRF";
-        var randomPart = GenerateRandomString(7); 
+        var randomPart = GenerateRandomString(7);
         return $"{prefix}{randomPart}";
     }
-    
+
     private string GenerateRandomString(int length)
     {
         const string chars = "0123456789";
@@ -125,19 +126,20 @@ public class SepayService : ISepayService
             .Select(s => s[random.Next(s.Length)])
             .ToArray());
     }
-    
+
     private bool ValidateAuthHeader(string authHeader)
     {
-        return authHeader == $"ApiKey {_sepaySettings.ApiKey}";
+        return authHeader == $"Apikey {_sepaySettings.ApiKey}";
     }
 
     private string ExtractOrderCodeFromContent(string content)
     {
-        if (content.Length > 15)
+        var startIndex = content.IndexOf("SEVQR");
+        if (startIndex != -1)
         {
-            return content.Substring(15);
+            var orderCode = content.Substring(startIndex + "SEVQR".Length, 6);
+            return orderCode;
         }
         return null;
     }
-
 }

@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. API", "1. API", "{02EA68
 		Dockerfile = Dockerfile
 		docker-compose.yaml = docker-compose.yaml
 		docker-compose.build.yaml = docker-compose.build.yaml
+		.gitignore = .gitignore
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Services", "2. Services", "{C5787510-60EC-4024-BFAC-69B0D9BE9767}"

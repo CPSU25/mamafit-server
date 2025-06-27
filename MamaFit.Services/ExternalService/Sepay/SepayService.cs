@@ -1,4 +1,4 @@
-using System.Text.RegularExpressions;
+using System.Security.Cryptography;
 using AutoMapper;
 using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.DTO.SepayDto;
@@ -113,7 +113,7 @@ public class SepayService : ISepayService
 
     private string GeneratePaymentCode()
     {
-        var prefix = "TRF";
+        var prefix = "T";
         var randomPart = GenerateRandomString(7);
         return $"{prefix}{randomPart}";
     }
@@ -121,10 +121,19 @@ public class SepayService : ISepayService
     private string GenerateRandomString(int length)
     {
         const string chars = "0123456789";
-        var random = new Random();
-        return new string(Enumerable.Repeat(chars, length)
-            .Select(s => s[random.Next(s.Length)])
-            .ToArray());
+        var data = new byte[length];
+        using (var rng = RandomNumberGenerator.Create())
+        {
+            rng.GetBytes(data);
+        }
+
+        var result = new char[length];
+        for (int i = 0; i < length; i++)
+        {
+            result[i] = chars[data[i] % chars.Length];
+        }
+
+        return new string(result);
     }
 
     private bool ValidateAuthHeader(string authHeader)

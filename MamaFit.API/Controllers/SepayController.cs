@@ -33,8 +33,7 @@ public class SepayController : ControllerBase
     [HttpPost("generate-qr/{orderId}")]
     public async Task<IActionResult> GeneratePaymentQr(string orderId)
     {
-        var callbackUrl = $"{Request.Scheme}://{Request.Host}/api/sepay-auth";
-        var qrResponse = await _sepayService.CreatePaymentQrAsync(orderId, callbackUrl);
+        var qrResponse = await _sepayService.CreatePaymentQrAsync(orderId);
 
         return Ok(new ResponseModel<SepayQrResponse>(
             StatusCodes.Status201Created,

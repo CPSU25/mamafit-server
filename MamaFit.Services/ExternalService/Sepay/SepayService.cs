@@ -57,7 +57,7 @@ public class SepayService : ISepayService
         await _orderService.UpdateOrderStatusAsync(order.Id, OrderStatus.CONFIRMED, PaymentStatus.PAID);
     }
 
-    public async Task<SepayQrResponse> CreatePaymentQrAsync(string orderId, string callbackUrl)
+    public async Task<SepayQrResponse> CreatePaymentQrAsync(string orderId)
     {
         var order = await _unitOfWork.OrderRepository.GetByIdWithItems(orderId);
         if (order == null)
@@ -113,7 +113,7 @@ public class SepayService : ISepayService
 
     private string GeneratePaymentCode()
     {
-        var prefix = "T";
+        var prefix = "TF";
         var randomPart = GenerateRandomString(7);
         return $"{prefix}{randomPart}";
     }
@@ -126,13 +126,11 @@ public class SepayService : ISepayService
         {
             rng.GetBytes(data);
         }
-
         var result = new char[length];
         for (int i = 0; i < length; i++)
         {
             result[i] = chars[data[i] % chars.Length];
         }
-
         return new string(result);
     }
 

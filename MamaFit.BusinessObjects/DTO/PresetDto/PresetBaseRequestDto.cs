@@ -7,5 +7,7 @@ namespace MamaFit.BusinessObjects.DTO.PresetDto
     {
         public List<string>? Images { get; set; }
         public PresetType Type { get; set; }
+        public bool IsDefault { get; set; } = false;
+        public float Price { get; set; } 
     }
 }

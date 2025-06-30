@@ -13,5 +13,6 @@ namespace MamaFit.BusinessObjects.Entity
         public List<string>? Images { get; set; } = [];
         public GlobalStatus GlobalStatus { get; set; } = GlobalStatus.ACTIVE;
         public virtual ICollection<Component> Components { get; set; } = [];
+        public virtual ICollection<Preset>? Presets { get; set; } = [];
     }
 }

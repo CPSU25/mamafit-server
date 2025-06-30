@@ -1,4 +1,5 @@
 ﻿using MamaFit.BusinessObjects.DTO.ComponentDto;
+using MamaFit.BusinessObjects.DTO.PresetDto;
 using MamaFit.BusinessObjects.Enum;
 
 namespace MamaFit.BusinessObjects.DTO.StyleDto
@@ -12,6 +13,7 @@ namespace MamaFit.BusinessObjects.DTO.StyleDto
         public string? Description { get; set; }
         public List<string>? Images { get; set; } = [];
         public List<ComponentResponseDto>? Components { get; set; } = [];
+        public List<PresetGetAllResponseDto>? Presets { get; set; } = [];
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime CreatedAt { get; set; }

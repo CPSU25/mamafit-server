@@ -7,11 +7,13 @@ namespace MamaFit.BusinessObjects.Entity
     {
         public string? UserId { get; set; }
         public string? DesignRequestId { get; set; }
+        public string? StyleId { get; set; }
         public List<string>? Images { get; set; }
         public bool IsDefault { get; set; } = false;
-        public float Price { get; set; } 
+        public float Price { get; set; }
         public PresetType Type { get; set; }
         public ApplicationUser? User { get; set; }
+        public Style? Style { get; set; }
         public DesignRequest? DesignRequest { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; } = [];
         public virtual ICollection<ComponentOption> ComponentOptions { get; set; } = [];

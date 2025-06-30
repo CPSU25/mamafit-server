@@ -307,6 +307,14 @@ namespace MamaFit.BusinessObjects.DbContext
                 });
             });
 
+            modelBuilder.Entity<Preset>(options =>
+            {
+                options.HasOne(p => p.Style)
+                    .WithMany(s => s.Presets)
+                    .HasForeignKey(p => p.StyleId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
             SeedData.Seed(modelBuilder);
 
             #endregion

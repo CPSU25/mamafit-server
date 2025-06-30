@@ -33,6 +33,12 @@ namespace MamaFit.Services.Service
         {
             await _validationService.ValidateAndThrowAsync(request);
 
+            var style = await _unitOfWork.StyleRepository.GetByIdNotDeletedAsync(request.StyleId);
+            _validationService.CheckNotFound(style, $"Style with ID {request.StyleId} not found.");
+
+            var user = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(GetCurrentUserId());
+            _validationService.CheckNotFound(user, "User not found.");
+
             var optionList = new List<ComponentOption>();
             foreach (var optionId in request.ComponentOptionIds)
             {
@@ -44,6 +50,8 @@ namespace MamaFit.Services.Service
 
             var preset = _mapper.Map<Preset>(request);
             preset.ComponentOptions = optionList;
+            preset.UserId = GetCurrentUserId();
+            preset.Style = style;
 
             await _unitOfWork.PresetRepository.InsertAsync(preset);
             await _unitOfWork.SaveChangesAsync();

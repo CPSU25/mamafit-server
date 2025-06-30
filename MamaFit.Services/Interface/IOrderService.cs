@@ -13,5 +13,7 @@ public interface IOrderService
     Task<OrderResponseDto> UpdateOrderAsync(string id, OrderRequestDto model);
     Task<bool> DeleteOrderAsync(string id);
     Task<string> CreateReadyToBuyOrderAsync(OrderReadyToBuyRequestDto request);
-    Task<string> CreateDesignRequestAsync(OrderDesignRequestDto request);
+    Task<string> CreateDesignRequestOrderAsync(OrderDesignRequestDto request);
+    Task<string> CreatePresetOrderAsync(OrderPresetCreateRequestDto request);
+
 }

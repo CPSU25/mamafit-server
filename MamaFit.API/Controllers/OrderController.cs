@@ -61,11 +61,11 @@ public class OrderController : ControllerBase
     [Route("ready-to-buy")]
     public async Task<IActionResult> CreateOrderReadyToBuy([FromBody] OrderReadyToBuyRequestDto model)
     {
-        await _service.CreateReadyToBuyOrderAsync(model);
-        return Ok(new ResponseModel<OrderResponseDto>(
+        var response = await _service.CreateReadyToBuyOrderAsync(model);
+        return Ok(new ResponseModel<string>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
-            null,
+            response,
             "Create order ready to buy successfully!"
         ));
     }
@@ -74,12 +74,25 @@ public class OrderController : ControllerBase
     [Route("design-request")]
     public async Task<IActionResult> CreateDesignRequest([FromBody] OrderDesignRequestDto model)
     {
-        await _service.CreateDesignRequestAsync(model);
-        return Ok(new ResponseModel<OrderResponseDto>(
+        var response = await _service.CreateDesignRequestOrderAsync(model);
+        return Ok(new ResponseModel<string>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
-            null,
+            response,
             "Create design request successfully!"
+        ));
+    }
+
+    [HttpPost]
+    [Route("preset")]
+    public async Task<IActionResult> CreatePresetOrder([FromBody] OrderPresetCreateRequestDto model)
+    {
+        var response = await _service.CreatePresetOrderAsync(model);
+        return Ok(new ResponseModel<string>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            response,
+            "Create preset order successfully!"
         ));
     }
 

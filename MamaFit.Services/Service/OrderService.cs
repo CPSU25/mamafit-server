@@ -234,7 +234,7 @@ public class OrderService : IOrderService
         return _contextAccessor.HttpContext?.User?.FindFirst("userId")?.Value ?? string.Empty;
     }
 
-    public async Task<string> CreateDesignRequestAsync(OrderDesignRequestDto request)
+    public async Task<string> CreateDesignRequestOrderAsync(OrderDesignRequestDto request)
     {
         await _validation.ValidateAndThrowAsync(request);
 
@@ -277,6 +277,90 @@ public class OrderService : IOrderService
                 }
             }
         };
+
+        await _unitOfWork.OrderRepository.InsertAsync(order);
+        await _unitOfWork.SaveChangesAsync();
+        return order.Id;
+    }
+
+    public async Task<string> CreatePresetOrderAsync(OrderPresetCreateRequestDto request)
+    {
+        var preset = await _unitOfWork.PresetRepository.GetDetailById(request.PresetId!);
+        _validation.CheckNotFound(preset, $"Preset with id: {request.PresetId} not found");
+
+        var userId = GetCurrentUserId();
+        var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+        _validation.CheckNotFound(user, $"User with id{userId} not found");
+
+        var voucher = new VoucherDiscount();
+        var measurement = new MeasurementDiary();
+
+        if (request.VoucherDiscountId != null)
+        {
+            voucher = await _unitOfWork.VoucherDiscountRepository.GetByIdAsync(request.VoucherDiscountId);
+            _validation.CheckNotFound(voucher, $"Voucher with id: {request.VoucherDiscountId} not found");
+
+        }
+
+        if (request.MeasurementDiaryId != null)
+        {
+            measurement = await _unitOfWork.MeasurementDiaryRepository.GetByIdAsync(request.MeasurementDiaryId);
+            _validation.CheckNotFound(measurement, $"Measurement diary with id: {request.MeasurementDiaryId} not found");
+        }
+
+        var shippingFee = request.DeliveryMethod == DeliveryMethod.DELIVERY ? 30000 : 0;
+        var subTotalAmount = preset!.ComponentOptions.Sum(co => co.Price);
+
+        var order = _mapper.Map<Order>(request);
+
+        order.User = user!;
+        order.VoucherDiscount = voucher;
+        order.Type = OrderType.NORMAL;
+        order.Code = GenerateOrderCode();
+        order.Status = OrderStatus.CREATED;
+        order.MeasurementDiary = measurement;
+        order.ShippingFee = shippingFee;
+        order.SubTotalAmount = subTotalAmount;
+        order.TotalAmount = (subTotalAmount - ((voucher?.VoucherBatch?.DiscountPercentValue ?? 0) * subTotalAmount) + shippingFee);
+        order.PaymentStatus = PaymentStatus.PENDING;
+        order.PaymentType = PaymentType.FULL;
+        order.OrderItems = new List<OrderItem>()
+        {
+            new OrderItem
+            {
+                Preset = preset,
+                ItemType = ItemType.TEMPLATE,
+                Price = preset.ComponentOptions.Sum(co => co.Price),
+                Quantity = 1,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                CreatedBy = user!.UserName
+            }
+        };
+
+        if (request.DeliveryMethod == DeliveryMethod.DELIVERY)
+        {
+            if (request.AddressId == null)
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Address ID is required for delivery orders.");
+
+            var address = await _unitOfWork.AddressRepository.GetByIdAsync(request.AddressId);
+            _validation.CheckNotFound(address, $"Address with id: {request.AddressId} not found");
+
+            order.Address = address;
+            await _unitOfWork.OrderRepository.InsertAsync(order);
+            await _unitOfWork.SaveChangesAsync();
+            return order.Id;
+        }
+
+        if (request.DeliveryMethod == DeliveryMethod.PICK_UP)
+        {
+            if (request.BranchId == null)
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Branch ID is required for pick-up orders.");
+
+            var branch = await _unitOfWork.BranchRepository.GetByIdAsync(request.BranchId);
+            _validation.CheckNotFound(branch, $"Branch with id: {request.BranchId} not found");
+            order.Branch = branch;
+        }
 
         await _unitOfWork.OrderRepository.InsertAsync(order);
         await _unitOfWork.SaveChangesAsync();

@@ -136,17 +136,41 @@ namespace MamaFit.BusinessObjects.Data
     new Category
     {
         Id = Guid.NewGuid().ToString("N"),
-        Name = "Đầm bầu công sở",
-        Description = "Thiết kế dành cho môi trường làm việc, lịch sự và thoải mái.",
-        Images = new() { "https://example.com/images/workwear.jpg" },
+        Name = "Beach/Resort",
+        Description = "Trang phục phù hợp khi đi biển hoặc nghỉ dưỡng.",
+        Images = new() { "https://example.com/images/beach.jpg" },
         CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now
     },
     new Category
     {
         Id = Guid.NewGuid().ToString("N"),
-        Name = "Đầm bầu dạo phố",
-        Description = "Phong cách trẻ trung, năng động cho các buổi đi chơi.",
-        Images = new() { "https://example.com/images/streetwear.jpg" },
+        Name = "Casual/Everyday",
+        Description = "Phong cách thường ngày, thoải mái.",
+        Images = new() { "https://example.com/images/casual.jpg" },
+        CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now
+    },
+    new Category
+    {
+        Id = Guid.NewGuid().ToString("N"),
+        Name = "Formal/Event",
+        Description = "Phù hợp với các sự kiện trang trọng.",
+        Images = new() { "https://example.com/images/formal.jpg" },
+        CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now
+    },
+    new Category
+    {
+        Id = Guid.NewGuid().ToString("N"),
+        Name = "Party/Special",
+        Description = "Dành cho buổi tiệc hoặc dịp đặc biệt.",
+        Images = new() { "https://example.com/images/party.jpg" },
+        CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now
+    },
+    new Category
+    {
+        Id = Guid.NewGuid().ToString("N"),
+        Name = "Work/Office",
+        Description = "Thiết kế trang nhã dành cho công sở.",
+        Images = new() { "https://example.com/images/work.jpg" },
         CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now
     }
 };
@@ -157,31 +181,11 @@ namespace MamaFit.BusinessObjects.Data
     new Style
     {
         Id = Guid.NewGuid().ToString("N"),
-        Name = "Đầm A-line",
-        Description = "Thiết kế ôm phần ngực và xòe dần xuống dưới.",
-        Images = new() { "https://example.com/images/aline.jpg" },
+        Name = "Maxi",
+        Description = "Đầm dài maxi, thích hợp đi biển hoặc dạo phố.",
+        Images = new() { "https://example.com/images/maxi.jpg" },
         IsCustom = false,
-        CategoryId = categories[0].Id,
-        CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now
-    },
-    new Style
-    {
-        Id = Guid.NewGuid().ToString("N"),
-        Name = "Đầm xếp ly nhẹ",
-        Description = "Tạo điểm nhấn nhẹ nhàng với đường xếp ly phía bụng.",
-        Images = new() { "https://example.com/images/pleated.jpg" },
-        IsCustom = true,
-        CategoryId = categories[1].Id,
-        CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now
-    },
-    new Style
-    {
-        Id = Guid.NewGuid().ToString("N"),
-        Name = "Đầm hai dây thun eo",
-        Description = "Phong cách thoải mái với dây vai mảnh và thun co giãn ở eo.",
-        Images = new() { "https://example.com/images/spaghettistrap.jpg" },
-        IsCustom = false,
-        CategoryId = categories[1].Id,
+        CategoryId = categories.First(c => c.Name == "Beach/Resort").Id,
         CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now
     }
 };
@@ -189,111 +193,44 @@ namespace MamaFit.BusinessObjects.Data
             // ===== COMPONENTS =====
             var components = new List<Component>
 {
-    new Component
-    {
-        Id = Guid.NewGuid().ToString("N"),
-        Name = "Cổ áo",
-        Description = "Lựa chọn kiểu cổ áo phù hợp với phong cách và hoàn cảnh.",
-        Images = new() { "https://example.com/images/collar.jpg" },
-        CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now
-    },
-    new Component
-    {
-        Id = Guid.NewGuid().ToString("N"),
-        Name = "Chất liệu vải",
-        Description = "Ảnh hưởng đến độ thoáng khí và cảm giác thoải mái.",
-        Images = new() { "https://example.com/images/fabric.jpg" },
-        CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now
-    },
-    new Component
-    {
-        Id = Guid.NewGuid().ToString("N"),
-        Name = "Chiều dài váy",
-        Description = "Điều chỉnh độ dài theo sở thích và dịp sử dụng.",
-        Images = new() { "https://example.com/images/length.jpg" },
-        CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now
-    }
+    new Component { Id = Guid.NewGuid().ToString("N"), Name = "Neckline", Description = "Kiểu dáng cổ áo.", Images = new() { "https://example.com/images/neckline.jpg" }, CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now },
+    new Component { Id = Guid.NewGuid().ToString("N"), Name = "Sleeves", Description = "Kiểu tay áo.", Images = new() { "https://example.com/images/sleeves.jpg" }, CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now },
+    new Component { Id = Guid.NewGuid().ToString("N"), Name = "Waist", Description = "Kiểu eo.", Images = new() { "https://example.com/images/waist.jpg" }, CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now },
+    new Component { Id = Guid.NewGuid().ToString("N"), Name = "Hem", Description = "Đường viền gấu váy.", Images = new() { "https://example.com/images/hem.jpg" }, CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now },
+    new Component { Id = Guid.NewGuid().ToString("N"), Name = "Color", Description = "Màu sắc.", Images = new() { "https://example.com/images/color.jpg" }, CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now },
+    new Component { Id = Guid.NewGuid().ToString("N"), Name = "Fabric", Description = "Chất liệu vải.", Images = new() { "https://example.com/images/fabric.jpg" }, CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now }
 };
 
             // ===== COMPONENT OPTIONS =====
             var options = new List<ComponentOption>
 {
-    new ComponentOption
-    {
-        Id = Guid.NewGuid().ToString("N"),
-        Name = "Cổ tròn mềm",
-        ComponentId = components[0].Id,
-        Price = 30000,
-        Description = "Phù hợp cho phong cách nhẹ nhàng.",
-        Images = new() { "https://example.com/images/roundsoft.jpg" },
-        Tag = new Tag { ParentTag = ["Cổ áo"], ChildTag = ["Tròn"] },
-        ComponentOptionType = ComponentOptionType.APPROVED,
-        CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now
-    },
-    new ComponentOption
-    {
-        Id = Guid.NewGuid().ToString("N"),
-        Name = "Cổ V gợi cảm",
-        ComponentId = components[0].Id,
-        Price = 50000,
-        Description = "Tạo điểm nhấn cổ áo quyến rũ.",
-        Images = new() { "https://example.com/images/vneck.jpg" },
-        Tag = new Tag { ParentTag = ["Cổ áo"], ChildTag = ["Cổ V"] },
-        ComponentOptionType = ComponentOptionType.APPROVAL_PENDING,
-        CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now
-    },
-    new ComponentOption
-    {
-        Id = Guid.NewGuid().ToString("N"),
-        Name = "Cotton mềm cao cấp",
-        ComponentId = components[1].Id,
-        Price = 70000,
-        Description = "Vải cotton dày dặn, co giãn tốt.",
-        Images = new() { "https://example.com/images/premiumcotton.jpg" },
-        Tag = new Tag { ParentTag = ["Vải"], ChildTag = ["Cotton", "Mùa hè"] },
-        ComponentOptionType = ComponentOptionType.QUOTATION_PENDING,
-        CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now
-    },
-    new ComponentOption
-    {
-        Id = Guid.NewGuid().ToString("N"),
-        Name = "Linen thoáng khí",
-        ComponentId = components[1].Id,
-        Price = 60000,
-        Description = "Lý tưởng cho thời tiết nóng ẩm.",
-        Images = new() { "https://example.com/images/linen.jpg" },
-        Tag = new Tag { ParentTag = ["Vải"], ChildTag = ["Linen"] },
-        ComponentOptionType = ComponentOptionType.APPROVED,
-        CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now
-    },
-    new ComponentOption
-    {
-        Id = Guid.NewGuid().ToString("N"),
-        Name = "Dài qua gối",
-        ComponentId = components[2].Id,
-        Price = 80000,
-        Description = "Mang lại vẻ trang nhã và kín đáo.",
-        Images = new() { "https://example.com/images/belowknee.jpg" },
-        Tag = new Tag { ParentTag = ["Chiều dài"], ChildTag = ["Qua gối"] },
-        ComponentOptionType = ComponentOptionType.APPROVAL_PENDING,
-        CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now
-    },
-    new ComponentOption
-    {
-        Id = Guid.NewGuid().ToString("N"),
-        Name = "Ngắn trên gối",
-        ComponentId = components[2].Id,
-        Price = 40000,
-        Description = "Trẻ trung, năng động, phù hợp đi chơi.",
-        Images = new() { "https://example.com/images/aboveknee.jpg" },
-        Tag = new Tag { ParentTag = ["Chiều dài"], ChildTag = ["Trên gối"] },
-        ComponentOptionType = ComponentOptionType.APPROVAL_PENDING,
-        CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now
-    }
+    new ComponentOption { Id = Guid.NewGuid().ToString("N"), Name = "Round Neck", ComponentId = components[0].Id, Price = 20000, Description = "Cổ tròn cơ bản, thanh lịch.", Images = new() { "https://example.com/images/roundneck.jpg" }, ComponentOptionType = ComponentOptionType.APPROVED, CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now },
+    new ComponentOption { Id = Guid.NewGuid().ToString("N"), Name = "V Neck", ComponentId = components[0].Id, Price = 25000, Description = "Cổ chữ V tạo cảm giác cổ dài hơn.", Images = new() { "https://example.com/images/vneck.jpg" }, ComponentOptionType = ComponentOptionType.APPROVED, CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now },
+
+    new ComponentOption { Id = Guid.NewGuid().ToString("N"), Name = "No Sleeves", ComponentId = components[1].Id, Price = 10000, Description = "Không tay, thoáng mát.", Images = new() { "https://example.com/images/nosleeves.jpg" }, ComponentOptionType = ComponentOptionType.APPROVED, CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now },
+    new ComponentOption { Id = Guid.NewGuid().ToString("N"), Name = "Spaghetti Strap", ComponentId = components[1].Id, Price = 12000, Description = "Dây mảnh, nữ tính.", Images = new() { "https://example.com/images/spaghetti.jpg" }, ComponentOptionType = ComponentOptionType.APPROVED, CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now },
+    new ComponentOption { Id = Guid.NewGuid().ToString("N"), Name = "Flattered Short Sleeves", ComponentId = components[1].Id, Price = 15000, Description = "Tay ngắn bay bổng, thoải mái.", Images = new() { "https://example.com/images/shortsleeves.jpg" }, ComponentOptionType = ComponentOptionType.APPROVED, CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now },
+
+    new ComponentOption { Id = Guid.NewGuid().ToString("N"), Name = "Normal Waist", ComponentId = components[2].Id, Price = 18000, Description = "Thiết kế eo trung bình truyền thống.", Images = new() { "https://example.com/images/normalwaist.jpg" }, ComponentOptionType = ComponentOptionType.APPROVED, CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now },
+    new ComponentOption { Id = Guid.NewGuid().ToString("N"), Name = "Empire Waist", ComponentId = components[2].Id, Price = 20000, Description = "Eo cao, phù hợp cho phong cách nữ tính.", Images = new() { "https://example.com/images/empirewaist.jpg" }, ComponentOptionType = ComponentOptionType.APPROVED, CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now },
+    new ComponentOption { Id = Guid.NewGuid().ToString("N"), Name = "Bow Tie Waist", ComponentId = components[2].Id, Price = 22000, Description = "Nơ thắt eo tạo điểm nhấn đáng yêu.", Images = new() { "https://example.com/images/bowtie.jpg" }, ComponentOptionType = ComponentOptionType.APPROVED, CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now },
+
+    new ComponentOption { Id = Guid.NewGuid().ToString("N"), Name = "Single Layer Hem", ComponentId = components[3].Id, Price = 12000, Description = "Gấu váy đơn giản, thanh lịch.", Images = new() { "https://example.com/images/singlelayer.jpg" }, ComponentOptionType = ComponentOptionType.APPROVED, CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now },
+    new ComponentOption { Id = Guid.NewGuid().ToString("N"), Name = "High-Low Hem", ComponentId = components[3].Id, Price = 16000, Description = "Trước ngắn sau dài tạo nét lạ mắt.", Images = new() { "https://example.com/images/highlow.jpg" }, ComponentOptionType = ComponentOptionType.APPROVED, CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now },
+
+    new ComponentOption { Id = Guid.NewGuid().ToString("N"), Name = "Red", ComponentId = components[4].Id, Price = 10000, Description = "Màu đỏ nổi bật, quyến rũ.", Images = new() { "https://example.com/images/red.jpg" }, ComponentOptionType = ComponentOptionType.APPROVED, CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now },
+    new ComponentOption { Id = Guid.NewGuid().ToString("N"), Name = "Navy Blue", ComponentId = components[4].Id, Price = 10000, Description = "Xanh navy lịch sự, thanh nhã.", Images = new() { "https://example.com/images/navyblue.jpg" }, ComponentOptionType = ComponentOptionType.APPROVED, CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now },
+    new ComponentOption { Id = Guid.NewGuid().ToString("N"), Name = "Emerald Green", ComponentId = components[4].Id, Price = 10000, Description = "Xanh ngọc quý phái, nổi bật.", Images = new() { "https://example.com/images/emerald.jpg" }, ComponentOptionType = ComponentOptionType.APPROVED, CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now },
+
+    new ComponentOption { Id = Guid.NewGuid().ToString("N"), Name = "Cotton", ComponentId = components[5].Id, Price = 9000, Description = "Vải cotton thoáng mát, thấm hút tốt.", Images = new() { "https://example.com/images/cotton.jpg" }, ComponentOptionType = ComponentOptionType.APPROVED, CreatedBy = createdBy, UpdatedBy = createdBy, CreatedAt = now, UpdatedAt = now }
 };
 
             #endregion
 
+            modelBuilder.Entity<Category>().HasData(categories);
+            modelBuilder.Entity<Style>().HasData(styles);
+            modelBuilder.Entity<Component>().HasData(components);
+            modelBuilder.Entity<ComponentOption>().HasData(options);
         }
     }
 }

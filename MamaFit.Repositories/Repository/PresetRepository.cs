@@ -56,6 +56,7 @@ namespace MamaFit.Repositories.Repository
         {
             var preset = await _dbSet
                 .Include(x => x.ComponentOptions)
+                .ThenInclude(co => co.Component)
                 .Include(x => x.Style)
                 .FirstOrDefaultAsync(x => x.StyleId == styleId && x.IsDefault && !x.IsDeleted && x.IsDefault);
 

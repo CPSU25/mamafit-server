@@ -107,13 +107,17 @@ namespace MamaFit.Services.Service
             return _mapper.Map<PresetGetByIdResponseDto>(preset);
         }
 
-        public async Task<List<PresetGetAllResponseDto>> GetAllPresetByComponentOptionId(List<string> componentOptionId)
+        public async Task<List<PresetGetAllResponseDto>> GetAllPresetByComponentOptionId(List<string> componentOptionIds)
         {
-            var componentOption = await _unitOfWork.ComponentOptionRepository.GetByIdNotDeletedAsync(componentOptionId);
-            _validationService.CheckNotFound(componentOption, $"Component option with ID {componentOptionId} not found.");
 
-            var presets = await _unitOfWork.PresetRepository.GetAllPresetByComponentOptionId(componentOptionId);
-            _validationService.CheckNotFound(presets, $"No presets found for component option with ID {componentOptionId}.");
+            foreach(var componentOptionId in componentOptionIds)
+            {
+                var componentOption = await _unitOfWork.ComponentOptionRepository.GetByIdNotDeletedAsync(componentOptionId);
+                _validationService.CheckNotFound(componentOption, $"Component option with ID {componentOptionId} not found.");
+            }
+
+            var presets = await _unitOfWork.PresetRepository.GetAllPresetByComponentOptionId(componentOptionIds);
+            _validationService.CheckNotFound(presets, $"No presets found for component option with ID {componentOptionIds}.");
             return presets.Select(preset => _mapper.Map<PresetGetAllResponseDto>(preset)).ToList();
         }
     }

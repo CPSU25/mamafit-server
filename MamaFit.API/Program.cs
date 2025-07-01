@@ -4,6 +4,8 @@ using MamaFit.API.DependencyInjection;
 using NLog.Web;
 using System.Text.Json.Serialization;
 using FluentValidation;
+using Hangfire;
+using Hangfire.PostgreSql;
 using MamaFit.Repositories.Helper;
 using MamaFit.Services.ExternalService.CronJob;
 using MamaFit.Services.Validator;
@@ -38,10 +40,12 @@ namespace MamaFit.API
                 {
                     options.Configuration = builder.Configuration["RedisSettings:ConnectionString"];
                 });
+                builder.Services.AddHangfireWithProgres(builder.Configuration);
                 builder.Services.Configure<SepaySettings>(builder.Configuration.GetSection("SepaySettings"));
                 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
                 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
-                builder.Services.AddHostedService<MeasurementGenerationJob>();
+                builder.Services.Configure<DeliverySettings>(builder.Configuration.GetSection("DeliverySettings"));
+                //builder.Services.AddHostedService<MeasurementGenerationJob>();
                 builder.Services.AddValidatorsFromAssemblyContaining<ValidatorAssemblyReference>();
                 builder.Services.AddDatabase(builder.Configuration);
                 builder.Services.AddEndpointsApiExplorer();
@@ -85,6 +89,14 @@ namespace MamaFit.API
 
                 app.MapHub<ChatHub>("/chatHub");
 
+                app.UseHangfireDashboard("/hangfire");
+                
+                using (var scope = app.Services.CreateScope())
+                {
+                    var recurringJobScheduler = scope.ServiceProvider.GetRequiredService<IRecurringJobScheduler>();
+                    recurringJobScheduler.RegisterJob();
+                }
+                
                 app.Run();
             }
             catch (Exception exception)

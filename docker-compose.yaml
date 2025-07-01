@@ -9,6 +9,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__DefaultConnection=Host=${VPS_HOST};Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}
+      - ConnectionStrings__HangfireConnection=Host=${VPS_HOST};Database=${HANGFIRE_DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}
       - JWT__SecretKey=${JWT_SECRET}
       - CLOUDINARY__ApiKey=${CLOUDINARY_API_KEY}
       - CLOUDINARY__ApiSecret=${CLOUDINARY_API_SECRET}

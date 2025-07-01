@@ -1,12 +1,16 @@
 ﻿using System.Text;
 using System.Text.Json;
+using Hangfire;
+using Hangfire.PostgreSql;
 using MamaFit.BusinessObjects.DbContext;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using MamaFit.Repositories.Repository;
 using MamaFit.Services.ExternalService.CloudinaryService;
+using MamaFit.Services.ExternalService.CronJob;
 using MamaFit.Services.ExternalService.ExpoNotification;
+using MamaFit.Services.ExternalService.Ghtk;
 using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.ExternalService.Sepay;
 using MamaFit.Services.Interface;
@@ -63,6 +67,7 @@ namespace MamaFit.API.DependencyInjection
         public static void AddServices(this IServiceCollection services)
         {
             // Add your service registrations here
+            services.AddSingleton<IRecurringJobScheduler, RecurringJobScheduler>();
             services.AddScoped<IBodyGrowthCalculator, BodyGrowthCalculator>();
             services.AddScoped<IValidationService, ValidationService>();
             services.AddScoped<IAppointmentService, AppointmentService>();
@@ -99,8 +104,17 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IFeedbackService, FeedbackService>();
             services.AddScoped<ICartItemService, CartItemService>();
             services.AddScoped<IPresetService, PresetService>();
+            services.AddScoped<IDeliveryService, DeliveryService>();
         }
 
+        public static IServiceCollection AddHangfireWithProgres(this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            services.AddHangfire(config =>
+                config.UsePostgreSqlStorage(configuration.GetConnectionString("HangfireConnection")));
+            services.AddHangfireServer();
+            return services;
+        }
         public static IServiceCollection AddHttpClientServices(this IServiceCollection services)
         {
             services.AddHttpClient();

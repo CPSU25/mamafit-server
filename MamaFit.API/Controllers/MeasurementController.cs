@@ -44,6 +44,18 @@ public class MeasurementController : ControllerBase
         ));
     }
     
+    [HttpPost("check-reminders")]
+    public async Task<IActionResult> CheckAndSendReminders()
+    {
+        await _service.CheckAndSendRemindersAsync();
+        return Ok(new ResponseModel<string>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            null,
+            "Check and send reminders successfully!"
+        ));
+    }
+    
     [HttpPost("generate-missing")]
     public async Task<IActionResult> GenerateMissingMeasurements()
     {

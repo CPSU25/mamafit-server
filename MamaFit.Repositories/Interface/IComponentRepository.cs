@@ -8,5 +8,6 @@ namespace MamaFit.Repositories.Interface
     {
         Task<PaginatedList<Component>> GetAllAsync(int index, int pageSize, string? search, string? sortBy);
         Task<Component> GetById(string id);
+        Task<List<Component>> GetComponentHavePresetByStyleId(string styleId);
     }
 }

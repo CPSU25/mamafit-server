@@ -18,6 +18,7 @@ namespace MamaFit.Repositories.Repository
         public async Task<PaginatedList<Preset>> GetAll(int index, int pageSize, string? search, EntitySortBy? sortBy)
         {
             var query = _dbSet
+                .Include(p => p.Style)
                 .Where(x => !x.IsDeleted);
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -39,11 +40,32 @@ namespace MamaFit.Repositories.Repository
             return new PaginatedList<Preset>(list, paged.TotalCount, paged.PageNumber, pageSize);
         }
 
+        public async Task<List<Preset>> GetAllPresetByComponentOptionId(List<string> componentOptionId)
+        {
+           var preset = await _dbSet
+                .Include(x => x.ComponentOptions)
+                .Where(x => x.ComponentOptions.Any(co => componentOptionId.Contains(co.Id)) && !x.IsDeleted)
+                .ToListAsync();
+
+            return preset;
+        }
+
+        public async Task<Preset> GetDefaultPresetByStyleId(string styleId)
+        {
+            var preset = await _dbSet
+                .Include(x => x.ComponentOptions)
+                .Include(x => x.Style)
+                .FirstOrDefaultAsync(x => x.StyleId == styleId && x.IsDefault && !x.IsDeleted && x.IsDefault);
+
+            return preset;
+        }
+
         public async Task<Preset> GetDetailById(string id)
         {
             var result = await _dbSet
                 .Include(x => x.ComponentOptions)
                 .Include(x => x.OrderItems)
+                .Include(x => x.Style)
                 .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
 
             return result;

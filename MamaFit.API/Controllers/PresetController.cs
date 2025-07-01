@@ -41,6 +41,30 @@ namespace MamaFit.API.Controllers
             ));
         }
 
+        [HttpGet("default/{styleId}")]
+        public async Task<IActionResult> GetDefaultPresetByStyleId([FromRoute] string styleId)
+        {
+            var preset = await _presetService.GetDefaultPresetByStyleId(styleId);
+            return Ok(new ResponseModel<PresetGetByIdResponseDto>(
+                StatusCodes.Status200OK,
+                ApiCodes.SUCCESS,
+                preset,
+                "Get default preset by style ID successfully!"
+            ));
+        }
+
+        [HttpPost("component-option")]
+        public async Task<IActionResult> GetAllPresetByComponentOptionId([FromBody] List<string> componentOptionId)
+        {
+            var presets = await _presetService.GetAllPresetByComponentOptionId(componentOptionId);
+            return Ok(new ResponseModel<List<PresetGetAllResponseDto>>(
+                StatusCodes.Status200OK,
+                ApiCodes.SUCCESS,
+                presets,
+                "Get all presets by component option ID successfully!"
+            ));
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] PresetCreateRequestDto requestDto)
         {

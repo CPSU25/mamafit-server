@@ -9,5 +9,7 @@ namespace MamaFit.Repositories.Interface
     {
         public Task<PaginatedList<Preset>> GetAll(int index, int pageSize, string? search, EntitySortBy? sortBy);
         public Task<Preset> GetDetailById(string id);
+        public Task<Preset> GetDefaultPresetByStyleId(string styleId);
+        public Task<List<Preset>> GetAllPresetByComponentOptionId(List<string> componentOptionId);
     }
 }

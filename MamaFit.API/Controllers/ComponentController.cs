@@ -27,7 +27,8 @@ namespace MamaFit.API.Controllers
             return Ok(new ResponseModel<PaginatedList<ComponentResponseDto>>(
                 StatusCodes.Status200OK,
                 ApiCodes.SUCCESS,
-                components
+                components,
+                "Get all components successfully!"
             ));
         }
 
@@ -35,29 +36,60 @@ namespace MamaFit.API.Controllers
         public async Task<IActionResult> GetById([FromRoute] string componentId)
         {
             var component = await _componentService.GetByIdAsync(componentId);
-            return Ok(ResponseModel<ComponentGetByIdResponseDto>.OkResponseModel(component));
+            return Ok(new ResponseModel<ComponentGetByIdResponseDto>(
+                StatusCodes.Status200OK,
+                ApiCodes.SUCCESS,
+                component,
+                "Get component successfully!"
+                ));
+        }
+
+        [HttpGet("preset/style/{styleId}")]
+        public async Task<IActionResult> GetAllByStyleId([FromRoute] string styleId)
+        {
+            var components = await _componentService.GetComponentHavePresetByStyleId(styleId);
+            return Ok(new ResponseModel<List<ComponentGetByIdResponseDto>>(
+                StatusCodes.Status200OK,
+                ApiCodes.SUCCESS,
+                components,
+                "Get all components by style ID successfully!"
+                ));
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ComponentRequestDto requestDto)
         {
             await _componentService.CreateAsync(requestDto);
-            return StatusCode(StatusCodes.Status201Created,
-                ResponseModel<string>.CreatedResponseModel("Created successfully"));
+            return Ok(new ResponseModel<string>(
+                StatusCodes.Status201Created,
+                ApiCodes.SUCCESS,
+                "Component created successfully",
+                "Created successfully"
+            ));
         }
 
         [HttpPut("{componentId}")]
         public async Task<IActionResult> Update(string componentId, [FromBody] ComponentRequestDto requestDto)
         {
             await _componentService.UpdateAsync(componentId, requestDto);
-            return Ok(ResponseModel<string>.OkResponseModel("Updated successfully"));
+            return Ok(new ResponseModel<string>(
+                StatusCodes.Status200OK,
+                ApiCodes.SUCCESS,
+                "Component updated successfully",
+                "Updated successfully"
+            ));
         }
 
         [HttpDelete("{componentId}")]
         public async Task<IActionResult> Delete(string componentId)
         {
             await _componentService.DeleteAsync(componentId);
-            return Ok(ResponseModel<string>.OkResponseModel("Deleted successfully"));
+            return Ok(new ResponseModel<string>(
+                StatusCodes.Status200OK,
+                ApiCodes.SUCCESS,
+                "Component deleted successfully",
+                "Deleted successfully"
+            ));
         }
     }
 }

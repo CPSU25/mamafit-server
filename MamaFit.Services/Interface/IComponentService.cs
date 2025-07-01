@@ -7,6 +7,7 @@ namespace MamaFit.Services.Interface
     {
         Task<ComponentGetByIdResponseDto> GetByIdAsync(string id);
         Task<PaginatedList<ComponentResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy);
+        Task<List<ComponentGetByIdResponseDto>> GetComponentHavePresetByStyleId(string styleId);
         Task CreateAsync(ComponentRequestDto requestDto);
         Task UpdateAsync(string id, ComponentRequestDto requestDto);
         Task DeleteAsync(string id);

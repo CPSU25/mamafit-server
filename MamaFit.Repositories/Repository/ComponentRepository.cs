@@ -1,15 +1,9 @@
-﻿using MamaFit.BusinessObjects.DTO.ComponentDto;
-using MamaFit.BusinessObjects.Entity;
+﻿using MamaFit.BusinessObjects.Entity;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MamaFit.BusinessObjects.DbContext;
 
 namespace MamaFit.Repositories.Repository
@@ -59,6 +53,22 @@ namespace MamaFit.Repositories.Repository
                 .Where(c => !c.IsDeleted)
                 .FirstOrDefaultAsync(c => c.Id.Equals(id));
             return component!;
+        }
+
+        public async Task<List<Component>> GetComponentHavePresetByStyleId(string styleId)
+        {
+            var component = await _dbSet
+                .Include(c => c.Options)
+                .ThenInclude(co => co.Presets)
+                .ThenInclude(p => p.ComponentOptions)
+                .Where(c => !c.IsDeleted &&
+                    c.Options.Any(co => 
+                        co.Presets.Any(p => 
+                            p.ComponentOptions.Any(pco => 
+                                pco.Id.Equals(co.Id)))))
+                .ToListAsync();
+
+            return component;
         }
     }
 }

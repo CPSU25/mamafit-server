@@ -76,6 +76,16 @@ namespace MamaFit.Services.Service
             return _mapper.Map<ComponentGetByIdResponseDto>(component);
         }
 
+        public async Task<List<ComponentGetByIdResponseDto>> GetComponentHavePresetByStyleId(string styleId)
+        {
+            var style = await _unitOfWork.StyleRepository.GetByIdNotDeletedAsync(styleId);
+            _validation.CheckNotFound(style, $"Style with ID {styleId} not found.");
+
+            var components = await _unitOfWork.ComponentRepository.GetComponentHavePresetByStyleId(styleId);
+            _validation.CheckNotFound(components, $"No components found for style with ID {styleId}.");
+            return components.Select(c => _mapper.Map<ComponentGetByIdResponseDto>(c)).ToList();
+        }
+
         public async Task UpdateAsync(string id, ComponentRequestDto requestDto)
         {
             await _validation.ValidateAndThrowAsync(requestDto);

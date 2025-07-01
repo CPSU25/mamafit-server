@@ -96,5 +96,25 @@ namespace MamaFit.Services.Service
             await _unitOfWork.PresetRepository.UpdateAsync(preset);
             await _unitOfWork.SaveChangesAsync();
         }
+
+        public async Task<PresetGetByIdResponseDto> GetDefaultPresetByStyleId(string styleId)
+        {
+            var style = await _unitOfWork.StyleRepository.GetByIdNotDeletedAsync(styleId);
+            _validationService.CheckNotFound(style, $"Style with ID {styleId} not found.");
+
+            var preset = await _unitOfWork.PresetRepository.GetDefaultPresetByStyleId(styleId);
+            _validationService.CheckNotFound(preset, $"Default preset for style with ID {styleId} not found.");
+            return _mapper.Map<PresetGetByIdResponseDto>(preset);
+        }
+
+        public async Task<List<PresetGetAllResponseDto>> GetAllPresetByComponentOptionId(List<string> componentOptionId)
+        {
+            var componentOption = await _unitOfWork.ComponentOptionRepository.GetByIdNotDeletedAsync(componentOptionId);
+            _validationService.CheckNotFound(componentOption, $"Component option with ID {componentOptionId} not found.");
+
+            var presets = await _unitOfWork.PresetRepository.GetAllPresetByComponentOptionId(componentOptionId);
+            _validationService.CheckNotFound(presets, $"No presets found for component option with ID {componentOptionId}.");
+            return presets.Select(preset => _mapper.Map<PresetGetAllResponseDto>(preset)).ToList();
+        }
     }
 }

@@ -92,7 +92,10 @@ namespace MamaFit.Services.Mapper
 
             //ComponentOption Mapper
             CreateMap<ComponentOption, ComponentOptionRequestDto>().ReverseMap();
-            CreateMap<ComponentOption, ComponentOptionResponseDto>().ReverseMap();
+            CreateMap<ComponentOption, ComponentOptionResponseDto>()
+                .ForMember(dest => dest.ComponentName, otp => otp.MapFrom(src => src.Component!.Name))
+                .ForMember(dest => dest.ComponentId, otp => otp.MapFrom(src => src.Component!.Id))
+                .ReverseMap();
 
             //DesignRequest Mapper
             CreateMap<DesignRequest, DesignRequestCreateDto>().ReverseMap();

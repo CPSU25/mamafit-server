@@ -3,7 +3,7 @@
 namespace MamaFit.BusinessObjects.DTO.PresetDto
 {
     public class PresetGetByIdResponseDto : PresetGetAllResponseDto
-    {
+    { 
         public List<ComponentOptionResponseDto>? ComponentOptions { get; set; }
     }
 }

@@ -104,17 +104,30 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IFeedbackService, FeedbackService>();
             services.AddScoped<ICartItemService, CartItemService>();
             services.AddScoped<IPresetService, PresetService>();
-            services.AddScoped<IDeliveryService, DeliveryService>();
+            services.AddScoped<IGhtkService, GhtkService>();
         }
 
+        public static IServiceCollection AddGhtkClient(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHttpClient("GhtkClient", client =>
+            {
+                client.BaseAddress = new Uri(configuration["GhtkSettings:BaseUri"]!);
+                client.DefaultRequestHeaders.Add("Token", configuration["GhtkSettings:ApiToken"]);
+                client.Timeout = TimeSpan.FromSeconds(15);
+            });
+            return services;
+        }
+        
         public static IServiceCollection AddHangfireWithProgres(this IServiceCollection services,
             IConfiguration configuration)
         {
             services.AddHangfire(config =>
-                config.UsePostgreSqlStorage(configuration.GetConnectionString("HangfireConnection")));
+                config.UsePostgreSqlStorage(options =>
+                    options.UseNpgsqlConnection(configuration.GetConnectionString("HangfireConnection"))));
             services.AddHangfireServer();
             return services;
         }
+        
         public static IServiceCollection AddHttpClientServices(this IServiceCollection services)
         {
             services.AddHttpClient();

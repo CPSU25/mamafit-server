@@ -5,9 +5,9 @@ using NLog.Web;
 using System.Text.Json.Serialization;
 using FluentValidation;
 using Hangfire;
-using Hangfire.PostgreSql;
 using MamaFit.Repositories.Helper;
 using MamaFit.Services.ExternalService.CronJob;
+using MamaFit.Services.ExternalService.Filter;
 using MamaFit.Services.Validator;
 using NLog;
 
@@ -17,7 +17,7 @@ namespace MamaFit.API
     {
         public static void Main(string[] args)
         {
-            var logger = NLog.LogManager.Setup().LoadConfigurationFromFile(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config")).GetCurrentClassLogger();
+            var logger = LogManager.Setup().LoadConfigurationFromFile(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config")).GetCurrentClassLogger();
             try
             {
                 var builder = WebApplication.CreateBuilder(args);
@@ -44,7 +44,7 @@ namespace MamaFit.API
                 builder.Services.Configure<SepaySettings>(builder.Configuration.GetSection("SepaySettings"));
                 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
                 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
-                builder.Services.Configure<DeliverySettings>(builder.Configuration.GetSection("DeliverySettings"));
+                builder.Services.AddGhtkClient(builder.Configuration);
                 //builder.Services.AddHostedService<MeasurementGenerationJob>();
                 builder.Services.AddValidatorsFromAssemblyContaining<ValidatorAssemblyReference>();
                 builder.Services.AddDatabase(builder.Configuration);
@@ -89,8 +89,11 @@ namespace MamaFit.API
 
                 app.MapHub<ChatHub>("/chatHub");
 
-                app.UseHangfireDashboard("/hangfire");
-                
+                app.UseHangfireDashboard("/hangfire", new DashboardOptions
+                {
+                    Authorization = new[] { new AllowAllDashboardAuthorizationFilter() }
+                });
+
                 using (var scope = app.Services.CreateScope())
                 {
                     var recurringJobScheduler = scope.ServiceProvider.GetRequiredService<IRecurringJobScheduler>();
@@ -105,7 +108,7 @@ namespace MamaFit.API
             }
             finally
             {
-                NLog.LogManager.Shutdown();
+                LogManager.Shutdown();
             }
         }
     }

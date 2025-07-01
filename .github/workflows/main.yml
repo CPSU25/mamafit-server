@@ -111,16 +111,16 @@ jobs:
             echo "SEPAY_ACCOUNT_NUMBER=${{ secrets.SEPAY_ACCOUNT_NUMBER }}" >> .env
             echo "SEPAY_ACCOUNT_NAME=${{ secrets.SEPAY_ACCOUNT_NAME }}" >> .env
             echo "SEPAY_BANK_CODE=${{ secrets.SEPAY_BANK_CODE }}" >> .env
+            echo "GHTK_API_TOKEN=${{ secrets.GHTK_API_TOKEN }}" >> .env
+            echo "GHTK_BASE_URI=${{ secrets.GHTK_BASE_URI }}" >> .env
 
-            # 🐳 Pull image và deploy bằng Docker Compose
             echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
             docker pull $IMAGE_NAME || true
             docker compose up -d --pull always --no-deps --force-recreate mamafit-api
 
-            # ✅ Kiểm tra container đang chạy
             docker ps -a | grep mamafit-api
 
-      - name: Notify Discord (Success) - No Mention
+      - name: Notify Discord (Success)
         if: success()
         run: |
           curl -H "Content-Type: application/json" \
@@ -138,13 +138,12 @@ jobs:
                      \"icon_url\": \"https://github.com/${{ github.actor }}.png\"
                    },
                    \"fields\": [
-                     { \"name\": \"🌐 Live App\", \"value\": \"[🔗 Visit API](https://api.mamafit.studio/)\", \"inline\": false },
-                     { \"name\": \"📂 Repository\", \"value\": \"[${{ github.repository }}](https://github.com/${{ github.repository }})\", \"inline\": true },
-                     { \"name\": \"🌿 Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true },
-                     { \"name\": \"🔄 Workflow\", \"value\": \"${{ github.workflow }}\", \"inline\": true },
-                     { \"name\": \"🔗 Commit\", \"value\": \"[$(echo ${{ github.sha }} | cut -c1-7)](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\", \"inline\": true },
-                     { \"name\": \"📊 Run #\", \"value\": \"${{ github.run_number }}\", \"inline\": true },
-                     { \"name\": \"🔍 Logs\", \"value\": \"[View Details](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\", \"inline\": true }
+                     { \"name\": \"Repository\", \"value\": \"[${{ github.repository }}](https://github.com/${{ github.repository }})\", \"inline\": true },
+                     { \"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true },
+                     { \"name\": \"Workflow\", \"value\": \"${{ github.workflow }}\", \"inline\": true },
+                     { \"name\": \"Commit\", \"value\": \"[$(echo ${{ github.sha }} | cut -c1-7)](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\", \"inline\": true },
+                     { \"name\": \"Run #\", \"value\": \"${{ github.run_number }}\", \"inline\": true },
+                     { \"name\": \"Logs\", \"value\": \"[View Details](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\", \"inline\": true }
                    ],
                    \"footer\": {
                      \"text\": \"MamaFit CI/CD Pipeline • GitHub Actions\"
@@ -154,7 +153,7 @@ jobs:
                }" \
                ${{ secrets.DISCORD_WEBHOOK_URL }}
 
-      - name: Notify Discord (Failure) - Mention BackEnd
+      - name: Notify Discord (Failure)
         if: failure()
         run: |
           curl -H "Content-Type: application/json" \
@@ -173,13 +172,13 @@ jobs:
                      \"icon_url\": \"https://github.com/${{ github.actor }}.png\"
                    },
                    \"fields\": [
-                     { \"name\": \"📂 Repository\", \"value\": \"[${{ github.repository }}](https://github.com/${{ github.repository }})\", \"inline\": true },
-                     { \"name\": \"🌿 Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true },
-                     { \"name\": \"❌ Status\", \"value\": \"Failed\", \"inline\": true },
-                     { \"name\": \"🔗 Failed Commit\", \"value\": \"[$(echo ${{ github.sha }} | cut -c1-7)](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\", \"inline\": true },
-                     { \"name\": \"📊 Run #\", \"value\": \"${{ github.run_number }}\", \"inline\": true },
-                     { \"name\": \"🔍 Debug\", \"value\": \"[View Logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\", \"inline\": true },
-                     { \"name\": \"🆘 Quick Actions\", \"value\": \"• [Rerun Workflow](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\\n• [View Recent Commits](https://github.com/${{ github.repository }}/commits/${{ github.ref_name }})\", \"inline\": false }
+                     { \"name\": \"Repository\", \"value\": \"[${{ github.repository }}](https://github.com/${{ github.repository }})\", \"inline\": true },
+                     { \"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true },
+                     { \"name\": \"Status\", \"value\": \"Failed\", \"inline\": true },
+                     { \"name\": \"Failed Commit\", \"value\": \"[$(echo ${{ github.sha }} | cut -c1-7)](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\", \"inline\": true },
+                     { \"name\": \"Run \", \"value\": \"${{ github.run_number }}\", \"inline\": true },
+                     { \"name\": \"Debug\", \"value\": \"[View Logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\", \"inline\": true },
+                     { \"name\": \"Quick Actions\", \"value\": \"• [Rerun Workflow](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\\n• [View Recent Commits](https://github.com/${{ github.repository }}/commits/${{ github.ref_name }})\", \"inline\": false }
                    ],
                    \"footer\": {
                      \"text\": \"MamaFit CI/CD Pipeline • GitHub Actions\"

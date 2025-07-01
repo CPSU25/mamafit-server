@@ -4,8 +4,10 @@ using MamaFit.API.DependencyInjection;
 using NLog.Web;
 using System.Text.Json.Serialization;
 using FluentValidation;
+using Hangfire;
 using MamaFit.Repositories.Helper;
 using MamaFit.Services.ExternalService.CronJob;
+using MamaFit.Services.ExternalService.Filter;
 using MamaFit.Services.Validator;
 using NLog;
 
@@ -15,7 +17,7 @@ namespace MamaFit.API
     {
         public static void Main(string[] args)
         {
-            var logger = NLog.LogManager.Setup().LoadConfigurationFromFile(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config")).GetCurrentClassLogger();
+            var logger = LogManager.Setup().LoadConfigurationFromFile(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config")).GetCurrentClassLogger();
             try
             {
                 var builder = WebApplication.CreateBuilder(args);
@@ -38,10 +40,12 @@ namespace MamaFit.API
                 {
                     options.Configuration = builder.Configuration["RedisSettings:ConnectionString"];
                 });
+                builder.Services.AddHangfireWithProgres(builder.Configuration);
                 builder.Services.Configure<SepaySettings>(builder.Configuration.GetSection("SepaySettings"));
                 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
                 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
-                builder.Services.AddHostedService<MeasurementGenerationJob>();
+                builder.Services.AddGhtkClient(builder.Configuration);
+                //builder.Services.AddHostedService<MeasurementGenerationJob>();
                 builder.Services.AddValidatorsFromAssemblyContaining<ValidatorAssemblyReference>();
                 builder.Services.AddDatabase(builder.Configuration);
                 builder.Services.AddEndpointsApiExplorer();
@@ -85,6 +89,17 @@ namespace MamaFit.API
 
                 app.MapHub<ChatHub>("/chatHub");
 
+                app.UseHangfireDashboard("/hangfire", new DashboardOptions
+                {
+                    Authorization = new[] { new AllowAllDashboardAuthorizationFilter() }
+                });
+
+                using (var scope = app.Services.CreateScope())
+                {
+                    var recurringJobScheduler = scope.ServiceProvider.GetRequiredService<IRecurringJobScheduler>();
+                    recurringJobScheduler.RegisterJob();
+                }
+                
                 app.Run();
             }
             catch (Exception exception)
@@ -93,7 +108,7 @@ namespace MamaFit.API
             }
             finally
             {
-                NLog.LogManager.Shutdown();
+                LogManager.Shutdown();
             }
         }
     }

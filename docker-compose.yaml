@@ -9,6 +9,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__DefaultConnection=Host=${VPS_HOST};Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}
+      - ConnectionStrings__HangfireConnection=Host=${VPS_HOST};Database=${HANGFIRE_DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}
       - JWT__SecretKey=${JWT_SECRET}
       - CLOUDINARY__ApiKey=${CLOUDINARY_API_KEY}
       - CLOUDINARY__ApiSecret=${CLOUDINARY_API_SECRET}
@@ -20,6 +21,8 @@ services:
       - SepaySettings__AccountNumber=${SEPAY_ACCOUNT_NUMBER}
       - SepaySettings__AccountName=${SEPAY_ACCOUNT_NAME}
       - SepaySettings__BankCode=${SEPAY_BANK_CODE}
+      - GhtkSettings__ApiToken=${GHTK_API_TOKEN}
+      - GhtkSettings__BaseUri=${GHTK_BASE_URI}
     networks:
       - default
 

@@ -6,6 +6,7 @@ namespace MamaFit.Services.Interface;
 public interface IMeasurementService
 {
     Task GenerateMissingMeasurementsAsync();
+    Task CheckAndSendRemindersAsync();
     Task<PaginatedList<MeasurementResponseDto>> GetAllMeasurementsAsync(int index, int pageSize, DateTime? startDate,
         DateTime? endDate);
     Task<MeasurementResponseDto> GetMeasurementByIdAsync(string id);

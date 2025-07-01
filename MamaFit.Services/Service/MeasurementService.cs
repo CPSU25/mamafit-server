@@ -1,5 +1,6 @@
 using AutoMapper;
 using MamaFit.BusinessObjects.DTO.MeasurementDto;
+using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
@@ -15,14 +16,16 @@ public class MeasurementService : IMeasurementService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IBodyGrowthCalculator _calculator;
     private readonly IValidationService _validation;
+    private readonly INotificationService _notificationService;
 
     public MeasurementService(IMapper mapper,
-        IUnitOfWork unitOfWork, IBodyGrowthCalculator calculator, IValidationService validation)
+        IUnitOfWork unitOfWork, IBodyGrowthCalculator calculator, IValidationService validation, INotificationService notificationService)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
         _calculator = calculator;
         _validation = validation;
+        _notificationService = notificationService;
     }
 
     public async Task GenerateMissingMeasurementsAsync()
@@ -105,6 +108,29 @@ public class MeasurementService : IMeasurementService
         );
     }
 
+    public async Task CheckAndSendRemindersAsync()
+    {
+        var diaries = await _unitOfWork.MeasurementDiaryRepository.GetAllAsync();
+        foreach (var diary in diaries)
+        {
+            var currentWeek = CalculateWeeksPregnant(diary.PregnancyStartDate);
+            bool hasMeasurement = await _unitOfWork.MeasurementRepository
+                .ValidateMeasurementExistenceAsync(diary.Id, currentWeek);
+
+            if (!hasMeasurement)
+            {
+                var model = new NotificationRequestDto
+                {
+                    ReceiverId = diary.UserId,
+                    NotificationTitle = "Measurement Reminder",
+                    NotificationContent = $"You have not recorded your measurements for week {currentWeek} of pregnancy. Please update your measurements.",
+                };
+                await _notificationService.SendAndSaveNotificationAsync(model);
+            }
+        }
+    }
+    
+    
     public async Task<MeasurementResponseDto> GetMeasurementByIdAsync(string id)
     {
         var measurement = await _unitOfWork.MeasurementRepository.GetByIdAsync(id);

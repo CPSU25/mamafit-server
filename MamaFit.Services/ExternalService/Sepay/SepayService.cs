@@ -55,6 +55,7 @@ public class SepayService : ISepayService
 
         await _transactionService.CreateTransactionAsync(payload, order.Id, order.Code);
         await _orderService.UpdateOrderStatusAsync(order.Id, OrderStatus.CONFIRMED, PaymentStatus.PAID);
+        
     }
 
     public async Task<SepayQrResponse> CreatePaymentQrAsync(string orderId)

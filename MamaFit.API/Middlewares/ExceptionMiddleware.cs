@@ -64,8 +64,8 @@ namespace MamaFit.API.Middlewares
             {
                 _logger.LogError(ex, "An unexpected error occurred.");
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                var result = JsonSerializer.Serialize(new { error = $"An unexpected error occurred. Detail{ex.Message}" });
                 context.Response.ContentType = "application/json";
+                var result = JsonSerializer.Serialize(new { error = $"An unexpected error occurred. Detail: {ex.Message}" });
                 await context.Response.WriteAsync(result);
             }
         }

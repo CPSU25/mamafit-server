@@ -8,7 +8,7 @@ public class MeasurementGenerationJob : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly TimeSpan _interval = TimeSpan.FromMinutes(5);
-
+    
     public MeasurementGenerationJob(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;

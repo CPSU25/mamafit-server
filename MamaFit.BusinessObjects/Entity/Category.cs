@@ -12,6 +12,6 @@ namespace MamaFit.BusinessObjects.Entity
         public List<string> Images { get; set; } = [];
         public GlobalStatus Status { get; set; } = GlobalStatus.ACTIVE;
         //Navigation property
-        public virtual ICollection<Style> Styles { get; set; } = [];
+        public virtual ICollection<Style>? Styles { get; set; } = [];
     }
 }

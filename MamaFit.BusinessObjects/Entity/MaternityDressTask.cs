@@ -12,5 +12,5 @@ public class MaternityDressTask : BaseEntity
 
     // Navigation properties
     public Milestone? Milestone { get; set; }
-    public virtual ICollection<OrderItemTask> OrderItemTasks { get; set; } = new List<OrderItemTask>();
+    public virtual ICollection<OrderItemTask>? OrderItemTasks { get; set; } = new List<OrderItemTask>();
 }

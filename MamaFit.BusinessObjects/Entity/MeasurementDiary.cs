@@ -22,6 +22,6 @@ namespace MamaFit.BusinessObjects.Entity
         // Nagivation property
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
         public ApplicationUser? User { get; set; }
-        public virtual ICollection<Measurement> Measurements { get; set; } = new List<Measurement>();
+        public virtual ICollection<Measurement>? Measurements { get; set; } = new List<Measurement>();
     }
 }

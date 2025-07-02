@@ -11,7 +11,7 @@ namespace MamaFit.BusinessObjects.Entity
         public GlobalStatus GlobalStatus { get; set; } = GlobalStatus.ACTIVE;
 
         //Navigation property
-        public virtual ICollection<ComponentOption> Options { get; set; } = [];
-        public virtual ICollection<Style> Styles { get; set; } = [];
+        public virtual ICollection<ComponentOption>? Options { get; set; } = [];
+        public virtual ICollection<Style>? Styles { get; set; } = [];
     }
 }

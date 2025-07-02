@@ -62,6 +62,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             services.AddScoped<ICartItemRepository, CartItemRepository>();
             services.AddScoped<IPresetRepository, PresetRepository>();
+            services.AddScoped<IWarrantyRequestRepository, WarrantyRequestRepository>();
         }
 
         public static void AddServices(this IServiceCollection services)
@@ -105,6 +106,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<ICartItemService, CartItemService>();
             services.AddScoped<IPresetService, PresetService>();
             services.AddScoped<IGhtkService, GhtkService>();
+            services.AddScoped<IWarrantyRequestService, WarrantyRequestService>();
         }
 
         public static IServiceCollection AddGhtkClient(this IServiceCollection services, IConfiguration configuration)

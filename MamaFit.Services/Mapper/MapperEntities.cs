@@ -26,11 +26,11 @@ using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.DTO.VoucherDiscountDto;
 using MamaFit.BusinessObjects.DTO.MilestoneDto;
-using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.DTO.WarrantyHistoryDto;
 using MamaFit.BusinessObjects.DTO.RoleDto;
 using MamaFit.BusinessObjects.DTO.PresetDto;
+using MamaFit.BusinessObjects.DTO.WarrantyRequestDto;
 
 namespace MamaFit.Services.Mapper
 {
@@ -217,6 +217,12 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.StyleName, otp => otp.MapFrom(src => src.Style!.Name))
                 .ReverseMap();
             CreateMap<Preset, PresetGetByIdResponseDto>().ReverseMap();
+
+            //WarrantyRequest Mapper
+            CreateMap<WarrantyRequest, WarrantyRequestCreateDto>().ReverseMap();
+            CreateMap<WarrantyRequest, WarrantyRequestUpdateDto>().ReverseMap();
+            CreateMap<WarrantyRequest, WarrantyRequestGetAllDto>().ReverseMap();
+            CreateMap<WarrantyRequest, WarrantyRequestGetByIdDto>().ReverseMap();
         }
     }
 }

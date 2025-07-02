@@ -44,6 +44,7 @@ namespace MamaFit.Repositories.Repository
         {
             var presets = await _dbSet
                 .Include(x => x.ComponentOptions)
+                .ThenInclude(co => co.Component)
                 .Include(x => x.Style)
                 .Where(p => !p.IsDeleted &&
                      componentOptionId.All(id => p.ComponentOptions.Any(co => co.Id == id)))

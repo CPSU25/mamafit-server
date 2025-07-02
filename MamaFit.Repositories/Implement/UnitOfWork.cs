@@ -32,6 +32,7 @@ namespace MamaFit.Repositories.Implement
         public IMilestoneRepository MilestoneRepository { get; }
         public INotificationRepository NotificationRepository { get; }
         public IWarrantyHistoryRepository WarrantyHistoryRepository { get; }
+        public IWarrantyRequestRepository WarrantyRequestRepository { get; }
         public ITransactionRepository TransactionRepository { get; }
         public IFeedbackRepository FeedbackRepository { get; }
         public ICartItemRepository CartItemRepository { get; }
@@ -66,7 +67,8 @@ namespace MamaFit.Repositories.Implement
             ITransactionRepository transactionRepository,
             IFeedbackRepository feedbackRepository,
             ICartItemRepository cartItemRepository,
-            IPresetRepository presetRepository)
+            IPresetRepository presetRepository,
+            IWarrantyRequestRepository warrantyRequestRepository)
         {
             _context = context;
             UserRepository = userRepository;
@@ -98,6 +100,7 @@ namespace MamaFit.Repositories.Implement
             FeedbackRepository = feedbackRepository;
             CartItemRepository = cartItemRepository;
             PresetRepository = presetRepository;
+            WarrantyRequestRepository = warrantyRequestRepository;
         }
 
         public int SaveChanges()

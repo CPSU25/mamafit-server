@@ -8,5 +8,5 @@ public class Milestone : BaseEntity
     public string? Description { get; set; }
 
     // Navigation properties
-    public virtual ICollection<MaternityDressTask> MaternityDressTasks { get; set; } = [];
+    public virtual ICollection<MaternityDressTask>? MaternityDressTasks { get; set; } = [];
 }

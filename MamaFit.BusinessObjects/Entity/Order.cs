@@ -28,8 +28,8 @@ namespace MamaFit.BusinessObjects.Entity
 
         // Navigation properties
         public ApplicationUser User { get; set; } = new ApplicationUser();
-        public Address Address { get; set; } = new Address();
-        public MeasurementDiary MeasurementDiary { get; set; } = new MeasurementDiary();
+        public Address? Address { get; set; } = new Address();
+        public MeasurementDiary? MeasurementDiary { get; set; } = new MeasurementDiary();
         public VoucherDiscount? VoucherDiscount { get; set; }
         public Branch? Branch { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();

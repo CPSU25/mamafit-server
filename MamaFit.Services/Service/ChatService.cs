@@ -28,26 +28,43 @@ namespace MamaFit.Services.Service
 
             var chatroom = await _unitOfWork.ChatRepository.GetChatRoomById(requestDto.ChatRoomId);
             if (chatroom == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Chatroom is not avaiable!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND,
+                    "Chatroom is not avaiable!");
 
             var chatMessage = _mapper.Map<ChatMessage>(requestDto);
             chatMessage.IsRead = false;
             await _unitOfWork.ChatRepository.CreateChatMessageAsync(chatMessage);
 
-            return _mapper.Map<ChatMessageResponseDto>(chatMessage);
+            // Lấy info sender từ user entity
+            var responseDto = _mapper.Map<ChatMessageResponseDto>(chatMessage);
+            responseDto.SenderName = sender?.FullName ?? "";
+            responseDto.SenderAvatar = sender?.ProfilePicture ?? "";
+
+            return responseDto;
         }
 
-        public async Task CreateChatRoomAsync(string userId1, string userId2)
+        public async Task<ChatRoomResponseDto> CreateChatRoomAsync(string userId1, string userId2)
         {
             var user1 = await _unitOfWork.UserRepository.GetByIdAsync(userId1);
             if (user1 == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, $"User with id:{userId1} not found!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND,
+                    $"User with id:{userId1} not found!");
 
             var user2 = await _unitOfWork.UserRepository.GetByIdAsync(userId2);
             if (user2 == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, $"User with id:{userId2} not found!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND,
+                    $"User with id:{userId2} not found!");
 
-            await _unitOfWork.ChatRepository.CreateChatRoomAsync(userId1, userId2);
+            var existingRoom = await _unitOfWork.ChatRepository.GetRoomBetweenUsersAsync(userId1, userId2);
+            if (existingRoom != null)
+                return _mapper.Map<ChatRoomResponseDto>(existingRoom);
+            
+           var newRoom = await _unitOfWork.ChatRepository.CreateChatRoomAsync(userId1, userId2);
+            if (newRoom == null)
+                throw new ErrorException(StatusCodes.Status500InternalServerError, ApiCodes.INTERNAL_SERVER_ERROR,
+                    "Failed to create chat room!");
+
+            return _mapper.Map<ChatRoomResponseDto>(newRoom);
         }
 
         public async Task<List<ChatMessageResponseDto>> GetChatHistoryAsync(string chatRoomId, int page, int pageSize)
@@ -89,9 +106,11 @@ namespace MamaFit.Services.Service
         {
             var message = await _unitOfWork.ChatRepository.GetChatMessageById(messageId);
             if (message == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, $"Message with id:{messageId} is not found!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND,
+                    $"Message with id:{messageId} is not found!");
             if (message.IsRead)
-                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, $"Message with id:{messageId} is read!");
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                    $"Message with id:{messageId} is read!");
 
             message.IsRead = true;
             await _unitOfWork.ChatRepository.UpdateMessageAsync(message);

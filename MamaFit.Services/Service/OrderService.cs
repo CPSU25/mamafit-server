@@ -169,8 +169,6 @@ public class OrderService : IOrderService
             return dress != null ? dress.Price * item.Quantity : 0;
         });
 
-        var shippingFee = request.DeliveryMethod == DeliveryMethod.DELIVERY ? 30000 : 0;
-
         var order = _mapper.Map<Order>(request);
         order.User = user!;
         order.VoucherDiscount = voucher;
@@ -178,9 +176,8 @@ public class OrderService : IOrderService
         order.Code = GenerateOrderCode();
         order.Status = OrderStatus.CREATED;
         order.MeasurementDiary = measurement;
-        order.ShippingFee = shippingFee;
         order.SubTotalAmount = subTotalAmount;
-        order.TotalAmount = (subTotalAmount - ((voucher?.VoucherBatch?.DiscountPercentValue ?? 0) * subTotalAmount) + shippingFee);
+        order.TotalAmount = (subTotalAmount - ((voucher?.VoucherBatch?.DiscountPercentValue ?? 0) * subTotalAmount) + request.ShippingFee);
         order.PaymentStatus = PaymentStatus.PENDING;
         order.PaymentType = PaymentType.FULL;
         order.OrderItems = dressDetails.Select(d => new OrderItem
@@ -308,20 +305,19 @@ public class OrderService : IOrderService
             _validation.CheckNotFound(measurement, $"Measurement diary with id: {request.MeasurementDiaryId} not found");
         }
 
-        var shippingFee = request.DeliveryMethod == DeliveryMethod.DELIVERY ? 30000 : 0;
-        var subTotalAmount = preset!.ComponentOptions.Sum(co => co.Price);
+        var subTotalAmount = preset!.Price;
 
         var order = _mapper.Map<Order>(request);
 
         order.User = user!;
         order.VoucherDiscount = voucher;
         order.Type = OrderType.NORMAL;
+        order.VoucherDiscountId = request.VoucherDiscountId ?? null;
         order.Code = GenerateOrderCode();
         order.Status = OrderStatus.CREATED;
         order.MeasurementDiary = measurement;
-        order.ShippingFee = shippingFee;
         order.SubTotalAmount = subTotalAmount;
-        order.TotalAmount = (subTotalAmount - ((voucher?.VoucherBatch?.DiscountPercentValue ?? 0) * subTotalAmount) + shippingFee);
+        order.TotalAmount = (subTotalAmount - ((voucher?.VoucherBatch?.DiscountPercentValue ?? 0) * subTotalAmount) + request.ShippingFee);
         order.PaymentStatus = PaymentStatus.PENDING;
         order.PaymentType = PaymentType.FULL;
         order.OrderItems = new List<OrderItem>()

@@ -9,7 +9,7 @@ namespace MamaFit.Services.Interface
         Task<PaginatedList<PresetGetAllResponseDto>> GetAll(int index, int pageSize, string? search, EntitySortBy? sortBy);
         Task<PresetGetByIdResponseDto> GetById(string id);
         public Task<PresetGetByIdResponseDto> GetDefaultPresetByStyleId(string styleId);
-        public Task<List<PresetGetAllResponseDto>> GetAllPresetByComponentOptionId(List<string> componentOptionIds);
+        public Task<List<PresetGetByIdResponseDto>> GetAllPresetByComponentOptionId(List<string> componentOptionIds);
         Task CreatePresetAsync(PresetCreateRequestDto request);
         Task UpdatePresetAsync(string id, PresetUpdateRequestDto request);
         Task DeletePresetAsync(string id);

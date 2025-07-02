@@ -1,5 +1,6 @@
 using MamaFit.API.Constant;
 using MamaFit.API.Middlewares;
+using MamaFit.Services.Hubs;
 using MamaFit.API.DependencyInjection;
 using NLog.Web;
 using System.Text.Json.Serialization;
@@ -88,6 +89,7 @@ namespace MamaFit.API
                 app.MapControllers();
 
                 app.MapHub<ChatHub>("/chatHub");
+                app.MapHub<NotificationHub>("/notificationHub");
 
                 app.UseHangfireDashboard("/hangfire", new DashboardOptions
                 {

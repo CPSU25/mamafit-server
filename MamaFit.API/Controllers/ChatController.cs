@@ -1,8 +1,9 @@
-﻿using MamaFit.API.Middlewares;
+﻿using MamaFit.Services.Hubs;
 using MamaFit.BusinessObjects.DTO.ChatMessageDto;
 using MamaFit.BusinessObjects.DTO.ChatRoomDto;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;
+using MamaFit.Services.Hubs;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -83,13 +84,12 @@ namespace MamaFit.API.Controllers
                     return Forbid("You can only create rooms that include yourself");
                 }
 
-                await _chatService.CreateChatRoomAsync(createDto.UserId1, createDto.UserId2);
+                var room = await _chatService.CreateChatRoomAsync(createDto.UserId1, createDto.UserId2);
 
-                return Ok(new ResponseModel<string>(StatusCodes.Status200OK, ApiCodes.SUCCESS, "Chat room created successfully", "Chat room created successfully"));
+                return Ok(new ResponseModel<string>(StatusCodes.Status200OK, ApiCodes.SUCCESS, room.Id, "Chat room created successfully"));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error creating chat room");
                 return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, null, "Failed to create chat room"));
             }
         }

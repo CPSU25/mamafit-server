@@ -22,8 +22,21 @@ namespace MamaFit.Repositories.Repository
                 .Reference(m => m.Sender)
                 .LoadAsync();
         }
+        
+        public async Task<ChatRoom?> GetRoomBetweenUsersAsync(string userId1, string userId2)
+        {
+            var roomIds = await _context.ChatRoomMembers
+                .Where(m => m.UserId == userId1 || m.UserId == userId2)
+                .GroupBy(m => m.ChatRoomId)
+                .Where(g => g.Count() == 2)
+                .Select(g => g.Key)
+                .ToListAsync();
 
-        public async Task CreateChatRoomAsync(string userId1, string userId2)
+            return await _context.ChatRooms
+                .FirstOrDefaultAsync(r => roomIds.Contains(r.Id));
+        }
+
+        public async Task<ChatRoom> CreateChatRoomAsync(string userId1, string userId2)
         {
             var user1 = await _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(userId1));
             var user2 = await _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(userId2));
@@ -36,24 +49,20 @@ namespace MamaFit.Repositories.Repository
             };
             await _context.ChatRooms.AddAsync(chatroom);
 
-            await _context.ChatRoomMembers.AddRangeAsync(
-                new ChatRoomMember
-                {
-                    ChatRoomId = chatroom.Id,
-                    UserId = userId1,
-                    User = user1!,
-                    ChatRoom = chatroom
-                },
-                new ChatRoomMember
-                {
-                    ChatRoomId = chatroom.Id,
-                    UserId = userId2,
-                    User = user2!,
-                    ChatRoom = chatroom
-                });
-
+            var members = new List<ChatRoomMember>
+            {
+                new ChatRoomMember { UserId = userId1, ChatRoom = chatroom },
+                new ChatRoomMember { UserId = userId2, ChatRoom = chatroom }
+            };
+            await _context.ChatRoomMembers.AddRangeAsync(members);
 
             await _context.SaveChangesAsync();
+
+            // Trả về phòng có kèm member
+            return await _context.ChatRooms
+                       .Include(r => r.Members)
+                       .FirstOrDefaultAsync(r => r.Id == chatroom.Id)
+                   ?? chatroom;
         }
 
         public async Task<List<ChatMessage>> GetChatHistoryAsync(string chatRoomId, int page, int pageSize)

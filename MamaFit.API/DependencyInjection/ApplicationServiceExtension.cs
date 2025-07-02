@@ -13,6 +13,7 @@ using MamaFit.Services.ExternalService.ExpoNotification;
 using MamaFit.Services.ExternalService.Ghtk;
 using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.ExternalService.Sepay;
+using MamaFit.Services.ExternalService.SignalR;
 using MamaFit.Services.Interface;
 using MamaFit.Services.Mapper;
 using MamaFit.Services.Service;
@@ -107,6 +108,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IPresetService, PresetService>();
             services.AddScoped<IGhtkService, GhtkService>();
             services.AddScoped<IWarrantyRequestService, WarrantyRequestService>();
+            services.AddScoped<IUserConnectionManager, UserConnectionManager>();
         }
 
         public static IServiceCollection AddGhtkClient(this IServiceCollection services, IConfiguration configuration)
@@ -219,9 +221,9 @@ namespace MamaFit.API.DependencyInjection
                             var accessToken = context.Request.Query["access_token"];
                             // If the request is for our hub...
                             var path = context.HttpContext.Request.Path;
-                            if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/chatHub")))
+                            if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/chatHub")) ||
+                                path.StartsWithSegments("/notificationHub"))
                             {
-                                // Read the token out of the query string
                                 context.Token = accessToken;
                             }
                             return Task.CompletedTask;

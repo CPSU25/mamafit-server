@@ -5,8 +5,11 @@ using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.ExternalService.ExpoNotification;
+using MamaFit.Services.ExternalService.SignalR;
+using MamaFit.Services.Hubs;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.VisualBasic;
 
 namespace MamaFit.Services.Service;
@@ -17,14 +20,17 @@ public class NotificationService : INotificationService
     private readonly IMapper _mapper;
     private readonly IValidationService _validation;
     private readonly IExpoNotificationService _expoNotificationService;
-
+    private readonly IHubContext<NotificationHub> _notificationHubContext;
+    private readonly IUserConnectionManager _userConnectionManager;
     public NotificationService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation,
-        IExpoNotificationService expoNotificationService)
+        IExpoNotificationService expoNotificationService, IHubContext<NotificationHub> notificationHubContext, IUserConnectionManager userConnectionManager)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _validation = validation;
         _expoNotificationService = expoNotificationService;
+        _notificationHubContext = notificationHubContext;
+        _userConnectionManager = userConnectionManager;
     }
 
     public async Task<PaginatedList<NotificationResponseDto>> GetAllNotificationsAsync(int index = 1, int pageSize = 10,
@@ -55,24 +61,41 @@ public class NotificationService : INotificationService
         var user = await _unitOfWork.UserRepository.GetByIdAsync(model.ReceiverId);
         _validation.CheckNotFound(user, "User not found");
 
-        var token = await _unitOfWork.TokenRepository.GetNotificationTokensAsync(model.ReceiverId);
-        _validation.CheckNotFound(token, "No notification tokens found for the user");
         var notification = _mapper.Map<Notification>(model);
         notification.IsRead = false;
 
         await _unitOfWork.NotificationRepository.InsertAsync(notification);
         await _unitOfWork.SaveChangesAsync();
+        
+        var connections = await _userConnectionManager.GetUserConnectionsAsync(model.ReceiverId);
+        var notificationDto = _mapper.Map<NotificationResponseDto>(notification);
 
-        var expoResponse = await _expoNotificationService.SendPushAsync(
-            token.Token,
-            model.NotificationTitle,
-            model.NotificationContent
-        );
-
-        if (!expoResponse.IsSuccessStatusCode)
+        if (connections != null && connections.Count > 0)
         {
-            throw new ErrorException(StatusCodes.Status500InternalServerError, ApiCodes.INTERNAL_SERVER_ERROR,
-                "Failed to send notification via Expo");
+            foreach (var connId in connections)
+            {
+                await _notificationHubContext.Clients.Client(connId)
+                    .SendAsync("ReceiveNotification", notificationDto);
+            }
+        }
+        else
+        {
+            var token = await _unitOfWork.TokenRepository.GetNotificationTokensAsync(model.ReceiverId);
+            
+            if (token != null && !string.IsNullOrEmpty(token.Token))
+            {
+                var expoResponse = await _expoNotificationService.SendPushAsync(
+                    token.Token,
+                    model.NotificationTitle,
+                    model.NotificationContent
+                );
+
+                if (!expoResponse.IsSuccessStatusCode)
+                {
+                    throw new ErrorException(StatusCodes.Status500InternalServerError, ApiCodes.INTERNAL_SERVER_ERROR,
+                        "Failed to send notification via Expo");
+                }
+            }
         }
     }
 }

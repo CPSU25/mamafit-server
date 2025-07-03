@@ -83,7 +83,7 @@ public class OrderService : IOrderService
         order.Code = GenerateOrderCode();
         await _unitOfWork.OrderRepository.InsertAsync(order);
         await _unitOfWork.SaveChangesAsync();
-        var notification = new NotificationRequestDto()
+        var notification = new NotificationRequestDto
         {
             ReceiverId = model.UserId,
             NotificationTitle = "New Order Created",

@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using AutoMapper;
+using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.DTO.SepayDto;
 using MamaFit.BusinessObjects.Enum;
@@ -20,13 +21,14 @@ public class SepayService : ISepayService
     private readonly IValidationService _validationService;
     private readonly IOrderService _orderService;
     private readonly ITransactionService _transactionService;
-
+    private readonly INotificationService _notificationService;
     public SepayService(IUnitOfWork unitOfWork,
         IOptions<SepaySettings> sepaySettings,
         IValidationService validationService,
         IOrderService orderService,
         ITransactionService transactionService,
-        IMapper mapper)
+        IMapper mapper,
+        INotificationService notificationService)
     {
         _unitOfWork = unitOfWork;
         _sepaySettings = sepaySettings.Value;
@@ -34,6 +36,7 @@ public class SepayService : ISepayService
         _orderService = orderService;
         _transactionService = transactionService;
         _mapper = mapper;
+        _notificationService = notificationService;
     }
 
     public async Task ProcessPaymentWebhookAsync(SepayWebhookPayload payload, string authHeader)
@@ -55,6 +58,12 @@ public class SepayService : ISepayService
 
         await _transactionService.CreateTransactionAsync(payload, order.Id, order.Code);
         await _orderService.UpdateOrderStatusAsync(order.Id, OrderStatus.CONFIRMED, PaymentStatus.PAID);
+        await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
+        {
+            NotificationTitle = "Payment Successful",
+            NotificationContent = $"Your payment for order {order.Code} has been successfully processed.",
+            ReceiverId = order.UserId
+        });
     }
 
     public async Task<SepayQrResponse> CreatePaymentQrAsync(string orderId)

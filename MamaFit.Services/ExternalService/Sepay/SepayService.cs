@@ -39,6 +39,13 @@ public class SepayService : ISepayService
         _notificationService = notificationService;
     }
 
+    public async Task<string> GetPaymentStatusAsync(string orderId)
+    {
+        var order = await _unitOfWork.OrderRepository.GetByIdWithItems(orderId);
+        _validationService.CheckNotFound(order, "Order not found");
+
+        return order.PaymentStatus.ToString();
+    }
     public async Task ProcessPaymentWebhookAsync(SepayWebhookPayload payload, string authHeader)
     {
         if (!ValidateAuthHeader(authHeader))
@@ -96,18 +103,18 @@ public class SepayService : ISepayService
         return qrResponse;
     }
 
-    private string GenerateSepayQrUrl(string accountNumber, string bankCode, float amount, string description,
+    private string GenerateSepayQrUrl(string accountNumber, string bankCode, decimal? amount, string description,
         string template, string download)
     {
         string paymentCode = GeneratePaymentCode();
         string fullDescription = $"{paymentCode}{description}";
         var baseUrl = $"{_sepaySettings.ApiBaseUri}";
 
-        var queryParams = new Dictionary<string, string>
+        var queryParams = new Dictionary<string, string?>
         {
             ["acc"] = accountNumber,
             ["bank"] = bankCode,
-            ["amount"] = amount.ToString("0"),
+            ["amount"] = amount?.ToString("0"),
             ["des"] = fullDescription,
             ["template"] = template,
             ["download"] = download

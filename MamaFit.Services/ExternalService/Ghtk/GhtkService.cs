@@ -64,7 +64,7 @@ public class GhtkService : IGhtkService
         }).ToList();
         
         _validationService.CheckBadRequest(ghtkProducts.Count == 0, "Order must have at least one item");
-        var value = order.OrderItems.Sum(item => (decimal)(item.MaternityDressDetail?.Price!) * item.Quantity);
+        var value = order.OrderItems.Sum(item => (item.MaternityDressDetail?.Price!) * item.Quantity);
         var ghtkOrder = new GhtkOrderExpressInfo
         {
             Id = order.Code,

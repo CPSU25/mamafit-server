@@ -15,6 +15,13 @@ public class SepayController : ControllerBase
     {
         _sepayService = sepayService;
     }
+    
+    [HttpGet("status/{orderId}")]
+    public async Task<IActionResult> GetPaymentStatus(string orderId)
+    {
+        var status = await _sepayService.GetPaymentStatusAsync(orderId);
+        return Ok(status);
+    }
 
     [HttpPost("hooks/payment")]
     public async Task<IActionResult> ProcessPaymentWebhook(

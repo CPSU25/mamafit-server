@@ -15,15 +15,15 @@ namespace MamaFit.BusinessObjects.Entity
         public OrderType Type { get; set; }
         public string? Code { get; set; }
         public OrderStatus? Status { get; set; }
-        public float TotalAmount { get; set; } // tổng tiền (bao gồm cả phí vận chuyển, giảm giá, thuế, v.v.)
-        public float ShippingFee { get; set; }
+        public decimal? TotalAmount { get; set; } // tổng tiền (bao gồm cả phí vận chuyển, giảm giá, thuế, v.v.)
+        public decimal ShippingFee { get; set; }
         public PaymentStatus PaymentStatus { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
         public DeliveryMethod DeliveryMethod { get; set; }
         public PaymentType PaymentType { get; set; }
         public DateTime? CanceledAt { get; set; }
         public string? CanceledReason { get; set; }
-        public float SubTotalAmount { get; set; } //gốc
+        public decimal? SubTotalAmount { get; set; } //gốc
         public string? WarrantyCode { get; set; }
 
         // Navigation properties

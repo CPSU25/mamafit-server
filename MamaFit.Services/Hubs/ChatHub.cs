@@ -20,17 +20,26 @@ namespace MamaFit.Services.Hubs
         public override async Task OnConnectedAsync()
         {
             var userId = GetCurrentUserId();
-            if (!string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(userId))
             {
-                await _userConnectionManager.AddUserConnectionAsync(userId, Context.ConnectionId);
+                await base.OnConnectedAsync();
+                return;
+            }
 
-                var userRooms = await _chatService.GetUserChatRoom(userId);
-                foreach (var room in userRooms)
-                {
-                    await Groups.AddToGroupAsync(Context.ConnectionId, room.Id);
-                    await _userConnectionManager.AddUserToRoomAsync(room.Id, userId);
-                }
+            // Đăng ký kết nối user - connectionId vào Redis (UserConnectionManager)
+            await _userConnectionManager.AddUserConnectionAsync(userId, Context.ConnectionId);
 
+            // Tự động join các room user đang là thành viên
+            var userRooms = await _chatService.GetUserChatRoom(userId);
+            foreach (var room in userRooms)
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, room.Id);
+                await _userConnectionManager.AddUserToRoomAsync(room.Id, userId);
+            }
+
+            // Chỉ gửi thông báo online nếu đây là kết nối đầu tiên (user vừa online thực sự)
+            if (await _userConnectionManager.GetUserConnectionsAsync(userId) is { Count: 1 })
+            {
                 await Clients.Others.SendAsync("UserOnline", userId);
             }
 
@@ -44,18 +53,26 @@ namespace MamaFit.Services.Hubs
             {
                 await _userConnectionManager.RemoveUserConnectionAsync(userId, Context.ConnectionId);
 
+                // Xoá user khỏi các room (tuỳ nghiệp vụ, có thể bỏ qua nếu muốn user chỉ out khỏi room khi leave)
                 var userRooms = await _chatService.GetUserChatRoom(userId);
                 foreach (var room in userRooms)
                 {
                     await _userConnectionManager.RemoveUserFromRoomAsync(room.Id, userId);
                 }
 
-                await Clients.Others.SendAsync("UserOffline", userId);
+                // Chỉ gửi offline khi user thực sự không còn kết nối nào (tức thật sự offline)
+                if (!await _userConnectionManager.IsUserOnlineAsync(userId))
+                {
+                    await Clients.Others.SendAsync("UserOffline", userId);
+                }
             }
 
             await base.OnDisconnectedAsync(exception);
         }
 
+        /// <summary>
+        /// Client chủ động load các room mà mình là thành viên
+        /// </summary>
         public async Task LoadRoom()
         {
             var userId = GetCurrentUserId();
@@ -75,6 +92,9 @@ namespace MamaFit.Services.Hubs
             await Clients.Caller.SendAsync("LoadRoom", rooms);
         }
 
+        /// <summary>
+        /// Join vào room (group SignalR) và cập nhật trạng thái vào RoomUsers Redis
+        /// </summary>
         public async Task JoinRoom(string roomId)
         {
             var userId = GetCurrentUserId();
@@ -89,6 +109,9 @@ namespace MamaFit.Services.Hubs
             await Clients.Caller.SendAsync("JoinedRoom", roomId);
         }
 
+        /// <summary>
+        /// Rời khỏi room (group SignalR) và cập nhật trạng thái vào RoomUsers Redis
+        /// </summary>
         public async Task LeaveRoom(string roomId)
         {
             var userId = GetCurrentUserId();
@@ -100,10 +123,12 @@ namespace MamaFit.Services.Hubs
             await Clients.Group(roomId).SendAsync("UserLeftRoom", userId, roomId);
         }
 
+        /// <summary>
+        /// Gửi tin nhắn đến 1 room, đồng bộ DB và gửi real-time
+        /// </summary>
         public async Task SendMessage(ChatMessageCreateDto messageDto)
         {
             var userId = GetCurrentUserId();
-
             if (string.IsNullOrEmpty(userId))
             {
                 await Clients.Caller.SendAsync("Error", "Unauthorized: User not authenticated");
@@ -133,6 +158,7 @@ namespace MamaFit.Services.Hubs
                     return;
                 }
 
+                // Gửi tới tất cả client trong room
                 await Clients.Group(messageDto.ChatRoomId).SendAsync("ReceiveMessage", new
                 {
                     id = response.Id,
@@ -145,6 +171,7 @@ namespace MamaFit.Services.Hubs
                     messageTimestamp = response.MessageTimestamp.ToString("O")
                 });
 
+                // Thông báo gửi thành công cho client vừa gửi
                 await Clients.Caller.SendAsync("MessageSent", new
                 {
                     tempId = userId,
@@ -157,46 +184,58 @@ namespace MamaFit.Services.Hubs
                 await Clients.Caller.SendAsync("Error", $"Failed to send message: {ex.Message}");
             }
         }
+        
 
-
-        public async Task MarkAsRead(string messageId, string chatRoomId)
-        {
-            var userId = GetCurrentUserId();
-            if (string.IsNullOrEmpty(userId))
-            {
-                await Clients.Caller.SendAsync("Error", "Unauthorized");
-                return;
-            }
-            await _chatService.MarkMessageAsReadAsync(messageId, userId, chatRoomId);
-
-            await Clients.Caller.SendAsync("Error", "Failed to mark message as read");
-        }
-
-
+        /// <summary>
+        /// Lấy danh sách user online trong room (lọc đúng người đang online)
+        /// </summary>
         public async Task GetOnlineUsers(string roomId)
         {
-            var onlineUsers = await _userConnectionManager.GetRoomUsersAsync(roomId);
+            var userIds = await _userConnectionManager.GetRoomUsersAsync(roomId);
+            var onlineUsers = new List<string>();
+            foreach (var userId in userIds)
+            {
+                if (await _userConnectionManager.IsUserOnlineAsync(userId))
+                {
+                    onlineUsers.Add(userId);
+                }
+            }
             await Clients.Caller.SendAsync("OnlineUsers", roomId, onlineUsers);
         }
 
-
+        /// <summary>
+        /// Gửi tin nhắn riêng tư cho user khác
+        /// </summary>
         public async Task SendPrivateMessage(string targetUserId, string message)
         {
             var senderId = GetCurrentUserId();
+            if (string.IsNullOrEmpty(senderId) || string.IsNullOrEmpty(targetUserId) || string.IsNullOrEmpty(message?.Trim()))
+            {
+                await Clients.Caller.SendAsync("Error", "Invalid sender, target or message.");
+                return;
+            }
+
             var targetConnections = await _userConnectionManager.GetUserConnectionsAsync(targetUserId);
+            if (targetConnections.Count == 0)
+            {
+                await Clients.Caller.SendAsync("Error", "Target user is offline.");
+                return;
+            }
             foreach (var connectionId in targetConnections)
             {
                 await Clients.Client(connectionId).SendAsync("ReceivePrivateMessage", senderId, message);
             }
         }
 
+        /// <summary>
+        /// Helper lấy userId từ Claims (ưu tiên các trường phổ biến)
+        /// </summary>
         private string? GetCurrentUserId()
         {
-            var userId = Context.User?.FindFirst("userId")?.Value ??
-                         Context.User?.FindFirst("sub")?.Value ??
-                         Context.User?.FindFirst("nameid")?.Value ??
-                         Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return userId;
+            return Context.User?.FindFirst("userId")?.Value
+                ?? Context.User?.FindFirst("sub")?.Value
+                ?? Context.User?.FindFirst("nameid")?.Value
+                ?? Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         }
     }
 }

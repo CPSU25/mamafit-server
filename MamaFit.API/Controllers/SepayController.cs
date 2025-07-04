@@ -20,7 +20,11 @@ public class SepayController : ControllerBase
     public async Task<IActionResult> GetPaymentStatus(string orderId)
     {
         var status = await _sepayService.GetPaymentStatusAsync(orderId);
-        return Ok(status);
+        return Ok(new ResponseModel<string>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            status
+        ));
     }
 
     [HttpPost("hooks/payment")]

@@ -6,4 +6,5 @@ public interface ISepayService
 {
     Task ProcessPaymentWebhookAsync(SepayWebhookPayload payload, string authHeader);
     Task<SepayQrResponse> CreatePaymentQrAsync(string orderId);
+    Task<string> GetPaymentStatusAsync(string orderId);
 }

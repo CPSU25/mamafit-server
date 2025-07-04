@@ -39,6 +39,13 @@ public class SepayService : ISepayService
         _notificationService = notificationService;
     }
 
+    public async Task<string> GetPaymentStatusAsync(string orderId)
+    {
+        var order = await _unitOfWork.OrderRepository.GetByIdWithItems(orderId);
+        _validationService.CheckNotFound(order, "Order not found");
+
+        return order.PaymentStatus.ToString();
+    }
     public async Task ProcessPaymentWebhookAsync(SepayWebhookPayload payload, string authHeader)
     {
         if (!ValidateAuthHeader(authHeader))

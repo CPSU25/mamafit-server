@@ -41,7 +41,7 @@ public class GhtkOrderExpressInfo
     [JsonProperty("note")]
     public string Note { get; set; }
     [JsonProperty("value")]
-    public decimal Value { get; set; }
+    public decimal? Value { get; set; }
     [JsonProperty("transport")]
     public string Transport { get; set; } = "road";
 }

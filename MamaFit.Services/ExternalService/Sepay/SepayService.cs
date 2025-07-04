@@ -96,18 +96,18 @@ public class SepayService : ISepayService
         return qrResponse;
     }
 
-    private string GenerateSepayQrUrl(string accountNumber, string bankCode, float amount, string description,
+    private string GenerateSepayQrUrl(string accountNumber, string bankCode, decimal? amount, string description,
         string template, string download)
     {
         string paymentCode = GeneratePaymentCode();
         string fullDescription = $"{paymentCode}{description}";
         var baseUrl = $"{_sepaySettings.ApiBaseUri}";
 
-        var queryParams = new Dictionary<string, string>
+        var queryParams = new Dictionary<string, string?>
         {
             ["acc"] = accountNumber,
             ["bank"] = bankCode,
-            ["amount"] = amount.ToString("0"),
+            ["amount"] = amount?.ToString("0"),
             ["des"] = fullDescription,
             ["template"] = template,
             ["download"] = download

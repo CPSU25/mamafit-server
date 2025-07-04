@@ -317,7 +317,7 @@ public class OrderService : IOrderService
         order.Status = OrderStatus.CREATED;
         order.MeasurementDiary = measurement;
         order.SubTotalAmount = subTotalAmount;
-        order.TotalAmount = (subTotalAmount - ((voucher?.VoucherBatch?.DiscountPercentValue ?? 0) * subTotalAmount) + request.ShippingFee);
+        order.TotalAmount = (subTotalAmount - (voucher?.VoucherBatch?.DiscountPercentValue ?? 0) * subTotalAmount + request.ShippingFee);
         order.PaymentStatus = PaymentStatus.PENDING;
         order.PaymentType = PaymentType.FULL;
         order.OrderItems = new List<OrderItem>()

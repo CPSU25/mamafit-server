@@ -9,7 +9,4 @@ public class GhtkBaseResponse
 
     [JsonProperty("message")]
     public string Message { get; set; }
-
-    [JsonProperty("log_id")]
-    public string? LogId { get; set; }
 }

@@ -36,6 +36,13 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
     }
     
+    public async Task<Order?> GetWithItemsAndDressDetails(string id)
+    {
+        return await _dbSet.AsNoTracking()
+            .Include(x => x.OrderItems)
+                .ThenInclude(oi => oi.MaternityDressDetail)
+            .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
+    }
     public async Task<Order?> GetByCodeAsync(string code)
     {
         return await _dbSet.AsNoTracking()

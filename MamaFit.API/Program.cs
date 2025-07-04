@@ -11,6 +11,7 @@ using MamaFit.Services.ExternalService.CronJob;
 using MamaFit.Services.ExternalService.Filter;
 using MamaFit.Services.Validator;
 using NLog;
+using StackExchange.Redis;
 
 namespace MamaFit.API
 {
@@ -41,6 +42,10 @@ namespace MamaFit.API
                 {
                     options.Configuration = builder.Configuration["RedisSettings:ConnectionString"];
                 });
+                builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+                    ConnectionMultiplexer.Connect(builder.Configuration["RedisSettings:ConnectionString"]!)
+                );
+
                 builder.Services.AddHangfireWithProgres(builder.Configuration);
                 builder.Services.Configure<SepaySettings>(builder.Configuration.GetSection("SepaySettings"));
                 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));

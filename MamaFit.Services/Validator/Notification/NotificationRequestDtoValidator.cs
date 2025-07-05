@@ -23,8 +23,8 @@ public class NotificationRequestDtoValidator : AbstractValidator<NotificationReq
             .When(x => !string.IsNullOrEmpty(x.ActionUrl));
 
         RuleFor(x => x.Metadata)
-            .MaximumLength(500).WithMessage("Metadata must not exceed 500 characters.")
-            .When(x => !string.IsNullOrEmpty(x.Metadata));
+            .Must(meta => meta == null || System.Text.Json.JsonSerializer.Serialize(meta).Length <= 500)
+            .WithMessage("Metadata must not exceed 500 characters when serialized.");
 
         RuleFor(x => x.ReceiverId)
             .NotEmpty().WithMessage("Receiver ID is required.");

@@ -69,7 +69,6 @@ public class NotificationService : INotificationService
         
         var connections = await _userConnectionManager.GetUserConnectionsAsync(model.ReceiverId);
         var notificationDto = _mapper.Map<NotificationResponseDto>(notification);
-
         if (connections != null && connections.Count > 0)
         {
             foreach (var connId in connections)

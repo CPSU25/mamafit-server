@@ -48,7 +48,11 @@ public class OrderService : IOrderService
             NotificationContent = $"Your order with code {order.Code} has been updated to {orderStatus.ToString().ToLowerInvariant()}.",
             Type = NotificationType.ORDER_PROGRESS,
             ActionUrl = $"/order/{order.Id}",
-            Metadata = JsonConvert.SerializeObject(new { orderId = order.Id, orderCode = order.Code }),
+            Metadata = new Dictionary<string, string>()
+            {
+                { "orderId", order.Id },
+                { "paymentStatus", paymentStatus.ToString() }
+            }
         };
 
         await _notificationService.SendAndSaveNotificationAsync(notification);
@@ -90,7 +94,12 @@ public class OrderService : IOrderService
             NotificationContent = $"Order with code {order.Code} has been created.",
             Type = NotificationType.ORDER_PROGRESS,
             ActionUrl = $"/order/{order.Id}",
-            Metadata = JsonConvert.SerializeObject(new { orderId = order.Id, orderCode = order.Code }),
+            Metadata = new Dictionary<string, string>
+            {
+                { "orderId", order.Id },
+                { "orderCode", order.Code },
+                { "status", order.Status.ToString() }
+            }
         };
 
         await _notificationService.SendAndSaveNotificationAsync(notification);

@@ -27,9 +27,9 @@ namespace MamaFit.BusinessObjects.Entity
         public string? WarrantyCode { get; set; }
 
         // Navigation properties
-        public ApplicationUser User { get; set; } = new ApplicationUser();
-        public Address? Address { get; set; } = new Address();
-        public MeasurementDiary? MeasurementDiary { get; set; } = new MeasurementDiary();
+        public ApplicationUser User { get; set; }
+        public Address? Address { get; set; }
+        public MeasurementDiary? MeasurementDiary { get; set; }
         public VoucherDiscount? VoucherDiscount { get; set; }
         public Branch? Branch { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();

@@ -14,6 +14,8 @@ namespace MamaFit.BusinessObjects.Entity
         public int? Weight { get; set; }
         public decimal? Price { get; set; }
         public PresetType Type { get; set; }
+
+
         public ApplicationUser? User { get; set; }
         public Style? Style { get; set; }
         public DesignRequest? DesignRequest { get; set; }

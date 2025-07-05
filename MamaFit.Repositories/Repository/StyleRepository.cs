@@ -87,6 +87,7 @@ namespace MamaFit.Repositories.Repository
             var result = await _dbSet
                 .Include(x => x.Components)
                 .ThenInclude(x => x.Options)
+                .Include(x => x.Presets)
                 .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
 
             return result!;

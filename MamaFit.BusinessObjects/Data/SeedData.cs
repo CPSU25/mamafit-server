@@ -472,7 +472,7 @@ namespace MamaFit.BusinessObjects.Data
         Id = "bcdcf89795b2484f96a3a12b25383a12",
         UserId = "f49aa51bbd304e77933e24bbed65b165",
         StyleId = "037b41302a4c453f8cef135afceb3956",
-                Name = "Name",
+        Name = "Name",
         Weight = 200,
         Images = new List<string> { "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-15.png?alt=media&token=a4a6b9e1-b20a-4939-bf9f-524f0c5911ae" },
         IsDefault = false,

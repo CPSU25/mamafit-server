@@ -12,16 +12,22 @@ namespace MamaFit.Services.Service
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IValidationService _validationService;
 
-        public MaternityDressTaskService(IMapper mapper, IUnitOfWork unitOfWork)
+        public MaternityDressTaskService(IMapper mapper, IUnitOfWork unitOfWork, IValidationService validationService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _validationService = validationService;
         }
 
         public async Task CreateAsync(MaternityDressTaskRequestDto request)
         {
+            var milestone = await _unitOfWork.MilestoneRepository.GetByIdAsync(request.MilestoneId!);
+            _validationService.CheckNotFound(milestone, $"Milestone with id:{request.MilestoneId} not found");
+
             var task = _mapper.Map<MaternityDressTask>(request);
+            task.Milestone = milestone;
             await _unitOfWork.MaternityDressTaskRepository.InsertAsync(task);
             await _unitOfWork.SaveChangesAsync();
         }

@@ -1,8 +1,9 @@
-﻿using MamaFit.BusinessObjects.Enum;
+﻿using MamaFit.BusinessObjects.DTO.OrderItemTaskDto;
+using MamaFit.BusinessObjects.Enum;
 
-namespace MamaFit.BusinessObjects.DTO.MaternityDressTask
+namespace MamaFit.BusinessObjects.DTO.MaternityDressTaskDto
 {
-    public class MaternityDressTaskResponseDto
+    public class MaternityDressTaskDetailResponseDto
     {
         public string? Id { get; set; }
         public string? Name { get; set; }
@@ -12,5 +13,6 @@ namespace MamaFit.BusinessObjects.DTO.MaternityDressTask
         public string? CreatedBy { get; set; } = string.Empty;
         public DateTime? UpdatedAt { get; set; } = null;
         public string? UpdatedBy { get; set; } = string.Empty;
+        public OrderItemTaskResponseDto? Detail { get; set; }
     }
 }

@@ -36,13 +36,14 @@ namespace MamaFit.Services.Hubs
                 await Groups.AddToGroupAsync(Context.ConnectionId, room.Id);
                 await _userConnectionManager.AddUserToRoomAsync(room.Id, userId);
             }
-
+            
             // Chỉ gửi thông báo online nếu đây là kết nối đầu tiên (user vừa online thực sự)
             if (await _userConnectionManager.GetUserConnectionsAsync(userId) is { Count: 1 })
             {
                 await Clients.Others.SendAsync("UserOnline", userId);
             }
 
+            await GetListOnlineUser();
             await base.OnConnectedAsync();
         }
 
@@ -120,7 +121,7 @@ namespace MamaFit.Services.Hubs
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
             await _userConnectionManager.RemoveUserFromRoomAsync(roomId, userId);
 
-            await Clients.Group(roomId).SendAsync("UserLeftRoom", userId, roomId);
+            await Clients.Group(roomId).SendAsync("LeftRoom", userId, roomId);
         }
 
         /// <summary>
@@ -203,6 +204,17 @@ namespace MamaFit.Services.Hubs
             await Clients.Caller.SendAsync("OnlineUsers", roomId, onlineUsers);
         }
 
+        public async Task GetListOnlineUser()
+        {
+            var onlineUsers = await _userConnectionManager.GetOnlineUsersAsync();
+            if (onlineUsers == null || !onlineUsers.Any())
+            {
+                await Clients.Caller.SendAsync("NoOnlineUsers", "No users are currently online.");
+                return;
+            }
+
+            await Clients.Caller.SendAsync("ListOnlineUsers", onlineUsers);
+        }
         /// <summary>
         /// Gửi tin nhắn riêng tư cho user khác
         /// </summary>

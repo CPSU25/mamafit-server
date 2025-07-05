@@ -8,11 +8,13 @@ public class CacheService : ICacheService
 {
     private readonly IDistributedCache _cache;
     private readonly IDatabase _db;
+    private readonly IConnectionMultiplexer _redisDb;
     
     public CacheService(IDistributedCache cache, IConnectionMultiplexer redisDb)
     {
         _cache = cache;
         _db = redisDb.GetDatabase();
+        _redisDb = redisDb;
     }
     
     public async Task<int> GetVersionAsync(string resource)
@@ -97,5 +99,22 @@ public class CacheService : ICacheService
     public async Task RemoveKeyAsync(string key)
     {
         await _db.KeyDeleteAsync(key);
+    }
+    public async Task<List<string>> ScanKeysByPatternAsync(string pattern)
+    {
+        var endpoints = _redisDb.GetEndPoints();
+        var result = new HashSet<string>();
+
+        foreach (var endpoint in endpoints)
+        {
+            var server = _redisDb.GetServer(endpoint);
+            // Keys() có thể dùng async nhưng bản chất vẫn là sync, nên dùng Task.Run cho threadpool
+            await foreach (var key in server.KeysAsync(pattern: pattern))
+            {
+                result.Add(key.ToString());
+            }
+        }
+
+        return result.ToList();
     }
 }

@@ -202,7 +202,8 @@ namespace MamaFit.API.Controllers
                 return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, null, "Failed to get online users"));
             }
         }
-
+        
+        
         [HttpPost("rooms/{roomId}/system-message")]
         public async Task<IActionResult> SendSystemMessage(string roomId, [FromBody] SystemMessageDto systemMessage)
         {

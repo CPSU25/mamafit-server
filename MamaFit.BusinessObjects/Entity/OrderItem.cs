@@ -17,7 +17,7 @@ namespace MamaFit.BusinessObjects.Entity
         //Navigation property
         public Order? Order { get; set; }
         public MaternityDressDetail? MaternityDressDetail { get; set; }
-        public Preset? Preset { get; set; } = new Preset();
+        public Preset? Preset { get; set; }
         public DesignRequest? DesignRequest { get; set; }
         public virtual ICollection<OrderItemTask>? OrderItemTasks { get; set; } = [];
         public virtual ICollection<Feedback>? Feedbacks { get; set; } = [];

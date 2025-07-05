@@ -39,17 +39,25 @@ namespace MamaFit.Services.Service
             var user = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(GetCurrentUserId());
             _validationService.CheckNotFound(user, "User not found.");
 
+
+            var preset = _mapper.Map<Preset>(request);
             var optionList = new List<ComponentOption>();
             foreach (var optionId in request.ComponentOptionIds)
             {
                 var option = await _unitOfWork.ComponentOptionRepository.GetByIdNotDeletedAsync(optionId);
                 _validationService.CheckNotFound(option, $"Component option with ID {optionId} not found.");
 
-                optionList.Add(option);
+                preset.ComponentOptionPresets = new List<ComponentOptionPreset>
+                {
+                    new ComponentOptionPreset
+                    {
+                        Preset = preset,
+                        PresetsId = preset.Id,
+                        ComponentOption = option,
+                        ComponentOptionsId = optionId
+                    }
+                };
             }
-
-            var preset = _mapper.Map<Preset>(request);
-            preset.ComponentOptions = optionList;
             preset.UserId = GetCurrentUserId();
             preset.Style = style;
 
@@ -110,7 +118,7 @@ namespace MamaFit.Services.Service
         public async Task<List<PresetGetByIdResponseDto>> GetAllPresetByComponentOptionId(List<string> componentOptionIds)
         {
 
-            foreach(var componentOptionId in componentOptionIds)
+            foreach (var componentOptionId in componentOptionIds)
             {
                 var componentOption = await _unitOfWork.ComponentOptionRepository.GetByIdNotDeletedAsync(componentOptionId);
                 _validationService.CheckNotFound(componentOption, $"Component option with ID {componentOptionId} not found.");

@@ -15,7 +15,7 @@ namespace MamaFit.BusinessObjects.Entity
         public GlobalStatus GlobalStatus { get; set; } = GlobalStatus.ACTIVE;
 
         //Navigation property
-        public virtual ICollection<Preset>? Presets { get; set; } = new List<Preset>();
+        public virtual ICollection<ComponentOptionPreset>? ComponentOptionPresets { get; set; } = new List<ComponentOptionPreset>();
         public Component? Component { get; set; }
     }
 

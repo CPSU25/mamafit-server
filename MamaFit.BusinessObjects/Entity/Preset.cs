@@ -18,6 +18,6 @@ namespace MamaFit.BusinessObjects.Entity
         public Style? Style { get; set; }
         public DesignRequest? DesignRequest { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; } = [];
-        public virtual ICollection<ComponentOption> ComponentOptions { get; set; } = [];
+        public virtual ICollection<ComponentOptionPreset> ComponentOptionPresets { get; set; } = [];
     }
 }

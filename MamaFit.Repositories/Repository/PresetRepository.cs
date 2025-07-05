@@ -23,7 +23,7 @@ namespace MamaFit.Repositories.Repository
 
             if (!string.IsNullOrWhiteSpace(search))
             {
-                query = query.Where(x => x.ComponentOptions.Select(co => co.Name).Contains(search));
+                query = query.Where(x => x.ComponentOptionPresets.Select(co => co.ComponentOption!.Name).Contains(search));
             }
 
             query = sortBy switch
@@ -43,11 +43,12 @@ namespace MamaFit.Repositories.Repository
         public async Task<List<Preset>> GetAllPresetByComponentOptionId(List<string> componentOptionId)
         {
             var presets = await _dbSet
-                .Include(x => x.ComponentOptions)
+                .Include(x => x.ComponentOptionPresets)
+                .ThenInclude(cop => cop.ComponentOption)
                 .ThenInclude(co => co.Component)
                 .Include(x => x.Style)
                 .Where(p => !p.IsDeleted &&
-                     componentOptionId.All(id => p.ComponentOptions.Any(co => co.Id == id)))
+                     componentOptionId.All(id => p.ComponentOptionPresets.Any(co => co.ComponentOption!.Id == id)))
                 .ToListAsync();
 
             return presets;
@@ -56,7 +57,8 @@ namespace MamaFit.Repositories.Repository
         public async Task<Preset> GetDefaultPresetByStyleId(string styleId)
         {
             var preset = await _dbSet
-                .Include(x => x.ComponentOptions)
+                .Include(x => x.ComponentOptionPresets)
+                .ThenInclude( cop => cop.ComponentOption)
                 .ThenInclude(co => co.Component)
                 .Include(x => x.Style)
                 .FirstOrDefaultAsync(x => x.StyleId == styleId && x.IsDefault && !x.IsDeleted && x.IsDefault);
@@ -67,7 +69,9 @@ namespace MamaFit.Repositories.Repository
         public async Task<Preset> GetDetailById(string id)
         {
             var result = await _dbSet
-                .Include(x => x.ComponentOptions)
+                .Include(x => x.ComponentOptionPresets)
+                .ThenInclude(cop => cop.ComponentOption)
+                .ThenInclude(co => co.Component)
                 .Include(x => x.OrderItems)
                 .Include(x => x.Style)
                 .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);

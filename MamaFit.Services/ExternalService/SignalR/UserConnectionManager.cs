@@ -8,7 +8,7 @@ public class UserConnectionManager : IUserConnectionManager
     private const string UserConnectionsPrefix = "signalr:user-connections:";
     private const string RoomUsersPrefix = "signalr:room-users:";
 
-    private static readonly TimeSpan ConnectionTtl = TimeSpan.FromMinutes(2);
+    private static readonly TimeSpan ConnectionTtl = TimeSpan.FromMinutes(30);
     private static readonly TimeSpan RoomTtl = TimeSpan.FromDays(1);
 
     public UserConnectionManager(ICacheService cacheService)
@@ -21,7 +21,7 @@ public class UserConnectionManager : IUserConnectionManager
 
     public async Task AddUserConnectionAsync(string userId, string connectionId)
     {
-        await _cacheService.SetAddAsync(GetUserConnectionKey(userId), connectionId, ConnectionTtl);
+        await _cacheService.SetAddAsync(GetUserConnectionKey(userId), connectionId);
     }
 
     public async Task RemoveUserConnectionAsync(string userId, string connectionId)
@@ -44,8 +44,14 @@ public class UserConnectionManager : IUserConnectionManager
 
     public async Task<List<string>> GetOnlineUsersAsync()
     {
-        // Nếu bạn muốn scan hết key user-connections, hãy bổ sung thêm hàm ScanKeys ở CacheService nếu cần.
-        throw new NotImplementedException("Scan online users by key pattern should be implemented as needed.");
+        var keys = await _cacheService.ScanKeysByPatternAsync("signalr:user-connections:*");
+
+        var userIds = keys
+            .Select(key => key.Replace("signalr:user-connections:", ""))
+            .Where(userId => !string.IsNullOrEmpty(userId))
+            .ToList();
+
+        return userIds;
     }
 
     // --- Room Management ---

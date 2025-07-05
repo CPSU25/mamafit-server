@@ -326,7 +326,7 @@ public class OrderService : IOrderService
             {
                 Preset = preset,
                 ItemType = ItemType.TEMPLATE,
-                Price = preset.ComponentOptions.Sum(co => co.Price),
+                Price = preset.ComponentOptionPresets.Sum(co => co.ComponentOption!.Price),
                 Quantity = 1,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,

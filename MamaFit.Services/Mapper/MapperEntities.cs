@@ -83,7 +83,10 @@ namespace MamaFit.Services.Mapper
             //Style Mapper
             CreateMap<Style, StyleRequestDto>().ReverseMap();
             CreateMap<Style, StyleResponseDto>().ReverseMap();
-            CreateMap<Style, StyleGetByIdResponseDto>().ReverseMap();
+            CreateMap<Style, StyleGetByIdResponseDto>()
+                .ForMember(dest => dest.Components, otp => otp.MapFrom(src => src.Components))
+                .ForMember(dest => dest.Presets, otp => otp.MapFrom(src => src.Presets))
+                .ReverseMap();
 
             //Component Mapper
             CreateMap<Component, ComponentRequestDto>().ReverseMap();
@@ -174,7 +177,7 @@ namespace MamaFit.Services.Mapper
             CreateMap<Order, OrderResponseDto>().ReverseMap();
             CreateMap<Order, OrderWithItemResponseDto>().ReverseMap();
             CreateMap<Order, OrderPresetCreateRequestDto>().ReverseMap();
-            
+
             //OrderItem Mapper
             CreateMap<OrderItem, OrderItemReadyToBuyRequestDto>().ReverseMap();
             CreateMap<OrderItem, OrderItemResponseDto>().ReverseMap();
@@ -186,7 +189,7 @@ namespace MamaFit.Services.Mapper
             //Milestone Mapper
             CreateMap<Milestone, MilestoneRequestDto>().ReverseMap();
             CreateMap<Milestone, MilestoneResponseDto>().ReverseMap();
-            
+
             //Notification Mapper
             CreateMap<Notification, NotificationRequestDto>().ReverseMap();
             CreateMap<Notification, NotificationResponseDto>().ReverseMap();
@@ -201,7 +204,7 @@ namespace MamaFit.Services.Mapper
             //Address Mapper
             CreateMap<Address, AddressRequestDto>().ReverseMap();
             CreateMap<Address, AddressResponseDto>().ReverseMap();
-            
+
             //Feedback Mapper
             CreateMap<Feedback, FeedbackRequestDto>().ReverseMap();
             CreateMap<Feedback, FeedbackResponseDto>().ReverseMap();
@@ -216,7 +219,9 @@ namespace MamaFit.Services.Mapper
             CreateMap<Preset, PresetGetAllResponseDto>()
                 .ForMember(dest => dest.StyleName, otp => otp.MapFrom(src => src.Style!.Name))
                 .ReverseMap();
-            CreateMap<Preset, PresetGetByIdResponseDto>().ReverseMap();
+            CreateMap<Preset, PresetGetByIdResponseDto>()
+                .ForMember(dest => dest.ComponentOptions, otp => otp.MapFrom(src => src.ComponentOptionPresets.Select(x => x.ComponentOption)))
+                .ReverseMap();
 
             //WarrantyRequest Mapper
             CreateMap<WarrantyRequest, WarrantyRequestCreateDto>().ReverseMap();

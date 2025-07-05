@@ -3,6 +3,7 @@ using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Entity.ChatEntity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Security.Cryptography;
 
 namespace MamaFit.BusinessObjects.DbContext
 {
@@ -51,6 +52,7 @@ namespace MamaFit.BusinessObjects.DbContext
         public DbSet<MaternityDressService> MaternityDressServices { get; set; }
         public DbSet<MaternityDressServiceOption> MaternityDressServiceOptions { get; set; }
         public DbSet<OrderItemServiceOption> OrderItemServiceOptions { get; set; }
+        public DbSet<ComponentOptionPreset> ComponentOptionPresets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -91,6 +93,7 @@ namespace MamaFit.BusinessObjects.DbContext
             modelBuilder.Entity<MaternityDressService>().ToTable("MaternityDressService");
             modelBuilder.Entity<MaternityDressServiceOption>().ToTable("MaternityDressServiceOption");
             modelBuilder.Entity<OrderItemServiceOption>().ToTable("OrderItemServiceOption");
+            modelBuilder.Entity<ComponentOptionPreset>().ToTable("ComponentOptionPreset");
 
             #endregion
 
@@ -300,6 +303,11 @@ namespace MamaFit.BusinessObjects.DbContext
 
             modelBuilder.Entity<ComponentOption>(options =>
             {
+                options.HasMany(co => co.ComponentOptionPresets)
+                .WithOne(cop => cop.ComponentOption)
+                .HasForeignKey(cop => cop.ComponentOptionsId)
+                .OnDelete(DeleteBehavior.NoAction);
+
                 options.OwnsOne(Tag => Tag.Tag, tag =>
                 {
                     tag.Property(t => t.ParentTag).HasColumnName("ParentTag");
@@ -313,6 +321,16 @@ namespace MamaFit.BusinessObjects.DbContext
                     .WithMany(s => s.Presets)
                     .HasForeignKey(p => p.StyleId)
                     .OnDelete(DeleteBehavior.NoAction);
+
+                options.HasMany(p => p.ComponentOptionPresets)
+                    .WithOne(cop => cop.Preset)
+                    .HasForeignKey(cop => cop.PresetsId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<ComponentOptionPreset>(options =>
+            {
+                options.HasKey(cop => new { cop.PresetsId, cop.ComponentOptionsId });
             });
 
             SeedData.Seed(modelBuilder);

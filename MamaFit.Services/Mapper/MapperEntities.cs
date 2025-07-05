@@ -31,12 +31,9 @@ using MamaFit.BusinessObjects.DTO.WarrantyHistoryDto;
 using MamaFit.BusinessObjects.DTO.RoleDto;
 using MamaFit.BusinessObjects.DTO.PresetDto;
 using MamaFit.BusinessObjects.DTO.WarrantyRequestDto;
-<<<<<<< Updated upstream
 using Newtonsoft.Json;
-=======
 using MamaFit.BusinessObjects.DTO.OrderItemTaskDto;
 using MamaFit.BusinessObjects.DTO.MaternityDressTaskDto;
->>>>>>> Stashed changes
 
 namespace MamaFit.Services.Mapper
 {

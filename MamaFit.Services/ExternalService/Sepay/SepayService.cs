@@ -69,6 +69,12 @@ public class SepayService : ISepayService
         {
             NotificationTitle = "Payment Successful",
             NotificationContent = $"Your payment for order {order.Code} has been successfully processed.",
+            Metadata = new Dictionary<string, string>()
+            {
+                { "orderId", order.Id },
+                { "paymentStatus", PaymentStatus.PAID.ToString() }
+            },  
+            Type = NotificationType.PAYMENT,
             ReceiverId = order.UserId
         });
     }

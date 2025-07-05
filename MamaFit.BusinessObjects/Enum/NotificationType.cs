@@ -3,6 +3,7 @@
     public enum NotificationType
     {
         ORDER_PROGRESS,
-        APPOINTMENT
+        APPOINTMENT,
+        PAYMENT,
     }
 }

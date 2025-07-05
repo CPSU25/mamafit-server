@@ -31,6 +31,7 @@ using MamaFit.BusinessObjects.DTO.WarrantyHistoryDto;
 using MamaFit.BusinessObjects.DTO.RoleDto;
 using MamaFit.BusinessObjects.DTO.PresetDto;
 using MamaFit.BusinessObjects.DTO.WarrantyRequestDto;
+using Newtonsoft.Json;
 
 namespace MamaFit.Services.Mapper
 {
@@ -190,9 +191,18 @@ namespace MamaFit.Services.Mapper
             CreateMap<Milestone, MilestoneRequestDto>().ReverseMap();
             CreateMap<Milestone, MilestoneResponseDto>().ReverseMap();
 
-            //Notification Mapper
-            CreateMap<Notification, NotificationRequestDto>().ReverseMap();
-            CreateMap<Notification, NotificationResponseDto>().ReverseMap();
+            // Notification Mapper
+            CreateMap<Notification, NotificationResponseDto>()
+                .ForMember(dest => dest.Metadata, opt => opt.MapFrom(
+                    src => string.IsNullOrEmpty(src.Metadata)
+                        ? null
+                        : JsonConvert.DeserializeObject<Dictionary<string, string>>(src.Metadata)));
+
+            CreateMap<NotificationRequestDto, Notification>()
+                .ForMember(dest => dest.Metadata, opt => opt.MapFrom(
+                    src => src.Metadata == null
+                        ? null
+                        : JsonConvert.SerializeObject(src.Metadata)));
 
             //BranchMaternityDressDetail Mapper
             CreateMap<BranchMaternityDressDetail, BranchMaternityDressDetailDto>().ReverseMap();
@@ -220,7 +230,8 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.StyleName, otp => otp.MapFrom(src => src.Style!.Name))
                 .ReverseMap();
             CreateMap<Preset, PresetGetByIdResponseDto>()
-                .ForMember(dest => dest.ComponentOptions, otp => otp.MapFrom(src => src.ComponentOptionPresets.Select(x => x.ComponentOption)))
+                .ForMember(dest => dest.ComponentOptions,
+                    otp => otp.MapFrom(src => src.ComponentOptionPresets.Select(x => x.ComponentOption)))
                 .ReverseMap();
 
             //WarrantyRequest Mapper

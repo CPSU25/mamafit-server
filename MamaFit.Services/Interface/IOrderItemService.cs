@@ -1,4 +1,5 @@
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
+using MamaFit.BusinessObjects.Entity;
 using MamaFit.Repositories.Infrastructure;
 
 namespace MamaFit.Services.Interface;
@@ -11,4 +12,5 @@ public interface IOrderItemService
     Task<OrderItemResponseDto> CreateOrderItemAsync(OrderItemRequestDto model);
     Task<OrderItemResponseDto> UpdateOrderItemAsync(string id, OrderItemRequestDto model);
     Task DeleteOrderItemAsync(string id);
+    Task AssignTaskToOrderItemAsync(AssignTaskToOrderItemRequestDto request);
 }

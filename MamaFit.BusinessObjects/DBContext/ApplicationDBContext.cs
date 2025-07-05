@@ -94,6 +94,7 @@ namespace MamaFit.BusinessObjects.DbContext
             modelBuilder.Entity<MaternityDressServiceOption>().ToTable("MaternityDressServiceOption");
             modelBuilder.Entity<OrderItemServiceOption>().ToTable("OrderItemServiceOption");
             modelBuilder.Entity<ComponentOptionPreset>().ToTable("ComponentOptionPreset");
+            modelBuilder.Entity<OrderItemTask>().ToTable("OrderItemTask");
 
             #endregion
 
@@ -223,9 +224,8 @@ namespace MamaFit.BusinessObjects.DbContext
             {
                 options.HasKey(oit => new
                 {
-                    oit.UserId,
                     oit.OrderItemId,
-                    oit.MilestoneId
+                    oit.MaternityDressTaskId
                 });
             });
 

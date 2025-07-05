@@ -31,7 +31,12 @@ using MamaFit.BusinessObjects.DTO.WarrantyHistoryDto;
 using MamaFit.BusinessObjects.DTO.RoleDto;
 using MamaFit.BusinessObjects.DTO.PresetDto;
 using MamaFit.BusinessObjects.DTO.WarrantyRequestDto;
+<<<<<<< Updated upstream
 using Newtonsoft.Json;
+=======
+using MamaFit.BusinessObjects.DTO.OrderItemTaskDto;
+using MamaFit.BusinessObjects.DTO.MaternityDressTaskDto;
+>>>>>>> Stashed changes
 
 namespace MamaFit.Services.Mapper
 {
@@ -163,6 +168,10 @@ namespace MamaFit.Services.Mapper
             //MaternityDressTask Mapper
             CreateMap<MaternityDressTask, MaternityDressTaskRequestDto>().ReverseMap();
             CreateMap<MaternityDressTask, MaternityDressTaskResponseDto>().ReverseMap();
+            CreateMap<MaternityDressTask, MaternityDressTaskDetailResponseDto>()
+                .ForMember(dest => dest.Detail, opt => opt.MapFrom(src =>
+                    src.OrderItemTasks != null ? src.OrderItemTasks.FirstOrDefault() : null))
+                .ReverseMap();
 
             //VoucherBatch Mapper
             CreateMap<VoucherBatch, VoucherBatchDto>().ReverseMap();
@@ -183,13 +192,25 @@ namespace MamaFit.Services.Mapper
             CreateMap<OrderItem, OrderItemReadyToBuyRequestDto>().ReverseMap();
             CreateMap<OrderItem, OrderItemResponseDto>().ReverseMap();
             CreateMap<OrderItem, OrderItemGetByIdResponseDto>()
-                .ForMember(dest => dest.Desisgn, opt => opt.MapFrom(src => src.DesignRequest))
+                .ForMember(dest => dest.DesisgnRequest, opt => opt.MapFrom(src => src.DesignRequest))
                 .ForMember(dest => dest.MaternityDressDetail, opt => opt.MapFrom(src => src.MaternityDressDetail))
+               .ForMember(dest => dest.Milestones, opt => opt.MapFrom(src =>
+                    src.OrderItemTasks
+                    .Where(x => x.MaternityDressTask!.Milestone != null)
+                    .Select(x => x.MaternityDressTask!.Milestone)
+                    .Distinct()
+                    .ToList()))
                 .ReverseMap();
+
+            // OrderItemTask Mapper
+            CreateMap<OrderItemTask, OrderItemTaskResponseDto>().ReverseMap();
 
             //Milestone Mapper
             CreateMap<Milestone, MilestoneRequestDto>().ReverseMap();
             CreateMap<Milestone, MilestoneResponseDto>().ReverseMap();
+            CreateMap<Milestone, MilestoneGetByIdResponseDto>()
+                .ForMember(dest => dest.Tasks, otp => otp.MapFrom(src => src.MaternityDressTasks))
+                .ReverseMap();
 
             // Notification Mapper
             CreateMap<Notification, NotificationResponseDto>()

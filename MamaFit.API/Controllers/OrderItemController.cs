@@ -56,6 +56,18 @@ public class OrderItemController : ControllerBase
         ));
     }
 
+    [HttpPost("assign-task")]
+    public async Task<IActionResult> AssignTaskToOrderItem([FromBody] AssignTaskToOrderItemRequestDto request)
+    {
+        await _service.AssignTaskToOrderItemAsync(request);
+        return Ok(new ResponseModel<string>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            null,
+            "Assign task to order item successfully!"
+        ));
+    }
+
     [HttpPut("{id}")]
     public async Task<IActionResult> Update([FromRoute] string id, [FromBody] OrderItemRequestDto model)
     {

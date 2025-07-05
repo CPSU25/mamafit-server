@@ -6,7 +6,7 @@ namespace MamaFit.BusinessObjects.Entity
     {
         public string? UserId { get; set; }
         public string? OrderItemId { get; set; }
-        public string? MilestoneId { get; set; }
+        public string? MaternityDressTaskId { get; set; }
         public string? Image { get; set; }
         public string? Note { get; set; }
         public OrderItemTaskStatus Status { get; set; }
@@ -17,7 +17,7 @@ namespace MamaFit.BusinessObjects.Entity
 
         // Navigation Proptery
         public OrderItem? OrderItem { get; set; }
-        public Milestone? Milestone { get; set; }
-        public ApplicationUser? User { get; set; }
+        public ApplicationUser? User { get; set; } // Desginer và Staff
+        public MaternityDressTask? MaternityDressTask { get; set; }
     }
 }

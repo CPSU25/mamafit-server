@@ -50,8 +50,8 @@ namespace MamaFit.API
                 builder.Services.Configure<SepaySettings>(builder.Configuration.GetSection("SepaySettings"));
                 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
                 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
+                builder.Services.Configure<GhtkSettings>(builder.Configuration.GetSection("GhtkSettings"));
                 builder.Services.AddGhtkClient(builder.Configuration);
-                //builder.Services.AddHostedService<MeasurementGenerationJob>();
                 builder.Services.AddValidatorsFromAssemblyContaining<ValidatorAssemblyReference>();
                 builder.Services.AddDatabase(builder.Configuration);
                 builder.Services.AddEndpointsApiExplorer();

@@ -8,8 +8,8 @@ namespace MamaFit.Services.ExternalService.Ghtk;
 
 public interface IGhtkService
 {
-    Task<GhtkBaseResponse> AuthenticateGhtkAsync();
-    Task<GhtkBaseResponse> SubmitOrderExpressAsync(string orderId, GhtkRecipentDto recipent);
+    Task<GhtkBaseResponse?> AuthenticateGhtkAsync();
+    Task<GhtkBaseResponse?> SubmitOrderExpressAsync(string orderId, GhtkRecipentDto recipent);
     Task<GhtkTrackOrderResponse?> GetOrderStatusAsync(string trackingOrderCode);
     Task<GhtkBaseResponse?> CancelOrderAsync(string trackingOrderCode);
     Task<GhtkAddressLevel4Response?> GetAddressLevel4Async(string province, string district, string wardStreet,

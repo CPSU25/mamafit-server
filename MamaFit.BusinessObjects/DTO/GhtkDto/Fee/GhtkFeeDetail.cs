@@ -18,10 +18,7 @@ public class GhtkFeeDetail
 
     [JsonProperty("a")]
     public int? A { get; set; }
-
-    [JsonProperty("b")]
-    public int? B { get; set; }
-
+    
     [JsonProperty("dt")]
     public string Dt { get; set; }
 

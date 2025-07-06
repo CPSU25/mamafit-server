@@ -162,27 +162,17 @@ public class GhtkService : IGhtkService
     {
         var httpClient = _httpClientFactory.CreateClient("GhtkClient");
 
+        string pickProvince = _ghtkSettings.PickProvince;
+        string pickDistrict = _ghtkSettings.PickDistrict;
+        string pickAddressId = _ghtkSettings.PickAddressId;
+
         var query = $"province={Uri.EscapeDataString(dto.Province)}" +
                     $"&district={Uri.EscapeDataString(dto.District)}" +
                     $"&weight={dto.Weight}" +
-                    $"&deliver_option={Uri.EscapeDataString(dto.DeliverOption)}";
-
-        if (!string.IsNullOrEmpty(dto.Address)) query += $"&address={Uri.EscapeDataString(dto.Address)}";
-        if (!string.IsNullOrEmpty(dto.PickProvince))
-            query += $"&pick_province={Uri.EscapeDataString(dto.PickProvince)}";
-        if (!string.IsNullOrEmpty(dto.PickDistrict))
-            query += $"&pick_district={Uri.EscapeDataString(dto.PickDistrict)}";
-        if (!string.IsNullOrEmpty(dto.PickAddressId))
-            query += $"&pick_address_id={Uri.EscapeDataString(dto.PickAddressId)}";
-        if (!string.IsNullOrEmpty(dto.PickAddress)) query += $"&pick_address={Uri.EscapeDataString(dto.PickAddress)}";
-        if (!string.IsNullOrEmpty(dto.PickWard)) query += $"&pick_ward={Uri.EscapeDataString(dto.PickWard)}";
-        if (!string.IsNullOrEmpty(dto.PickStreet)) query += $"&pick_street={Uri.EscapeDataString(dto.PickStreet)}";
-        if (!string.IsNullOrEmpty(dto.Ward)) query += $"&ward={Uri.EscapeDataString(dto.Ward)}";
-        if (!string.IsNullOrEmpty(dto.Street)) query += $"&street={Uri.EscapeDataString(dto.Street)}";
-        if (dto.Value.HasValue) query += $"&value={dto.Value.Value}";
-        if (!string.IsNullOrEmpty(dto.Transport)) query += $"&transport={Uri.EscapeDataString(dto.Transport)}";
-        if (dto.Tags != null && dto.Tags.Length > 0)
-            query += $"&tags={Uri.EscapeDataString(string.Join(",", dto.Tags))}";
+                    $"&deliver_option=none" +
+                    $"&pick_province={Uri.EscapeDataString(pickProvince)}" +
+                    $"&pick_district={Uri.EscapeDataString(pickDistrict)}" +
+                    $"&pick_address_id={Uri.EscapeDataString(pickAddressId)}";
 
         var url = $"/services/shipment/fee?{query}";
         var response = await httpClient.GetAsync(url);

@@ -5,8 +5,10 @@ public class AddressResponseDto
     public string Id { get; set; }
     public string? UserId { get; set; } 
     public string? MapId { get; set; }
-    public string? ShortName { get; set; }
-    public string? LongName { get; set; }
+    public string? Province { get; set; }
+    public string? District { get; set; }
+    public string? Ward { get; set; }
+    public string? Street { get; set; }
     public float? Latitude { get; set; }
     public float? Longitude { get; set; }
     public string? CreatedBy { get; set; }

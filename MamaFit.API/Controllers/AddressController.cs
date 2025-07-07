@@ -1,6 +1,7 @@
 using MamaFit.BusinessObjects.DTO.AddressDto;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MamaFit.API.Controllers;
@@ -42,15 +43,30 @@ public class AddressController : ControllerBase
         ));
     }
     
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] AddressRequestDto requestDto)
+    [Authorize]
+    [HttpGet("by-user")]
+    public async Task<IActionResult> GetByUser([FromHeader(Name = "Authorization")] string accessToken)
     {
-        await _addressService.CreateAsync(requestDto);
+        var addresses = await _addressService.GetByAccessTokenAsync(accessToken);
+        return Ok(new ResponseModel<List<AddressResponseDto>>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            addresses,
+            "Get addresses by user successfully!"
+        ));
+    }
+    
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] AddressRequestDto requestDto,
+        [FromHeader(Name = "Authorization")] string accessToken)
+    {
+        var addresses = await _addressService.CreateAsync(requestDto, accessToken);
         return StatusCode(StatusCodes.Status201Created,
-            new ResponseModel<string>(
+            new ResponseModel<AddressResponseDto>(
                 StatusCodes.Status201Created,
                 ApiCodes.CREATED,
-                null,
+                addresses,
                 "Created address successfully!"
             ));
     }

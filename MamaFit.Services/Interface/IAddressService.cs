@@ -7,7 +7,8 @@ public interface IAddressService
 {
     Task<PaginatedList<AddressResponseDto>> GetAllAsync(int index, int pageSize);
     Task<AddressResponseDto> GetByIdAsync(string id);
-    Task CreateAsync(AddressRequestDto requestDto);
+    Task<List<AddressResponseDto>> GetByAccessTokenAsync(string accessToken);
+    Task<AddressResponseDto> CreateAsync(AddressRequestDto requestDto, string accessToken);
     Task UpdateAsync(string id, AddressRequestDto requestDto);
     Task DeleteAsync(string id);
 }

@@ -7,5 +7,6 @@ namespace MamaFit.Repositories.Interface
     public interface IAddressRepository : IGenericRepository<Address>
     {
         Task<PaginatedList<Address>> GetAllAsync(int index, int pageSize);
+        Task<List<Address>> GetByUserId(string userId);
     }
 }

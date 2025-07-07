@@ -1,6 +1,8 @@
+using System.IdentityModel.Tokens.Jwt;
 using AutoMapper;
 using MamaFit.BusinessObjects.DTO.AddressDto;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.Repositories.Helper;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
@@ -35,6 +37,14 @@ public class AddressService : IAddressService
         );
     }
     
+    public async Task<List<AddressResponseDto>> GetByAccessTokenAsync(string accessToken)
+    {
+        var userId = JwtTokenHelper.ExtractUserId(accessToken);
+        var addresses = await _unitOfWork.AddressRepository.GetByUserId(userId);
+        _validation.CheckNotFound(addresses, "No addresses found for this user");
+        return _mapper.Map<List<AddressResponseDto>>(addresses);
+    }
+    
     public async Task<AddressResponseDto> GetByIdAsync(string id)
     {
         var address = await _unitOfWork.AddressRepository.GetByIdAsync(id);
@@ -42,13 +52,16 @@ public class AddressService : IAddressService
         return _mapper.Map<AddressResponseDto>(address);
     }
     
-    public async Task CreateAsync(AddressRequestDto requestDto)
+    public async Task<AddressResponseDto> CreateAsync(AddressRequestDto requestDto, string accessToken)
     {
+        
         var exist = await _unitOfWork.AddressRepository.IsEntityExistsAsync(x => x.MapId == requestDto.MapId);
         _validation.CheckConflict(exist, "Address with this MapId already exists");
         var entity = _mapper.Map<Address>(requestDto);
+        entity.UserId = JwtTokenHelper.ExtractUserId(accessToken);
         await _unitOfWork.AddressRepository.InsertAsync(entity);
         await _unitOfWork.SaveChangesAsync();
+        return _mapper.Map<AddressResponseDto>(entity);
     }
     
     public async Task UpdateAsync(string id, AddressRequestDto requestDto)

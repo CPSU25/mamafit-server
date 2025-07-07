@@ -40,7 +40,7 @@ public class AuthService : IAuthService
         _emailSenderService = emailSenderService;
         _validation = validation;
     }
-
+    
     public async Task<PermissionResponseDto> GetCurrentUserAsync()
     {
         var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("userId");

@@ -200,7 +200,10 @@ namespace MamaFit.Services.Mapper
                 .ReverseMap();
 
             // OrderItemTask Mapper
-            CreateMap<OrderItemTask, OrderItemTaskResponseDto>().ReverseMap();
+            CreateMap<OrderItemTask, OrderItemTaskResponseDto>()
+                .ForMember(dest => dest.ChargeId, otp => otp.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.ChargeName, otp => otp.MapFrom(src => src.User!.FullName))
+                .ReverseMap();
 
             //Milestone Mapper
             CreateMap<Milestone, MilestoneRequestDto>().ReverseMap();

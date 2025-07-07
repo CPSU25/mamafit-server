@@ -25,7 +25,7 @@ public class OrderItemService : IOrderItemService
     public async Task<PaginatedList<OrderItemResponseDto>> GetAllOrderItemsAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate)
     {
         var orderItems = await _unitOfWork.OrderItemRepository.GetAllAsync(index, pageSize, startDate, endDate);
-        
+
         var responseItems = orderItems.Items
             .Select(orderItem => _mapper.Map<OrderItemResponseDto>(orderItem))
             .ToList();
@@ -39,14 +39,14 @@ public class OrderItemService : IOrderItemService
 
         return responsePaginatedList;
     }
-    
+
     public async Task<OrderItemGetByIdResponseDto> GetOrderItemByIdAsync(string id)
     {
         var orderItem = await _unitOfWork.OrderItemRepository.GetDetailById(id);
         _validation.CheckNotFound(orderItem, "Order item is not exist!");
         return _mapper.Map<OrderItemGetByIdResponseDto>(orderItem);
     }
-    
+
     public async Task<OrderItemResponseDto> CreateOrderItemAsync(OrderItemRequestDto model)
     {
         await _validation.ValidateAndThrowAsync(model);
@@ -63,7 +63,7 @@ public class OrderItemService : IOrderItemService
 
         return _mapper.Map<OrderItemResponseDto>(orderItem);
     }
-    
+
     public async Task<OrderItemResponseDto> UpdateOrderItemAsync(string id, OrderItemRequestDto model)
     {
         await _validation.ValidateAndThrowAsync(model);
@@ -81,7 +81,7 @@ public class OrderItemService : IOrderItemService
         await _unitOfWork.SaveChangesAsync();
         return _mapper.Map<OrderItemResponseDto>(orderItem);
     }
-    
+
     public async Task DeleteOrderItemAsync(string id)
     {
         var orderItem = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(id);
@@ -110,8 +110,6 @@ public class OrderItemService : IOrderItemService
             {
                 MaternityDressTask = task,
                 MaternityDressTaskId = task.Id,
-                User = user?? null,
-                UserId = user?.Id ?? string.Empty,
                 OrderItem = orderItem,
                 OrderItemId = orderItem.Id,
                 CreatedAt = DateTime.UtcNow,
@@ -127,5 +125,36 @@ public class OrderItemService : IOrderItemService
     private string GetCurrentUserId()
     {
         return _httpContextAccessor.HttpContext?.User.FindFirst("userId")?.Value ?? string.Empty;
+    }
+
+    public async Task AssignChargeToOrderItemAsync(AssignChargeToOrderItemRequestDto request)
+    {
+        var currentUserId = GetCurrentUserId() ?? null;
+        var user = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(currentUserId);
+
+        var orderItem = await _unitOfWork.OrderItemRepository.GetDetailById(request.OrderItemId!);
+        _validation.CheckNotFound(orderItem, $"Order item with id:{request.OrderItemId} is not exist!");
+
+        var milestone = await _unitOfWork.MilestoneRepository.GetByIdDetailAsync(request.MilestoneId!);
+        _validation.CheckNotFound(milestone, $"Milestone with id:{request.MilestoneId} is not exist!");
+
+        var personInCharge = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(request.ChargeId!);
+        _validation.CheckNotFound(personInCharge, $"Person in charge with id:{request.ChargeId} is not exist!");
+
+        foreach (var task in milestone.MaternityDressTasks!)
+        {
+            var orderItemTask = orderItem!.OrderItemTasks!
+                .FirstOrDefault(x => x.MaternityDressTask != null && x.MaternityDressTask.Equals(task));
+
+            if (orderItemTask != null)
+            {
+                orderItemTask.User = personInCharge;
+                orderItemTask.UserId = personInCharge!.Id;
+                orderItemTask.UpdatedBy = user?.UserName ?? "System";
+                orderItemTask.UpdatedAt = DateTime.UtcNow;
+            }
+        }
+        await _unitOfWork.OrderItemRepository.UpdateAsync(orderItem);
+        await _unitOfWork.SaveChangesAsync();
     }
 }

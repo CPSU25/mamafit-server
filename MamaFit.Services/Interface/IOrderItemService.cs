@@ -13,4 +13,5 @@ public interface IOrderItemService
     Task<OrderItemResponseDto> UpdateOrderItemAsync(string id, OrderItemRequestDto model);
     Task DeleteOrderItemAsync(string id);
     Task AssignTaskToOrderItemAsync(AssignTaskToOrderItemRequestDto request);
+    Task AssignChargeToOrderItemAsync(AssignChargeToOrderItemRequestDto request);
 }

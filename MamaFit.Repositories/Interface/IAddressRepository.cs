@@ -8,5 +8,6 @@ namespace MamaFit.Repositories.Interface
     {
         Task<PaginatedList<Address>> GetAllAsync(int index, int pageSize);
         Task<List<Address>> GetByUserId(string userId);
+        Task SetDefaultFalseForAllAsync(string userId);
     }
 }

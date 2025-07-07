@@ -54,11 +54,15 @@ public class AddressService : IAddressService
     
     public async Task<AddressResponseDto> CreateAsync(AddressRequestDto requestDto, string accessToken)
     {
-        
+        var userId = JwtTokenHelper.ExtractUserId(accessToken);
         var exist = await _unitOfWork.AddressRepository.IsEntityExistsAsync(x => x.MapId == requestDto.MapId);
         _validation.CheckConflict(exist, "Address with this MapId already exists");
         var entity = _mapper.Map<Address>(requestDto);
-        entity.UserId = JwtTokenHelper.ExtractUserId(accessToken);
+        if (requestDto.IsDefault == true)
+        {
+            await _unitOfWork.AddressRepository.SetDefaultFalseForAllAsync(userId);
+        }
+        entity.UserId = userId;
         await _unitOfWork.AddressRepository.InsertAsync(entity);
         await _unitOfWork.SaveChangesAsync();
         return _mapper.Map<AddressResponseDto>(entity);
@@ -71,7 +75,11 @@ public class AddressService : IAddressService
         
         var exist = await _unitOfWork.AddressRepository.IsEntityExistsAsync(x => x.MapId == requestDto.MapId && x.Id != id);
         _validation.CheckConflict(exist, "Address with this MapId already exists");
-        
+        var userId = address.UserId;
+        if (requestDto.IsDefault == true)
+        {
+            await _unitOfWork.AddressRepository.SetDefaultFalseForAllAsync(userId);
+        }
         _mapper.Map(requestDto, address);
         _unitOfWork.AddressRepository.Update(address);
         await _unitOfWork.SaveChangesAsync();

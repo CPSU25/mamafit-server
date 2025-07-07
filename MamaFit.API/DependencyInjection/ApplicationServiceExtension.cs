@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace MamaFit.API.DependencyInjection
@@ -129,6 +130,18 @@ namespace MamaFit.API.DependencyInjection
                 config.UsePostgreSqlStorage(options =>
                     options.UseNpgsqlConnection(configuration.GetConnectionString("HangfireConnection"))));
             services.AddHangfireServer();
+            return services;
+        }
+        
+        public static IServiceCollection AddRedisCache(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = configuration["RedisSettings:ConnectionString"];
+            });
+            services.AddSingleton<IConnectionMultiplexer>(sp =>
+                ConnectionMultiplexer.Connect(configuration["RedisSettings:ConnectionString"]!)
+            );
             return services;
         }
         

@@ -158,7 +158,7 @@ public class GhtkService : IGhtkService
         return JsonConvert.DeserializeObject<GhtkOrderSubmitFailResponse>(responseBody);
     }
 
-    public async Task<GhtkFeeResponse?> GetFeeAsync(GhtkFeeRequestDto dto)
+    public async Task<GhtkBaseResponse?> GetFeeAsync(GhtkFeeRequestDto dto)
     {
         var httpClient = _httpClientFactory.CreateClient("GhtkClient");
 
@@ -177,8 +177,10 @@ public class GhtkService : IGhtkService
         var url = $"/services/shipment/fee?{query}";
         var response = await httpClient.GetAsync(url);
         var content = await response.Content.ReadAsStringAsync();
-
-        return JsonConvert.DeserializeObject<GhtkFeeResponse>(content);
+        var baseResponse = JsonConvert.DeserializeObject<GhtkBaseResponse>(content);
+        if (baseResponse.Success)
+            return JsonConvert.DeserializeObject<GhtkFeeResponse>(content);
+        return JsonConvert.DeserializeObject<GhtkFailResponse>(content);
     }
 
     public async Task<GhtkTrackOrderResponse?> GetOrderStatusAsync(string trackingOrderCode)
@@ -195,7 +197,7 @@ public class GhtkService : IGhtkService
         var httpClient = _httpClientFactory.CreateClient("GhtkClient");
         var url = $"/services/shipment/cancel/{trackingOrderCode}";
         var response = await httpClient.PostAsync(url, null);
-        var content = await response.Content.ReadAsStringAsync();
+        var content = await response.Content.ReadAsStringAsync(); 
         return JsonConvert.DeserializeObject<GhtkBaseResponse>(content);
     }
 

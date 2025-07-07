@@ -37,15 +37,8 @@ namespace MamaFit.API
                 {
                     x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
-                
-                builder.Services.AddStackExchangeRedisCache(options =>
-                {
-                    options.Configuration = builder.Configuration["RedisSettings:ConnectionString"];
-                });
-                builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
-                    ConnectionMultiplexer.Connect(builder.Configuration["RedisSettings:ConnectionString"]!)
-                );
 
+                builder.Services.AddRedisCache(builder.Configuration);
                 builder.Services.AddHangfireWithProgres(builder.Configuration);
                 builder.Services.Configure<SepaySettings>(builder.Configuration.GetSection("SepaySettings"));
                 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));

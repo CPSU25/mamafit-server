@@ -15,5 +15,5 @@ public interface IGhtkService
     Task<GhtkAddressLevel4Response?> GetAddressLevel4Async(string province, string district, string wardStreet,
         string? address);
     Task<GhtkListPickAddressResponse?> GetListPickAddressAsync();
-    Task<GhtkFeeResponse?> GetFeeAsync(GhtkFeeRequestDto dto);
+    Task<GhtkBaseResponse?> GetFeeAsync(GhtkFeeRequestDto dto);
 }

@@ -36,6 +36,8 @@ namespace MamaFit.Repositories.Repository
                 .Include(x => x.MaternityDressDetail)
                 .Include(x => x.Preset)
                 .Include(x => x.OrderItemTasks)
+                    .ThenInclude(x => x.User)
+                .Include(x => x.OrderItemTasks)
                     .ThenInclude(x => x.MaternityDressTask)
                         .ThenInclude(x => x!.Milestone)
                 .FirstOrDefaultAsync(x => x.Id == orderItemId && !x.IsDeleted);

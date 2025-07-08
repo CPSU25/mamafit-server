@@ -58,21 +58,21 @@ public class GhtkService : IGhtkService
 
         var ghtkProducts = order.OrderItems.Select(item =>
         {
-            if (item.MaternityDressDetail != null)
+            if (item.MaternityDressDetailId != null)
             {
                 return new GhtkProductDto
                 {
-                    Name = item.MaternityDressDetail.Name ?? "Đầm bầu",
-                    Weight = item.MaternityDressDetail.Weight ?? 0,
+                    Name = item.MaternityDressDetail?.Name ?? "Đầm bầu",
+                    Weight = item.MaternityDressDetail?.Weight ?? 0,
                     Quantity = item.Quantity
                 };
             }
-            if (item.Preset != null)
+            if (item.PresetId != null)
             {
                 return new GhtkProductDto
                 {
-                    Name = item.Preset.Name ?? "Preset thiết kế",
-                    Weight = item.Preset.Weight ?? 0,
+                    Name = item.Preset?.Name ?? "Preset thiết kế",
+                    Weight = item.Preset?.Weight ?? 0,
                     Quantity = item.Quantity
                 };
             }
@@ -83,24 +83,24 @@ public class GhtkService : IGhtkService
         }).ToList();
 
         var mappedProducts = order.OrderItems.Select(oi => {
-            if (oi.MaternityDressDetail != null)
+            if (oi.MaternityDressDetailId != null)
             {
                 return new OrderProductDto
                 {
-                    Name = oi.MaternityDressDetail.Name,
-                    Weight = oi.MaternityDressDetail.Weight,
+                    Name = oi.MaternityDressDetail?.Name ?? "Đầm bầu",
+                    Weight = oi.MaternityDressDetail?.Weight ?? 0,
                     Quantity = oi.Quantity,
-                    Price = oi.MaternityDressDetail.Price
+                    Price = oi.MaternityDressDetail?.Price ?? 0
                 };
             } 
-            if (oi.Preset != null)
+            if (oi.PresetId != null)
             {
                 return new OrderProductDto
                 {
-                    Name = oi.Preset.Name,
-                    Weight = oi.Preset.Weight,
+                    Name = oi.Preset?.Name ?? "Preset thiết kế",
+                    Weight = oi.Preset?.Weight ?? 0,
                     Quantity = oi.Quantity,
-                    Price = oi.Preset.Price ?? 0
+                    Price = oi.Preset?.Price ?? 0
                 };
             }
             throw new ErrorException(
@@ -111,7 +111,7 @@ public class GhtkService : IGhtkService
 
         _validationService.CheckBadRequest(ghtkProducts.Count == 0, "Order must have at least one item");
         var value = order.OrderItems.Sum(item =>
-            (item.MaternityDressDetail?.Price ?? item.Preset?.Price) * item.Quantity
+            ((item.MaternityDressDetail?.Price) ?? (item.Preset?.Price) ?? 0) * item.Quantity
         );
         var ghtkOrder = new GhtkOrderExpressInfo
         {
@@ -130,6 +130,8 @@ public class GhtkService : IGhtkService
             Ward = recipent.Ward,
             Note = recipent.Note ?? "Giao hàng MamaFit",
             Value = value!,
+            Transport = recipent.Transport,
+            DeliveryOption = recipent.DeliveryOption,
             IsFreeship = recipent.IsFreeship
         };
 
@@ -173,7 +175,10 @@ public class GhtkService : IGhtkService
                     $"&pick_province={Uri.EscapeDataString(pickProvince)}" +
                     $"&pick_district={Uri.EscapeDataString(pickDistrict)}" +
                     $"&pick_address_id={Uri.EscapeDataString(pickAddressId)}";
-
+        if (!string.IsNullOrEmpty(dto.DeliveryOption))
+            query += $"&delivery_option={Uri.EscapeDataString(dto.DeliveryOption)}";
+        if (!string.IsNullOrEmpty(dto.Transport))
+            query += $"&transport={Uri.EscapeDataString(dto.Transport)}";
         var url = $"/services/shipment/fee?{query}";
         var response = await httpClient.GetAsync(url);
         var content = await response.Content.ReadAsStringAsync();

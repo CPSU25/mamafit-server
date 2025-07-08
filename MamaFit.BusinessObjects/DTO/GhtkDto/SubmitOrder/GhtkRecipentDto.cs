@@ -9,5 +9,7 @@ public class GhtkRecipentDto
     public string District { get; set; }
     public string Ward { get; set; }
     public string IsFreeship { get; set; }
+    public string Transport { get; set; }
+    public string DeliveryOption { get; set; }
     public string? Note { get; set; }
 }

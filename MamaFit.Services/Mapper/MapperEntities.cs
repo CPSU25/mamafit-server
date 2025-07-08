@@ -105,7 +105,10 @@ namespace MamaFit.Services.Mapper
 
             //DesignRequest Mapper
             CreateMap<DesignRequest, DesignRequestCreateDto>().ReverseMap();
-            CreateMap<DesignRequest, DesignResponseDto>().ReverseMap();
+            CreateMap<DesignRequest, DesignResponseDto>()
+                .ForMember(dest => dest.Username, otp => otp.MapFrom(src => src.User!.UserName))
+                .ForMember(dest => dest.UserId, otp => otp.MapFrom(src => src.UserId))
+                .ReverseMap();
             CreateMap<DesignRequest, OrderDesignRequestDto>().ReverseMap();
 
             //Appointment Mapper 

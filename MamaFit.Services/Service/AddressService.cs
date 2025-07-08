@@ -55,8 +55,6 @@ public class AddressService : IAddressService
     public async Task<AddressResponseDto> CreateAsync(AddressRequestDto requestDto, string accessToken)
     {
         var userId = JwtTokenHelper.ExtractUserId(accessToken);
-        var exist = await _unitOfWork.AddressRepository.IsEntityExistsAsync(x => x.MapId == requestDto.MapId);
-        _validation.CheckConflict(exist, "Address with this MapId already exists");
         var entity = _mapper.Map<Address>(requestDto);
         if (requestDto.IsDefault == true)
         {

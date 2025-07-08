@@ -14,9 +14,11 @@ using MamaFit.Services.ExternalService.Ghtk;
 using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.ExternalService.Sepay;
 using MamaFit.Services.ExternalService.SignalR;
+using MamaFit.Services.Hubs;
 using MamaFit.Services.Interface;
 using MamaFit.Services.Mapper;
 using MamaFit.Services.Service;
+using Microsoft.AspNetCore.SignalR;
 using MamaFit.Services.Service.Caculator;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -110,6 +112,9 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IGhtkService, GhtkService>();
             services.AddScoped<IWarrantyRequestService, WarrantyRequestService>();
             services.AddScoped<IUserConnectionManager, UserConnectionManager>();
+            
+            // SignalR User ID Provider for Clients.User() calls
+            services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
         }
 
         public static IServiceCollection AddGhtkClient(this IServiceCollection services, IConfiguration configuration)
@@ -122,7 +127,7 @@ namespace MamaFit.API.DependencyInjection
             });
             return services;
         }
-        
+
         public static IServiceCollection AddHangfireWithProgres(this IServiceCollection services,
             IConfiguration configuration)
         {
@@ -132,7 +137,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddHangfireServer();
             return services;
         }
-        
+
         public static IServiceCollection AddRedisCache(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddStackExchangeRedisCache(options =>
@@ -144,7 +149,7 @@ namespace MamaFit.API.DependencyInjection
             );
             return services;
         }
-        
+
         public static IServiceCollection AddHttpClientServices(this IServiceCollection services)
         {
             services.AddHttpClient();
@@ -177,17 +182,17 @@ namespace MamaFit.API.DependencyInjection
                 options.EnableAnnotations();
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
-                {
-                    new OpenApiSecurityScheme
                     {
-                        Reference = new OpenApiReference
+                        new OpenApiSecurityScheme
                         {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    new string[] { }
-                }
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] { }
+                    }
                 });
                 options.MapType<TimeOnly>(() => new OpenApiSchema
                 {
@@ -200,7 +205,8 @@ namespace MamaFit.API.DependencyInjection
             return services;
         }
 
-        public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddJwtAuthentication(this IServiceCollection services,
+            IConfiguration configuration)
         {
             var jwtSettings = configuration.GetSection("JWT");
             var issuer = jwtSettings["Issuer"];
@@ -239,6 +245,7 @@ namespace MamaFit.API.DependencyInjection
                             {
                                 context.Token = accessToken;
                             }
+
                             return Task.CompletedTask;
                         },
                         OnChallenge = async context =>
@@ -286,7 +293,9 @@ namespace MamaFit.API.DependencyInjection
             services.AddRepositories();
             services.AddServices();
             services.AddAutoMapper();
-            services.AddSignalR();
+            services.AddSignalR()
+                .AddHubOptions<ChatHub>(options => { options.EnableDetailedErrors = true; })
+                .AddHubOptions<NotificationHub>(options => { options.EnableDetailedErrors = true; });
         }
 
         private static void AddAutoMapper(this IServiceCollection services)

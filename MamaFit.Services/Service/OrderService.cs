@@ -328,7 +328,6 @@ public class OrderService : IOrderService
         order.SubTotalAmount = subTotalAmount;
         order.TotalAmount = (subTotalAmount - (voucher?.VoucherBatch?.DiscountPercentValue ?? 0) * subTotalAmount + request.ShippingFee);
         order.PaymentStatus = PaymentStatus.PENDING;
-        order.PaymentType = PaymentType.FULL;
         order.OrderItems = new List<OrderItem>()
         {
             new OrderItem

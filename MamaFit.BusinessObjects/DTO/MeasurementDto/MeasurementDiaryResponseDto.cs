@@ -17,6 +17,7 @@ public class MeasurementDiaryResponseDto
     public DateTime? UltrasoundDate { get; set; }
     public int WeeksFromUltrasound { get; set; }
     public DateTime? PregnancyStartDate { get; set; }
+    public bool IsActive { get; set; }
     public string? CreatedBy { get; set; }
     public string? UpdatedBy { get; set; }
     public DateTime CreatedAt { get; set; }

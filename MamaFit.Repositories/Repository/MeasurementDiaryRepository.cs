@@ -52,4 +52,13 @@ public class MeasurementDiaryRepository : GenericRepository<MeasurementDiary>, I
 
         return await query.FirstOrDefaultAsync();
     }
+
+    public async Task SetActiveFalseForAllAsync(string userId)
+    {
+        var diaries = await _dbSet
+            .Where(d => d.UserId == userId && d.IsActive)
+            .ToListAsync();
+        foreach (var diary in diaries) 
+            diary.IsActive = false;
+    }
 }

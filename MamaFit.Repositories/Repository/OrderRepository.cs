@@ -10,7 +10,7 @@ namespace MamaFit.Repositories.Repository;
 
 public class OrderRepository : GenericRepository<Order>, IOrderRepository
 {
-    public OrderRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor) 
+    public OrderRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         : base(context, httpContextAccessor)
     {
     }
@@ -22,27 +22,32 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
         {
             query = query.Where(x => x.CreatedAt >= startDate.Value);
         }
+
         if (endDate.HasValue)
         {
             query = query.Where(x => x.CreatedAt <= endDate.Value);
         }
+
         return await query.GetPaginatedList(index, pageSize);
     }
-    
+
     public async Task<Order?> GetByIdWithItems(string id)
     {
         return await _dbSet.AsNoTracking()
             .Include(x => x.OrderItems)
             .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
     }
-    
+
     public async Task<Order?> GetWithItemsAndDressDetails(string id)
     {
         return await _dbSet.AsNoTracking()
-            .Include(x => x.OrderItems)
-                .ThenInclude(oi => oi.MaternityDressDetail)
+            .Include(x => x.OrderItems.Where(oi => !oi.IsDeleted))
+            .ThenInclude(oi => oi.MaternityDressDetail)
+            .Include(x => x.OrderItems.Where(oi => !oi.IsDeleted))
+            .ThenInclude(oi => oi.Preset)
             .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
     }
+
     public async Task<Order?> GetByCodeAsync(string code)
     {
         return await _dbSet.AsNoTracking()

@@ -86,6 +86,12 @@ namespace MamaFit.API.Controllers
 
                 var room = await _chatService.CreateChatRoomAsync(createDto.UserId1, createDto.UserId2);
 
+                if (createDto.UserId2 != currentUserId)
+                {
+                    await _hubContext.Clients.User(createDto.UserId2)
+                        .SendAsync("InvitedToRoom", room.Id);
+                }
+
                 return Ok(new ResponseModel<string>(StatusCodes.Status200OK, ApiCodes.SUCCESS, room.Id, "Chat room created successfully"));
             }
             catch (Exception ex)
@@ -202,8 +208,8 @@ namespace MamaFit.API.Controllers
                 return BadRequest(new ResponseModel<string>(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, null, "Failed to get online users"));
             }
         }
-        
-        
+
+
         [HttpPost("rooms/{roomId}/system-message")]
         public async Task<IActionResult> SendSystemMessage(string roomId, [FromBody] SystemMessageDto systemMessage)
         {

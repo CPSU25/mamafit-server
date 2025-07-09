@@ -10,8 +10,10 @@ namespace MamaFit.BusinessObjects.Entity
         public string? OpeningHour { get; set; }
         public List<string> Images { get; set; } = new List<string>();
         public string MapId { get; set; } = string.Empty!;
-        public string? ShortName { get; set; }
-        public string? LongName { get; set; }
+        public string? Province { get; set; }
+        public string? District { get; set; }
+        public string? Ward { get; set; }
+        public string? Street { get; set; }
         public float? Latitude { get; set; }
         public float? Longitude { get; set; }
 

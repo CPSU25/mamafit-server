@@ -2,6 +2,7 @@ using AutoMapper;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
+using MamaFit.Repositories.Helper;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.ExternalService.ExpoNotification;
@@ -22,8 +23,10 @@ public class NotificationService : INotificationService
     private readonly IExpoNotificationService _expoNotificationService;
     private readonly IHubContext<NotificationHub> _notificationHubContext;
     private readonly IUserConnectionManager _userConnectionManager;
+
     public NotificationService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation,
-        IExpoNotificationService expoNotificationService, IHubContext<NotificationHub> notificationHubContext, IUserConnectionManager userConnectionManager)
+        IExpoNotificationService expoNotificationService, IHubContext<NotificationHub> notificationHubContext,
+        IUserConnectionManager userConnectionManager)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -33,10 +36,27 @@ public class NotificationService : INotificationService
         _userConnectionManager = userConnectionManager;
     }
 
-    public async Task<PaginatedList<NotificationResponseDto>> GetAllNotificationsAsync(int index = 1, int pageSize = 10,
-        string? search = null)
+    public async Task<PaginatedList<NotificationResponseDto>> GetNotificationsByAccessTokenAsync(string accessToken,
+        int index = 1, int pageSize = 10,  string? search = null, NotificationType? type = null, string? sortBy = null)
     {
-        var notifications = await _unitOfWork.NotificationRepository.GetAllAsync(index, pageSize, search);
+        var userId = JwtTokenHelper.ExtractUserId(accessToken);
+
+        var notifications = await _unitOfWork.NotificationRepository.GetAllByTokenAsync(userId, index, pageSize, search, type, sortBy);
+        var responseItems = notifications.Items
+            .Select(notification => _mapper.Map<NotificationResponseDto>(notification))
+            .ToList();
+        return new PaginatedList<NotificationResponseDto>(
+            responseItems,  
+            notifications.TotalCount,
+            notifications.PageNumber,
+            pageSize
+        );
+    }
+
+    public async Task<PaginatedList<NotificationResponseDto>> GetAllNotificationsAsync(int index = 1, int pageSize = 10,
+        string? search = null, NotificationType? type = null, string? sortBy = null)
+    {
+        var notifications = await _unitOfWork.NotificationRepository.GetAllAsync(index, pageSize, search, type, sortBy);
         var responseItems = notifications.Items
             .Select(notification => _mapper.Map<NotificationResponseDto>(notification))
             .ToList();
@@ -66,7 +86,7 @@ public class NotificationService : INotificationService
 
         await _unitOfWork.NotificationRepository.InsertAsync(notification);
         await _unitOfWork.SaveChangesAsync();
-        
+
         var connections = await _userConnectionManager.GetUserConnectionsAsync(model.ReceiverId);
         var notificationDto = _mapper.Map<NotificationResponseDto>(notification);
         if (connections != null && connections.Count > 0)
@@ -80,7 +100,7 @@ public class NotificationService : INotificationService
         else
         {
             var token = await _unitOfWork.TokenRepository.GetNotificationTokensAsync(model.ReceiverId);
-            
+
             if (token != null && !string.IsNullOrEmpty(token.Token))
             {
                 var expoResponse = await _expoNotificationService.SendPushAsync(

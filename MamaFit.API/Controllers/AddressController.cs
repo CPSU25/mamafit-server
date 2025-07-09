@@ -44,7 +44,7 @@ public class AddressController : ControllerBase
     }
     
     [Authorize]
-    [HttpGet("by-user")]
+    [HttpGet("by-token")]
     public async Task<IActionResult> GetByUser([FromHeader(Name = "Authorization")] string accessToken)
     {
         var addresses = await _addressService.GetByAccessTokenAsync(accessToken);

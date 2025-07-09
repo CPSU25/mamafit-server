@@ -19,7 +19,8 @@ public class MeasurementService : IMeasurementService
     private readonly INotificationService _notificationService;
 
     public MeasurementService(IMapper mapper,
-        IUnitOfWork unitOfWork, IBodyGrowthCalculator calculator, IValidationService validation, INotificationService notificationService)
+        IUnitOfWork unitOfWork, IBodyGrowthCalculator calculator, IValidationService validation,
+        INotificationService notificationService)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
@@ -59,7 +60,6 @@ public class MeasurementService : IMeasurementService
                 float hip = _calculator.CalculateHip(baseHip, baseWeek, week);
                 float weight = _calculator.CalculateWeight(baseWeight, baseWeek, week);
 
-                // Build và lưu vào DB
                 var entity = new Measurement
                 {
                     MeasurementDiaryId = diary.Id,
@@ -123,14 +123,14 @@ public class MeasurementService : IMeasurementService
                 {
                     ReceiverId = diary.UserId,
                     NotificationTitle = "Measurement Reminder",
-                    NotificationContent = $"You have not recorded your measurements for week {currentWeek} of pregnancy. Please update your measurements.",
+                    NotificationContent =
+                        $"You have not recorded your measurements for week {currentWeek} of pregnancy. Please update your measurements.",
                 };
                 await _notificationService.SendAndSaveNotificationAsync(model);
             }
         }
     }
-    
-    
+
     public async Task<MeasurementResponseDto> GetMeasurementByIdAsync(string id)
     {
         var measurement = await _unitOfWork.MeasurementRepository.GetByIdAsync(id);
@@ -142,7 +142,7 @@ public class MeasurementService : IMeasurementService
     public async Task<MeasurementDto> GenerateMeasurementPreviewAsync(MeasurementCreateDto dto)
     {
         await _validation.ValidateAndThrowAsync(dto);
-        var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdNotDeletedAsync(dto.MeasurementDiaryId); 
+        var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdNotDeletedAsync(dto.MeasurementDiaryId);
         _validation.CheckNotFound(diary, "Measurement diary not found");
         var weeksPregnant = CalculateWeeksPregnant(diary.PregnancyStartDate);
 
@@ -231,7 +231,8 @@ public class MeasurementService : IMeasurementService
         if (dto.UserId != null)
         {
             var user = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(dto.UserId);
-            _validation.CheckNotFound(user, "User not found");;
+            _validation.CheckNotFound(user, "User not found");
+            ;
         }
 
         var pregnancyStartDate = CalculatePregnancyStartDate(dto);
@@ -277,6 +278,8 @@ public class MeasurementService : IMeasurementService
             request.Diary.PregnancyStartDate = pregnancyStartDate;
         }
 
+        if (request.Diary.IsActive)
+            await _unitOfWork.MeasurementDiaryRepository.SetActiveFalseForAllAsync(user.Id);
         var diaryEntity = _mapper.Map<MeasurementDiary>(request.Diary);
         diaryEntity.UserId = request.Diary?.UserId;
         await _unitOfWork.MeasurementDiaryRepository.InsertAsync(diaryEntity);

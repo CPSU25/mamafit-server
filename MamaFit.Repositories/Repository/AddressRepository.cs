@@ -35,9 +35,6 @@ namespace MamaFit.Repositories.Repository
             {
                 address.IsDefault = false;
             }
-
-            _dbSet.UpdateRange(addresses);
-            await _context.SaveChangesAsync();
         }
     }
 }

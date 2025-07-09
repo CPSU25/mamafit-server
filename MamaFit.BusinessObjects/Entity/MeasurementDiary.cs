@@ -18,6 +18,7 @@ namespace MamaFit.BusinessObjects.Entity
         public DateTime? UltrasoundDate { get; set; }
         public int? WeeksFromUltrasound { get; set; }
         public DateTime? PregnancyStartDate { get; set; }
+        public bool IsActive { get; set; }
 
         // Nagivation property
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();

@@ -8,7 +8,6 @@ using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
 
 namespace MamaFit.Services.Service;
 
@@ -150,8 +149,8 @@ public class OrderService : IOrderService
         var user = await _unitOfWork.UserRepository.GetByIdAsync(request.UserId!);
         _validation.CheckNotFound(user, $"User with id: {request.UserId} not found");
 
-        var voucher = new VoucherDiscount();
-        var measurement = new MeasurementDiary();
+        VoucherDiscount? voucher = null;
+        MeasurementDiary? measurement = null;
 
         if (request.VoucherDiscountId != null)
         {
@@ -313,18 +312,17 @@ public class OrderService : IOrderService
         var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
         _validation.CheckNotFound(user, $"User with id{userId} not found");
 
-        var voucher = new VoucherDiscount();
-        var measurement = new MeasurementDiary();
+        VoucherDiscount? voucher = null;
+        MeasurementDiary? measurement = null;
 
         if (request.VoucherDiscountId != null)
         {
             voucher = await _unitOfWork.VoucherDiscountRepository.GetByIdAsync(request.VoucherDiscountId);
             _validation.CheckNotFound(voucher, $"Voucher with id: {request.VoucherDiscountId} not found");
-
         }
 
         if (request.MeasurementDiaryId != null)
-        {
+        {   
             measurement = await _unitOfWork.MeasurementDiaryRepository.GetByIdAsync(request.MeasurementDiaryId);
             _validation.CheckNotFound(measurement, $"Measurement diary with id: {request.MeasurementDiaryId} not found");
         }

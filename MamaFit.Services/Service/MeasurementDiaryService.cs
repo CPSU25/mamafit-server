@@ -1,5 +1,6 @@
 using AutoMapper;
 using MamaFit.BusinessObjects.DTO.MeasurementDto;
+using MamaFit.Repositories.Helper;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
@@ -95,6 +96,18 @@ public class MeasurementDiaryService : IMeasurementDiaryService
         );
         
         return responsePaginatedList;
+    }
+    
+    public async Task SetActiveDiaryAsync(string diaryId, string accessToken)
+    {
+        var userId = JwtTokenHelper.ExtractUserId(accessToken);
+        var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdNotDeletedAsync(diaryId);
+        if (diary == null)
+            throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Measurement diary not found");
+        await _unitOfWork.MeasurementDiaryRepository.SetActiveFalseForAllAsync(userId);
+        diary.IsActive = true;
+        await _unitOfWork.MeasurementDiaryRepository.UpdateAsync(diary);
+        await _unitOfWork.SaveChangesAsync();
     }
     
     public async Task<bool> DeleteDiaryAsync(string id)

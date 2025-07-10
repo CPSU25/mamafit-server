@@ -20,5 +20,4 @@ public class MeasurementDiaryDto
     public int WeeksFromUltrasound { get; set; }
     [SwaggerSchema(ReadOnly = true)]
     public DateTime? PregnancyStartDate { get; set; }
-    public bool IsActive { get; set; }
 }

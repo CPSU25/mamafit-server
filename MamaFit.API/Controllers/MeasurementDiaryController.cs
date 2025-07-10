@@ -72,6 +72,18 @@ public class MeasurementDiaryController : ControllerBase
         ));
     }
 
+    [HttpPut("set-active/{diaryId}")]
+    public async Task<IActionResult> SetActiveDiary(string diaryId, [FromHeader(Name = "Authorization")] string accessToken)
+    {
+        await _diaryService.SetActiveDiaryAsync(diaryId, accessToken);
+        return Ok(new ResponseModel<string>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            null,
+            "Measurement diary set as active successfully!"
+        ));
+    }
+    
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {

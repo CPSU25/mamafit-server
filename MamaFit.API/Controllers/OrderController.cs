@@ -2,6 +2,7 @@ using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MamaFit.API.Controllers;
@@ -17,6 +18,24 @@ public class OrderController : ControllerBase
         _service = service;
     }
 
+    [Authorize]
+    [HttpGet("by-token")]
+    public async Task<IActionResult> GetByAccessToken(
+        [FromHeader(Name = "Authorization")] string accessToken,
+        [FromQuery] int index = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? search = null,
+        [FromQuery] OrderStatus? status = null)
+    {
+        var result = await _service.GetByTokenAsync(accessToken, index, pageSize, search, status);
+        return Ok(new ResponseModel<PaginatedList<OrderResponseDto>>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            result,
+            "Get orders by access token successfully!"
+        ));
+    }
+    
     [HttpGet]
     public async Task<IActionResult> GetAll(
         [FromQuery] int index = 1,

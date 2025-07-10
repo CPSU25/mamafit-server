@@ -277,10 +277,9 @@ public class MeasurementService : IMeasurementService
             var pregnancyStartDate = CalculatePregnancyStartDate(request.Diary);
             request.Diary.PregnancyStartDate = pregnancyStartDate;
         }
-
-        if (request.Diary.IsActive)
-            await _unitOfWork.MeasurementDiaryRepository.SetActiveFalseForAllAsync(user.Id);
+        await _unitOfWork.MeasurementDiaryRepository.SetActiveFalseForAllAsync(user.Id);
         var diaryEntity = _mapper.Map<MeasurementDiary>(request.Diary);
+        diaryEntity.IsActive = true;
         diaryEntity.UserId = request.Diary?.UserId;
         await _unitOfWork.MeasurementDiaryRepository.InsertAsync(diaryEntity);
         await _unitOfWork.SaveChangesAsync();

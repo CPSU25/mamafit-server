@@ -1,5 +1,6 @@
 using MamaFit.BusinessObjects.DbContext;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
@@ -15,6 +16,21 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
     {
     }
 
+    public async Task<PaginatedList<Order>> GetByTokenAsync(int index, int pageSize, string token, string? search, OrderStatus? status = null)
+    {
+        var query = _dbSet
+            .Where(x => !x.IsDeleted && x.UserId == token);
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            query = query.Where(x => x.Code.Contains(search));
+        }
+        if (status.HasValue)
+        {
+            query = query.Where(x => x.Status == status.Value);
+        }
+        return await query.GetPaginatedList(index, pageSize);
+    }
+    
     public async Task<PaginatedList<Order>> GetAllAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate)
     {
         var query = _dbSet.Where(x => !x.IsDeleted);

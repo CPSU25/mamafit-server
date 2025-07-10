@@ -3,6 +3,7 @@ using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
+using MamaFit.Repositories.Helper;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
@@ -28,6 +29,20 @@ public class OrderService : IOrderService
         _notificationService = notificationService;
     }
 
+    public async Task<PaginatedList<OrderResponseDto>> GetByTokenAsync( string accessToken, int index = 1, int pageSize = 10, string? search = null, OrderStatus? status = null)
+    {
+        var userId = JwtTokenHelper.ExtractUserId(accessToken);
+        var orders = await _unitOfWork.OrderRepository.GetByTokenAsync(index, pageSize, userId, search, status);
+        var responseItems = orders.Items
+            .Select(order => _mapper.Map<OrderResponseDto>(order))
+            .ToList();
+        return new PaginatedList<OrderResponseDto>(
+            responseItems,
+            orders.TotalCount,
+            orders.PageNumber,
+            pageSize
+        );
+    }
     public async Task UpdateOrderStatusAsync(string id, OrderStatus orderStatus, PaymentStatus paymentStatus)
     {
         var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);

@@ -192,6 +192,20 @@ public class OrderService : IOrderService
             return dress != null ? dress.Price * item.Quantity : 0;
         });
 
+        decimal? discountValue = 0;
+
+        if (voucher != null && voucher.VoucherBatch != null)
+        {
+            if (voucher.VoucherBatch.DiscountType == DiscountType.PERCENTAGE)
+            {
+                discountValue = (voucher.VoucherBatch.DiscountValue / 100) * subTotalAmount;
+            }
+            else if (voucher.VoucherBatch.DiscountType == DiscountType.FIXED)
+            {
+                discountValue = voucher.VoucherBatch.DiscountValue;
+            }
+        }
+
         var order = _mapper.Map<Order>(request);
         order.User = user!;
         order.VoucherDiscount = voucher;
@@ -200,7 +214,7 @@ public class OrderService : IOrderService
         order.Status = OrderStatus.CREATED;
         order.MeasurementDiary = measurement;
         order.SubTotalAmount = subTotalAmount;
-        order.TotalAmount = (subTotalAmount - ((voucher?.VoucherBatch?.DiscountPercentValue ?? 0) * subTotalAmount) + request.ShippingFee);
+        order.TotalAmount = (subTotalAmount - discountValue + request.ShippingFee);
         order.PaymentStatus = PaymentStatus.PENDING;
         order.PaymentType = PaymentType.FULL;
         order.OrderItems = dressDetails.Select(d => new OrderItem
@@ -328,6 +342,19 @@ public class OrderService : IOrderService
         }
 
         var subTotalAmount = preset!.Price;
+        decimal? discountValue = 0;
+
+        if(voucher != null && voucher.VoucherBatch != null)
+        {
+            if (voucher.VoucherBatch.DiscountType == DiscountType.PERCENTAGE)
+            {
+                discountValue = (voucher.VoucherBatch.DiscountValue / 100) * subTotalAmount;
+            }
+            else if (voucher.VoucherBatch.DiscountType == DiscountType.FIXED)
+            {
+                discountValue = voucher.VoucherBatch.DiscountValue;
+            }
+        }
 
         var order = _mapper.Map<Order>(request);
 
@@ -339,7 +366,7 @@ public class OrderService : IOrderService
         order.Status = OrderStatus.CREATED;
         order.MeasurementDiary = measurement;
         order.SubTotalAmount = subTotalAmount;
-        order.TotalAmount = (subTotalAmount - (voucher?.VoucherBatch?.DiscountPercentValue ?? 0) * subTotalAmount + request.ShippingFee);
+        order.TotalAmount = (subTotalAmount - discountValue + request.ShippingFee);
         order.PaymentStatus = PaymentStatus.PENDING;
         order.OrderItems = new List<OrderItem>()
         {

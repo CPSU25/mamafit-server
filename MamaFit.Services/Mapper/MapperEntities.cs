@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MamaFit.BusinessObjects.DTO.AddressDto;
 using MamaFit.BusinessObjects.DTO.AppointmentDto;
-using MamaFit.BusinessObjects.DTO.UserDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.DTO.MaternityDressDto;
 using MamaFit.BusinessObjects.DTO.CategoryDto;
@@ -34,6 +33,7 @@ using MamaFit.BusinessObjects.DTO.WarrantyRequestDto;
 using Newtonsoft.Json;
 using MamaFit.BusinessObjects.DTO.OrderItemTaskDto;
 using MamaFit.BusinessObjects.DTO.MaternityDressTaskDto;
+using MamaFit.BusinessObjects.DTO.UserDto;
 
 namespace MamaFit.Services.Mapper
 {
@@ -174,8 +174,11 @@ namespace MamaFit.Services.Mapper
                 .ReverseMap();
 
             //VoucherBatch Mapper
-            CreateMap<VoucherBatch, VoucherBatchDto>().ReverseMap();
+            CreateMap<VoucherBatch, VoucherBatchRequestDto>().ReverseMap();
             CreateMap<VoucherBatch, VoucherBatchResponseDto>().ReverseMap();
+            CreateMap<VoucherBatch, VoucherBatchDetailResponseDto>()
+                .ForMember(dest => dest.Details, opt => opt.MapFrom(src => src.VoucherDiscounts))
+                .ReverseMap();
 
             //VoucherDiscount Mapper
             CreateMap<VoucherDiscount, VoucherDiscountRequestDto>().ReverseMap();

@@ -1,6 +1,6 @@
 namespace MamaFit.BusinessObjects.DTO.VoucherDiscountDto;
 
-public class VoucherDiscountResponseDto
+public class VoucherDiscountResponseDto : VoucherDiscountBaseDto
 {
     public string Id { get; set; }
     public string? CreatedBy { get; set; }

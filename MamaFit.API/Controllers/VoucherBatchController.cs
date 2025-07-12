@@ -29,6 +29,19 @@ public class VoucherBatchController : ControllerBase
             "Get all voucher batches successfully!"
         ));
     }
+
+    [HttpGet]
+    [Route("my-discounts")]
+    public async Task<IActionResult> GetAllMyDiscount()
+    {
+        var myDiscounts = await _service.GetAllMyVoucherBatchAsync();
+        return Ok(new ResponseModel<List<VoucherBatchDetailResponseDto>>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            myDiscounts,
+            "Get all my discounts successfully!"
+        ));
+    }
     
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById([FromRoute] string id)
@@ -43,7 +56,7 @@ public class VoucherBatchController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] VoucherBatchDto requestDto)
+    public async Task<IActionResult> Create([FromBody] VoucherBatchRequestDto requestDto)
     {
         var createdVoucherBatch = await _service.CreateVoucherBatchAsync(requestDto);
         return StatusCode(StatusCodes.Status201Created,
@@ -56,7 +69,7 @@ public class VoucherBatchController : ControllerBase
     }
     
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromRoute] string id, [FromBody] VoucherBatchDto requestDto)
+    public async Task<IActionResult> Update([FromRoute] string id, [FromBody] VoucherBatchRequestDto requestDto)
     {
         var updatedVoucherBatch = await _service.UpdateVoucherBatchAsync(id, requestDto);
         return Ok(new ResponseModel<VoucherBatchResponseDto>(

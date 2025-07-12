@@ -1,3 +1,5 @@
+using MamaFit.BusinessObjects.Enum;
+
 namespace MamaFit.BusinessObjects.DTO.VoucherBatchDto;
 
 public class VoucherBatchBaseDto
@@ -8,9 +10,8 @@ public class VoucherBatchBaseDto
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public int? TotalQuantity { get; set; }
-    public int? RemainingQuantity { get; set; }
-    public string? DiscountType { get; set; }
-    public int? DiscountPercentValue { get; set; }
+    public DiscountType? DiscountType { get; set; }
+    public int? DiscountValue { get; set; }
     public float? MinimumOrderValue { get; set; }
     public float? MaximumDiscountValue { get; set; }
 }

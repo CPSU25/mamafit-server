@@ -23,7 +23,17 @@ public class VoucherBatchRepository : GenericRepository<VoucherBatch>, IVoucherB
         }
         return await query.GetPaginatedList(index, pageSize);
     }
-    
+
+    public async Task<List<VoucherBatch>> GetAllMyVoucherAsync(string userId)
+    {
+        var result = await _dbSet
+            .Include(x => x.VoucherDiscounts)
+            .AsNoTracking()
+            .Where( x => x.VoucherDiscounts.Any(x => x.UserId == userId)).ToListAsync();
+
+        return result;
+    }
+
     public async Task<bool> IsBatchExistedAsync(string batchCode, string batchName)
     {
         return await _dbSet.AsNoTracking().AnyAsync(x => 

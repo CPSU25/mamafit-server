@@ -3,7 +3,7 @@ using MamaFit.BusinessObjects.DTO.VoucherBatchDto;
 
 namespace MamaFit.Services.Validator.VoucherBatch;
 
-public class VoucherBatchDtoValidator : AbstractValidator<VoucherBatchDto>
+public class VoucherBatchDtoValidator : AbstractValidator<VoucherBatchRequestDto>
 {
     public VoucherBatchDtoValidator()
     {
@@ -17,7 +17,7 @@ public class VoucherBatchDtoValidator : AbstractValidator<VoucherBatchDto>
         RuleFor(x => x.TotalQuantity)
             .GreaterThan(0).WithMessage("Quantity must be greater than zero.");
 
-        RuleFor(x => x.DiscountPercentValue)
-            .InclusiveBetween(0, 100).WithMessage("Discount percentage must be between 0 and 100.");
+        RuleFor(x => x.DiscountValue)
+            .GreaterThan(0).WithMessage("DiscountValue must be an positive interger");
     }
 }

@@ -6,8 +6,9 @@ namespace MamaFit.Services.Interface;
 public interface IVoucherBatchService
 {
     Task<PaginatedList<VoucherBatchResponseDto>> GetAllVoucherBatchesAsync(int index, int pageSize, string? search);
+    Task<List<VoucherBatchDetailResponseDto>> GetAllMyVoucherBatchAsync();
     Task<VoucherBatchResponseDto?> GetVoucherBatchByIdAsync(string id);
-    Task<VoucherBatchResponseDto> CreateVoucherBatchAsync(VoucherBatchDto requestDto);
-    Task<VoucherBatchResponseDto> UpdateVoucherBatchAsync(string id, VoucherBatchDto requestDto);
+    Task<VoucherBatchResponseDto> CreateVoucherBatchAsync(VoucherBatchRequestDto requestDto);
+    Task<VoucherBatchResponseDto> UpdateVoucherBatchAsync(string id, VoucherBatchRequestDto requestDto);
     Task DeleteVoucherBatchAsync(string id);
 }

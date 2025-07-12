@@ -21,6 +21,8 @@ using MamaFit.BusinessObjects.DTO.VoucherBatchDto;
 using MamaFit.BusinessObjects.DTO.MaternityDressTask;
 using MamaFit.BusinessObjects.DTO.ChatRoomMemberDto;
 using MamaFit.BusinessObjects.DTO.FeedbackDto;
+using MamaFit.BusinessObjects.DTO.MaternityDressServiceDto;
+using MamaFit.BusinessObjects.DTO.MaternityDressServiceOptionDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.DTO.VoucherDiscountDto;
@@ -266,6 +268,12 @@ namespace MamaFit.Services.Mapper
             CreateMap<WarrantyRequest, WarrantyRequestUpdateDto>().ReverseMap();
             CreateMap<WarrantyRequest, WarrantyRequestGetAllDto>().ReverseMap();
             CreateMap<WarrantyRequest, WarrantyRequestGetByIdDto>().ReverseMap();
+            
+            //MaternityDressService Mapper
+            CreateMap<MaternityDressService, MaternityDressServiceDto>().ReverseMap();
+            
+            //MaternityDressServiceOption Mapper
+            CreateMap<MaternityDressServiceOption, MaternityDressServiceOptionDto>().ReverseMap();
         }
     }
 }

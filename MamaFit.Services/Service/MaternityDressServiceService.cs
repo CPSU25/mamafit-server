@@ -35,4 +35,14 @@ public class MaternityDressServiceService : IMaternityDressServiceService
         
         return paginatedResponse;
     }
+
+    public async Task CreateAsync(MaternityDressServiceRequestDto requestDto)
+    {
+        await _validationService.ValidateAndThrowAsync(requestDto);
+
+        var newMaternityDressService = _mapper.Map<BusinessObjects.Entity.MaternityDressService>(requestDto);
+
+        await _unitOfWork.MaternityDressServiceRepository.InsertAsync(newMaternityDressService);
+        await _unitOfWork.SaveChangesAsync();
+    }
 }

@@ -64,7 +64,12 @@ public class SepayService : ISepayService
         _validationService.CheckNotFound(order, $"Order with code {orderCode} not found");
 
         await _transactionService.CreateTransactionAsync(payload, order.Id, order.Code);
-        await _orderService.UpdateOrderStatusAsync(order.Id, OrderStatus.CONFIRMED, PaymentStatus.PAID);
+        await _orderService.UpdateOrderStatusAsync(
+            order.Id,
+            order.Type == OrderType.DEPOSIT ? OrderStatus.DEPOSITED : OrderStatus.CONFIRMED,
+            order.Type == OrderType.DEPOSIT ? PaymentStatus.DEPOSITED : PaymentStatus.PAID
+        );
+        
         await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
         {
             NotificationTitle = "Payment Successful",
@@ -108,7 +113,6 @@ public class SepayService : ISepayService
         };
         return qrResponse;
     }
-
     private string GenerateSepayQrUrl(string accountNumber, string bankCode, decimal? amount, string description,
         string template, string download)
     {

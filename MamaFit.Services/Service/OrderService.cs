@@ -50,8 +50,21 @@ public class OrderService : IOrderService
         {
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Order is already confirmed and paid.");
         }
-        order.PaymentStatus = paymentStatus;
-        order.Status = orderStatus;
+        if (order.Type == OrderType.DEPOSIT)
+        {
+            if (order.SubTotalAmount.HasValue)
+            {
+                order.SubTotalAmount /= 2;
+            }
+            order.PaymentStatus = PaymentStatus.DEPOSITED;
+            order.Status = OrderStatus.DEPOSITED;
+        }
+        else
+        {
+            order.PaymentStatus = paymentStatus;
+            order.Status = orderStatus;
+        }
+        
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
 
@@ -71,6 +84,7 @@ public class OrderService : IOrderService
 
         await _notificationService.SendAndSaveNotificationAsync(notification);
     }
+    
     public async Task<PaginatedList<OrderResponseDto>> GetAllAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate)
     {
         var orders = await _unitOfWork.OrderRepository.GetAllAsync(index, pageSize, startDate, endDate);

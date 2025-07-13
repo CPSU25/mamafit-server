@@ -5,6 +5,7 @@
         CREATED, // default
         DESIGNING, // Designer đang làm việc với khách hàng
         CONFIRMED, // chờ nhà máy xác nhận
+        DEPOSITED,
         PROCESSING, // nhà máy đang làm + QC
         PACKAGING, // đóng gói
         DELIVERING,

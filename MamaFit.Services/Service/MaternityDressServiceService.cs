@@ -45,4 +45,28 @@ public class MaternityDressServiceService : IMaternityDressServiceService
         await _unitOfWork.MaternityDressServiceRepository.InsertAsync(newMaternityDressService);
         await _unitOfWork.SaveChangesAsync();
     }
+
+    public async Task<MaternityDressServiceDto> GetByIdAsync(string id)
+    {
+        var maternityDressService = await _unitOfWork.MaternityDressServiceRepository.GetByIdAsync(id);
+        _validationService.CheckNotFound(maternityDressService, "Maternity Dress Service not found!");
+        return _mapper.Map<MaternityDressServiceDto>(maternityDressService);
+    }
+
+    public async Task UpdateAsync(string id, MaternityDressServiceRequestDto requestDto)
+    {
+        var oldMaternityDressService = await _unitOfWork.MaternityDressServiceRepository.GetByIdAsync(id);
+        _validationService.CheckNotFound(oldMaternityDressService, "Maternity Dress Service not found!");
+        await _validationService.ValidateAndThrowAsync(requestDto);
+        _mapper.Map(requestDto, oldMaternityDressService);
+        await _unitOfWork.MaternityDressServiceRepository.UpdateAsync(oldMaternityDressService);
+        await _unitOfWork.SaveChangesAsync();
+    }
+    public async Task DeleteAsync(string id)
+    {
+        var oldMaternityDressService = await _unitOfWork.MaternityDressServiceRepository.GetByIdAsync(id);
+        _validationService.CheckNotFound(oldMaternityDressService, "Maternity Dress Service not found!");
+        await _unitOfWork.MaternityDressServiceRepository.SoftDeleteAsync(id);
+        await _unitOfWork.SaveChangesAsync();
+    }
 }

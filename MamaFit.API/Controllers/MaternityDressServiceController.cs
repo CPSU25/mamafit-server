@@ -45,4 +45,40 @@ public class MaternityDressServiceController : ControllerBase
                 "Created maternity dress service successfully!"
             ));
     }
+    
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById([FromRoute] string id)
+    {
+        var maternityDressService = await _service.GetByIdAsync(id);
+        return Ok(new ResponseModel<MaternityDressServiceDto>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            maternityDressService,
+            "Get maternity dress service successfully!"
+        ));
+    }
+    
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update([FromRoute] string id, [FromBody] MaternityDressServiceRequestDto requestDto)
+    {
+        await _service.UpdateAsync(id, requestDto);
+        return Ok(new ResponseModel<string>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            null,
+            "Updated maternity dress service successfully!"
+        ));
+    }
+    
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete([FromRoute] string id)
+    {
+        await _service.DeleteAsync(id);
+        return Ok(new ResponseModel<string>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            null,
+            "Deleted maternity dress service successfully!"
+        ));
+    }
 }

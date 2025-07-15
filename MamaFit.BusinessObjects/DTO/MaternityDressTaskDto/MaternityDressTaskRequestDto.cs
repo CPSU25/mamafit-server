@@ -7,6 +7,6 @@ namespace MamaFit.BusinessObjects.DTO.MaternityDressTask
         public string? MilestoneId { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
-        public DressTaskType? Type { get; set; }
+        public int SequenceOrder { get; set; }
     }
 }

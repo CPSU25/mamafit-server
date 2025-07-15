@@ -85,8 +85,6 @@ namespace MamaFit.Repositories.Repository
         public async Task<Style> GetDetailById(string id)
         {
             var result = await _dbSet
-                .Include(x => x.Components)
-                .ThenInclude(x => x.Options)
                 .Include(x => x.Presets)
                 .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
 

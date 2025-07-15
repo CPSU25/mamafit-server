@@ -66,7 +66,7 @@ public class SepayService : ISepayService
         await _transactionService.CreateTransactionAsync(payload, order.Id, order.Code);
         await _orderService.UpdateOrderStatusAsync(
             order.Id,
-            order.Type == OrderType.DEPOSIT ? OrderStatus.DEPOSITED : OrderStatus.CONFIRMED,
+            order.Type == OrderType.DEPOSIT ? OrderStatus.PAID_DEPOSIT : OrderStatus.IN_PRODUCTION,
             order.Type == OrderType.DEPOSIT ? PaymentStatus.DEPOSITED : PaymentStatus.PAID
         );
         

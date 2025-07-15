@@ -87,7 +87,6 @@ namespace MamaFit.Services.Mapper
             CreateMap<Style, StyleRequestDto>().ReverseMap();
             CreateMap<Style, StyleResponseDto>().ReverseMap();
             CreateMap<Style, StyleGetByIdResponseDto>()
-                .ForMember(dest => dest.Components, otp => otp.MapFrom(src => src.Components))
                 .ForMember(dest => dest.Presets, otp => otp.MapFrom(src => src.Presets))
                 .ReverseMap();
 

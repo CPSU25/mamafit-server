@@ -15,9 +15,9 @@ namespace MamaFit.Services.Validator.MaternityDressTask
                 .NotEmpty().WithMessage("Description is required.")
                 .MaximumLength(500).WithMessage("Description must not exceed 500 characters.");
 
-            RuleFor(x => x.Type)
-                .NotEmpty().WithMessage("Type is required.")
-                .IsInEnum().WithMessage("Type must be a valid enum value.");
+            RuleFor(x => x.SequenceOrder)
+                .NotEmpty().WithMessage("SequenceOrder is required.")
+                .GreaterThanOrEqualTo(1).WithMessage("SequenceOrder must be greater than or equal to 1");
         }
     }
 }

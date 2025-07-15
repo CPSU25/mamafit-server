@@ -32,4 +32,17 @@ public class MaternityDressServiceController : ControllerBase
             "Get all maternity dress services successfully!"
         ));
     }
+    
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] MaternityDressServiceRequestDto requestDto)
+    {
+        await _service.CreateAsync(requestDto);
+        return StatusCode(StatusCodes.Status201Created,
+            new ResponseModel<string>(
+                StatusCodes.Status201Created,
+                ApiCodes.CREATED,
+                null,
+                "Created maternity dress service successfully!"
+            ));
+    }
 }

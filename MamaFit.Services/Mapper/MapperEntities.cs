@@ -271,6 +271,7 @@ namespace MamaFit.Services.Mapper
             
             //MaternityDressService Mapper
             CreateMap<MaternityDressService, MaternityDressServiceDto>().ReverseMap();
+            CreateMap<MaternityDressService, MaternityDressServiceRequestDto>().ReverseMap();
             
             //MaternityDressServiceOption Mapper
             CreateMap<MaternityDressServiceOption, MaternityDressServiceOptionDto>().ReverseMap();

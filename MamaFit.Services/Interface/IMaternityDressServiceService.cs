@@ -8,4 +8,6 @@ public interface IMaternityDressServiceService
 {
     Task<PaginatedList<MaternityDressServiceDto>> GetAllAsync(int index, int pageSize, string? search,
         EntitySortBy? sortBy);
+
+    Task CreateAsync(MaternityDressServiceRequestDto requestDto);
 }

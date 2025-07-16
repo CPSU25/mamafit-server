@@ -92,6 +92,18 @@ public class OrderItemController : ControllerBase
         ));
     }
 
+    [HttpPost("check-list-status")]
+    public async Task<IActionResult> CheckListStatusForOrderItemTask([FromBody] OrderItemCheckTaskRequestDto request)
+    {
+        await _service.CheckListStatusForOrderItemTaskAsync(request);
+        return Ok(new ResponseModel<string>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            null,
+            "Check list status for order item task successfully!"
+        ));
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete([FromRoute] string id)
     {

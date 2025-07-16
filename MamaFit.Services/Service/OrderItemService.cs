@@ -1,5 +1,6 @@
 using AutoMapper;
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
+using MamaFit.BusinessObjects.DTO.OrderItemTaskDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
@@ -155,6 +156,27 @@ public class OrderItemService : IOrderItemService
             }
         }
         await _unitOfWork.OrderItemRepository.UpdateAsync(orderItem);
+        await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task CheckListStatusForOrderItemTaskAsync(OrderItemCheckTaskRequestDto request)
+    {
+        foreach (var task in request.MaternityDressTaskIds!)
+        {
+            var orderItemTask = await _unitOfWork.OrderItemTaskRepository.GetDetailAsync(new OrderItemTaskGetDetail
+            {
+                OrderItemId = request.OrderItemId,
+                MaternityDressTaskId = task
+            });
+
+            _validation.CheckNotFound(orderItemTask, $"Order item task with order item id:{request.OrderItemId} and maternity dress task id:{task} is not exist!");
+
+            if (orderItemTask.User == null)
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, $"Order item task with order item id:{request.OrderItemId} and maternity dress task id:{task} is do not have a charger!!");
+
+            await _unitOfWork.OrderItemTaskRepository.UpdateOrderItemTaskStatusAsync(orderItemTask, request.Status);
+        }
+
         await _unitOfWork.SaveChangesAsync();
     }
 }

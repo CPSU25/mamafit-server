@@ -17,7 +17,7 @@ namespace MamaFit.BusinessObjects.Entity
         public OrderStatus? Status { get; set; }
         public decimal? TotalAmount { get; set; }
         public decimal ShippingFee { get; set; }
-        public decimal? DiscountSubtotal { get; set; } 
+        public decimal? DiscountSubtotal { get; set; }
         public decimal? DepositSubtotal { get; set; }
         public decimal? RemainingBalance { get; set; }
         public PaymentStatus PaymentStatus { get; set; }
@@ -26,7 +26,7 @@ namespace MamaFit.BusinessObjects.Entity
         public PaymentType PaymentType { get; set; }
         public DateTime? CanceledAt { get; set; }
         public string? CanceledReason { get; set; }
-        public decimal? SubTotalAmount { get; set; } //gốc
+        public decimal? SubTotalAmount { get; set; } 
         public string? WarrantyCode { get; set; }
 
         // Navigation properties

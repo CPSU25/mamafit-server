@@ -68,7 +68,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IPresetRepository, PresetRepository>();
             services.AddScoped<IWarrantyRequestRepository, WarrantyRequestRepository>();
             services.AddScoped<IMaternityDressServiceRepository, MaternityDressServiceRepository>();
-        }
+            services.AddScoped<IOrderItemTaskRepository, OrderItemTaskRepository>();        }
 
         public static void AddServices(this IServiceCollection services)
         {

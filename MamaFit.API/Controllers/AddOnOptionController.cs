@@ -1,4 +1,4 @@
-using MamaFit.BusinessObjects.DTO.MaternityDressServiceDto;
+using MamaFit.BusinessObjects.DTO.AddOnOptionDto;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
@@ -7,12 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace MamaFit.API.Controllers;
 
 [ApiController]
-[Route("api/maternity-dress-service")]
-public class MaternityDressServiceController : ControllerBase
+[Route("api/add-on-options")]
+public class AddOnOptionController : ControllerBase
 {
-    private readonly IMaternityDressServiceService _service;
-    
-    public MaternityDressServiceController(IMaternityDressServiceService service)
+    private readonly IAddOnOptionService _service;
+    public AddOnOptionController(IAddOnOptionService service)
     {
         _service = service;
     }
@@ -24,17 +23,17 @@ public class MaternityDressServiceController : ControllerBase
         [FromQuery] string? search = null,
         [FromQuery] EntitySortBy? sortBy = null)
     {
-        var maternityDressServices = await _service.GetAllAsync(index, pageSize, search, sortBy);
-        return Ok(new ResponseModel<PaginatedList<MaternityDressServiceDto>>(
+        var addOnOptions = await _service.GetAllAsync(index, pageSize, search, sortBy);
+        return Ok(new ResponseModel<PaginatedList<AddOnOptionDto>>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
-            maternityDressServices,
-            "Get all maternity dress services successfully!"
+            addOnOptions,
+            "Get all add-on options successfully!"
         ));
     }
     
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] MaternityDressServiceRequestDto requestDto)
+    public async Task<IActionResult> Create([FromBody] AddOnOptionRequestDto requestDto)
     {
         await _service.CreateAsync(requestDto);
         return StatusCode(StatusCodes.Status201Created,
@@ -42,31 +41,31 @@ public class MaternityDressServiceController : ControllerBase
                 StatusCodes.Status201Created,
                 ApiCodes.CREATED,
                 null,
-                "Created maternity dress service successfully!"
+                "Created add-on option successfully!"
             ));
     }
     
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById([FromRoute] string id)
     {
-        var maternityDressService = await _service.GetByIdAsync(id);
-        return Ok(new ResponseModel<MaternityDressServiceDto>(
+        var addOnOption = await _service.GetByIdAsync(id);
+        return Ok(new ResponseModel<AddOnOptionDto>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
-            maternityDressService,
-            "Get maternity dress service successfully!"
+            addOnOption,
+            "Get add-on option successfully!"
         ));
     }
     
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromRoute] string id, [FromBody] MaternityDressServiceRequestDto requestDto)
+    public async Task<IActionResult> Update([FromRoute] string id, [FromBody] AddOnOptionRequestDto requestDto)
     {
         await _service.UpdateAsync(id, requestDto);
         return Ok(new ResponseModel<string>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
             null,
-            "Updated maternity dress service successfully!"
+            "Updated add-on option successfully!"
         ));
     }
     
@@ -78,7 +77,7 @@ public class MaternityDressServiceController : ControllerBase
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
             null,
-            "Deleted maternity dress service successfully!"
+            "Deleted add-on option successfully!"
         ));
     }
 }

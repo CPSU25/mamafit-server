@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace MamaFit.BusinessObjects.DTO.GhtkDto.GhtkAddressLevel4Response;
+namespace MamaFit.BusinessObjects.DTO.GhtkDto.Address;
 
 public class GhtkAddressLevel4Response
 {

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using MamaFit.BusinessObjects.DTO.MaternityDressTask;
+using MamaFit.BusinessObjects.DTO.MaternityDressTaskDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
@@ -73,7 +73,6 @@ namespace MamaFit.Services.Service
 
             if (task == null)
                 throw new Exception($"Not found task with id:{id}");
-
             _mapper.Map(request, task);
 
             await _unitOfWork.MaternityDressTaskRepository.UpdateAsync(task);

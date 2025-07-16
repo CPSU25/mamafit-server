@@ -1,7 +1,8 @@
 using MamaFit.BusinessObjects.DTO.GhtkDto;
+using MamaFit.BusinessObjects.DTO.GhtkDto.Address;
 using MamaFit.BusinessObjects.DTO.GhtkDto.Fee;
-using MamaFit.BusinessObjects.DTO.GhtkDto.GhtkAddressLevel4Response;
 using MamaFit.BusinessObjects.DTO.GhtkDto.Response;
+using MamaFit.BusinessObjects.DTO.GhtkDto.SubmitOrder;
 using MamaFit.BusinessObjects.DTO.GhtkDto.TrackOrder;
 
 namespace MamaFit.Services.ExternalService.Ghtk;

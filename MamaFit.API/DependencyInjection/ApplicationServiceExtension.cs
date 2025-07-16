@@ -67,8 +67,9 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<ICartItemRepository, CartItemRepository>();
             services.AddScoped<IPresetRepository, PresetRepository>();
             services.AddScoped<IWarrantyRequestRepository, WarrantyRequestRepository>();
-            services.AddScoped<IMaternityDressServiceRepository, AddOnRepository>();
-            services.AddScoped<IOrderItemTaskRepository, OrderItemTaskRepository>();        
+            services.AddScoped<IAddOnRepository, AddOnRepository>();
+            services.AddScoped<IOrderItemTaskRepository, OrderItemTaskRepository>();     
+            services.AddScoped<IAddOnOptionRepository, AddOnOptionRepository>();
         }
 
         public static void AddServices(this IServiceCollection services)
@@ -115,7 +116,8 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IWarrantyRequestService, WarrantyRequestService>();
             services.AddScoped<IUserConnectionManager, UserConnectionManager>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IMaternityDressServiceService, AddOnService>();
+            services.AddScoped<IAddOnService, AddOnService>();
+            services.AddScoped<IAddOnOptionService, AddOnOptionService>();
             
             // SignalR User ID Provider for Clients.User() calls
             services.AddSingleton<IUserIdProvider, NameUserIdProvider>();

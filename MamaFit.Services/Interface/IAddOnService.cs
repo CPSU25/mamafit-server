@@ -4,7 +4,7 @@ using MamaFit.Repositories.Infrastructure;
 
 namespace MamaFit.Services.Interface;
 
-public interface IMaternityDressServiceService
+public interface IAddOnService
 {
     Task<PaginatedList<AddOnDto>> GetAllAsync(int index, int pageSize, string? search,
         EntitySortBy? sortBy);

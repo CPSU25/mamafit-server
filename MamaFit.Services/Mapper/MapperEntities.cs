@@ -34,6 +34,8 @@ using MamaFit.BusinessObjects.DTO.WarrantyRequestDto;
 using Newtonsoft.Json;
 using MamaFit.BusinessObjects.DTO.OrderItemTaskDto;
 using MamaFit.BusinessObjects.DTO.MaternityDressTaskDto;
+using MamaFit.BusinessObjects.DTO.PositionDto;
+using MamaFit.BusinessObjects.DTO.SizeDto;
 using MamaFit.BusinessObjects.DTO.UserDto;
 
 namespace MamaFit.Services.Mapper
@@ -273,6 +275,15 @@ namespace MamaFit.Services.Mapper
             
             //AddOnOption Mapper
             CreateMap<AddOnOption, AddOnOptionDto>().ReverseMap();
+            CreateMap<AddOnOption, AddOnOptionRequestDto>().ReverseMap();
+            
+            //Position Mapper
+            CreateMap<Position, PositionDto>().ReverseMap();
+            CreateMap<Position, PositionRequestDto>().ReverseMap();
+            
+            //Size Mapper
+            CreateMap<Size, SizeDto>().ReverseMap();
+            CreateMap<Size, SizeRequestDto>().ReverseMap();
         }
     }
 }

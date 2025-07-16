@@ -9,16 +9,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MamaFit.Repositories.Repository;
 
-public class AddOnRepository : GenericRepository<AddOn>, IAddOnRepository
+public class AddOnOptionRepository : GenericRepository<AddOnOption>, IAddOnOptionRepository
 {
-    public AddOnRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+    public AddOnOptionRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
     {
     }
-    
-    public async Task<PaginatedList<AddOn>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
+
+    public async Task<PaginatedList<AddOnOption>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy) 
     {
         var query = _dbSet.AsNoTracking()
-            .Include(x => x.AddOnOptions)
+            .Include(x => x.AddOn)
+            .Include(x => x.Position)
+            .Include(x => x.Size)
             .Where(a => a.IsDeleted.Equals(false));
 
         if (!string.IsNullOrEmpty(search))
@@ -30,7 +32,7 @@ public class AddOnRepository : GenericRepository<AddOn>, IAddOnRepository
         {
             EntitySortBy.CREATED_AT_ASC => query.OrderBy(u => u.CreatedAt),
             EntitySortBy.CREATED_AT_DESC => query.OrderByDescending(u => u.CreatedAt),
-            _ => query.OrderByDescending(u => u.CreatedAt) // default
+            _ => query.OrderByDescending(u => u.CreatedAt)
         };
 
         return await GetPaging(query, index, pageSize);

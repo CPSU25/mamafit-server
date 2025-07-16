@@ -448,7 +448,7 @@ public class OrderService : IOrderService
         return order.Id;
     }
 
-    public async Task WebhookForContentfulWhenUpdateData(JObject request)
+    public async Task WebhookForContentfulWhenUpdateData(dynamic request)
     {
         var sys = request["sys"]?["type"]?.ToString();
         var contentType = request["sys"]?["contentType"]?["sys"]?["id"]?.ToString();

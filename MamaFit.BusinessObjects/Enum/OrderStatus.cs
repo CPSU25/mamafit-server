@@ -3,13 +3,14 @@
     public enum OrderStatus
     {
         CREATED, // default
-        DESIGNING, // Designer đang làm việc với khách hàng
-        CONFIRMED, // chờ nhà máy xác nhận
-        DEPOSITED,
-        PROCESSING, // nhà máy đang làm + QC
+        PAID_FULL, // đã thanh toán đầy đủ
+        PAID_DEPOSIT, // đã thanh toán đặt cọc
+        IN_DESIGN, // Designer đang làm việc với khách hàng
+        IN_PRODUCTION, // nhà máy đang làm
+        IN_QC, // nhà máy đã làm xong và đang kiểm tra chất lượng
         PACKAGING, // đóng gói
         DELIVERING,
-        DELIVERED,
+        COMPLETED,
         CANCELLED,
         RETURNED,// bảo hành hoặc trả hàng
         EXPIRED // nếu đơn hàng có status là Designig mà quá 4 ngày sau khi khởi tạo thì tự động chuyển

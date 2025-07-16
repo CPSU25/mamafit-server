@@ -12,6 +12,5 @@ namespace MamaFit.BusinessObjects.Entity
 
         //Navigation property
         public virtual ICollection<ComponentOption>? Options { get; set; } = [];
-        public virtual ICollection<Style>? Styles { get; set; } = [];
     }
 }

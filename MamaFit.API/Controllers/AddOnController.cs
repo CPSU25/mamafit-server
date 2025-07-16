@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MamaFit.API.Controllers;
 
 [ApiController]
-[Route("api/maternity-dress-service")]
+[Route("api/add-on")]
 public class AddOnController : ControllerBase
 {
     private readonly IAddOnService _service;

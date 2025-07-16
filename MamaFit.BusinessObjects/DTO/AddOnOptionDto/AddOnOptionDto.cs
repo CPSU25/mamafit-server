@@ -16,7 +16,7 @@ public class AddOnOptionDto
     public string? UpdatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
-    
+
     public PositionDto.PositionDto? Position { get; set; }
     public SizeDto.SizeDto? Size { get; set; }
 }

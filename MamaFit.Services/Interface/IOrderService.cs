@@ -18,6 +18,6 @@ public interface IOrderService
     Task<string> CreateReadyToBuyOrderAsync(OrderReadyToBuyRequestDto request);
     Task<string> CreateDesignRequestOrderAsync(OrderDesignRequestDto request);
     Task<string> CreatePresetOrderAsync(OrderPresetCreateRequestDto request);
-    Task WebhookForContentfulWhenUpdateData(JObject request);
+    Task WebhookForContentfulWhenUpdateData(dynamic request);
 
 }

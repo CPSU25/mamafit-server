@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using MamaFit.BusinessObjects.DTO.MaternityDressTask;
+using MamaFit.BusinessObjects.DTO.MaternityDressTaskDto;
 
 namespace MamaFit.Services.Validator.MaternityDressTask
 {

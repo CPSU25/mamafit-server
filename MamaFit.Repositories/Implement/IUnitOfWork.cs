@@ -34,8 +34,11 @@ namespace MamaFit.Repositories.Implement
         public IFeedbackRepository FeedbackRepository { get; }
         public ICartItemRepository CartItemRepository { get; }
         public IPresetRepository PresetRepository { get; }
-        public IMaternityDressServiceRepository MaternityDressServiceRepository { get; }
+        public IAddOnRepository AddOnRepository { get; }
         public IOrderItemTaskRepository OrderItemTaskRepository { get; }
+        public IAddOnOptionRepository AddOnOptionRepository { get; }
+        public IPositionRepository PositionRepository { get; }
+        public ISizeRepository SizeRepository { get; }
         int SaveChanges();
         Task<int> SaveChangesAsync();
         void BeginTransaction();

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using MamaFit.BusinessObjects.DTO.AddOnDto;
+using MamaFit.BusinessObjects.DTO.AddOnOptionDto;
 using MamaFit.BusinessObjects.DTO.AddressDto;
 using MamaFit.BusinessObjects.DTO.AppointmentDto;
 using MamaFit.BusinessObjects.Entity;
@@ -18,11 +20,8 @@ using MamaFit.BusinessObjects.DTO.ChatMessageDto;
 using MamaFit.BusinessObjects.DTO.ChatRoomDto;
 using MamaFit.BusinessObjects.DTO.TokenDto;
 using MamaFit.BusinessObjects.DTO.VoucherBatchDto;
-using MamaFit.BusinessObjects.DTO.MaternityDressTask;
 using MamaFit.BusinessObjects.DTO.ChatRoomMemberDto;
 using MamaFit.BusinessObjects.DTO.FeedbackDto;
-using MamaFit.BusinessObjects.DTO.MaternityDressServiceDto;
-using MamaFit.BusinessObjects.DTO.MaternityDressServiceOptionDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.DTO.VoucherDiscountDto;
@@ -35,6 +34,8 @@ using MamaFit.BusinessObjects.DTO.WarrantyRequestDto;
 using Newtonsoft.Json;
 using MamaFit.BusinessObjects.DTO.OrderItemTaskDto;
 using MamaFit.BusinessObjects.DTO.MaternityDressTaskDto;
+using MamaFit.BusinessObjects.DTO.PositionDto;
+using MamaFit.BusinessObjects.DTO.SizeDto;
 using MamaFit.BusinessObjects.DTO.UserDto;
 
 namespace MamaFit.Services.Mapper
@@ -269,11 +270,20 @@ namespace MamaFit.Services.Mapper
             CreateMap<WarrantyRequest, WarrantyRequestGetByIdDto>().ReverseMap();
             
             //MaternityDressService Mapper
-            CreateMap<MaternityDressService, MaternityDressServiceDto>().ReverseMap();
-            CreateMap<MaternityDressService, MaternityDressServiceRequestDto>().ReverseMap();
+            CreateMap<AddOn, AddOnDto>().ReverseMap();
+            CreateMap<AddOn, AddOnRequestDto>().ReverseMap();
             
-            //MaternityDressServiceOption Mapper
-            CreateMap<MaternityDressServiceOption, MaternityDressServiceOptionDto>().ReverseMap();
+            //AddOnOption Mapper
+            CreateMap<AddOnOption, AddOnOptionDto>().ReverseMap();
+            CreateMap<AddOnOption, AddOnOptionRequestDto>().ReverseMap();
+            
+            //Position Mapper
+            CreateMap<Position, PositionDto>().ReverseMap();
+            CreateMap<Position, PositionRequestDto>().ReverseMap();
+            
+            //Size Mapper
+            CreateMap<Size, SizeDto>().ReverseMap();
+            CreateMap<Size, SizeRequestDto>().ReverseMap();
         }
     }
 }

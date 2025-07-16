@@ -1,4 +1,4 @@
-﻿using MamaFit.BusinessObjects.DbContext;
+﻿using MamaFit.BusinessObjects.DBContext;
 using MamaFit.Repositories.Interface;
 
 namespace MamaFit.Repositories.Implement
@@ -37,9 +37,11 @@ namespace MamaFit.Repositories.Implement
         public IFeedbackRepository FeedbackRepository { get; }
         public ICartItemRepository CartItemRepository { get; }
         public IPresetRepository PresetRepository { get; }
-        public IMaternityDressServiceRepository MaternityDressServiceRepository { get; }
-
+        public IAddOnRepository AddOnRepository { get; }
         public IOrderItemTaskRepository OrderItemTaskRepository { get; }
+        public IAddOnOptionRepository AddOnOptionRepository { get; }
+        public IPositionRepository PositionRepository { get; }
+        public ISizeRepository SizeRepository { get; }
 
         public UnitOfWork(ApplicationDbContext context,
             IUserRepository userRepository,
@@ -72,8 +74,11 @@ namespace MamaFit.Repositories.Implement
             ICartItemRepository cartItemRepository,
             IPresetRepository presetRepository,
             IWarrantyRequestRepository warrantyRequestRepository,
-            IMaternityDressServiceRepository maternityDressServiceRepository,
-            IOrderItemTaskRepository orderItemTaskRepository)
+            IAddOnRepository addOnRepository,
+            IOrderItemTaskRepository orderItemTaskRepository,
+            IAddOnOptionRepository addOnOptionRepository,
+            IPositionRepository positionRepository,
+            ISizeRepository sizeRepository)
         {
             _context = context;
             UserRepository = userRepository;
@@ -106,8 +111,11 @@ namespace MamaFit.Repositories.Implement
             CartItemRepository = cartItemRepository;
             PresetRepository = presetRepository;
             WarrantyRequestRepository = warrantyRequestRepository;
-            MaternityDressServiceRepository = maternityDressServiceRepository;
+            AddOnRepository = addOnRepository;
             OrderItemTaskRepository = orderItemTaskRepository;
+            AddOnOptionRepository = addOnOptionRepository;
+            PositionRepository = positionRepository;
+            SizeRepository = sizeRepository;
         }
 
         public int SaveChanges()

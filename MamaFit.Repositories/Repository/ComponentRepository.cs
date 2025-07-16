@@ -1,10 +1,10 @@
-﻿using MamaFit.BusinessObjects.Entity;
+﻿using MamaFit.BusinessObjects.DBContext;
+using MamaFit.BusinessObjects.Entity;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using MamaFit.BusinessObjects.DbContext;
 
 namespace MamaFit.Repositories.Repository
 {

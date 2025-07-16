@@ -1,5 +1,4 @@
-﻿using MamaFit.BusinessObjects.DTO.MaternityDressTask;
-using MamaFit.BusinessObjects.Enum;
+﻿using MamaFit.BusinessObjects.Enum;
 
 namespace MamaFit.BusinessObjects.DTO.OrderItemTaskDto
 {

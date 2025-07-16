@@ -1,6 +1,6 @@
 ﻿using MamaFit.BusinessObjects.Enum;
 
-namespace MamaFit.BusinessObjects.DTO.MaternityDressTask
+namespace MamaFit.BusinessObjects.DTO.MaternityDressTaskDto
 {
     public class MaternityDressTaskResponseDto
     {

@@ -3,16 +3,18 @@ using MamaFit.BusinessObjects.Enum;
 
 namespace MamaFit.BusinessObjects.Entity;
 
-public class MaternityDressServiceOption : BaseEntity
+public class AddOnOption : BaseEntity
 {
-    public string ? MaternityDressServiceId { get; set; }
+    public string ? AddOnId { get; set; }
+    public string? PositionId { get; set; }
+    public string? SizeId { get; set; }
     public string? Name { get; set; }
     public string? Description { get; set; }
     public decimal Price { get; set; }
-    public string? Position { get; set; }
-    public string? Size { get; set; }
     public ItemServiceType? ItemServiceType { get; set; }
     
     // Navigation properties
-    public MaternityDressService? MaternityDressService { get; set; }
+    public AddOn? AddOn { get; set; }
+    public Position? Position { get; set; }
+    public Size? Size { get; set; }
 }

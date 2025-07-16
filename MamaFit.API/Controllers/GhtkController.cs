@@ -1,6 +1,7 @@
 using MamaFit.BusinessObjects.DTO.GhtkDto;
 using MamaFit.BusinessObjects.DTO.GhtkDto.Fee;
 using MamaFit.BusinessObjects.DTO.GhtkDto.Response;
+using MamaFit.BusinessObjects.DTO.GhtkDto.SubmitOrder;
 using MamaFit.Services.ExternalService.Ghtk;
 using Microsoft.AspNetCore.Mvc;
 

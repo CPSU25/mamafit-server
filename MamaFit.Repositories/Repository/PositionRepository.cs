@@ -1,4 +1,4 @@
-using MamaFit.BusinessObjects.DbContext;
+using MamaFit.BusinessObjects.DBContext;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
@@ -9,21 +9,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MamaFit.Repositories.Repository;
 
-public class MaternityDressServiceRepository : GenericRepository<MaternityDressService>, IMaternityDressServiceRepository
+public class PositionRepository : GenericRepository<Position>, IPositionRepository
 {
-    public MaternityDressServiceRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+    public PositionRepository(ApplicationDbContext context, IHttpContextAccessor accessor) : base(context, accessor)
     {
     }
     
-    public async Task<PaginatedList<MaternityDressService>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
+    public async Task<PaginatedList<Position>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
     {
         var query = _dbSet.AsNoTracking()
-            .Include(x => x.MaternityDressServiceOptions)
-            .Where(a => a.IsDeleted.Equals(false));
+            .Where(p => p.IsDeleted.Equals(false));
 
         if (!string.IsNullOrEmpty(search))
         {
-            query = query.Where(a => a.Name.Contains(search) || a.Description.Contains(search));
+            query = query.Where(p => p.Name.Contains(search));
         }
 
         query = sortBy switch

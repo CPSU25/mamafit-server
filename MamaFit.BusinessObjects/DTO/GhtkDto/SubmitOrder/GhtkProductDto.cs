@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace MamaFit.BusinessObjects.DTO.GhtkDto;
+namespace MamaFit.BusinessObjects.DTO.GhtkDto.SubmitOrder;
 
 public class GhtkProductDto
 {

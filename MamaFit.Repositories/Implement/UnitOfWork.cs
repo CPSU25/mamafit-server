@@ -38,9 +38,10 @@ namespace MamaFit.Repositories.Implement
         public ICartItemRepository CartItemRepository { get; }
         public IPresetRepository PresetRepository { get; }
         public IAddOnRepository AddOnRepository { get; }
-
         public IOrderItemTaskRepository OrderItemTaskRepository { get; }
         public IAddOnOptionRepository AddOnOptionRepository { get; }
+        public IPositionRepository PositionRepository { get; }
+        public ISizeRepository SizeRepository { get; }
 
         public UnitOfWork(ApplicationDbContext context,
             IUserRepository userRepository,
@@ -75,7 +76,9 @@ namespace MamaFit.Repositories.Implement
             IWarrantyRequestRepository warrantyRequestRepository,
             IAddOnRepository addOnRepository,
             IOrderItemTaskRepository orderItemTaskRepository,
-            IAddOnOptionRepository addOnOptionRepository)
+            IAddOnOptionRepository addOnOptionRepository,
+            IPositionRepository positionRepository,
+            ISizeRepository sizeRepository)
         {
             _context = context;
             UserRepository = userRepository;
@@ -111,6 +114,8 @@ namespace MamaFit.Repositories.Implement
             AddOnRepository = addOnRepository;
             OrderItemTaskRepository = orderItemTaskRepository;
             AddOnOptionRepository = addOnOptionRepository;
+            PositionRepository = positionRepository;
+            SizeRepository = sizeRepository;
         }
 
         public int SaveChanges()

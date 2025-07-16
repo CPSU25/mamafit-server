@@ -37,6 +37,8 @@ namespace MamaFit.Repositories.Implement
         public IAddOnRepository AddOnRepository { get; }
         public IOrderItemTaskRepository OrderItemTaskRepository { get; }
         public IAddOnOptionRepository AddOnOptionRepository { get; }
+        public IPositionRepository PositionRepository { get; }
+        public ISizeRepository SizeRepository { get; }
         int SaveChanges();
         Task<int> SaveChangesAsync();
         void BeginTransaction();

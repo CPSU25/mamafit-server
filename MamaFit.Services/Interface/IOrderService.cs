@@ -1,6 +1,7 @@
 using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;
+using Newtonsoft.Json.Linq;
 
 namespace MamaFit.Services.Interface;
 
@@ -17,5 +18,6 @@ public interface IOrderService
     Task<string> CreateReadyToBuyOrderAsync(OrderReadyToBuyRequestDto request);
     Task<string> CreateDesignRequestOrderAsync(OrderDesignRequestDto request);
     Task<string> CreatePresetOrderAsync(OrderPresetCreateRequestDto request);
+    Task WebhookForContentfulWhenUpdateData(JObject request);
 
 }

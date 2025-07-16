@@ -4,6 +4,7 @@ using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace MamaFit.API.Controllers;
 
@@ -12,10 +13,14 @@ namespace MamaFit.API.Controllers;
 public class OrderController : ControllerBase
 {
     private readonly IOrderService _service;
+    private readonly IConfigurationSection _contentfulConfig;
+    private readonly IConfiguration _configuration;
 
-    public OrderController(IOrderService service)
+    public OrderController(IOrderService service, IConfiguration configuration)
     {
         _service = service;
+        _configuration = configuration;
+        _contentfulConfig = _configuration.GetSection("Contentful");
     }
 
     [Authorize]
@@ -112,6 +117,28 @@ public class OrderController : ControllerBase
             ApiCodes.SUCCESS,
             response,
             "Create preset order successfully!"
+        ));
+    }
+
+    [HttpPost("webhook/contentful")]
+    public async Task<IActionResult> WebhookForContentful([FromBody] dynamic request)
+    {
+/*        var secret = _contentfulConfig["SecretKey"];
+        if (Request.Headers["X-Webhook-Secret"] != secret)
+        {
+            return Unauthorized(new ResponseModel<string>(
+                StatusCodes.Status401Unauthorized,
+                ApiCodes.UNAUTHORIZED,
+                null,
+                "Unauthorized access to webhook!"
+            ));
+        }*/
+        await _service.WebhookForContentfulWhenUpdateData(request);
+        return Ok(new ResponseModel<string>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            null,
+            "Webhook for Contentful processed successfully!"
         ));
     }
 

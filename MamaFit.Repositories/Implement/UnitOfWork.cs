@@ -37,6 +37,7 @@ namespace MamaFit.Repositories.Implement
         public IFeedbackRepository FeedbackRepository { get; }
         public ICartItemRepository CartItemRepository { get; }
         public IPresetRepository PresetRepository { get; }
+        public IMaternityDressServiceRepository MaternityDressServiceRepository { get; }
 
         public UnitOfWork(ApplicationDbContext context,
             IUserRepository userRepository,
@@ -68,7 +69,8 @@ namespace MamaFit.Repositories.Implement
             IFeedbackRepository feedbackRepository,
             ICartItemRepository cartItemRepository,
             IPresetRepository presetRepository,
-            IWarrantyRequestRepository warrantyRequestRepository)
+            IWarrantyRequestRepository warrantyRequestRepository,
+            IMaternityDressServiceRepository maternityDressServiceRepository)
         {
             _context = context;
             UserRepository = userRepository;
@@ -101,6 +103,7 @@ namespace MamaFit.Repositories.Implement
             CartItemRepository = cartItemRepository;
             PresetRepository = presetRepository;
             WarrantyRequestRepository = warrantyRequestRepository;
+            MaternityDressServiceRepository = maternityDressServiceRepository;
         }
 
         public int SaveChanges()

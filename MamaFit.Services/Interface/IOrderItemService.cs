@@ -14,4 +14,5 @@ public interface IOrderItemService
     Task DeleteOrderItemAsync(string id);
     Task AssignTaskToOrderItemAsync(AssignTaskToOrderItemRequestDto request);
     Task AssignChargeToOrderItemAsync(AssignChargeToOrderItemRequestDto request);
+    Task CheckListStatusForOrderItemTaskAsync(OrderItemCheckTaskRequestDto request);
 }

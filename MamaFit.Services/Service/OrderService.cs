@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using Contentful.Core;
+using Contentful.Core.Configuration;
+using Contentful.Core.Models;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.Entity;
@@ -8,6 +11,8 @@ using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 
 namespace MamaFit.Services.Service;
 
@@ -18,14 +23,26 @@ public class OrderService : IOrderService
     private readonly IValidationService _validation;
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly INotificationService _notificationService;
+    private readonly HttpClient _httpClient;
+    private readonly ContentfulClient _contentfulClient;
+    private readonly IConfigurationSection _contentfulSettings;
+    private readonly IConfiguration _configuration;
 
-    public OrderService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation, INotificationService notificationService, IHttpContextAccessor contextAccessor)
+    public OrderService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation, INotificationService notificationService, IHttpContextAccessor contextAccessor, HttpClient httpClient, IConfiguration configuration)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _validation = validation;
         _contextAccessor = contextAccessor;
         _notificationService = notificationService;
+
+        _httpClient = httpClient;
+        _configuration = configuration;
+        _contentfulSettings = configuration.GetSection("Contentful");
+        var spaceId = _contentfulSettings!.GetSection("SpaceId").Value;
+        var contentKey = _contentfulSettings!.GetSection("ContentDeliveryKey").Value;
+        var entryId = _contentfulSettings!.GetSection("EntryId").Value;
+        _contentfulClient = new ContentfulClient(httpClient,contentKey,null,spaceId,false);
     }
 
     public async Task<PaginatedList<OrderResponseDto>> GetByTokenAsync( string accessToken, int index = 1, int pageSize = 10, string? search = null, OrderStatus? status = null)
@@ -292,7 +309,11 @@ public class OrderService : IOrderService
         var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
         _validation.CheckNotFound(user, $"User with id: {userId} not found");
 
-        var designFee = 100000; // Phí dịch vụ mặc định
+        var entryId = _contentfulSettings!.GetSection("EntryId").Value;
+        var contentfulResponse = await _contentfulClient.GetEntry<dynamic>(entryId);
+        JObject obj = JObject.FromObject(contentfulResponse);
+        var designFee = obj["designRequestServiceFee"]?.ToObject<decimal>();
+
         var order = new Order
         {
             UserId = userId,
@@ -319,7 +340,7 @@ public class OrderService : IOrderService
                         UpdatedAt = DateTime.UtcNow
                     },
                 ItemType = ItemType.DESIGN_REQUEST,
-                Price = designFee,
+                Price = (decimal)designFee!,
                 Quantity = 1,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,

@@ -447,4 +447,12 @@ public class OrderService : IOrderService
         await _unitOfWork.SaveChangesAsync();
         return order.Id;
     }
+
+    public async Task WebhookForContentfulWhenUpdateData(JObject request)
+    {
+        var sys = request["sys"]?["type"]?.ToString();
+        var contentType = request["sys"]?["contentType"]?["sys"]?["id"]?.ToString();
+        var entryId = request["sys"]?["id"]?.ToString();
+        var fields = request["fields"] as JObject;
+    }
 }

@@ -18,7 +18,10 @@ public class AddOnRepository : GenericRepository<AddOn>, IAddOnRepository
     public async Task<PaginatedList<AddOn>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
     {
         var query = _dbSet.AsNoTracking()
-            .Include(x => x.AddOnOptions)
+            .Include(x => x.AddOnOptions!)
+            .ThenInclude(x => x.Position)
+            .Include(x => x.AddOnOptions!)
+            .ThenInclude(x => x.Size)
             .Where(a => a.IsDeleted.Equals(false));
 
         if (!string.IsNullOrEmpty(search))

@@ -1,4 +1,4 @@
-﻿using MamaFit.BusinessObjects.DTO.MaternityDressTask;
+﻿using MamaFit.BusinessObjects.DTO.MaternityDressTaskDto;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;
 

@@ -1,4 +1,4 @@
-﻿using MamaFit.BusinessObjects.DbContext;
+﻿using MamaFit.BusinessObjects.DBContext;
 using MamaFit.Repositories.Interface;
 
 namespace MamaFit.Repositories.Implement

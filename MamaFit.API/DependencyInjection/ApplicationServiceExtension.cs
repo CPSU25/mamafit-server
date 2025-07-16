@@ -2,7 +2,7 @@
 using System.Text.Json;
 using Hangfire;
 using Hangfire.PostgreSql;
-using MamaFit.BusinessObjects.DbContext;
+using MamaFit.BusinessObjects.DBContext;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
@@ -67,8 +67,9 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<ICartItemRepository, CartItemRepository>();
             services.AddScoped<IPresetRepository, PresetRepository>();
             services.AddScoped<IWarrantyRequestRepository, WarrantyRequestRepository>();
-            services.AddScoped<IMaternityDressServiceRepository, MaternityDressServiceRepository>();
-            services.AddScoped<IOrderItemTaskRepository, OrderItemTaskRepository>();        }
+            services.AddScoped<IMaternityDressServiceRepository, AddOnRepository>();
+            services.AddScoped<IOrderItemTaskRepository, OrderItemTaskRepository>();        
+        }
 
         public static void AddServices(this IServiceCollection services)
         {
@@ -114,7 +115,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IWarrantyRequestService, WarrantyRequestService>();
             services.AddScoped<IUserConnectionManager, UserConnectionManager>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IMaternityDressServiceService, MaternityDressServiceService>();
+            services.AddScoped<IMaternityDressServiceService, AddOnService>();
             
             // SignalR User ID Provider for Clients.User() calls
             services.AddSingleton<IUserIdProvider, NameUserIdProvider>();

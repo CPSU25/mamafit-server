@@ -1,8 +1,8 @@
 using MamaFit.BusinessObjects.Enum;
 
-namespace MamaFit.BusinessObjects.DTO.MaternityDressServiceOptionDto;
+namespace MamaFit.BusinessObjects.DTO.AddOnOptionDto;
 
-public class MaternityDressServiceOptionDto
+public class AddOnOptionDto
 {
     public string Id { get; set; }
     public string ? MaternityDressServiceId { get; set; }

@@ -1,7 +1,7 @@
-using MamaFit.BusinessObjects.DTO.GhtkDto.SubmitOrder;
+using MamaFit.BusinessObjects.DTO.GhtkDto.Response;
 using Newtonsoft.Json;
 
-namespace MamaFit.BusinessObjects.DTO.GhtkDto.Response;
+namespace MamaFit.BusinessObjects.DTO.GhtkDto.SubmitOrder;
 
 public class GhtkOrderSubmitSuccessResponse : GhtkBaseResponse
 {

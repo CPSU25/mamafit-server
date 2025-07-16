@@ -2,10 +2,8 @@
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Entity.ChatEntity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System.Security.Cryptography;
 
-namespace MamaFit.BusinessObjects.DbContext
+namespace MamaFit.BusinessObjects.DBContext
 {
     public class ApplicationDbContext : Microsoft.EntityFrameworkCore.DbContext
     {
@@ -49,10 +47,13 @@ namespace MamaFit.BusinessObjects.DbContext
         public DbSet<WarrantyRequest> WarrantyRequests { get; set; }
         public DbSet<MaternityDressTask> MaternityDressTasks { get; set; }
         public DbSet<Milestone> Milestones { get; set; }
-        public DbSet<MaternityDressService> MaternityDressServices { get; set; }
-        public DbSet<MaternityDressServiceOption> MaternityDressServiceOptions { get; set; }
+        public DbSet<AddOn> AddOns { get; set; }
+        public DbSet<AddOnOption> AddOnOptions { get; set; }
         public DbSet<OrderItemServiceOption> OrderItemServiceOptions { get; set; }
-        public DbSet<ComponentOptionPreset> ComponentOptionPresets { get; set; }
+        public DbSet<ComponentOptionPreset> ComponentOptionPresets { get; set; } 
+        public DbSet<Preset> Presets { get; set; }
+        public DbSet<Position> Positions { get; set; }
+        public DbSet<Size> Sizes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -90,11 +91,14 @@ namespace MamaFit.BusinessObjects.DbContext
             modelBuilder.Entity<WarrantyRequest>().ToTable("WarrantyRequest");
             modelBuilder.Entity<MaternityDressTask>().ToTable("MaternityDressTask");
             modelBuilder.Entity<Milestone>().ToTable("Milestone");
-            modelBuilder.Entity<MaternityDressService>().ToTable("MaternityDressService");
-            modelBuilder.Entity<MaternityDressServiceOption>().ToTable("MaternityDressServiceOption");
+            modelBuilder.Entity<AddOn>().ToTable("AddOn");
+            modelBuilder.Entity<AddOnOption>().ToTable("AddOnOption");
             modelBuilder.Entity<OrderItemServiceOption>().ToTable("OrderItemServiceOption");
             modelBuilder.Entity<ComponentOptionPreset>().ToTable("ComponentOptionPreset");
             modelBuilder.Entity<OrderItemTask>().ToTable("OrderItemTask");
+            modelBuilder.Entity<Preset>().ToTable("Preset");
+            modelBuilder.Entity<Position>().ToTable("Position");
+            modelBuilder.Entity<Size>().ToTable("Size");
 
             #endregion
 
@@ -231,7 +235,7 @@ namespace MamaFit.BusinessObjects.DbContext
 
             modelBuilder.Entity<OrderItemServiceOption>(options =>
             {
-                options.HasKey(ois => new { ois.MaternityDressServiceOptionId, ois.OrderItemId });
+                options.HasKey(ois => new { ois.AddOnOptionId, ois.OrderItemId });
             });
 
             modelBuilder.Entity<Branch>(options =>

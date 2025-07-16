@@ -5,8 +5,8 @@ using MamaFit.Repositories.Infrastructure;
 
 namespace MamaFit.Repositories.Interface;
 
-public interface IMaternityDressServiceRepository : IGenericRepository<MaternityDressService>
+public interface IMaternityDressServiceRepository : IGenericRepository<AddOn>
 {
-    Task<PaginatedList<MaternityDressService>> GetAllAsync(int index, int pageSize, string? search,
+    Task<PaginatedList<AddOn>> GetAllAsync(int index, int pageSize, string? search,
         EntitySortBy? sortBy);
 }

@@ -1,4 +1,4 @@
-using MamaFit.BusinessObjects.DbContext;
+using MamaFit.BusinessObjects.DBContext;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;

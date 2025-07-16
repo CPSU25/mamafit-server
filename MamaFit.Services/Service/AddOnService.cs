@@ -1,5 +1,5 @@
 using AutoMapper;
-using MamaFit.BusinessObjects.DTO.MaternityDressServiceDto;
+using MamaFit.BusinessObjects.DTO.AddOnDto;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
@@ -7,26 +7,26 @@ using MamaFit.Services.Interface;
 
 namespace MamaFit.Services.Service;
 
-public class MaternityDressServiceService : IMaternityDressServiceService
+public class AddOnService : IMaternityDressServiceService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IValidationService _validationService;
     private readonly IMapper _mapper;
     
-    public MaternityDressServiceService(IUnitOfWork unitOfWork, IValidationService validationService, IMapper mapper)
+    public AddOnService(IUnitOfWork unitOfWork, IValidationService validationService, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _validationService = validationService;
         _mapper = mapper;
     }
     
-    public async Task<PaginatedList<MaternityDressServiceDto>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
+    public async Task<PaginatedList<AddOnDto>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
     {
         var maternityDressServiceList = await _unitOfWork.MaternityDressServiceRepository.GetAllAsync(index, pageSize, search, sortBy);
         
-        var responseList = maternityDressServiceList.Items.Select(item => _mapper.Map<MaternityDressServiceDto>(item)).ToList();
+        var responseList = maternityDressServiceList.Items.Select(item => _mapper.Map<AddOnDto>(item)).ToList();
         
-        var paginatedResponse = new PaginatedList<MaternityDressServiceDto>(
+        var paginatedResponse = new PaginatedList<AddOnDto>(
             responseList,
             maternityDressServiceList.TotalCount,
             maternityDressServiceList.PageNumber,
@@ -36,24 +36,24 @@ public class MaternityDressServiceService : IMaternityDressServiceService
         return paginatedResponse;
     }
 
-    public async Task CreateAsync(MaternityDressServiceRequestDto requestDto)
+    public async Task CreateAsync(AddOnRequestDto requestDto)
     {
         await _validationService.ValidateAndThrowAsync(requestDto);
 
-        var newMaternityDressService = _mapper.Map<BusinessObjects.Entity.MaternityDressService>(requestDto);
+        var newMaternityDressService = _mapper.Map<BusinessObjects.Entity.AddOn>(requestDto);
 
         await _unitOfWork.MaternityDressServiceRepository.InsertAsync(newMaternityDressService);
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<MaternityDressServiceDto> GetByIdAsync(string id)
+    public async Task<AddOnDto> GetByIdAsync(string id)
     {
         var maternityDressService = await _unitOfWork.MaternityDressServiceRepository.GetByIdAsync(id);
         _validationService.CheckNotFound(maternityDressService, "Maternity Dress Service not found!");
-        return _mapper.Map<MaternityDressServiceDto>(maternityDressService);
+        return _mapper.Map<AddOnDto>(maternityDressService);
     }
 
-    public async Task UpdateAsync(string id, MaternityDressServiceRequestDto requestDto)
+    public async Task UpdateAsync(string id, AddOnRequestDto requestDto)
     {
         var oldMaternityDressService = await _unitOfWork.MaternityDressServiceRepository.GetByIdAsync(id);
         _validationService.CheckNotFound(oldMaternityDressService, "Maternity Dress Service not found!");

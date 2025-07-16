@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using MamaFit.BusinessObjects.DTO.AddOnDto;
+using MamaFit.BusinessObjects.DTO.AddOnOptionDto;
 using MamaFit.BusinessObjects.DTO.AddressDto;
 using MamaFit.BusinessObjects.DTO.AppointmentDto;
 using MamaFit.BusinessObjects.Entity;
@@ -18,11 +20,8 @@ using MamaFit.BusinessObjects.DTO.ChatMessageDto;
 using MamaFit.BusinessObjects.DTO.ChatRoomDto;
 using MamaFit.BusinessObjects.DTO.TokenDto;
 using MamaFit.BusinessObjects.DTO.VoucherBatchDto;
-using MamaFit.BusinessObjects.DTO.MaternityDressTask;
 using MamaFit.BusinessObjects.DTO.ChatRoomMemberDto;
 using MamaFit.BusinessObjects.DTO.FeedbackDto;
-using MamaFit.BusinessObjects.DTO.MaternityDressServiceDto;
-using MamaFit.BusinessObjects.DTO.MaternityDressServiceOptionDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.DTO.VoucherDiscountDto;
@@ -269,11 +268,11 @@ namespace MamaFit.Services.Mapper
             CreateMap<WarrantyRequest, WarrantyRequestGetByIdDto>().ReverseMap();
             
             //MaternityDressService Mapper
-            CreateMap<MaternityDressService, MaternityDressServiceDto>().ReverseMap();
-            CreateMap<MaternityDressService, MaternityDressServiceRequestDto>().ReverseMap();
+            CreateMap<AddOn, AddOnDto>().ReverseMap();
+            CreateMap<AddOn, AddOnRequestDto>().ReverseMap();
             
-            //MaternityDressServiceOption Mapper
-            CreateMap<MaternityDressServiceOption, MaternityDressServiceOptionDto>().ReverseMap();
+            //AddOnOption Mapper
+            CreateMap<AddOnOption, AddOnOptionDto>().ReverseMap();
         }
     }
 }

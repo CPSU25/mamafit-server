@@ -1,4 +1,4 @@
-using MamaFit.BusinessObjects.DTO.MaternityDressServiceDto;
+using MamaFit.BusinessObjects.DTO.AddOnDto;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
@@ -25,7 +25,7 @@ public class MaternityDressServiceController : ControllerBase
         [FromQuery] EntitySortBy? sortBy = null)
     {
         var maternityDressServices = await _service.GetAllAsync(index, pageSize, search, sortBy);
-        return Ok(new ResponseModel<PaginatedList<MaternityDressServiceDto>>(
+        return Ok(new ResponseModel<PaginatedList<AddOnDto>>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
             maternityDressServices,
@@ -34,7 +34,7 @@ public class MaternityDressServiceController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] MaternityDressServiceRequestDto requestDto)
+    public async Task<IActionResult> Create([FromBody] AddOnRequestDto requestDto)
     {
         await _service.CreateAsync(requestDto);
         return StatusCode(StatusCodes.Status201Created,
@@ -50,7 +50,7 @@ public class MaternityDressServiceController : ControllerBase
     public async Task<IActionResult> GetById([FromRoute] string id)
     {
         var maternityDressService = await _service.GetByIdAsync(id);
-        return Ok(new ResponseModel<MaternityDressServiceDto>(
+        return Ok(new ResponseModel<AddOnDto>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
             maternityDressService,
@@ -59,7 +59,7 @@ public class MaternityDressServiceController : ControllerBase
     }
     
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromRoute] string id, [FromBody] MaternityDressServiceRequestDto requestDto)
+    public async Task<IActionResult> Update([FromRoute] string id, [FromBody] AddOnRequestDto requestDto)
     {
         await _service.UpdateAsync(id, requestDto);
         return Ok(new ResponseModel<string>(

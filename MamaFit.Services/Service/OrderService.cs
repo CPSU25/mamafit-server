@@ -324,7 +324,7 @@ public class OrderService : IOrderService
             //var contentfulResponse = await _contentfulClient.GetEntry<dynamic>(entryId);
             //JObject obj = JObject.FromObject(contentfulResponse);
             //designFee = obj["designRequestServiceFee"]?.ToObject<decimal>();
-            throw new ErrorException(StatusCodes.Status500InternalServerError, ApiCodes.INTERNAL_SERVER_ERROR, "Design request service fee not found in CMS.")
+            throw new ErrorException(StatusCodes.Status500InternalServerError, ApiCodes.INTERNAL_SERVER_ERROR, "Design request service fee not found in CMS.");
         }
 
         var order = new Order

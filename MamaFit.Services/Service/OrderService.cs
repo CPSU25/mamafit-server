@@ -2,6 +2,7 @@
 using Contentful.Core;
 using Contentful.Core.Configuration;
 using Contentful.Core.Models;
+using MamaFit.BusinessObjects.DTO.CMSDto;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.Entity;
@@ -9,9 +10,11 @@ using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Helper;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
+using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace MamaFit.Services.Service;
@@ -27,8 +30,9 @@ public class OrderService : IOrderService
     private readonly ContentfulClient _contentfulClient;
     private readonly IConfigurationSection _contentfulSettings;
     private readonly IConfiguration _configuration;
+    private readonly ICacheService _cacheService;
 
-    public OrderService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation, INotificationService notificationService, IHttpContextAccessor contextAccessor, HttpClient httpClient, IConfiguration configuration)
+    public OrderService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation, INotificationService notificationService, IHttpContextAccessor contextAccessor, HttpClient httpClient, IConfiguration configuration, ICacheService cacheService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -42,7 +46,8 @@ public class OrderService : IOrderService
         var spaceId = _contentfulSettings!.GetSection("SpaceId").Value;
         var contentKey = _contentfulSettings!.GetSection("ContentDeliveryKey").Value;
         var entryId = _contentfulSettings!.GetSection("EntryId").Value;
-        _contentfulClient = new ContentfulClient(httpClient,contentKey,null,spaceId,false);
+        _contentfulClient = new ContentfulClient(httpClient, contentKey, null, spaceId, false);
+        _cacheService = cacheService;
     }
 
     public async Task<PaginatedList<OrderResponseDto>> GetByTokenAsync( string accessToken, int index = 1, int pageSize = 10, string? search = null, OrderStatus? status = null)
@@ -309,10 +314,18 @@ public class OrderService : IOrderService
         var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
         _validation.CheckNotFound(user, $"User with id: {userId} not found");
 
-        var entryId = _contentfulSettings!.GetSection("EntryId").Value;
-        var contentfulResponse = await _contentfulClient.GetEntry<dynamic>(entryId);
-        JObject obj = JObject.FromObject(contentfulResponse);
-        var designFee = obj["designRequestServiceFee"]?.ToObject<decimal>();
+        decimal? designFee = 0;
+
+        designFee = await _cacheService.GetAsync<decimal?>("cms:service:base") ?? 0;
+
+        if(designFee == 0 )
+        {
+            //var entryId = _contentfulSettings!.GetSection("EntryId").Value;
+            //var contentfulResponse = await _contentfulClient.GetEntry<dynamic>(entryId);
+            //JObject obj = JObject.FromObject(contentfulResponse);
+            //designFee = obj["designRequestServiceFee"]?.ToObject<decimal>();
+            throw new ErrorException(StatusCodes.Status500InternalServerError, ApiCodes.INTERNAL_SERVER_ERROR, "Design request service fee not found in CMS.")
+        }
 
         var order = new Order
         {
@@ -450,9 +463,16 @@ public class OrderService : IOrderService
 
     public async Task WebhookForContentfulWhenUpdateData(dynamic request)
     {
-        var sys = request["sys"]?["type"]?.ToString();
-        var contentType = request["sys"]?["contentType"]?["sys"]?["id"]?.ToString();
-        var entryId = request["sys"]?["id"]?.ToString();
-        var fields = request["fields"] as JObject;
+        var fields = request["fields"]?.ToString();
+
+        if (string.IsNullOrEmpty(fields))
+            return;
+
+        var dto = JsonConvert.DeserializeObject<CmsServiceBaseDto>(fields);
+
+        if (dto is null)
+            return;
+
+        await _cacheService.SetAsync("cms:service:base", dto);
     }
 }

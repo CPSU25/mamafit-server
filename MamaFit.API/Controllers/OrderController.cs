@@ -123,7 +123,7 @@ public class OrderController : ControllerBase
     [HttpPost("webhook/contentful")]
     public async Task<IActionResult> WebhookForContentful([FromBody] dynamic request)
     {
-/*        var secret = _contentfulConfig["SecretKey"];
+        var secret = _contentfulConfig["SecretKey"];
         if (Request.Headers["X-Webhook-Secret"] != secret)
         {
             return Unauthorized(new ResponseModel<string>(
@@ -132,7 +132,7 @@ public class OrderController : ControllerBase
                 null,
                 "Unauthorized access to webhook!"
             ));
-        }*/
+        }
         await _service.WebhookForContentfulWhenUpdateData(request);
         return Ok(new ResponseModel<string>(
             StatusCodes.Status200OK,

@@ -1,4 +1,5 @@
 ﻿using MamaFit.BusinessObjects.Enum;
+using System.ComponentModel.DataAnnotations;
 
 namespace MamaFit.BusinessObjects.DTO.MilestoneDto
 {

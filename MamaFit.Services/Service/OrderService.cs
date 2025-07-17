@@ -32,7 +32,9 @@ public class OrderService : IOrderService
     private readonly IConfiguration _configuration;
     private readonly ICacheService _cacheService;
 
-    public OrderService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation, INotificationService notificationService, IHttpContextAccessor contextAccessor, HttpClient httpClient, IConfiguration configuration, ICacheService cacheService)
+    public OrderService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation,
+        INotificationService notificationService, IHttpContextAccessor contextAccessor, HttpClient httpClient,
+        IConfiguration configuration, ICacheService cacheService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -50,7 +52,8 @@ public class OrderService : IOrderService
         _cacheService = cacheService;
     }
 
-    public async Task<PaginatedList<OrderResponseDto>> GetByTokenAsync( string accessToken, int index = 1, int pageSize = 10, string? search = null, OrderStatus? status = null)
+    public async Task<PaginatedList<OrderResponseDto>> GetByTokenAsync(string accessToken, int index = 1,
+        int pageSize = 10, string? search = null, OrderStatus? status = null)
     {
         var userId = JwtTokenHelper.ExtractUserId(accessToken);
         var orders = await _unitOfWork.OrderRepository.GetByTokenAsync(index, pageSize, userId, search, status);
@@ -64,51 +67,68 @@ public class OrderService : IOrderService
             pageSize
         );
     }
+
     public async Task UpdateOrderStatusAsync(string id, OrderStatus orderStatus, PaymentStatus paymentStatus)
+{
+    var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
+    _validation.CheckNotFound(order, "Order not found");
+
+    if (order.Status == OrderStatus.COMPLETED && order.PaymentStatus == PaymentStatus.PAID_FULL)
     {
-        var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
-        _validation.CheckNotFound(order, "Order not found");
-
-        if (order.Status == OrderStatus.COMPLETED && order.PaymentStatus == PaymentStatus.PAID_FULL)
-        {
-            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Order is already completed and paid.");
-        }
-        if (order.PaymentType == PaymentType.DEPOSIT)
-        {
-            if (order.SubTotalAmount.HasValue)
-            {
-                order.SubTotalAmount /= 2;
-            }
-            order.PaymentStatus = PaymentStatus.PAID_DEPOSIT;
-            order.Status = OrderStatus.CONFIRMED;
-        }
-        else
-        {
-            order.PaymentStatus = paymentStatus;
-            order.Status = orderStatus;
-        }
-        
-        await _unitOfWork.OrderRepository.UpdateAsync(order);
-        await _unitOfWork.SaveChangesAsync();
-
-        var notification = new NotificationRequestDto()
-        {
-            ReceiverId = order.UserId,
-            NotificationTitle = "Order Status Updated",
-            NotificationContent = $"Your order with code {order.Code} has been updated to {orderStatus.ToString().ToLowerInvariant()}.",
-            Type = NotificationType.ORDER_PROGRESS,
-            ActionUrl = $"/order/{order.Id}",
-            Metadata = new Dictionary<string, string>()
-            {
-                { "orderId", order.Id },
-                { "paymentStatus", paymentStatus.ToString() }
-            }
-        };
-
-        await _notificationService.SendAndSaveNotificationAsync(notification);
+        throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Order is already completed and paid.");
     }
     
-    public async Task<PaginatedList<OrderResponseDto>> GetAllAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate)
+    order.Status = orderStatus;
+    order.PaymentStatus = paymentStatus;
+
+    // Xử lý riêng cho deposit payment
+    if (order.PaymentType == PaymentType.DEPOSIT && paymentStatus == PaymentStatus.PAID_DEPOSIT)
+    {
+        // Kiểm tra xem các field deposit đã được tính chưa
+        if (!order.DepositSubtotal.HasValue || !order.RemainingBalance.HasValue)
+        {
+            // Tính toán deposit và remaining balance nếu chưa có
+            if (order.SubTotalAmount.HasValue)
+            {
+                // Tính merchandise sau khi trừ discount
+                var merchandiseAfterDiscount = order.SubTotalAmount.Value - (order.DiscountSubtotal ?? 0);
+                order.DepositSubtotal = merchandiseAfterDiscount / 2;
+                order.RemainingBalance = merchandiseAfterDiscount - order.DepositSubtotal;
+            }
+        }
+        
+        // Đảm bảo status là CONFIRMED khi thanh toán deposit thành công
+        order.Status = OrderStatus.CONFIRMED;
+    }
+    
+    await _unitOfWork.OrderRepository.UpdateAsync(order);
+    await _unitOfWork.SaveChangesAsync();
+
+    // Tạo notification
+    var notificationContent = paymentStatus == PaymentStatus.PAID_DEPOSIT 
+        ? $"Your order with code {order.Code} deposit has been paid. Status: {orderStatus.ToString().ToLowerInvariant()}."
+        : $"Your order with code {order.Code} has been updated to {orderStatus.ToString().ToLowerInvariant()}.";
+
+    var notification = new NotificationRequestDto()
+    {
+        ReceiverId = order.UserId,
+        NotificationTitle = "Order Status Updated",
+        NotificationContent = notificationContent,
+        Type = NotificationType.ORDER_PROGRESS,
+        ActionUrl = $"/order/{order.Id}",
+        Metadata = new Dictionary<string, string>()
+        {
+            { "orderId", order.Id },
+            { "paymentStatus", paymentStatus.ToString() },
+            { "orderStatus", orderStatus.ToString() }
+        }
+    };
+
+    await _notificationService.SendAndSaveNotificationAsync(notification);
+}
+
+    public async Task<PaginatedList<OrderResponseDto>> GetAllAsync(int index, int pageSize, DateTime? startDate,
+        DateTime? endDate)
     {
         var orders = await _unitOfWork.OrderRepository.GetAllAsync(index, pageSize, startDate, endDate);
         var responseItems = orders.Items
@@ -198,7 +218,8 @@ public class OrderService : IOrderService
         if (request.MeasurementDiaryId != null)
         {
             measurement = await _unitOfWork.MeasurementDiaryRepository.GetByIdAsync(request.MeasurementDiaryId);
-            _validation.CheckNotFound(measurement, $"Measurement diary with id: {request.MeasurementDiaryId} not found");
+            _validation.CheckNotFound(measurement,
+                $"Measurement diary with id: {request.MeasurementDiaryId} not found");
         }
 
         var dressDetails = new List<MaternityDressDetail>();
@@ -208,12 +229,14 @@ public class OrderService : IOrderService
             var dress = await _unitOfWork.MaternityDressDetailRepository.GetByIdAsync(item.MaternityDressDetailId!);
             if (dress == null)
             {
-                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, $"Dress with id:{item.MaternityDressDetailId} not found!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND,
+                    $"Dress with id:{item.MaternityDressDetailId} not found!");
             }
 
             if (dress.Quantity < item.Quantity)
             {
-                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, $"Not enough stock for dress with id: {item.MaternityDressDetailId}");
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                    $"Not enough stock for dress with id: {item.MaternityDressDetailId}");
             }
 
             dress.Quantity -= item.Quantity;
@@ -240,8 +263,13 @@ public class OrderService : IOrderService
             {
                 discountValue = voucher.VoucherBatch.DiscountValue;
             }
+
             voucher.Status = VoucherStatus.USED;
         }
+
+        // Tính merchandise subtotal sau khi trừ discount
+        var merchandiseAfterDiscount = subTotalAmount - discountValue;
+        var totalAmount = merchandiseAfterDiscount + request.ShippingFee;
 
         var order = _mapper.Map<Order>(request);
         order.User = user!;
@@ -250,10 +278,27 @@ public class OrderService : IOrderService
         order.Code = GenerateOrderCode();
         order.Status = OrderStatus.CREATED;
         order.MeasurementDiary = measurement;
-        order.SubTotalAmount = subTotalAmount;
-        order.TotalAmount = (subTotalAmount - discountValue + request.ShippingFee);
+        order.SubTotalAmount = subTotalAmount; // Merchandise subtotal gốc
+        order.DiscountSubtotal = discountValue;
+        order.ShippingFee = request.ShippingFee;
+        order.TotalAmount = totalAmount;
         order.PaymentStatus = PaymentStatus.PENDING;
-        order.PaymentType = PaymentType.FULL;
+
+        // Tính toán deposit fields nếu payment type là DEPOSIT
+        if (request.PaymentType == PaymentType.DEPOSIT)
+        {
+            order.PaymentType = PaymentType.DEPOSIT;
+            // Chia đôi số tiền merchandise sau khi đã trừ discount
+            order.DepositSubtotal = merchandiseAfterDiscount / 2; // 50% của merchandise sau discount
+            order.RemainingBalance = merchandiseAfterDiscount - order.DepositSubtotal;
+        }
+        else
+        {
+            order.PaymentType = PaymentType.FULL;
+            order.DepositSubtotal = null;
+            order.RemainingBalance = null;
+        }
+
         order.OrderItems = dressDetails.Select(d => new OrderItem
         {
             MaternityDressDetailId = d.Id,
@@ -268,7 +313,8 @@ public class OrderService : IOrderService
         if (request.DeliveryMethod == DeliveryMethod.DELIVERY)
         {
             if (request.AddressId == null)
-                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Address ID is required for delivery orders.");
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                    "Address ID is required for delivery orders.");
 
             var address = await _unitOfWork.AddressRepository.GetByIdAsync(request.AddressId);
             _validation.CheckNotFound(address, $"Address with id: {request.AddressId} not found");
@@ -282,7 +328,8 @@ public class OrderService : IOrderService
         if (request.DeliveryMethod == DeliveryMethod.PICK_UP)
         {
             if (request.BranchId == null)
-                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Branch ID is required for pick-up orders.");
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                    "Branch ID is required for pick-up orders.");
 
             var branch = await _unitOfWork.BranchRepository.GetByIdAsync(request.BranchId);
             _validation.CheckNotFound(branch, $"Branch with id: {request.BranchId} not found");
@@ -318,7 +365,7 @@ public class OrderService : IOrderService
 
         var response = await _cacheService.GetAsync<CmsServiceBaseDto>("cms:service:base");
 
-        if(response?.Fields == null)
+        if (response?.Fields == null)
         {
             var entryId = _contentfulSettings!.GetSection("EntryId").Value;
             var contentfulResponse = await _contentfulClient.GetEntry<CmsFieldDto>(entryId);
@@ -332,9 +379,10 @@ public class OrderService : IOrderService
         }
 
         designFee = response?.Fields.DesignRequestServiceFee;
-        if (designFee == 0 )
+        if (designFee == 0)
         {
-            throw new ErrorException(StatusCodes.Status500InternalServerError, ApiCodes.INTERNAL_SERVER_ERROR, "Design request service fee not found in CMS.");
+            throw new ErrorException(StatusCodes.Status500InternalServerError, ApiCodes.INTERNAL_SERVER_ERROR,
+                "Design request service fee not found in CMS.");
         }
 
         var order = new Order
@@ -362,12 +410,12 @@ public class OrderService : IOrderService
                         CreatedBy = user!.UserName,
                         UpdatedAt = DateTime.UtcNow
                     },
-                ItemType = ItemType.DESIGN_REQUEST,
-                Price = (decimal)designFee!,
-                Quantity = 1,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
-                CreatedBy = user!.UserName
+                    ItemType = ItemType.DESIGN_REQUEST,
+                    Price = (decimal)designFee!,
+                    Quantity = 1,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    CreatedBy = user!.UserName
                 }
             }
         };
@@ -396,15 +444,16 @@ public class OrderService : IOrderService
         }
 
         if (request.MeasurementDiaryId != null)
-        {   
+        {
             measurement = await _unitOfWork.MeasurementDiaryRepository.GetByIdAsync(request.MeasurementDiaryId);
-            _validation.CheckNotFound(measurement, $"Measurement diary with id: {request.MeasurementDiaryId} not found");
+            _validation.CheckNotFound(measurement,
+                $"Measurement diary with id: {request.MeasurementDiaryId} not found");
         }
 
         var subTotalAmount = preset!.Price;
         decimal? discountValue = 0;
 
-        if(voucher != null && voucher.VoucherBatch != null)
+        if (voucher != null && voucher.VoucherBatch != null)
         {
             if (voucher.VoucherBatch.DiscountType == DiscountType.PERCENTAGE)
             {
@@ -416,8 +465,11 @@ public class OrderService : IOrderService
             }
         }
 
-        var order = _mapper.Map<Order>(request);
+        // Tính merchandise subtotal sau khi trừ discount
+        var merchandiseAfterDiscount = subTotalAmount - discountValue;
+        var totalAmount = merchandiseAfterDiscount + request.ShippingFee;
 
+        var order = _mapper.Map<Order>(request);
         order.User = user!;
         order.VoucherDiscount = voucher;
         order.Type = OrderType.NORMAL;
@@ -425,9 +477,27 @@ public class OrderService : IOrderService
         order.Code = GenerateOrderCode();
         order.Status = OrderStatus.CREATED;
         order.MeasurementDiary = measurement;
-        order.SubTotalAmount = subTotalAmount;
-        order.TotalAmount = (subTotalAmount - discountValue + request.ShippingFee);
+        order.SubTotalAmount = subTotalAmount; // Merchandise subtotal gốc
+        order.DiscountSubtotal = discountValue;
+        order.ShippingFee = request.ShippingFee;
+        order.TotalAmount = totalAmount;
         order.PaymentStatus = PaymentStatus.PENDING;
+
+        // Tính toán deposit fields nếu payment type là DEPOSIT
+        if (request.PaymentType == PaymentType.DEPOSIT)
+        {
+            order.PaymentType = PaymentType.DEPOSIT;
+            // Chia đôi số tiền merchandise sau khi đã trừ discount
+            order.DepositSubtotal = merchandiseAfterDiscount / 2; // 50% của merchandise sau discount
+            order.RemainingBalance = merchandiseAfterDiscount - order.DepositSubtotal;
+        }
+        else
+        {
+            order.PaymentType = PaymentType.FULL;
+            order.DepositSubtotal = null;
+            order.RemainingBalance = null;
+        }
+
         order.OrderItems = new List<OrderItem>()
         {
             new OrderItem
@@ -445,7 +515,8 @@ public class OrderService : IOrderService
         if (request.DeliveryMethod == DeliveryMethod.DELIVERY)
         {
             if (request.AddressId == null)
-                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Address ID is required for delivery orders.");
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                    "Address ID is required for delivery orders.");
 
             var address = await _unitOfWork.AddressRepository.GetByIdAsync(request.AddressId);
             _validation.CheckNotFound(address, $"Address with id: {request.AddressId} not found");
@@ -459,7 +530,8 @@ public class OrderService : IOrderService
         if (request.DeliveryMethod == DeliveryMethod.PICK_UP)
         {
             if (request.BranchId == null)
-                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Branch ID is required for pick-up orders.");
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                    "Branch ID is required for pick-up orders.");
 
             var branch = await _unitOfWork.BranchRepository.GetByIdAsync(request.BranchId);
             _validation.CheckNotFound(branch, $"Branch with id: {request.BranchId} not found");

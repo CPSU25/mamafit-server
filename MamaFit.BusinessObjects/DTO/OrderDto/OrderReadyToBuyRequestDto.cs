@@ -12,6 +12,7 @@ namespace MamaFit.BusinessObjects.DTO.OrderDto
         public string? MeasurementDiaryId { get; set; }
         public decimal ShippingFee { get; set; } = 0;
         public bool IsOnline { get; set; } = true;
+        public PaymentType PaymentType { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
         public DeliveryMethod DeliveryMethod { get; set; }
         public List<OrderItemReadyToBuyRequestDto> OrderItems { get; set; } = [];

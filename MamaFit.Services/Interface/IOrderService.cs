@@ -1,3 +1,4 @@
+using MamaFit.BusinessObjects.DTO.CMSDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;
@@ -18,6 +19,6 @@ public interface IOrderService
     Task<string> CreateReadyToBuyOrderAsync(OrderReadyToBuyRequestDto request);
     Task<string> CreateDesignRequestOrderAsync(OrderDesignRequestDto request);
     Task<string> CreatePresetOrderAsync(OrderPresetCreateRequestDto request);
-    Task WebhookForContentfulWhenUpdateData(dynamic request);
+    Task WebhookForContentfulWhenUpdateData(CmsServiceBaseDto request);
 
 }

@@ -316,14 +316,24 @@ public class OrderService : IOrderService
 
         decimal? designFee = 0;
 
-        designFee = await _cacheService.GetAsync<decimal?>("cms:service:base") ?? 0;
+        var response = await _cacheService.GetAsync<CmsServiceBaseDto>("cms:service:base");
 
-        if(designFee == 0 )
+        if(response?.Fields == null)
         {
-            //var entryId = _contentfulSettings!.GetSection("EntryId").Value;
-            //var contentfulResponse = await _contentfulClient.GetEntry<dynamic>(entryId);
-            //JObject obj = JObject.FromObject(contentfulResponse);
-            //designFee = obj["designRequestServiceFee"]?.ToObject<decimal>();
+            var entryId = _contentfulSettings!.GetSection("EntryId").Value;
+            var contentfulResponse = await _contentfulClient.GetEntry<CmsFieldDto>(entryId);
+            var request1 = new CmsServiceBaseDto
+            {
+                Fields = contentfulResponse
+            };
+            await _cacheService.SetAsync("cms:service:base", request1);
+
+            response = request1;
+        }
+
+        designFee = response?.Fields.DesignRequestServiceFee;
+        if (designFee == 0 )
+        {
             throw new ErrorException(StatusCodes.Status500InternalServerError, ApiCodes.INTERNAL_SERVER_ERROR, "Design request service fee not found in CMS.");
         }
 
@@ -461,18 +471,8 @@ public class OrderService : IOrderService
         return order.Id;
     }
 
-    public async Task WebhookForContentfulWhenUpdateData(dynamic request)
+    public async Task WebhookForContentfulWhenUpdateData(CmsServiceBaseDto request)
     {
-        var fields = request["fields"]?.ToString();
-
-        if (string.IsNullOrEmpty(fields))
-            return;
-
-        var dto = JsonConvert.DeserializeObject<CmsServiceBaseDto>(fields);
-
-        if (dto is null)
-            return;
-
-        await _cacheService.SetAsync("cms:service:base", dto);
+        await _cacheService.SetAsync("cms:service:base", request);
     }
 }

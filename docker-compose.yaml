@@ -23,6 +23,10 @@ services:
       - SepaySettings__BankCode=${SEPAY_BANK_CODE}
       - GhtkSettings__ApiToken=${GHTK_API_TOKEN}
       - GhtkSettings__BaseUri=${GHTK_BASE_URI}
+      - Contentful__SpaceId=${CONTENTFUL_SPACE_ID}
+      - Contentful__ContentDeliveryKey=${CONTENT_DELIVERY_KEY}
+      - Contentful__EntryId=${CONTENTFUL_ENTRY_ID}
+      - Contentful__SecretKey=${CONTENTFUL_SECRET_KEY}
     networks:
       - default
 

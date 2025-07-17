@@ -154,7 +154,7 @@ jobs:
         run: |
           TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           curl -H "Content-Type: application/json" -X POST -d "{
-            \"content\": \"<@&BackEnd> 🚨 **MamaFit API** deployment failed!\",
+            \"content\": \"<@&1379069130656845824> 🚨 **MamaFit API** deployment failed!\",
             \"embeds\": [{
               \"title\": \"💥 Deployment Failed\",
               \"description\": \"❌ CI/CD pipeline failed.\",

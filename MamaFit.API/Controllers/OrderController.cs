@@ -1,3 +1,4 @@
+using MamaFit.BusinessObjects.DTO.CMSDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;
@@ -121,7 +122,7 @@ public class OrderController : ControllerBase
     }
 
     [HttpPost("webhook/contentful")]
-    public async Task<IActionResult> WebhookForContentful([FromBody] dynamic request)
+    public async Task<IActionResult> WebhookForContentful([FromBody] CmsServiceBaseDto request)
     {
         var secret = _contentfulConfig["SecretKey"];
         if (Request.Headers["X-Webhook-Secret"] != secret)

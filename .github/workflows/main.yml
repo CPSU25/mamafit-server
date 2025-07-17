@@ -2,8 +2,7 @@ name: Build, Test & Deploy MamaFit API
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 env:
@@ -68,14 +67,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Verify docker-compose file exists
-        run: |
-          ls -la
-          if [ ! -f "docker-compose.yaml" ]; then
-            echo "docker-compose.yaml not found!"
-            exit 1
-          fi
-
       - name: Copy docker-compose.yaml to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -93,8 +84,10 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
+            set -e
             cd ~/mamafit
 
+            echo "Creating .env file"
             echo "REGISTRY_NAME=${{ secrets.REGISTRY_NAME }}" > .env
             echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
             echo "DB_USER=${{ secrets.DB_USER }}" >> .env
@@ -113,77 +106,70 @@ jobs:
             echo "SEPAY_BANK_CODE=${{ secrets.SEPAY_BANK_CODE }}" >> .env
             echo "GHTK_API_TOKEN=${{ secrets.GHTK_API_TOKEN }}" >> .env
             echo "GHTK_BASE_URI=${{ secrets.GHTK_BASE_URI }}" >> .env
+            echo "CONTENTFUL_SPACE_ID=${{ secrets.CONTENTFUL_SPACE_ID }}" >> .env
+            echo "CONTENT_DELIVERY_KEY=${{ secrets.CONTENT_DELIVERY_KEY }}" >> .env
+            echo "CONTENTFUL_ENTRY_ID=${{ secrets.CONTENTFUL_ENTRY_ID }}" >> .env
+            echo "CONTENTFUL_SECRET_KEY=${{ secrets.CONTENTFUL_SECRET_KEY }}" >> .env
 
             echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
-            docker pull $IMAGE_NAME || true
+            docker pull $IMAGE_NAME
             docker compose up -d --pull always --no-deps --force-recreate mamafit-api
-
             docker ps -a | grep mamafit-api
 
-      - name: Notify Discord (Success)
-        if: success()
+  notify-success:
+    name: Notify Discord (Success)
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: success()
+    steps:
+      - name: Send Success Message
         run: |
-          curl -H "Content-Type: application/json" \
-               -X POST \
-               -d "{
-                 \"embeds\": [{
-                   \"title\": \"🚀 MamaFit API - Deployment Successful\",
-                   \"description\": \"✨ Your application is now live at https://api.mamafit.studio/\",
-                   \"color\": 5763719,
-                   \"thumbnail\": {
-                     \"url\": \"https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png\"
-                   },
-                   \"author\": {
-                     \"name\": \"${{ github.actor }}\",
-                     \"icon_url\": \"https://github.com/${{ github.actor }}.png\"
-                   },
-                   \"fields\": [
-                     { \"name\": \"Repository\", \"value\": \"[${{ github.repository }}](https://github.com/${{ github.repository }})\", \"inline\": true },
-                     { \"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true },
-                     { \"name\": \"Workflow\", \"value\": \"${{ github.workflow }}\", \"inline\": true },
-                     { \"name\": \"Commit\", \"value\": \"[$(echo ${{ github.sha }} | cut -c1-7)](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\", \"inline\": true },
-                     { \"name\": \"Run #\", \"value\": \"${{ github.run_number }}\", \"inline\": true },
-                     { \"name\": \"Logs\", \"value\": \"[View Details](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\", \"inline\": true }
-                   ],
-                   \"footer\": {
-                     \"text\": \"MamaFit CI/CD Pipeline • GitHub Actions\"
-                   },
-                   \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
-                 }]
-               }" \
-               ${{ secrets.DISCORD_WEBHOOK_URL }}
+          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          curl -H "Content-Type: application/json" -X POST -d "{
+            \"embeds\": [{
+              \"title\": \"🚀 MamaFit API - Deployment Successful\",
+              \"description\": \"✨ App is live at https://api.mamafit.studio/\",
+              \"color\": 5763719,
+              \"author\": {
+                \"name\": \"${{ github.actor }}\",
+                \"icon_url\": \"https://github.com/${{ github.actor }}.png\"
+              },
+              \"fields\": [
+                { \"name\": \"Repository\", \"value\": \"[${{ github.repository }}](https://github.com/${{ github.repository }})\", \"inline\": true },
+                { \"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true },
+                { \"name\": \"Commit\", \"value\": \"[${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\", \"inline\": true }
+              ],
+              \"footer\": { \"text\": \"MamaFit CI/CD • GitHub Actions\" },
+              \"timestamp\": \"$TIMESTAMP\"
+            }]
+          }" ${{ secrets.DISCORD_WEBHOOK_URL }}
 
-      - name: Notify Discord (Failure)
-        if: failure()
+  notify-failure:
+    name: Notify Discord (Failure)
+    runs-on: ubuntu-latest
+    needs: [test, build-and-push, deploy]
+    if: failure()
+    steps:
+      - name: Send Failure Message
         run: |
-          curl -H "Content-Type: application/json" \
-               -X POST \
-               -d "{
-                 \"content\": \"<@&BackEnd> 🚨 **MamaFit API** deployment failed!\",
-                 \"embeds\": [{
-                   \"title\": \"💥 Deployment Failed\",
-                   \"description\": \"❌ The deployment process encountered an error. Immediate attention required!\",
-                   \"color\": 15158332,
-                   \"thumbnail\": {
-                     \"url\": \"https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png\"
-                   },
-                   \"author\": {
-                     \"name\": \"${{ github.actor }}\",
-                     \"icon_url\": \"https://github.com/${{ github.actor }}.png\"
-                   },
-                   \"fields\": [
-                     { \"name\": \"Repository\", \"value\": \"[${{ github.repository }}](https://github.com/${{ github.repository }})\", \"inline\": true },
-                     { \"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true },
-                     { \"name\": \"Status\", \"value\": \"Failed\", \"inline\": true },
-                     { \"name\": \"Failed Commit\", \"value\": \"[$(echo ${{ github.sha }} | cut -c1-7)](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\", \"inline\": true },
-                     { \"name\": \"Run \", \"value\": \"${{ github.run_number }}\", \"inline\": true },
-                     { \"name\": \"Debug\", \"value\": \"[View Logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\", \"inline\": true },
-                     { \"name\": \"Quick Actions\", \"value\": \"• [Rerun Workflow](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\\n• [View Recent Commits](https://github.com/${{ github.repository }}/commits/${{ github.ref_name }})\", \"inline\": false }
-                   ],
-                   \"footer\": {
-                     \"text\": \"MamaFit CI/CD Pipeline • GitHub Actions\"
-                   },
-                   \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
-                 }]
-               }" \
-               ${{ secrets.DISCORD_WEBHOOK_URL }}
+          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          curl -H "Content-Type: application/json" -X POST -d "{
+            \"content\": \"<@&BackEnd> 🚨 **MamaFit API** deployment failed!\",
+            \"embeds\": [{
+              \"title\": \"💥 Deployment Failed\",
+              \"description\": \"❌ CI/CD pipeline failed.\",
+              \"color\": 15158332,
+              \"author\": {
+                \"name\": \"${{ github.actor }}\",
+                \"icon_url\": \"https://github.com/${{ github.actor }}.png\"
+              },
+              \"fields\": [
+                { \"name\": \"Repository\", \"value\": \"[${{ github.repository }}](https://github.com/${{ github.repository }})\", \"inline\": true },
+                { \"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true },
+                { \"name\": \"Commit\", \"value\": \"[${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\", \"inline\": true },
+                { \"name\": \"Logs\", \"value\": \"[View Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\", \"inline\": true }
+              ],
+              \"footer\": { \"text\": \"MamaFit CI/CD • GitHub Actions\" },
+              \"timestamp\": \"$TIMESTAMP\"
+            }]
+          }" ${{ secrets.DISCORD_WEBHOOK_URL }}

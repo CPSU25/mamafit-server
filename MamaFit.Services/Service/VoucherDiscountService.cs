@@ -50,9 +50,13 @@ public class VoucherDiscountService : IVoucherDiscountService
         await _validation.ValidateAndThrowAsync(request);
         var user = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(request.UserId);
         _validation.CheckNotFound(user, "User not found");
+
         var voucherBatch = await _unitOfWork.VoucherBatchRepository.GetByIdNotDeletedAsync(request.VoucherBatchId);
         _validation.CheckNotFound(voucherBatch, "Voucher batch not found");
+        voucherBatch!.RemainingQuantity -= 1;
+
         var voucherDiscount = _mapper.Map<VoucherDiscount>(request);
+
         await _unitOfWork.VoucherDiscountRepository.InsertAsync(voucherDiscount);
         await _unitOfWork.SaveChangesAsync();
     }

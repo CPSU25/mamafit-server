@@ -92,7 +92,7 @@ public class OrderItemController : ControllerBase
         ));
     }
 
-    [HttpPost("check-list-status")]
+    [HttpPut("check-list-status")]
     public async Task<IActionResult> CheckListStatusForOrderItemTask([FromBody] OrderItemCheckTaskRequestDto request)
     {
         await _service.CheckListStatusForOrderItemTaskAsync(request);

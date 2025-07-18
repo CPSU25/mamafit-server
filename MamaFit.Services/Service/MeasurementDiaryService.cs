@@ -47,7 +47,6 @@ public class MeasurementDiaryService : IMeasurementDiaryService
         };
     }
 
-    
     public async Task<PaginatedList<MeasurementDiaryResponseDto>> GetAllAsync(int index = 1, int pageSize = 10, string? nameSearch = null)
     {
         var diaries = await _unitOfWork.MeasurementDiaryRepository.GetAllDiariesAsync(index, pageSize, nameSearch);

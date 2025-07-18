@@ -3,6 +3,6 @@
     public class AssignTaskToOrderItemRequestDto
     {
         public string? OrderItemId { get; set; }
-        public string? MilestoneId { get; set; }
+        public List<string>? MilestoneIds { get; set; }
     }
 }

@@ -102,21 +102,25 @@ public class OrderItemService : IOrderItemService
 
         var orderItemTasks = new List<OrderItemTask>();
 
-        var milestone = await _unitOfWork.MilestoneRepository.GetByIdDetailAsync(request.MilestoneId!);
-        _validation.CheckNotFound(milestone, $"Milestone with id:{request.MilestoneId} is not exist!");
-
-        foreach (var task in milestone.MaternityDressTasks!)
+        foreach(var milestoneId in request.MilestoneIds!)
         {
-            orderItemTasks.Add(new OrderItemTask
+            var milestone = await _unitOfWork.MilestoneRepository.GetByIdDetailAsync(milestoneId!);
+            _validation.CheckNotFound(milestone, $"Milestone with id:{milestoneId} is not exist!");
+
+            foreach (var task in milestone.MaternityDressTasks!)
             {
-                MaternityDressTask = task,
-                MaternityDressTaskId = task.Id,
-                OrderItem = orderItem,
-                OrderItemId = orderItem.Id,
-                CreatedAt = DateTime.UtcNow,
-                CreatedBy = user.UserName ?? "System",
-            });
+                orderItemTasks.Add(new OrderItemTask
+                {
+                    MaternityDressTask = task,
+                    MaternityDressTaskId = task.Id,
+                    OrderItem = orderItem,
+                    OrderItemId = orderItem.Id,
+                    CreatedAt = DateTime.UtcNow,
+                    CreatedBy = user.UserName ?? "System",
+                });
+            }
         }
+        
         orderItem.OrderItemTasks = orderItemTasks;
 
         await _unitOfWork.OrderItemRepository.UpdateAsync(orderItem);

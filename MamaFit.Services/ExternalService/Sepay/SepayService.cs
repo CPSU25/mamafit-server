@@ -1,7 +1,9 @@
+﻿using System.Linq;
 using System.Security.Cryptography;
 using AutoMapper;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
+using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.DTO.SepayDto;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Helper;
@@ -22,13 +24,16 @@ public class SepayService : ISepayService
     private readonly IOrderService _orderService;
     private readonly ITransactionService _transactionService;
     private readonly INotificationService _notificationService;
+    private readonly IOrderItemService _orderItemService;
+
     public SepayService(IUnitOfWork unitOfWork,
         IOptions<SepaySettings> sepaySettings,
         IValidationService validationService,
         IOrderService orderService,
         ITransactionService transactionService,
         IMapper mapper,
-        INotificationService notificationService)
+        INotificationService notificationService,
+        IOrderItemService orderItemService)
     {
         _unitOfWork = unitOfWork;
         _sepaySettings = sepaySettings.Value;
@@ -37,6 +42,7 @@ public class SepayService : ISepayService
         _transactionService = transactionService;
         _mapper = mapper;
         _notificationService = notificationService;
+        _orderItemService = orderItemService;
     }
 
     public async Task<string> GetPaymentStatusAsync(string orderId)
@@ -63,13 +69,34 @@ public class SepayService : ISepayService
         var order = await _unitOfWork.OrderRepository.GetByCodeAsync(orderCode);
         _validationService.CheckNotFound(order, $"Order with code {orderCode} not found");
 
+        var milestoneList = await _unitOfWork.MilestoneRepository.GetAllAsync();
+
+        var assignRequests = order.OrderItems.Select(orderItem =>
+        {
+            var matchingMilestones = milestoneList
+                .Where(m => m.ApplyFor != null && m.ApplyFor.Contains((ItemType)orderItem.ItemType))
+                .Select(m => m.Id)
+                .ToList();
+
+            return new AssignTaskToOrderItemRequestDto
+            {
+                OrderItemId = orderItem.Id,
+                MilestoneIds = matchingMilestones
+            };
+        }).ToList();
+
+        foreach(var assignRequest in assignRequests)
+        {
+            await _orderItemService.AssignTaskToOrderItemAsync(assignRequest);
+        }
+
         await _transactionService.CreateTransactionAsync(payload, order.Id, order.Code);
         await _orderService.UpdateOrderStatusAsync(
             order.Id,
             order.Type == OrderType.DEPOSIT ? OrderStatus.PAID_DEPOSIT : OrderStatus.IN_PRODUCTION,
             order.Type == OrderType.DEPOSIT ? PaymentStatus.DEPOSITED : PaymentStatus.PAID
         );
-        
+
         await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
         {
             NotificationTitle = "Payment Successful",
@@ -78,7 +105,7 @@ public class SepayService : ISepayService
             {
                 { "orderId", order.Id },
                 { "paymentStatus", PaymentStatus.PAID.ToString() }
-            },  
+            },
             Type = NotificationType.PAYMENT,
             ReceiverId = order.UserId
         });

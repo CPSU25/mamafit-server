@@ -93,8 +93,8 @@ public class SepayService : ISepayService
         await _transactionService.CreateTransactionAsync(payload, order.Id, order.Code);
         await _orderService.UpdateOrderStatusAsync(
             order.Id,
-            order.Type == OrderType.DEPOSIT ? OrderStatus.PAID_DEPOSIT : OrderStatus.IN_PRODUCTION,
-            order.Type == OrderType.DEPOSIT ? PaymentStatus.DEPOSITED : PaymentStatus.PAID
+            order.PaymentType == PaymentType.DEPOSIT ? OrderStatus.CONFIRMED : OrderStatus.IN_PRODUCTION,
+            order.PaymentType == PaymentType.DEPOSIT ? PaymentStatus.PAID_DEPOSIT : PaymentStatus.PAID_FULL
         );
 
         await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
@@ -104,7 +104,7 @@ public class SepayService : ISepayService
             Metadata = new Dictionary<string, string>()
             {
                 { "orderId", order.Id },
-                { "paymentStatus", PaymentStatus.PAID.ToString() }
+                { "paymentStatus", PaymentStatus.PAID_FULL.ToString() }
             },
             Type = NotificationType.PAYMENT,
             ReceiverId = order.UserId

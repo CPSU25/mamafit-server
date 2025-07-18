@@ -3,7 +3,6 @@
     public enum OrderType
     {
         NORMAL,
-        DEPOSIT,
         WARRANTY
     }
 }

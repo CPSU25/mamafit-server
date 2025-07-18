@@ -69,18 +69,18 @@ public class OrderService : IOrderService
         var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
         _validation.CheckNotFound(order, "Order not found");
 
-        if (order.Status == OrderStatus.COMPLETED && order.PaymentStatus == PaymentStatus.PAID)
+        if (order.Status == OrderStatus.COMPLETED && order.PaymentStatus == PaymentStatus.PAID_FULL)
         {
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Order is already completed and paid.");
         }
-        if (order.Type == OrderType.DEPOSIT)
+        if (order.PaymentType == PaymentType.DEPOSIT)
         {
             if (order.SubTotalAmount.HasValue)
             {
                 order.SubTotalAmount /= 2;
             }
-            order.PaymentStatus = PaymentStatus.DEPOSITED;
-            order.Status = OrderStatus.PAID_DEPOSIT;
+            order.PaymentStatus = PaymentStatus.PAID_DEPOSIT;
+            order.Status = OrderStatus.CONFIRMED;
         }
         else
         {

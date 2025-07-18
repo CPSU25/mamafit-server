@@ -19,7 +19,7 @@ public static class OrderCalculationHelper
         if (netAmount < 0)
             netAmount = 0;
 
-        if (order.Type == OrderType.DEPOSIT)
+        if (order.PaymentType == PaymentType.DEPOSIT)
         {
             decimal depositAmount = netAmount * 0.5m; 
             decimal remaining = netAmount - depositAmount;

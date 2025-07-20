@@ -19,6 +19,9 @@ public class OrderWithItemResponseDto
     public OrderStatus? Status { get; set; }
     public float TotalAmount { get; set; } 
     public float ShippingFee { get; set; }
+    public decimal? DiscountSubtotal { get; set; }
+    public decimal? DepositSubtotal { get; set; }
+    public decimal? RemainingBalance { get; set; }
     public PaymentStatus PaymentStatus { get; set; }
     public PaymentMethod PaymentMethod { get; set; }
     public DeliveryMethod DeliveryMethod { get; set; }

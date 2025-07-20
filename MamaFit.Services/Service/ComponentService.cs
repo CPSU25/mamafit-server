@@ -7,8 +7,6 @@ using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
-
 namespace MamaFit.Services.Service
 {
     public class ComponentService : IComponentService
@@ -17,14 +15,16 @@ namespace MamaFit.Services.Service
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IMapper _mapper;
         private readonly IValidationService _validation;
-        private readonly ICacheService _cacheService;
-        public ComponentService(IUnitOfWork unitOfWork, IHttpContextAccessor contextAccessor, IMapper mapper, IValidationService validation, ICacheService cacheService)
+        private readonly ICacheService _cache;
+
+        public ComponentService(IUnitOfWork unitOfWork, IHttpContextAccessor contextAccessor, 
+            IMapper mapper, IValidationService validation, ICacheService cache)
         {
             _unitOfWork = unitOfWork;
             _contextAccessor = contextAccessor;
             _mapper = mapper;
             _validation = validation;
-            _cacheService = cacheService;
+            _cache = cache;
         }
 
         public async Task CreateAsync(ComponentRequestDto requestDto)
@@ -36,6 +36,8 @@ namespace MamaFit.Services.Service
 
             await _unitOfWork.ComponentRepository.InsertAsync(newComponent);
             await _unitOfWork.SaveChangesAsync();
+            
+            await _cache.IncreaseVersionAsync("components");
         }
 
         public async Task DeleteAsync(string id)
@@ -50,53 +52,68 @@ namespace MamaFit.Services.Service
 
             await _unitOfWork.ComponentRepository.SoftDeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
+            
+            await _cache.IncreaseVersionAsync("components");
+            await _cache.RemoveAsync($"component:{id}");
         }
 
         public async Task<PaginatedList<ComponentResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
         {
-            var cachedComponent = await _cacheService.GetAsync<PaginatedList<ComponentResponseDto>>($"components_{index}_{pageSize}_{search}_{sortBy}");
+            int version = await _cache.GetVersionAsync("components");
+            string cacheKey = $"components:v{version}:{index}:{pageSize}:{search ?? ""}:{sortBy ?? ""}";
+            
+            var cached = await _cache.GetAsync<PaginatedList<ComponentResponseDto>>(cacheKey);
+            if (cached != null)
+                return cached;
+            
+            var componentList = await _unitOfWork.ComponentRepository.GetAllAsync(index, pageSize, search, sortBy);
 
-            PaginatedList<ComponentResponseDto>? paginatedResponse;
-            if (cachedComponent == null)
-            {
-                var componentList = await _unitOfWork.ComponentRepository.GetAllAsync(index, pageSize, search, sortBy);
+            var responseList = componentList.Items.Select(item => _mapper.Map<ComponentResponseDto>(item)).ToList();
 
-                // Map từng phần tử trong danh sách Items
-                var responseList = componentList.Items.Select(item => _mapper.Map<ComponentResponseDto>(item)).ToList();
+            var paginatedResponse = new PaginatedList<ComponentResponseDto>(
+                responseList,
+                componentList.TotalCount,
+                componentList.PageNumber,
+                componentList.PageSize
+            );
 
-                // Tạo PaginatedList mới với các đối tượng đã map
-                paginatedResponse = new PaginatedList<ComponentResponseDto>(
-                    responseList,
-                    componentList.TotalCount,
-                    componentList.PageNumber,
-                    componentList.PageSize
-                );
-
-                await _cacheService.SetAsync($"components_{index}_{pageSize}_{search}_{sortBy}",paginatedResponse);
-                return paginatedResponse;
-            }
-
-            return cachedComponent;
+            await _cache.SetAsync(cacheKey, paginatedResponse, TimeSpan.FromMinutes(15));
+            return paginatedResponse;
         }
 
         public async Task<ComponentGetByIdResponseDto> GetByIdAsync(string id)
         {
+            string cacheKey = $"component:{id}";
+            var cached = await _cache.GetAsync<ComponentGetByIdResponseDto>(cacheKey);
+            if (cached != null)
+                return cached;
+            
             var component = await _unitOfWork.ComponentRepository.GetById(id);
 
             if (component == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Component not found!");
 
-            return _mapper.Map<ComponentGetByIdResponseDto>(component);
+            var result = _mapper.Map<ComponentGetByIdResponseDto>(component);
+            await _cache.SetAsync(cacheKey, result, TimeSpan.FromMinutes(15));
+            return result;
         }
 
         public async Task<List<ComponentGetByIdResponseDto>> GetComponentHavePresetByStyleId(string styleId)
         {
+            string cacheKey = $"components:preset:{styleId}";
+            var cached = await _cache.GetAsync<List<ComponentGetByIdResponseDto>>(cacheKey);
+            if (cached != null)
+                return cached;
+            
             var style = await _unitOfWork.StyleRepository.GetByIdNotDeletedAsync(styleId);
             _validation.CheckNotFound(style, $"Style with ID {styleId} not found.");
 
             var components = await _unitOfWork.ComponentRepository.GetComponentHavePresetByStyleId(styleId);
             _validation.CheckNotFound(components, $"No components found for style with ID {styleId}.");
-            return components.Select(c => _mapper.Map<ComponentGetByIdResponseDto>(c)).ToList();
+            
+            var result = components.Select(c => _mapper.Map<ComponentGetByIdResponseDto>(c)).ToList();
+            await _cache.SetAsync(cacheKey, result, TimeSpan.FromMinutes(15));
+            return result;
         }
 
         public async Task UpdateAsync(string id, ComponentRequestDto requestDto)
@@ -113,6 +130,9 @@ namespace MamaFit.Services.Service
 
             await _unitOfWork.ComponentRepository.UpdateAsync(component);
             await _unitOfWork.SaveChangesAsync();
+            
+            await _cache.IncreaseVersionAsync("components");
+            await _cache.RemoveAsync($"component:{id}");
         }
 
         private string GetCurrentUserName()

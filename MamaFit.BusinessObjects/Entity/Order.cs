@@ -5,6 +5,7 @@ namespace MamaFit.BusinessObjects.Entity
 {
     public class Order : BaseEntity
     {
+        public string? ParentOrderId { get; set; }
         public string? AddressId { get; set; }
         public string? BranchId { get; set; }
         public string? UserId { get; set; }
@@ -36,5 +37,6 @@ namespace MamaFit.BusinessObjects.Entity
         public Branch? Branch { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public virtual ICollection<Transaction>? Transactions { get; set; } = [];
+        public Order? ParentOrder { get; set; }
     }
 }

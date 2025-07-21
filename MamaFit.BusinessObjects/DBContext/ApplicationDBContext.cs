@@ -49,7 +49,7 @@ namespace MamaFit.BusinessObjects.DBContext
         public DbSet<Milestone> Milestones { get; set; }
         public DbSet<AddOn> AddOns { get; set; }
         public DbSet<AddOnOption> AddOnOptions { get; set; }
-        public DbSet<OrderItemAddOnOption> OrderItemServiceOptions { get; set; }
+        public DbSet<OrderItemServiceOption> OrderItemServiceOptions { get; set; }
         public DbSet<ComponentOptionPreset> ComponentOptionPresets { get; set; } 
         public DbSet<Preset> Presets { get; set; }
         public DbSet<Position> Positions { get; set; }
@@ -93,7 +93,7 @@ namespace MamaFit.BusinessObjects.DBContext
             modelBuilder.Entity<Milestone>().ToTable("Milestone");
             modelBuilder.Entity<AddOn>().ToTable("AddOn");
             modelBuilder.Entity<AddOnOption>().ToTable("AddOnOption");
-            modelBuilder.Entity<OrderItemAddOnOption>().ToTable("OrderItemAddOnOption");
+            modelBuilder.Entity<OrderItemServiceOption>().ToTable("OrderItemServiceOption");
             modelBuilder.Entity<ComponentOptionPreset>().ToTable("ComponentOptionPreset");
             modelBuilder.Entity<OrderItemTask>().ToTable("OrderItemTask");
             modelBuilder.Entity<Preset>().ToTable("Preset");
@@ -233,7 +233,7 @@ namespace MamaFit.BusinessObjects.DBContext
                 });
             });
 
-            modelBuilder.Entity<OrderItemAddOnOption>(options =>
+            modelBuilder.Entity<OrderItemServiceOption>(options =>
             {
                 options.HasKey(ois => new { ois.AddOnOptionId, ois.OrderItemId });
             });

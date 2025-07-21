@@ -11,6 +11,7 @@ namespace MamaFit.BusinessObjects.Entity
         public string? Description { get; set; }
         public List<string>? Images { get; set; } = [];
         public Tag? Tag { get; set; }
+        public ComponentOptionType? ComponentOptionType { get; set; }
         public GlobalStatus GlobalStatus { get; set; } = GlobalStatus.ACTIVE;
 
         //Navigation property

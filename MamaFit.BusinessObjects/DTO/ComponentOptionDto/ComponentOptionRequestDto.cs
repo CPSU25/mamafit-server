@@ -11,5 +11,6 @@ namespace MamaFit.BusinessObjects.DTO.ComponentOptionDto
         public string? Description { get; set; }
         public Tag? Tag { get; set; }
         public List<string>? Images { get; set; } = [];
+        public ComponentOptionType? ComponentOptionType { get; set; }
     }
 }

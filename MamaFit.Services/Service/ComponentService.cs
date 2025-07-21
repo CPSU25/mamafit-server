@@ -4,6 +4,7 @@ using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
+using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
 
@@ -15,12 +16,14 @@ namespace MamaFit.Services.Service
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IMapper _mapper;
         private readonly IValidationService _validation;
-        public ComponentService(IUnitOfWork unitOfWork, IHttpContextAccessor contextAccessor, IMapper mapper, IValidationService validation)
+        private readonly ICacheService _cacheService;
+        public ComponentService(IUnitOfWork unitOfWork, IHttpContextAccessor contextAccessor, IMapper mapper, IValidationService validation, ICacheService cacheService)
         {
             _unitOfWork = unitOfWork;
             _contextAccessor = contextAccessor;
             _mapper = mapper;
             _validation = validation;
+            _cacheService = cacheService;
         }
 
         public async Task CreateAsync(ComponentRequestDto requestDto)
@@ -50,18 +53,25 @@ namespace MamaFit.Services.Service
 
         public async Task<PaginatedList<ComponentResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
         {
-            var componentList = await _unitOfWork.ComponentRepository.GetAllAsync(index, pageSize, search, sortBy);
+            var paginatedResponse = await _cacheService.GetAsync<PaginatedList<ComponentResponseDto>>($"components_{index}_{pageSize}_{search}_{sortBy}");
 
-            // Map từng phần tử trong danh sách Items
-            var responseList = componentList.Items.Select(item => _mapper.Map<ComponentResponseDto>(item)).ToList();
+            if (paginatedResponse == null)
+            {
+                var componentList = await _unitOfWork.ComponentRepository.GetAllAsync(index, pageSize, search, sortBy);
 
-            // Tạo PaginatedList mới với các đối tượng đã map
-            var paginatedResponse = new PaginatedList<ComponentResponseDto>(
-                responseList,
-                componentList.TotalCount,
-                componentList.PageNumber,
-                componentList.PageSize
-            );
+                // Map từng phần tử trong danh sách Items
+                var responseList = componentList.Items.Select(item => _mapper.Map<ComponentResponseDto>(item)).ToList();
+
+                // Tạo PaginatedList mới với các đối tượng đã map
+                paginatedResponse = new PaginatedList<ComponentResponseDto>(
+                    responseList,
+                    componentList.TotalCount,
+                    componentList.PageNumber,
+                    componentList.PageSize
+                );
+
+                await _cacheService.SetAsync($"components_{index}_{pageSize}_{search}_{sortBy}", paginatedResponse);
+            }
 
             return paginatedResponse;
         }

@@ -52,6 +52,7 @@ public class SepayService : ISepayService
 
         return order.PaymentStatus.ToString();
     }
+
     public async Task ProcessPaymentWebhookAsync(SepayWebhookPayload payload, string authHeader)
     {
         if (!ValidateAuthHeader(authHeader))
@@ -68,6 +69,13 @@ public class SepayService : ISepayService
 
         var order = await _unitOfWork.OrderRepository.GetByCodeAsync(orderCode);
         _validationService.CheckNotFound(order, $"Order with code {orderCode} not found");
+        
+        if (order.PaymentStatus == PaymentStatus.PAID_FULL ||
+            (order.PaymentType == PaymentType.DEPOSIT && order.PaymentStatus == PaymentStatus.PAID_DEPOSIT))
+        {
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                "Order has already been paid");
+        }
 
         var milestoneList = await _unitOfWork.MilestoneRepository.GetAllAsync();
 
@@ -85,30 +93,57 @@ public class SepayService : ISepayService
             };
         }).ToList();
 
-        foreach(var assignRequest in assignRequests)
+        foreach (var assignRequest in assignRequests)
         {
             await _orderItemService.AssignTaskToOrderItemAsync(assignRequest);
         }
 
         await _transactionService.CreateTransactionAsync(payload, order.Id, order.Code);
-        await _orderService.UpdateOrderStatusAsync(
-            order.Id,
-            order.PaymentType == PaymentType.DEPOSIT ? OrderStatus.CONFIRMED : OrderStatus.IN_PRODUCTION,
-            order.PaymentType == PaymentType.DEPOSIT ? PaymentStatus.PAID_DEPOSIT : PaymentStatus.PAID_FULL
-        );
-
-        await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
+        
+        if (order.PaymentType == PaymentType.DEPOSIT)
         {
-            NotificationTitle = "Payment Successful",
-            NotificationContent = $"Your payment for order {order.Code} has been successfully processed.",
-            Metadata = new Dictionary<string, string>()
+            await _orderService.UpdateOrderStatusAsync(
+                order.Id,
+                OrderStatus.CONFIRMED,
+                PaymentStatus.PAID_DEPOSIT
+            );
+
+            await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
             {
-                { "orderId", order.Id },
-                { "paymentStatus", PaymentStatus.PAID_FULL.ToString() }
-            },
-            Type = NotificationType.PAYMENT,
-            ReceiverId = order.UserId
-        });
+                NotificationTitle = "Deposit Payment Successful",
+                NotificationContent =
+                    $"Your deposit payment for order {order.Code} has been successfully processed. Remaining balance: {order.RemainingBalance:C}",
+                Metadata = new Dictionary<string, string>()
+                {
+                    { "orderId", order.Id },
+                    { "paymentStatus", PaymentStatus.PAID_DEPOSIT.ToString() },
+                    { "remainingBalance", order.RemainingBalance?.ToString() ?? "0" }
+                },
+                Type = NotificationType.PAYMENT,
+                ReceiverId = order.UserId
+            });
+        }
+        else
+        {
+            await _orderService.UpdateOrderStatusAsync(
+                order.Id,
+                OrderStatus.IN_PRODUCTION,
+                PaymentStatus.PAID_FULL
+            );
+
+            await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
+            {
+                NotificationTitle = "Payment Successful",
+                NotificationContent = $"Your payment for order {order.Code} has been successfully processed.",
+                Metadata = new Dictionary<string, string>()
+                {
+                    { "orderId", order.Id },
+                    { "paymentStatus", PaymentStatus.PAID_FULL.ToString() }
+                },
+                Type = NotificationType.PAYMENT,
+                ReceiverId = order.UserId
+            });
+        }
     }
 
     public async Task<SepayQrResponse> CreatePaymentQrAsync(string orderId)
@@ -125,10 +160,29 @@ public class SepayService : ISepayService
                 "Order is not in pending payment status or already paid");
         }
 
+        // Xác định số tiền cần thanh toán
+        decimal paymentAmount;
+        if (order.PaymentType == PaymentType.DEPOSIT)
+        {
+            // Nếu là deposit, lấy DepositSubtotal
+            paymentAmount = order.DepositSubtotal ?? 0;
+            if (paymentAmount == 0)
+            {
+                // Tính toán nếu chưa có
+                var merchandiseAfterDiscount = (order.SubTotalAmount ?? 0) - (order.DiscountSubtotal ?? 0);
+                paymentAmount = merchandiseAfterDiscount / 2;
+            }
+        }
+        else
+        {
+            // Nếu là full payment, lấy TotalAmount
+            paymentAmount = order.TotalAmount ?? 0;
+        }
+
         var qrUrl = GenerateSepayQrUrl(
             accountNumber: _sepaySettings.AccountNumber,
             bankCode: _sepaySettings.BankCode,
-            amount: order.TotalAmount,
+            amount: paymentAmount,
             description: $"SEVQR{order.Code}",
             template: "qronly",
             download: "true");
@@ -140,6 +194,7 @@ public class SepayService : ISepayService
         };
         return qrResponse;
     }
+
     private string GenerateSepayQrUrl(string accountNumber, string bankCode, decimal? amount, string description,
         string template, string download)
     {
@@ -179,11 +234,13 @@ public class SepayService : ISepayService
         {
             rng.GetBytes(data);
         }
+
         var result = new char[length];
         for (int i = 0; i < length; i++)
         {
             result[i] = chars[data[i] % chars.Length];
         }
+
         return new string(result);
     }
 
@@ -200,6 +257,7 @@ public class SepayService : ISepayService
             var orderCode = content.Substring(startIndex + "SEVQR".Length, 6);
             return orderCode;
         }
+
         return null;
     }
 }

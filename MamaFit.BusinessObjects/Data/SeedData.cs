@@ -240,7 +240,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 18000,
         Description = "Thiết kế eo trung bình truyền thống.",
         Images = new List<string> { "https://example.com/images/normalwaist.jpg" },
-        ComponentOptionType = ComponentOptionType.APPROVED,
+        
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -250,7 +250,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 9000,
         Description = "Vải cotton thoáng mát, thấm hút tốt.",
         Images = new List<string> { "https://example.com/images/cotton.jpg" },
-        ComponentOptionType = ComponentOptionType.APPROVED,
+        
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -260,7 +260,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 10000,
         Description = "Không tay, thoáng mát.",
         Images = new List<string> { "https://example.com/images/nosleeves.jpg" },
-        ComponentOptionType = ComponentOptionType.APPROVED,
+        
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -270,7 +270,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 10000,
         Description = "Xanh ngọc quý phái, nổi bật.",
         Images = new List<string> { "https://example.com/images/emerald.jpg" },
-        ComponentOptionType = ComponentOptionType.APPROVED,
+        
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -280,7 +280,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 16000,
         Description = "Trước ngắn sau dài tạo nét lạ mắt.",
         Images = new List<string> { "https://example.com/images/highlow.jpg" },
-        ComponentOptionType = ComponentOptionType.APPROVED,
+        
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -290,7 +290,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 12000,
         Description = "Dây mảnh, nữ tính.",
         Images = new List<string> { "https://example.com/images/spaghetti.jpg" },
-        ComponentOptionType = ComponentOptionType.APPROVED,
+        
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -300,7 +300,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 20000,
         Description = "Eo cao, phù hợp cho phong cách nữ tính.",
         Images = new List<string> { "https://example.com/images/empirewaist.jpg" },
-        ComponentOptionType = ComponentOptionType.APPROVED,
+        
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -310,7 +310,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 25000,
         Description = "Cổ chữ V tạo cảm giác cổ dài hơn.",
         Images = new List<string> { "https://example.com/images/vneck.jpg" },
-        ComponentOptionType = ComponentOptionType.APPROVED,
+        
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -320,7 +320,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 22000,
         Description = "Nơ thắt eo tạo điểm nhấn đáng yêu.",
         Images = new List<string> { "https://example.com/images/bowtie.jpg" },
-        ComponentOptionType = ComponentOptionType.APPROVED,
+        
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -330,7 +330,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 12000,
         Description = "Gấu váy đơn giản, thanh lịch.",
         Images = new List<string> { "https://example.com/images/singlelayer.jpg" },
-        ComponentOptionType = ComponentOptionType.APPROVED,
+        
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -340,7 +340,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 20000,
         Description = "Cổ tròn cơ bản, thanh lịch.",
         Images = new List<string> { "https://example.com/images/roundneck.jpg" },
-        ComponentOptionType = ComponentOptionType.APPROVED,
+        
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -350,7 +350,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 10000,
         Description = "Màu đỏ nổi bật, quyến rũ.",
         Images = new List<string> { "https://example.com/images/red.jpg" },
-        ComponentOptionType = ComponentOptionType.APPROVED,
+        
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -360,7 +360,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 10000,
         Description = "Xanh navy lịch sự, thanh nhã.",
         Images = new List<string> { "https://example.com/images/navyblue.jpg" },
-        ComponentOptionType = ComponentOptionType.APPROVED,
+        
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -370,7 +370,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 15000,
         Description = "Tay ngắn bay bổng, thoải mái.",
         Images = new List<string> { "https://example.com/images/shortsleeves.jpg" },
-        ComponentOptionType = ComponentOptionType.APPROVED,
+        
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     }
 };

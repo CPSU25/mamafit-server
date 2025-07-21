@@ -208,11 +208,6 @@ namespace MamaFit.BusinessObjects.DBContext
                     .HasForeignKey<DesignRequest>(ot => ot.OrderItemId)
                     .OnDelete(DeleteBehavior.NoAction);
 
-                options.HasMany(ot => ot.WarrantyRequests)
-                    .WithOne(wh => wh.OriginalOrderItem)
-                    .HasForeignKey(wh => wh.OriginalOrderItemId)
-                    .OnDelete(DeleteBehavior.NoAction);
-
                 options.HasOne(ot => ot.Preset)
                     .WithMany(p => p.OrderItems)
                     .HasForeignKey(ot => ot.PresetId)

@@ -6,6 +6,7 @@ namespace MamaFit.BusinessObjects.Entity
     public class OrderItem : BaseEntity
     {
         public string? OrderId { get; set; }
+        public string? ParentOrderItemId { get; set; }
         public string? MaternityDressDetailId { get; set; }
         public string? PresetId { get; set; }
         public ItemType? ItemType { get; set; }
@@ -16,6 +17,7 @@ namespace MamaFit.BusinessObjects.Entity
 
         //Navigation property
         public Order? Order { get; set; }
+        public OrderItem? ParentOrderItem { get; set; }
         public MaternityDressDetail? MaternityDressDetail { get; set; }
         public Preset? Preset { get; set; }
         public DesignRequest? DesignRequest { get; set; }

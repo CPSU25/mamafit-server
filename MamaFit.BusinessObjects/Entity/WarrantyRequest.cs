@@ -5,7 +5,6 @@ namespace MamaFit.BusinessObjects.Entity
 {
     public class WarrantyRequest : BaseEntity
     {
-        public string? OriginalOrderItemId { get; set; }
         public string? WarrantyOrderItemId { get; set; }
         public List<string>? Images { get; set; } = [];
         public string? Description { get; set; }
@@ -19,6 +18,5 @@ namespace MamaFit.BusinessObjects.Entity
         //Navigation property
         public virtual ICollection<WarrantyHistory> WarrantyHistories { get; set; } = [];
         public OrderItem? WarrantyOrderItem { get; set; }
-        public OrderItem? OriginalOrderItem { get; set; }
     }
 }

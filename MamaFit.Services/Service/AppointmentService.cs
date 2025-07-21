@@ -4,6 +4,7 @@ using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
+using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
 
@@ -14,12 +15,14 @@ namespace MamaFit.Services.Service
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly ICacheService _cacheService;
 
-        public AppointmentService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor contextAccessor)
+        public AppointmentService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor contextAccessor, ICacheService cacheService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _contextAccessor = contextAccessor;
+            _cacheService = cacheService;
         }
 
         private string GetCurrentUserName()
@@ -81,21 +84,29 @@ namespace MamaFit.Services.Service
 
         public async Task<PaginatedList<AppointmentResponseDto>> GetAllAsync(int index, int pageSize, string? search, AppointmentOrderBy? sortBy)
         {
-            var appointmentList = await _unitOfWork.AppointmentRepository.GetAllAsync(index, pageSize, search, sortBy);
+            var paginatedResponse = await _cacheService.GetAsync<PaginatedList<AppointmentResponseDto>>($"appointments_{index}_{pageSize}_{search}_{sortBy}");
 
-            // Map từng phần tử trong danh sách Items
-            var responseList = appointmentList.Items.Select(item => _mapper.Map<AppointmentResponseDto>(item)).ToList();
+            if(paginatedResponse == null)
+            {
+                var appointmentList = await _unitOfWork.AppointmentRepository.GetAllAsync(index, pageSize, search, sortBy);
 
-            // Tạo PaginatedList mới với các đối tượng đã map
-            var paginatedResponse = new PaginatedList<AppointmentResponseDto>(
-                responseList,
-                appointmentList.TotalCount,
-                appointmentList.PageNumber,
-                appointmentList.PageSize
-            );
+                // Map từng phần tử trong danh sách Items
+                var responseList = appointmentList.Items.Select(item => _mapper.Map<AppointmentResponseDto>(item)).ToList();
+
+                // Tạo PaginatedList mới với các đối tượng đã map
+                paginatedResponse = new PaginatedList<AppointmentResponseDto>(
+                    responseList,
+                    appointmentList.TotalCount,
+                    appointmentList.PageNumber,
+                    appointmentList.PageSize
+                );
+
+                await _cacheService.SetAsync($"appointments_{index}_{pageSize}_{search}_{sortBy}", paginatedResponse);
+                return paginatedResponse;
+            }
 
             return paginatedResponse;
-        }
+            }
 
 
         public async Task<AppointmentResponseDto> GetByIdAsync(string id)

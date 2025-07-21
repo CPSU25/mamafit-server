@@ -13,7 +13,6 @@ namespace MamaFit.BusinessObjects.DTO.ComponentOptionDto
         public float Price { get; set; }
         public Tag? Tag { get; set; }
         public List<string>? Images { get; set; } = [];
-        public ComponentOptionType? ComponentOptionType { get; set; }
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime CreatedAt { get; set; }

@@ -116,7 +116,7 @@ public class OrderItemService : IOrderItemService
                     OrderItem = orderItem,
                     OrderItemId = orderItem.Id,
                     CreatedAt = DateTime.UtcNow,
-                    CreatedBy = user.UserName ?? "System",
+                    CreatedBy = user?.UserName ?? "System",
                 });
             }
         }

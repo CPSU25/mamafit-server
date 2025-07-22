@@ -82,7 +82,7 @@ public class SepayService : ISepayService
         var assignRequests = order.OrderItems.Select(orderItem =>
         {
             var matchingMilestones = milestoneList
-                .Where(m => m.ApplyFor != null && m.ApplyFor.Contains((ItemType)orderItem.ItemType))
+                .Where(m => m.ApplyFor!.Contains((ItemType)orderItem.ItemType!))
                 .Select(m => m.Id)
                 .ToList();
 

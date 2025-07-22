@@ -67,6 +67,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
     public async Task<Order?> GetByCodeAsync(string code)
     {
         return await _dbSet.AsNoTracking()
+            .Include(x => x.OrderItems)
             .FirstOrDefaultAsync(x => x.Code == code && !x.IsDeleted);
     }
 }

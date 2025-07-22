@@ -40,7 +40,7 @@ namespace MamaFit.Services.Service
                 {
                     Fields = contentfulResponse
                 };
-                await _cacheService.SetAsync("cms:service:base", config);
+                await _cacheService.SetAsync("cms:service:base", config,TimeSpan.FromDays(30));
 
                 response = config;
             }

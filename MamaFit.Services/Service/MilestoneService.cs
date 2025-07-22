@@ -54,12 +54,12 @@ namespace MamaFit.Services.Service
             return paginatedResponse;
         }
 
-        public async Task<MilestoneResponseDto> GetByIdAsync(string? id)
+        public async Task<MilestoneGetByIdResponseDto> GetByIdAsync(string? id)
         {
-            var milestone = await _unitOfWork.MilestoneRepository.GetByIdNotDeletedAsync(id);
+            var milestone = await _unitOfWork.MilestoneRepository.GetByIdDetailAsync(id);
             _validationService.CheckNotFound(milestone, $"Milestone with id:{id} is not found");
 
-            return _mapper.Map<MilestoneResponseDto>(milestone);
+            return _mapper.Map<MilestoneGetByIdResponseDto>(milestone);
         }
 
         public async Task UpdateAsync(string id, MilestoneRequestDto request)

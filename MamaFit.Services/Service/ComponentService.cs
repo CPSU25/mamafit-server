@@ -7,6 +7,7 @@ using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace MamaFit.Services.Service
 {
@@ -53,9 +54,10 @@ namespace MamaFit.Services.Service
 
         public async Task<PaginatedList<ComponentResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
         {
-            var paginatedResponse = await _cacheService.GetAsync<PaginatedList<ComponentResponseDto>>($"components_{index}_{pageSize}_{search}_{sortBy}");
+            var cachedComponent = await _cacheService.GetAsync<PaginatedList<ComponentResponseDto>>($"components_{index}_{pageSize}_{search}_{sortBy}");
 
-            if (paginatedResponse == null)
+            PaginatedList<ComponentResponseDto>? paginatedResponse;
+            if (cachedComponent == null)
             {
                 var componentList = await _unitOfWork.ComponentRepository.GetAllAsync(index, pageSize, search, sortBy);
 
@@ -70,10 +72,11 @@ namespace MamaFit.Services.Service
                     componentList.PageSize
                 );
 
-                await _cacheService.SetAsync($"components_{index}_{pageSize}_{search}_{sortBy}", paginatedResponse);
+                await _cacheService.SetAsync($"components_{index}_{pageSize}_{search}_{sortBy}",paginatedResponse);
+                return paginatedResponse;
             }
 
-            return paginatedResponse;
+            return cachedComponent;
         }
 
         public async Task<ComponentGetByIdResponseDto> GetByIdAsync(string id)

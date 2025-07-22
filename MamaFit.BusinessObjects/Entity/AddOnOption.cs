@@ -17,4 +17,5 @@ public class AddOnOption : BaseEntity
     public AddOn? AddOn { get; set; }
     public Position? Position { get; set; }
     public Size? Size { get; set; }
+    public virtual ICollection<OrderItemAddOnOption>? OrderItemAddOnOptions { get; set; } = [];
 }

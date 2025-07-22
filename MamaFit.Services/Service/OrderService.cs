@@ -2,6 +2,7 @@
 using Contentful.Core;
 using Contentful.Core.Configuration;
 using Contentful.Core.Models;
+using MamaFit.BusinessObjects.DTO.AddOnDto;
 using MamaFit.BusinessObjects.DTO.CMSDto;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
@@ -436,6 +437,7 @@ public class OrderService : IOrderService
 
         VoucherDiscount? voucher = null;
         MeasurementDiary? measurement = null;
+        List<OrderItemAddOnOption>? addOnOptions = new List<OrderItemAddOnOption>();
 
         if (request.VoucherDiscountId != null)
         {
@@ -450,6 +452,20 @@ public class OrderService : IOrderService
                 $"Measurement diary with id: {request.MeasurementDiaryId} not found");
         }
 
+        if (request.Options is not null)
+        {
+            foreach (var option in request.Options)
+            {
+                var addOn = await _unitOfWork.AddOnOptionRepository.GetByIdAsync(option.AddOnOptionId!);
+                _validation.CheckNotFound(addOn, $"Add-on option with id: {option.AddOnOptionId} not found");
+                addOnOptions.Add(new OrderItemAddOnOption
+                {
+                    AddOnOptionId = addOn.Id,
+                    AddOnOption = addOn,
+                    Value = option.Value
+                });
+            }
+        }
         var subTotalAmount = preset!.Price;
         decimal? discountValue = 0;
 
@@ -504,6 +520,12 @@ public class OrderService : IOrderService
             {
                 Preset = preset,
                 ItemType = ItemType.PRESET,
+                OrderItemAddOnOptions = addOnOptions.Select(x => new OrderItemAddOnOption
+                {
+                    AddOnOptionId = x.AddOnOptionId,
+                    AddOnOption = x.AddOnOption,
+                    Value = x.Value,
+                }).ToList(),
                 Price = preset.ComponentOptionPresets.Sum(co => co.ComponentOption!.Price),
                 Quantity = 1,
                 CreatedAt = DateTime.UtcNow,

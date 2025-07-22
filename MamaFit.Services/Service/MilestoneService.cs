@@ -67,7 +67,7 @@ namespace MamaFit.Services.Service
             var milestone = await _unitOfWork.MilestoneRepository.GetByIdNotDeletedAsync(id);
             _validationService.CheckNotFound(milestone, $"Milestone with id:{id} is not found");
 
-            _mapper.Map(milestone, request);
+            _mapper.Map(request, milestone);
             await _unitOfWork.MilestoneRepository.UpdateAsync(milestone!);
             await _unitOfWork.SaveChangesAsync();
         }

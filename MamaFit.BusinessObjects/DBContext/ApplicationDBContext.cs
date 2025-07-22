@@ -212,6 +212,11 @@ namespace MamaFit.BusinessObjects.DBContext
                     .WithMany(p => p.OrderItems)
                     .HasForeignKey(ot => ot.PresetId)
                     .OnDelete(DeleteBehavior.NoAction);
+
+                options.HasMany(ot => ot.OrderItemAddOnOptions)
+                    .WithOne(ois => ois.OrderItem)
+                    .HasForeignKey(ois => ois.OrderItemId)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<BranchMaternityDressDetail>(options =>
@@ -231,6 +236,11 @@ namespace MamaFit.BusinessObjects.DBContext
             modelBuilder.Entity<OrderItemAddOnOption>(options =>
             {
                 options.HasKey(ois => new { ois.AddOnOptionId, ois.OrderItemId });
+
+                options.HasOne(ois => ois.AddOnOption)
+                    .WithMany(ao => ao.OrderItemAddOnOptions)
+                    .HasForeignKey(ois => ois.AddOnOptionId)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<Branch>(options =>

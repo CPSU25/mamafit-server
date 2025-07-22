@@ -37,7 +37,7 @@ namespace MamaFit.API.Controllers
         public async Task<IActionResult> GetById([FromRoute] string id)
         {
             var milestone = await _milestoneService.GetByIdAsync(id);
-            return Ok(new ResponseModel<MilestoneResponseDto>(
+            return Ok(new ResponseModel<MilestoneGetByIdResponseDto>(
                 StatusCodes.Status200OK,
                 ApiCodes.SUCCESS,
                 milestone,

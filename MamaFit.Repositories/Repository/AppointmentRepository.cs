@@ -34,7 +34,7 @@ namespace MamaFit.Repositories.Repository
                 AppointmentOrderBy.CREATED_AT_ASC => query.OrderBy(u => u.CreatedAt),
 
                 AppointmentOrderBy.CREATED_AT_DESC => query.OrderByDescending(u => u.CreatedAt),
-                _ => query.OrderByDescending(u => u.CreatedAt) // default
+                _ => query.OrderByDescending(u => u.CreatedAt)
             };
 
             var pagedResult = await GetPaging(query, index, pageSize);

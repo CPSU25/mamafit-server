@@ -23,7 +23,7 @@ public class NotificationController : ControllerBase
         [FromQuery] int pageSize = 10,
         [FromQuery] string? search = null,
         [FromQuery] NotificationType ? type = null,
-        [FromQuery] string? sortBy = null)
+        [FromQuery] EntitySortBy? sortBy = null)
     {
         var result = await _notificationService.GetAllNotificationsAsync(index, pageSize, search, type, sortBy);
         return Ok(new ResponseModel<PaginatedList<NotificationResponseDto>>(
@@ -42,7 +42,7 @@ public class NotificationController : ControllerBase
         [FromQuery] int pageSize = 10,
         [FromQuery] string? search = null,
         [FromQuery] NotificationType ? type = null,
-        [FromQuery] string? sortBy = null)
+        [FromQuery] EntitySortBy? sortBy = null)
     {
         var result = await _notificationService.GetNotificationsByAccessTokenAsync(accessToken, index, pageSize, search, type, sortBy);
         return Ok(new ResponseModel<PaginatedList<NotificationResponseDto>>(

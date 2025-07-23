@@ -15,7 +15,7 @@ public class NotificationRepository : GenericRepository<Notification>, INotifica
     {
     }
 
-    public async Task<PaginatedList<Notification>> GetAllAsync(int index, int pageSize, string? search, NotificationType? type, string? sortBy)
+    public async Task<PaginatedList<Notification>> GetAllAsync(int index, int pageSize, string? search, NotificationType? type, EntitySortBy? sortBy)
     {
         var query = _dbSet.Where(x => !x.IsDeleted);
         if (!string.IsNullOrWhiteSpace(search))
@@ -31,17 +31,17 @@ public class NotificationRepository : GenericRepository<Notification>, INotifica
             query = query.Where(x => x.Type == type);
         }
 
-        query = sortBy?.ToLower() switch
+        query = sortBy switch
         {
-            "createdat_asc" => query.OrderBy(x => x.CreatedAt),
-            "createdat_desc" => query.OrderByDescending(x => x.CreatedAt),
+            EntitySortBy.CREATED_AT_ASC => query.OrderBy(u => u.CreatedAt),
+            EntitySortBy.CREATED_AT_DESC => query.OrderByDescending(u => u.CreatedAt),
             _ => query.OrderByDescending(x => x.CreatedAt)
         };
         return await query.GetPaginatedList(index, pageSize);
     }
 
     public async Task<PaginatedList<Notification>> GetAllByTokenAsync(string receiverId, int index, int pageSize,
-        string? search, NotificationType? type, string? sortBy)
+        string? search, NotificationType? type, EntitySortBy? sortBy)
     {
         var query = _dbSet.Where(x => !x.IsDeleted && x.ReceiverId == receiverId);
 
@@ -58,10 +58,10 @@ public class NotificationRepository : GenericRepository<Notification>, INotifica
             query = query.Where(x => x.Type == type);
         }
 
-        query = sortBy?.ToLower() switch
+        query = sortBy switch
         {
-            "createdat_asc" => query.OrderBy(x => x.CreatedAt),
-            "createdat_desc" => query.OrderByDescending(x => x.CreatedAt),
+            EntitySortBy.CREATED_AT_ASC => query.OrderBy(u => u.CreatedAt),
+            EntitySortBy.CREATED_AT_DESC => query.OrderByDescending(u => u.CreatedAt),
             _ => query.OrderByDescending(x => x.CreatedAt)
         };
 

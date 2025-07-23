@@ -240,7 +240,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 18000,
         Description = "Thiết kế eo trung bình truyền thống.",
         Images = new List<string> { "https://example.com/images/normalwaist.jpg" },
-        
+
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -250,7 +250,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 9000,
         Description = "Vải cotton thoáng mát, thấm hút tốt.",
         Images = new List<string> { "https://example.com/images/cotton.jpg" },
-        
+
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -260,7 +260,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 10000,
         Description = "Không tay, thoáng mát.",
         Images = new List<string> { "https://example.com/images/nosleeves.jpg" },
-        
+
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -270,7 +270,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 10000,
         Description = "Xanh ngọc quý phái, nổi bật.",
         Images = new List<string> { "https://example.com/images/emerald.jpg" },
-        
+
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -280,7 +280,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 16000,
         Description = "Trước ngắn sau dài tạo nét lạ mắt.",
         Images = new List<string> { "https://example.com/images/highlow.jpg" },
-        
+
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -290,7 +290,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 12000,
         Description = "Dây mảnh, nữ tính.",
         Images = new List<string> { "https://example.com/images/spaghetti.jpg" },
-        
+
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -300,7 +300,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 20000,
         Description = "Eo cao, phù hợp cho phong cách nữ tính.",
         Images = new List<string> { "https://example.com/images/empirewaist.jpg" },
-        
+
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -310,7 +310,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 25000,
         Description = "Cổ chữ V tạo cảm giác cổ dài hơn.",
         Images = new List<string> { "https://example.com/images/vneck.jpg" },
-        
+
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -320,7 +320,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 22000,
         Description = "Nơ thắt eo tạo điểm nhấn đáng yêu.",
         Images = new List<string> { "https://example.com/images/bowtie.jpg" },
-        
+
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -330,7 +330,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 12000,
         Description = "Gấu váy đơn giản, thanh lịch.",
         Images = new List<string> { "https://example.com/images/singlelayer.jpg" },
-        
+
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -340,7 +340,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 20000,
         Description = "Cổ tròn cơ bản, thanh lịch.",
         Images = new List<string> { "https://example.com/images/roundneck.jpg" },
-        
+
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -350,7 +350,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 10000,
         Description = "Màu đỏ nổi bật, quyến rũ.",
         Images = new List<string> { "https://example.com/images/red.jpg" },
-        
+
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -360,7 +360,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 10000,
         Description = "Xanh navy lịch sự, thanh nhã.",
         Images = new List<string> { "https://example.com/images/navyblue.jpg" },
-        
+
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     },
     new ComponentOption {
@@ -370,7 +370,7 @@ namespace MamaFit.BusinessObjects.Data
         Price = 15000,
         Description = "Tay ngắn bay bổng, thoải mái.",
         Images = new List<string> { "https://example.com/images/shortsleeves.jpg" },
-        
+
         CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
     }
 };
@@ -1788,7 +1788,893 @@ namespace MamaFit.BusinessObjects.Data
     }
 };
             modelBuilder.Entity<ComponentOptionPreset>().HasData(componentoptionpresets);
+
+            #endregion
+
+            #region Seed Positions, Sizes, and AddOns
+            modelBuilder.Entity<Position>().HasData(
+    new Position
+    {
+        Id = "dddef2e0837e4461a3edf6f6fc4ca6a5",
+        Name = "Right Sleeve Hem",
+        Image = null,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
+        IsDeleted = false,
+    },
+    new Position
+    {
+        Id = "dda917d763ef470ba63a76a0c46b6dd3",
+        Name = "Left Sleeve Hem",
+        Image = null,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
+        IsDeleted = false,
+    },
+    new Position
+    {
+        Id = "1892d3778cf44b8eb791801be53d1950",
+        Name = "Left Chest",
+        Image = null,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
+        IsDeleted = false,
+    },
+    new Position
+    {
+        Id = "6351c905181f4959973341881dcbc3ac",
+        Name = "Right Chest",
+        Image = null,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
+        IsDeleted = false,
+    },
+    new Position
+    {
+        Id = "d1a6e54ea47d4b89beaa90421e819a2f",
+        Name = "Center Chest",
+        Image = null,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
+        IsDeleted = false,
+    },
+    new Position
+    {
+        Id = "18d2ffb3804c4a6d89db65961c26d687",
+        Name = "Left Dress Side",
+        Image = null,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
+        IsDeleted = false,
+    },
+    new Position
+    {
+        Id = "cf321914500e44e0ab21fffebff8f63b",
+        Name = "Right Dress Side",
+        Image = null,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
+        IsDeleted = false,
+    },
+    new Position
+    {
+        Id = "7ab17c28f8764667a8cdd92015d135a7",
+        Name = "Full Neckline",
+        Image = null,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
+        IsDeleted = false,
+    },
+    new Position
+    {
+        Id = "3a0440ea7695472f9324919567fbd548",
+        Name = "Full Dress Hem",
+        Image = null,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
+        IsDeleted = false,
+    }
+);
+
+            modelBuilder.Entity<Size>().HasData(
+                new Size
+                {
+                    Id = "28f75887e2314369a96d17200e93e1df",
+                    Name = "Small",
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new Size
+                {
+                    Id = "8d643f1e68294355aa0ba06fa333642c",
+                    Name = "Medium",
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new Size
+                {
+                    Id = "b3c067654ccf41529dab7a39efa73177",
+                    Name = "Large",
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new Size
+                {
+                    Id = "d500f6f2377f475b86fcaefe85ca172b",
+                    Name = "Full Position",
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                }
+            );
+
+            modelBuilder.Entity<AddOn>().HasData(
+                new AddOn
+                {
+                    Id = "c136acbd20b14414a8013a9b8b8ea5ab",
+                    Name = "Rhinestone Attachment",
+                    Description = "Decorate the dress with small, sparkling rhinestones",
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOn
+                {
+                    Id = "a55a878403b54856bf6128a185a8eb4a",
+                    Name = "Embroidery",
+                    Description = "Embroider flowers, names, logos, or patterns for a handmade touch",
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOn
+                {
+                    Id = "836ffd7371b64eb48b3679fd02ce530f",
+                    Name = "Lace Applique",
+                    Description = "Attach lace fabric to the dress for a feminine, elegant look",
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOn
+                {
+                    Id = "b22e5a30c05147ddb90bba660269d844",
+                    Name = "Bead Attachment",
+                    Description = "Hand-attach beads for subtle decorative accents",
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOn
+                {
+                    Id = "1d9f860375714d9a9d6f9dcbdb8f9294",
+                    Name = "Personal Tag Attachment",
+                    Description = "Attach a personalized tag, usually at the hem, for identification",
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOn
+                {
+                    Id = "f9bacc3095014ca6913a596a7e705769",
+                    Name = "Pattern Printing",
+                    Description = "Print patterns, text, or images on the dress as requested",
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                }
+            );
+
+            modelBuilder.Entity<AddOnOption>().HasData(
+                new AddOnOption
+                {
+                    Id = "a0fbfbb612d54e0f9ca48961c2fc7a6a",
+                    AddOnId = "836ffd7371b64eb48b3679fd02ce530f",
+                    PositionId = "dddef2e0837e4461a3edf6f6fc4ca6a5",
+                    SizeId = "28f75887e2314369a96d17200e93e1df",
+                    Name = "Geometric Lace",
+                    Description = "Attach lace applique on right sleeve hem, small size",
+                    Price = 950m,
+                    ItemServiceType = (ItemServiceType)2,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "f12ad2c32f4d49e78c36c631ea56fa2d",
+                    AddOnId = "836ffd7371b64eb48b3679fd02ce530f",
+                    PositionId = "dddef2e0837e4461a3edf6f6fc4ca6a5",
+                    SizeId = "8d643f1e68294355aa0ba06fa333642c",
+                    Name = "Vintage Lace",
+                    Description = "Attach lace applique on right sleeve hem, medium size",
+                    Price = 1300m,
+                    ItemServiceType = (ItemServiceType)2,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "c289f97217504ea4a0a16b7079cf5f2a",
+                    AddOnId = "836ffd7371b64eb48b3679fd02ce530f",
+                    PositionId = "dddef2e0837e4461a3edf6f6fc4ca6a5",
+                    SizeId = "8d643f1e68294355aa0ba06fa333642c",
+                    Name = "Floral Lace",
+                    Description = "Attach lace applique on right sleeve hem, medium size",
+                    Price = 1100m,
+                    ItemServiceType = (ItemServiceType)2,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "073522fa350645d5b394e6021c6221d5",
+                    AddOnId = "836ffd7371b64eb48b3679fd02ce530f",
+                    PositionId = "dddef2e0837e4461a3edf6f6fc4ca6a5",
+                    SizeId = "28f75887e2314369a96d17200e93e1df",
+                    Name = "Floral Lace",
+                    Description = "Attach lace applique on right sleeve hem, small size",
+                    Price = 900m,
+                    ItemServiceType = (ItemServiceType)2,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "61fd99be41564ecba801e7e19e2a73b7",
+                    AddOnId = "836ffd7371b64eb48b3679fd02ce530f",
+                    PositionId = "dddef2e0837e4461a3edf6f6fc4ca6a5",
+                    SizeId = "8d643f1e68294355aa0ba06fa333642c",
+                    Name = "Geometric Lace",
+                    Description = "Attach lace applique on right sleeve hem, medium size",
+                    Price = 1200m,
+                    ItemServiceType = (ItemServiceType)2,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "1baf9f4c82c24300b2d145bb7e5d89e1",
+                    AddOnId = "836ffd7371b64eb48b3679fd02ce530f",
+                    PositionId = "dddef2e0837e4461a3edf6f6fc4ca6a5",
+                    SizeId = "28f75887e2314369a96d17200e93e1df",
+                    Name = "Vintage Lace",
+                    Description = "Attach lace applique on right sleeve hem, small size",
+                    Price = 1000m,
+                    ItemServiceType = (ItemServiceType)2,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "92275cd4b83b450eb5bfcbb03aa0c979",
+                    AddOnId = "f9bacc3095014ca6913a596a7e705769",
+                    PositionId = "d1a6e54ea47d4b89beaa90421e819a2f",
+                    SizeId = "b3c067654ccf41529dab7a39efa73177",
+                    Name = "Custom Print",
+                    Description = "Print custom image on center chest, large size",
+                    Price = 1500m,
+                    ItemServiceType = (ItemServiceType)1,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "8b2f1ba36a874862981dc1a7eabb5c70",
+                    AddOnId = "c136acbd20b14414a8013a9b8b8ea5ab",
+                    PositionId = "7ab17c28f8764667a8cdd92015d135a7",
+                    SizeId = "28f75887e2314369a96d17200e93e1df",
+                    Name = "Rhinestone Neckline",
+                    Description = "Attach rhinestones on neckline, small size",
+                    Price = 1500m,
+                    ItemServiceType = (ItemServiceType)2,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "f30a0e0b33bc40f6a69cbaf5e20f978c",
+                    AddOnId = "b22e5a30c05147ddb90bba660269d844",
+                    PositionId = "dda917d763ef470ba63a76a0c46b6dd3",
+                    SizeId = "28f75887e2314369a96d17200e93e1df",
+                    Name = "Beaded Sleeve",
+                    Description = "Attach beads on left sleeve hem, small size",
+                    Price = 1000m,
+                    ItemServiceType = (ItemServiceType)2,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "3ec44795a3eb480e987ec3f0761c13fb",
+                    AddOnId = "a55a878403b54856bf6128a185a8eb4a",
+                    PositionId = "dddef2e0837e4461a3edf6f6fc4ca6a5",
+                    SizeId = "28f75887e2314369a96d17200e93e1df",
+                    Name = "Floral Embroidery",
+                    Description = "Embroider floral pattern on right sleeve hem, small size",
+                    Price = 700m,
+                    ItemServiceType = (ItemServiceType)2,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "d29e831fa7e642d18be3c882405e4416",
+                    AddOnId = "a55a878403b54856bf6128a185a8eb4a",
+                    PositionId = "1892d3778cf44b8eb791801be53d1950",
+                    SizeId = "28f75887e2314369a96d17200e93e1df",
+                    Name = "Name Embroidery",
+                    Description = "Embroider a name on left chest, small size",
+                    Price = 500m,
+                    ItemServiceType = (ItemServiceType)0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "26486ca9b5ce4a6da7b2925ee6011c6c",
+                    AddOnId = "a55a878403b54856bf6128a185a8eb4a",
+                    PositionId = "1892d3778cf44b8eb791801be53d1950",
+                    SizeId = "b3c067654ccf41529dab7a39efa73177",
+                    Name = "Name Embroidery",
+                    Description = "Embroider a name on left chest, large size",
+                    Price = 800m,
+                    ItemServiceType = (ItemServiceType)0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "0dd67bccf110430da89bccfa378b8fb1",
+                    AddOnId = "f9bacc3095014ca6913a596a7e705769",
+                    PositionId = "d1a6e54ea47d4b89beaa90421e819a2f",
+                    SizeId = "28f75887e2314369a96d17200e93e1df",
+                    Name = "Custom Print",
+                    Description = "Print custom image on center chest, small size",
+                    Price = 1000m,
+                    ItemServiceType = (ItemServiceType)1,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "0528ef2e60164a3aa4ee078e25e982b2",
+                    AddOnId = "c136acbd20b14414a8013a9b8b8ea5ab",
+                    PositionId = "7ab17c28f8764667a8cdd92015d135a7",
+                    SizeId = "d500f6f2377f475b86fcaefe85ca172b",
+                    Name = "Rhinestone Neckline",
+                    Description = "Attach rhinestones on full neckline, full position",
+                    Price = 2500m,
+                    ItemServiceType = (ItemServiceType)2,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "262bed0f79814ddbbc46b0e3e23fbd17",
+                    AddOnId = "1d9f860375714d9a9d6f9dcbdb8f9294",
+                    PositionId = "3a0440ea7695472f9324919567fbd548",
+                    SizeId = "28f75887e2314369a96d17200e93e1df",
+                    Name = "Personal Tag",
+                    Description = "Attach name tag at dress hem, small size",
+                    Price = 300m,
+                    ItemServiceType = (ItemServiceType)0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "a5f643a359804e199d02d775afd26577",
+                    AddOnId = "a55a878403b54856bf6128a185a8eb4a",
+                    PositionId = "dddef2e0837e4461a3edf6f6fc4ca6a5",
+                    SizeId = "b3c067654ccf41529dab7a39efa73177",
+                    Name = "Floral Embroidery",
+                    Description = "Embroider floral pattern on right sleeve hem, large size",
+                    Price = 950m,
+                    ItemServiceType = (ItemServiceType)2,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "811a8841037a43e0adf5b0bfd7630bad",
+                    AddOnId = "a55a878403b54856bf6128a185a8eb4a",
+                    PositionId = "1892d3778cf44b8eb791801be53d1950",
+                    SizeId = "8d643f1e68294355aa0ba06fa333642c",
+                    Name = "Name Embroidery",
+                    Description = "Embroider a name on left chest, medium size",
+                    Price = 650m,
+                    ItemServiceType = (ItemServiceType)0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "3c7f15f87fc34c3f9448d52a2e98f3ed",
+                    AddOnId = "f9bacc3095014ca6913a596a7e705769",
+                    PositionId = "d1a6e54ea47d4b89beaa90421e819a2f",
+                    SizeId = "8d643f1e68294355aa0ba06fa333642c",
+                    Name = "Custom Print",
+                    Description = "Print custom image on center chest, medium size",
+                    Price = 1200m,
+                    ItemServiceType = (ItemServiceType)1,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "df081a39cfb246f8ae4be96cbb633893",
+                    AddOnId = "b22e5a30c05147ddb90bba660269d844",
+                    PositionId = "dda917d763ef470ba63a76a0c46b6dd3",
+                    SizeId = "b3c067654ccf41529dab7a39efa73177",
+                    Name = "Beaded Sleeve",
+                    Description = "Attach beads on left sleeve hem, large size",
+                    Price = 1300m,
+                    ItemServiceType = (ItemServiceType)2,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "71655b636da34aa391d8691180ca763b",
+                    AddOnId = "1d9f860375714d9a9d6f9dcbdb8f9294",
+                    PositionId = "3a0440ea7695472f9324919567fbd548",
+                    SizeId = "8d643f1e68294355aa0ba06fa333642c",
+                    Name = "Personal Tag",
+                    Description = "Attach name tag at dress hem, medium size",
+                    Price = 650m,
+                    ItemServiceType = (ItemServiceType)0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "47d124b869de44d8b9b384711e58fc4b  ",
+                    AddOnId = "a55a878403b54856bf6128a185a8eb4a",
+                    PositionId = "6351c905181f4959973341881dcbc3ac",
+                    SizeId = "8d643f1e68294355aa0ba06fa333642c",
+                    Name = "Name Embroidery",
+                    Description = "Embroider a name on right chest, medium size",
+                    Price = 650m,
+                    ItemServiceType = (ItemServiceType)0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "e59d8d7e163a49c8b1a6ea0c62fbe2a2",
+                    AddOnId = "a55a878403b54856bf6128a185a8eb4a",
+                    PositionId = "dda917d763ef470ba63a76a0c46b6dd3",
+                    SizeId = "28f75887e2314369a96d17200e93e1df",
+                    Name = "Floral Embroidery",
+                    Description = "Embroider floral pattern on left sleeve hem, small size",
+                    Price = 700m,
+                    ItemServiceType = (ItemServiceType)2,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "6e8cd43b09344f78ae9d3b2fdba915fa",
+                    AddOnId = "a55a878403b54856bf6128a185a8eb4a",
+                    PositionId = "6351c905181f4959973341881dcbc3ac",
+                    SizeId = "8d643f1e68294355aa0ba06fa333642c",
+                    Name = "Logo Embroidery",
+                    Description = "Embroider a logo on right chest, medium size",
+                    Price = 650m,
+                    ItemServiceType = (ItemServiceType)0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "b52cf28289f64637adf10eeb3e1046c7",
+                    AddOnId = "a55a878403b54856bf6128a185a8eb4a",
+                    PositionId = "d1a6e54ea47d4b89beaa90421e819a2f",
+                    SizeId = "28f75887e2314369a96d17200e93e1df",
+                    Name = "Logo Embroidery",
+                    Description = "Embroider a logo on center chest, small size",
+                    Price = 700m,
+                    ItemServiceType = (ItemServiceType)2,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "dda917d763ef470ba63a76a0c46b6dd3",
+                    AddOnId = "a55a878403b54856bf6128a185a8eb4a",
+                    PositionId = "1892d3778cf44b8eb791801be53d1950",
+                    SizeId = "8d643f1e68294355aa0ba06fa333642c",
+                    Name = "Name Embroidery",
+                    Description = "Embroider a name on left chest, medium size",
+                    Price = 650m,
+                    ItemServiceType = (ItemServiceType)1,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "1892d3778cf44b8eb791801be53d1950",
+                    AddOnId = "a55a878403b54856bf6128a185a8eb4a",
+                    PositionId = "1892d3778cf44b8eb791801be53d1950",
+                    SizeId = "28f75887e2314369a96d17200e93e1df",
+                    Name = "Name Embroidery",
+                    Description = "Embroider a name on left chest, small size",
+                    Price = 500m,
+                    ItemServiceType = (ItemServiceType)1,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "dddef2e0837e4461a3edf6f6fc4ca6a5",
+                    AddOnId = "a55a878403b54856bf6128a185a8eb4a",
+                    PositionId = "1892d3778cf44b8eb791801be53d1950",
+                    SizeId = "b3c067654ccf41529dab7a39efa73177",
+                    Name = "Name Embroidery",
+                    Description = "Embroider a name on left chest, large size",
+                    Price = 800m,
+                    ItemServiceType = (ItemServiceType)1,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                },
+                new AddOnOption
+                {
+                    Id = "6351c905181f4959973341881dcbc3ac",
+                    AddOnId = "a55a878403b54856bf6128a185a8eb4a",
+                    PositionId = "6351c905181f4959973341881dcbc3ac",
+                    SizeId = "8d643f1e68294355aa0ba06fa333642c",
+                    Name = "Name Embroidery",
+                    Description = "Embroider a name on right chest, medium size",
+                    Price = 650m,
+                    ItemServiceType = (ItemServiceType)1,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false,
+                }
+            );
+
+            #endregion
+
+            #region Seed Milestone, MaternityDressTask
+            modelBuilder.Entity<Milestone>().HasData(
+                new Milestone
+                {
+                    Id = "e8e56df1c7e0467d9dfc15df96735c10",
+                    Name = "Khám phá nhu cầu",
+                    Description = "Tìm hiểu nhu cầu và phong cách của khách hàng",
+                    SequenceOrder = 1,
+                    ApplyFor = [ItemType.DESIGN_REQUEST,ItemType.PRESET,ItemType.READY_TO_BUY],
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    IsDeleted = false
+                },
+                new Milestone
+                {
+                    Id = "ef9791c0d0e14e48b6b98432cdd9e60c",
+                    Name = "Chọn hoặc tạo mẫu đầm",
+                    Description = "Khách chọn mẫu có sẵn hoặc thiết kế mới",
+                    SequenceOrder = 2,
+                    ApplyFor = [ItemType.DESIGN_REQUEST, ItemType.PRESET],
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    IsDeleted = false
+                },
+                new Milestone
+                {
+                    Id = "2a3477f9db80487b89ad8cdebe1e5f13",
+                    Name = "Thử và điều chỉnh",
+                    Description = "Thử đầm và tinh chỉnh theo phản hồi",
+                    SequenceOrder = 3,
+                    ApplyFor = [ItemType.DESIGN_REQUEST, ItemType.PRESET],
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    IsDeleted = false
+                },
+                new Milestone
+                {
+                    Id = "b3e3ad7a80b946f9b42f0ddf2f00aeec",
+                    Name = "Kiểm tra chất lượng",
+                    Description = "Đánh giá và đóng gói trước khi giao",
+                    SequenceOrder = 4,
+                    ApplyFor = [ItemType.DESIGN_REQUEST, ItemType.PRESET, ItemType.READY_TO_BUY],
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    IsDeleted = false
+                },
+                new Milestone
+                {
+                    Id = "316f055b3e2e4c6fa44f6a16dca0e6f1",
+                    Name = "Giao hàng và phản hồi",
+                    Description = "Giao đến khách và lấy đánh giá",
+                    SequenceOrder = 5,
+                    ApplyFor = [ItemType.DESIGN_REQUEST, ItemType.PRESET, ItemType.READY_TO_BUY],
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    IsDeleted = false
+                }
+            );
+
+            modelBuilder.Entity<MaternityDressTask>().HasData(
+                new MaternityDressTask
+                {
+                    Id = "9c8ebd7bc6d643efab54ef2b09925f04",
+                    MilestoneId = "e8e56df1c7e0467d9dfc15df96735c10",
+                    Name = "Tư vấn phong cách",
+                    Description = "Chọn style phù hợp",
+                    SequenceOrder = 1,
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    IsDeleted = false
+                },
+                new MaternityDressTask
+                {
+                    Id = "5f8ce7b8139f4b0996c2b71f901c7ef6",
+                    MilestoneId = "e8e56df1c7e0467d9dfc15df96735c10",
+                    Name = "Xác định dịp sử dụng",
+                    Description = "Tiệc, chụp ảnh, thường ngày...",
+                    SequenceOrder = 2,
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    IsDeleted = false
+                },
+                new MaternityDressTask
+                {
+                    Id = "89bb40304a8d45f7a0e2178c6aeea462",
+                    MilestoneId = "ef9791c0d0e14e48b6b98432cdd9e60c",
+                    Name = "Chọn mẫu sẵn",
+                    Description = "Preset styles",
+                    SequenceOrder = 1,
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    IsDeleted = false
+                },
+                new MaternityDressTask
+                {
+                    Id = "86c0cbaac35c4f62b029aaed8cce8e9c",
+                    MilestoneId = "ef9791c0d0e14e48b6b98432cdd9e60c",
+                    Name = "Thiết kế mới",
+                    Description = "Tạo mẫu theo ý khách",
+                    SequenceOrder = 2,
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    IsDeleted = false
+                },
+                new MaternityDressTask
+                {
+                    Id = "35f95d06385f4b6994416dcb2bba1f6f",
+                    MilestoneId = "2a3477f9db80487b89ad8cdebe1e5f13",
+                    Name = "Thử đầm",
+                    Description = "Thử trực tiếp hoặc feedback ảnh",
+                    SequenceOrder = 1,
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    IsDeleted = false
+                },
+                new MaternityDressTask
+                {
+                    Id = "6fd0f813c191449ab2b7a07039cd9e7c",
+                    MilestoneId = "2a3477f9db80487b89ad8cdebe1e5f13",
+                    Name = "Tinh chỉnh",
+                    Description = "Sửa theo feedback",
+                    SequenceOrder = 2,
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    IsDeleted = false
+                },
+                new MaternityDressTask
+                {
+                    Id = "f48b2f18763e4e6b80b4a85ce95b8264",
+                    MilestoneId = "b3e3ad7a80b946f9b42f0ddf2f00aeec",
+                    Name = "Kiểm tra ngoại hình",
+                    Description = "Đường may, màu sắc, nếp vải",
+                    SequenceOrder = 1,
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    IsDeleted = false
+                },
+                new MaternityDressTask
+                {
+                    Id = "d6c9fddce1cc4cd28bd54094f5e48c56",
+                    MilestoneId = "b3e3ad7a80b946f9b42f0ddf2f00aeec",
+                    Name = "Đo đạc & so sánh",
+                    Description = "Kiểm tra số đo đúng không",
+                    SequenceOrder = 2,
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    IsDeleted = false
+                },
+                new MaternityDressTask
+                {
+                    Id = "197fd3b727a1400cbde58a4f28ab5f93",
+                    MilestoneId = "b3e3ad7a80b946f9b42f0ddf2f00aeec",
+                    Name = "Đóng gói sản phẩm",
+                    Description = "Gói chuẩn theo mẫu thương hiệu",
+                    SequenceOrder = 3,
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    IsDeleted = false
+                },
+                new MaternityDressTask
+                {
+                    Id = "c1ff5d242bb14aa59e17c34753c9e189",
+                    MilestoneId = "316f055b3e2e4c6fa44f6a16dca0e6f1",
+                    Name = "Giao hàng",
+                    Description = "Ship theo địa chỉ khách chọn",
+                    SequenceOrder = 1,
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    IsDeleted = false
+                },
+                new MaternityDressTask
+                {
+                    Id = "fb2e3a1c38f14091a8b016dfbdcf80e0",
+                    MilestoneId = "316f055b3e2e4c6fa44f6a16dca0e6f1",
+                    Name = "Ghi nhận phản hồi",
+                    Description = "Gửi form đánh giá hoặc khảo sát",
+                    SequenceOrder = 2,
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    IsDeleted = false
+                }
+            );
+
+            #endregion
         }
-        #endregion
     }
 }

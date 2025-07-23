@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MamaFit.BusinessObjects.DTO.DesignRequestDto;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
@@ -53,7 +54,7 @@ namespace MamaFit.Services.Service
             return _mapper.Map<DesignResponseDto>(request);
         }
 
-        public async Task<PaginatedList<DesignResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
+        public async Task<PaginatedList<DesignResponseDto>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
         {
             var designList = await _unitOfWork.DesignRequestRepository.GetAllAsync( index, pageSize, search, sortBy);
 

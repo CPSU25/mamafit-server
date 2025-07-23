@@ -55,7 +55,7 @@ namespace MamaFit.Services.Service
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<PaginatedList<StyleResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
+        public async Task<PaginatedList<StyleResponseDto>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
         {
             var styleList = await _unitOfWork.StyleRepository.GetAllAsync(index, pageSize, search, sortBy);
 
@@ -73,7 +73,7 @@ namespace MamaFit.Services.Service
             return paginatedResponse;
         }
 
-        public async Task<PaginatedList<StyleResponseDto>> GetAllByCategoryAsync(string categoryId, int index, int pageSize, string? search, string? sortBy)
+        public async Task<PaginatedList<StyleResponseDto>> GetAllByCategoryAsync(string categoryId, int index, int pageSize, string? search, EntitySortBy? sortBy)
         {
 
             var categpory = await _unitOfWork.CategoryRepository.GetByIdAsync(categoryId);

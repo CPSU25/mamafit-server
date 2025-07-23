@@ -17,7 +17,7 @@ namespace MamaFit.Services.Service
         private readonly IValidationService _validation;
         private readonly ICacheService _cache;
 
-        public ComponentService(IUnitOfWork unitOfWork, IHttpContextAccessor contextAccessor, 
+        public ComponentService(IUnitOfWork unitOfWork, IHttpContextAccessor contextAccessor,
             IMapper mapper, IValidationService validation, ICacheService cache)
         {
             _unitOfWork = unitOfWork;
@@ -36,7 +36,7 @@ namespace MamaFit.Services.Service
 
             await _unitOfWork.ComponentRepository.InsertAsync(newComponent);
             await _unitOfWork.SaveChangesAsync();
-            
+
             await _cache.IncreaseVersionAsync("components");
         }
 
@@ -52,20 +52,20 @@ namespace MamaFit.Services.Service
 
             await _unitOfWork.ComponentRepository.SoftDeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
-            
+
             await _cache.IncreaseVersionAsync("components");
             await _cache.RemoveAsync($"component:{id}");
         }
 
-        public async Task<PaginatedList<ComponentResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
+        public async Task<PaginatedList<ComponentResponseDto>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
         {
             int version = await _cache.GetVersionAsync("components");
-            string cacheKey = $"components:v{version}:{index}:{pageSize}:{search ?? ""}:{sortBy ?? ""}";
-            
+            string cacheKey = $"components:v{version}:{index}:{pageSize}:{search ?? ""}:{sortBy ?? EntitySortBy.CREATED_AT_DESC}";
+
             var cached = await _cache.GetAsync<PaginatedList<ComponentResponseDto>>(cacheKey);
             if (cached != null)
                 return cached;
-            
+
             var componentList = await _unitOfWork.ComponentRepository.GetAllAsync(index, pageSize, search, sortBy);
 
             var responseList = componentList.Items.Select(item => _mapper.Map<ComponentResponseDto>(item)).ToList();
@@ -87,7 +87,7 @@ namespace MamaFit.Services.Service
             var cached = await _cache.GetAsync<ComponentGetByIdResponseDto>(cacheKey);
             if (cached != null)
                 return cached;
-            
+
             var component = await _unitOfWork.ComponentRepository.GetById(id);
 
             if (component == null)
@@ -104,13 +104,13 @@ namespace MamaFit.Services.Service
             var cached = await _cache.GetAsync<List<ComponentGetByIdResponseDto>>(cacheKey);
             if (cached != null)
                 return cached;
-            
+
             var style = await _unitOfWork.StyleRepository.GetByIdNotDeletedAsync(styleId);
             _validation.CheckNotFound(style, $"Style with ID {styleId} not found.");
 
             var components = await _unitOfWork.ComponentRepository.GetComponentHavePresetByStyleId(styleId);
             _validation.CheckNotFound(components, $"No components found for style with ID {styleId}.");
-            
+
             var result = components.Select(c => _mapper.Map<ComponentGetByIdResponseDto>(c)).ToList();
             await _cache.SetAsync(cacheKey, result, TimeSpan.FromMinutes(15));
             return result;
@@ -130,7 +130,7 @@ namespace MamaFit.Services.Service
 
             await _unitOfWork.ComponentRepository.UpdateAsync(component);
             await _unitOfWork.SaveChangesAsync();
-            
+
             await _cache.IncreaseVersionAsync("components");
             await _cache.RemoveAsync($"component:{id}");
         }

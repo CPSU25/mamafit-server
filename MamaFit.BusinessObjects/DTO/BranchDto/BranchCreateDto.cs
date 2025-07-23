@@ -5,7 +5,8 @@
         public string? BranchManagerId { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
-        public string? OpeningHour { get; set; }
+        public TimeOnly? OpeningHour { get; set; }
+        public TimeOnly? ClosingHour { get; set; }
         public List<string> Images { get; set; } = new List<string>();
         public string? MapId { get; set; }
         public string? Province { get; set; }

@@ -16,8 +16,7 @@ namespace MamaFit.Repositories.Repository
 
         public async Task<PaginatedList<Branch>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
         {
-            var query = _dbSet
-                .Where(c => !c.IsDeleted);
+            var query = _dbSet.Where(c => !c.IsDeleted);
 
             if (!string.IsNullOrWhiteSpace(search))
             {

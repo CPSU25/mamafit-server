@@ -12,7 +12,7 @@ namespace MamaFit.BusinessObjects.Entity
         public List<string>? Images { get; set; }
         public bool IsDefault { get; set; } = false;
         public int? Weight { get; set; }
-        public decimal? Price { get; set; }
+        public decimal Price { get; set; }
         public PresetType Type { get; set; }
         
         public ApplicationUser? User { get; set; }

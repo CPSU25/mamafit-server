@@ -141,11 +141,11 @@ public class OrderService : IOrderService
         );
     }
 
-    public async Task<OrderResponseDto> GetOrderByIdAsync(string id)
+    public async Task<OrderGetByIdResponseDto> GetOrderByIdAsync(string id)
     {
-        var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
+        var order = await _unitOfWork.OrderRepository.GetByIdWithItems(id);
         _validation.CheckNotFound(order, "Order not found");
-        return _mapper.Map<OrderResponseDto>(order);
+        return _mapper.Map<OrderGetByIdResponseDto>(order);
     }
 
     public async Task<OrderResponseDto> CreateOrderAsync(OrderRequestDto model)
@@ -439,7 +439,7 @@ public class OrderService : IOrderService
 
         if (request.VoucherDiscountId != null)
         {
-            voucher = await _unitOfWork.VoucherDiscountRepository.GetByIdAsync(request.VoucherDiscountId);
+            voucher = await _unitOfWork.VoucherDiscountRepository.GetVoucherDiscountWithBatch(request.VoucherDiscountId);
             _validation.CheckNotFound(voucher, $"Voucher with id: {request.VoucherDiscountId} not found");
         }
 
@@ -465,7 +465,7 @@ public class OrderService : IOrderService
             }
         }
         var addOnListTotalPrice = addOnOptions.Sum(x => x.AddOnOption!.Price);
-        var subTotalAmount = preset!.Price + addOnListTotalPrice;
+        var subTotalAmount = preset!.Price;
         decimal? discountValue = 0;
 
         if (voucher != null && voucher.VoucherBatch != null)
@@ -482,7 +482,8 @@ public class OrderService : IOrderService
 
         // Tính merchandise subtotal sau khi trừ discount
         var merchandiseAfterDiscount = subTotalAmount - discountValue;
-        var totalAmount = merchandiseAfterDiscount + request.ShippingFee;
+        var totalAmount = merchandiseAfterDiscount + request.ShippingFee + addOnListTotalPrice;
+        var depositSubtotal = merchandiseAfterDiscount / 2;
 
         var order = _mapper.Map<Order>(request);
         order.User = user!;
@@ -497,20 +498,23 @@ public class OrderService : IOrderService
         order.ShippingFee = request.ShippingFee;
         order.TotalAmount = totalAmount;
         order.PaymentStatus = PaymentStatus.PENDING;
+        order.ServiceAmount = addOnListTotalPrice;
 
         // Tính toán deposit fields nếu payment type là DEPOSIT
         if (request.PaymentType == PaymentType.DEPOSIT)
         {
             order.PaymentType = PaymentType.DEPOSIT;
             // Chia đôi số tiền merchandise sau khi đã trừ discount
-            order.DepositSubtotal = merchandiseAfterDiscount / 2; // 50% của merchandise sau discount
+            order.DepositSubtotal = depositSubtotal; // 50% của merchandise sau discount
             order.RemainingBalance = merchandiseAfterDiscount - order.DepositSubtotal;
+            order.TotalPaid = depositSubtotal + addOnListTotalPrice + request.ShippingFee;
         }
         else
         {
             order.PaymentType = PaymentType.FULL;
             order.DepositSubtotal = null;
             order.RemainingBalance = null;
+            order.TotalPaid = totalAmount;
         }
 
         order.OrderItems = new List<OrderItem>()

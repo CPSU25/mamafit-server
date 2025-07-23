@@ -4,6 +4,7 @@ using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace MamaFit.Repositories.Repository;
 
@@ -19,5 +20,16 @@ public class VoucherDiscountRepository : GenericRepository<VoucherDiscount> , IV
         if (!string.IsNullOrWhiteSpace(codeSearch))
             query = query.Where(x => x.Code.Contains(codeSearch));
         return await query.GetPaginatedList(index, pageSize);
+    }
+    
+    public async Task<VoucherDiscount> GetVoucherDiscountWithBatch(string id)
+    {
+        var voucherDiscount = await _dbSet.Include(x => x.VoucherBatch)
+            .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
+        if (voucherDiscount == null)
+        {
+            throw new KeyNotFoundException("Voucher discount not found");
+        }
+        return voucherDiscount;
     }
 }

@@ -11,8 +11,9 @@ public class OrderBaseDto
     public string? VoucherDiscountId { get; set; }
     public OrderType Type { get; set; }
     public OrderStatus? Status { get; set; }
-    public float TotalAmount { get; set; }
-    public float ShippingFee { get; set; }
+    public decimal TotalAmount { get; set; }
+    public decimal ShippingFee { get; set; }
+    public decimal? ServiceAmount { get; set; }
     public PaymentStatus PaymentStatus { get; set; }
     public PaymentMethod PaymentMethod { get; set; }
     public DeliveryMethod DeliveryMethod { get; set; }

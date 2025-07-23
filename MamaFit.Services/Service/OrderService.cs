@@ -15,8 +15,6 @@ using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace MamaFit.Services.Service;
 
@@ -466,7 +464,8 @@ public class OrderService : IOrderService
                 });
             }
         }
-        var subTotalAmount = preset!.Price;
+        var addOnListTotalPrice = addOnOptions.Sum(x => x.AddOnOption!.Price);
+        var subTotalAmount = preset!.Price + addOnListTotalPrice;
         decimal? discountValue = 0;
 
         if (voucher != null && voucher.VoucherBatch != null)
@@ -567,6 +566,6 @@ public class OrderService : IOrderService
 
     public async Task WebhookForContentfulWhenUpdateData(CmsServiceBaseDto request)
     {
-        await _cacheService.SetAsync("cms:service:base", request);
+        await _cacheService.SetAsync("cms:service:base", request,TimeSpan.FromDays(30));
     }
 }

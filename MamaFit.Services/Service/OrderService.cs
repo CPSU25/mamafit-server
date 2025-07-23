@@ -141,11 +141,11 @@ public class OrderService : IOrderService
         );
     }
 
-    public async Task<OrderResponseDto> GetOrderByIdAsync(string id)
+    public async Task<OrderGetByIdResponseDto> GetOrderByIdAsync(string id)
     {
-        var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
+        var order = await _unitOfWork.OrderRepository.GetByIdWithItems(id);
         _validation.CheckNotFound(order, "Order not found");
-        return _mapper.Map<OrderResponseDto>(order);
+        return _mapper.Map<OrderGetByIdResponseDto>(order);
     }
 
     public async Task<OrderResponseDto> CreateOrderAsync(OrderRequestDto model)

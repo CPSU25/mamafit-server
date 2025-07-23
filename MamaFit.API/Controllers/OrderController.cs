@@ -62,7 +62,7 @@ public class OrderController : ControllerBase
     public async Task<IActionResult> GetById([FromRoute] string id)
     {
         var result = await _service.GetOrderByIdAsync(id);
-        return Ok(new ResponseModel<OrderResponseDto>(
+        return Ok(new ResponseModel<OrderGetByIdResponseDto>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
             result,

@@ -49,36 +49,15 @@ namespace MamaFit.BusinessObjects.Data
             modelBuilder.Entity<ApplicationUser>().HasData(
                 new ApplicationUser
                 {
-                    Id = "1a3bcd12345678901234567890123456",
-                    UserName = "admin",
-                    UserEmail = "admin@mamafit.com",
+                    Id = "aw9aa51bbd304e77933e24bbed65cd19",
+                    UserName = "branchquan9",
+                    UserEmail = "branchquan9@mamafit.com",
                     HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
                     Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
-                    FullName = "Admin",
+                    PhoneNumber = "0909648632",
+                    FullName = "Hữu Danh",
                     IsVerify = true,
-                    RoleId = "2e7b5a97e42e4e84a08ffbe0bc05d2ea",
-                },
-                new ApplicationUser
-                {
-                    Id = "ce5235c40924fd5b0792732d3fb1b6f",
-                    UserName = "staff",
-                    UserEmail = "staff@mamafit.com",
-                    HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
-                    Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
-                    FullName = "Staff",
-                    IsVerify = true,
-                    RoleId = "5ed8cfa9b62d433c88ab097b6d2baccd",
-                },
-                new ApplicationUser
-                {
-                    Id = "4c9804ecc1d645de96fcfc906cc43d6c",
-                    UserName = "manager",
-                    UserEmail = "manager@mamafit.com",
-                    HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
-                    Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
-                    FullName = "Manager",
-                    IsVerify = true,
-                    RoleId = "a3cb88edaf2b4718a9986010c5b9c1d7",
+                    RoleId = "bf081015e17a41b8b1cae65b1b17cfdb",
                 },
                 new ApplicationUser
                 {
@@ -87,9 +66,58 @@ namespace MamaFit.BusinessObjects.Data
                     UserEmail = "designer@mamafit.com",
                     HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
                     Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
+                    PhoneNumber = "0909130392",
                     FullName = "Designer",
                     IsVerify = true,
                     RoleId = "e5b0f987fbf44608b7a6a2d0e313b3b2",
+                },
+                new ApplicationUser
+                {
+                    Id = "1a3bcd12345678901234567890123456",
+                    UserName = "admin",
+                    UserEmail = "admin@mamafit.com",
+                    HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
+                    Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
+                    PhoneNumber = "0909932698",
+                    FullName = "Admin",
+                    IsVerify = true,
+                    RoleId = "2e7b5a97e42e4e84a08ffbe0bc05d2ea",
+                },
+                new ApplicationUser
+                {
+                    Id = "29d72211a9f7480c9812d61ee17c92b9",
+                    UserName = "branchquan1",
+                    UserEmail = "branchquan1@mamafit.com",
+                    HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
+                    Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
+                    PhoneNumber = "0909446338",
+                    FullName = "Phương Nam",
+                    IsVerify = true,
+                    RoleId = "bf081015e17a41b8b1cae65b1b17cfdb",
+                },
+                new ApplicationUser
+                {
+                    Id = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    UserName = "manager",
+                    UserEmail = "manager@mamafit.com",
+                    HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
+                    Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
+                    PhoneNumber = "0909178846",
+                    FullName = "Manager",
+                    IsVerify = true,
+                    RoleId = "a3cb88edaf2b4718a9986010c5b9c1d7",
+                },
+                new ApplicationUser
+                {
+                    Id = "ce5235c40924fd5b0792732d3fb1b6f",
+                    UserName = "staff",
+                    UserEmail = "staff@mamafit.com",
+                    HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
+                    Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
+                    PhoneNumber = "0909219060",
+                    FullName = "Staff",
+                    IsVerify = true,
+                    RoleId = "5ed8cfa9b62d433c88ab097b6d2baccd",
                 },
                 new ApplicationUser
                 {
@@ -98,20 +126,10 @@ namespace MamaFit.BusinessObjects.Data
                     UserEmail = "branchstaff@mamafit.com",
                     HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
                     Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
+                    PhoneNumber = "0909370428",
                     FullName = "Branch Staff",
                     IsVerify = true,
                     RoleId = "c9118b99c0ad486dbb18560a916b630c",
-                },
-                new ApplicationUser
-                {
-                    Id = "29d72211a9f7480c9812d61ee17c92b9",
-                    UserName = "branchmanager",
-                    UserEmail = "branchmanager@mamafit.com",
-                    HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
-                    Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
-                    FullName = "Branch Manager",
-                    IsVerify = true,
-                    RoleId = "bf081015e17a41b8b1cae65b1b17cfdb",
                 },
                 new ApplicationUser
                 {
@@ -120,11 +138,48 @@ namespace MamaFit.BusinessObjects.Data
                     UserEmail = "user@mamafit.com",
                     HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
                     Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
+                    PhoneNumber = "0909648736",
                     FullName = "User",
                     IsVerify = true,
                     RoleId = "b8d237b8b6f849988d60c6c3c1d0a943",
+                },
+                new ApplicationUser
+                {
+                    Id = "po103fbe31e6449b9b92c89b5c23oa1x2",
+                    UserName = "branchquan7",
+                    UserEmail = "branchquan7@mamafit.com",
+                    HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
+                    Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
+                    PhoneNumber = "0909648721",
+                    FullName = "Đức Anh",
+                    IsVerify = true,
+                    RoleId = "bf081015e17a41b8b1cae65b1b17cfdb",
+                },
+                new ApplicationUser
+                {
+                    Id = "ms1948fbai10380snalep19041nxbap1009",
+                    UserName = "branchhanoi",
+                    UserEmail = "branchhanoi@mamafit.com",
+                    HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
+                    Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
+                    PhoneNumber = "0909648722",
+                    FullName = "Lương Thiện",
+                    IsVerify = true,
+                    RoleId = "bf081015e17a41b8b1cae65b1b17cfdb",
+                },
+                new ApplicationUser
+                {
+                    Id = "nnas1039jxoaopepmxsaoqjxba188290nci",
+                    UserName = "branchbinhduong",
+                    UserEmail = "branchbinhduong@mamafit.com",
+                    HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
+                    Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
+                    PhoneNumber = "0909648723",
+                    FullName = "Van Tai",
+                    IsVerify = true,
+                    RoleId = "bf081015e17a41b8b1cae65b1b17cfdb",
                 }
-            );
+);
 
             #region Seed Category, Style, and Component
             var now = DateTime.UtcNow;
@@ -2959,7 +3014,118 @@ namespace MamaFit.BusinessObjects.Data
                     IsDeleted = false,
                 }
             );
-
+            modelBuilder.Entity<Branch>().HasData(
+            new Branch
+            {
+                Id = "f35d622bcccc448bb3e4d61205fe9771",
+                BranchManagerId = "29d72211a9f7480c9812d61ee17c92b9",
+                Name = "Chi Nhánh Quận 1",
+                Description = "Trụ sở chính, cung cấp đầy đủ các dịch vụ và hỗ trợ khách hàng 24/7.",
+                OpeningHour = new TimeOnly(09, 00, 00),
+                ClosingHour = new TimeOnly(18, 00, 00),
+                Images = ["{https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2Fdownload_1753254774304_m5fg15.jpeg?alt=media&token=02b0e1ee-3126-4c80-ad66-59aea3fdfd70}"],
+                MapId = "XTX4i62tylprNlWCpW2uynJsQW6yIY_EZQ8iropFoomEN3esvWO2cmkXQb-nfP_E-wpZk71HuuxrSHyunEWMQW0Vj6y6G4BjaE5alox8jOVpGkm-uhqcjGsxQaC0MG_fM",
+                Province = "TP. Hồ Chí Minh",
+                District = "Quận 1",
+                Ward = "Phường Bến Nghé",
+                Street = "123 Đường Lê Lợi",
+                Latitude = 10.772752f,
+                Longitude = 106.69986f,
+                CreatedBy = "System",
+                UpdatedBy = "System",
+                CreatedAt = new DateTime(2025, 07, 23, 14, 12, 59, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 07, 23, 14, 12, 59, DateTimeKind.Utc),
+                IsDeleted = false,
+            },
+            new Branch
+            {
+                Id = "9523754dfe4e4e9283011b328192272d",
+                BranchManagerId = "aw9aa51bbd304e77933e24bbed65cd19",
+                Name = "Chi Nhánh Quận 9",
+                Description = "Chi nhánh phát triển khu vực phía Đông thành phố, thuận tiện cho các khu công nghệ cao.",
+                OpeningHour = new TimeOnly(08, 30, 00),
+                ClosingHour = new TimeOnly(17, 30, 00),
+                Images = ["{https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2Fdownload_1753254877456_iubawj.jpeg?alt=media&token=e343f866-8c6b-4fa3-b5fa-17026bed0922}"],
+                MapId = "abpzyvOobyVhaEHDtbmbClhBTYq_RZQIWLtF96RrhC1YiSf7l0SyS2mqTeG5eaoO4bbpnj71Brih0u0HouGumgG_OL0-5RIRKbKhe4Yh4iB6Pkk2Ivh6-NZi6RchtH4gx",
+                Province = "TP. Hồ Chí Minh",
+                District = "Quận 9",
+                Ward = "Phường Hiệp Phú",
+                Street = "50 Đường Lê Văn Việt",
+                Latitude = 10.845493f,
+                Longitude = 106.77894f,
+                CreatedBy = "System",
+                UpdatedBy = "System",
+                CreatedAt = new DateTime(2025, 07, 23, 14, 14, 51, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 07, 23, 14, 14, 51, DateTimeKind.Utc),
+                IsDeleted = false,
+            },
+            new Branch
+            {
+                Id = "1ca91da6e6874aac9f8a64a90a5779b2",
+                BranchManagerId = "po103fbe31e6449b9b92c89b5c23oa1x2",
+                Name = "Chi Nhánh Quận 7",
+                Description = "Chi nhánh phục vụ khu vực Nam Sài Gòn, tập trung các khu đô thị mới, dân cư đông đúc.",
+                OpeningHour = new TimeOnly(09, 00, 00),
+                ClosingHour = new TimeOnly(13, 00, 00),
+                Images = ["{https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2Fdownload_1753254950766_es1xrv.jpeg?alt=media&token=c93a8c76-3112-44af-8c57-9445a41ec554}"],
+                MapId = "vRJ97gJfPeU95hjUgnwit3WGBWj-sb4PsqSY1vqF-sXWYIzEkrFXof6KGMRy11LlsYq9COapWetaMvjiztQlJx1IST76ef7qfUr9JXZ9vn_Z6hVoJqQmPn3itUiKfCOTf",
+                Province = "TP. Hồ Chí Minh",
+                District = "Quận 7",
+                Ward = "Phường Tân Phú",
+                Street = "25 Đường Nguyễn Lương Bằng",
+                Latitude = 10.715182f,
+                Longitude = 106.729774f,
+                CreatedBy = "System",
+                UpdatedBy = "System",
+                CreatedAt = new DateTime(2025, 07, 23, 14, 15, 55, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 07, 23, 14, 15, 55, DateTimeKind.Utc),
+                IsDeleted = false,
+            },
+            new Branch
+            {
+                Id = "896d6274c5a243758397d245dee2bbc9",
+                BranchManagerId = "ms1948fbai10380snalep19041nxbap1009",
+                Name = "Chi Nhánh Hà Nội",
+                Description = "Chi nhánh phục vụ khu vực phía Bắc, hỗ trợ khách hàng Hà Nội và vùng lân cận.",
+                OpeningHour = new TimeOnly(08, 30, 00),
+                ClosingHour = new TimeOnly(17, 30, 00),
+                Images = ["{https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2Fdownload_1753255046676_1dvpll.jpeg?alt=media&token=9ef2c48b-49dd-4206-b397-add539af29ba}"],
+                MapId = "Rka5w6k6WWv0zU42vEZ8RY-7anShuKUFf2lsQLqTpoppknNOuXqx22mpLRK4eIiPXKiTJLlCXttq7zptNu2qT8FzPJQ0",
+                Province = "Hà Nội",
+                District = "Quận Ba Đình",
+                Ward = "Phường Trúc Bạch",
+                Street = "456 Đường Hoàng Hoa Thám",
+                Latitude = 21.04182f,
+                Longitude = 105.83528f,
+                CreatedBy = "System",
+                UpdatedBy = "System",
+                CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false,
+            },
+            new Branch
+            {
+                Id = "b536f146c8f04bbc9949fc70a31fda8f",
+                BranchManagerId = "nnas1039jxoaopepmxsaoqjxba188290nci",
+                Name = "Chi Nhánh Bình Dương ",
+                Description = "Cơ sở phục vụ các khu công nghiệp và khu vực lân cận.",
+                OpeningHour = new TimeOnly(08, 30, 00),
+                ClosingHour = new TimeOnly(17, 30, 00),
+                Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2Fdownload_1753255136226_9b8nry.jpeg?alt=media&token=ec3eea0a-2200-4dd1-80f2-4b2bb4944350"],
+                MapId = "IKRTfzB9UZqa3EN9s3u43GSUVzekeJnSc7s0GZxTtJ9kuGEhq515mWSUeiCtS5bMdSoOsBIZRmvx8q1cmtg6KnmewnwwjDbTpfrpMhVhqmvN_gF8MkgyKrH2oVyeaDeHa",
+                Province = "Bình Dương",
+                District = "Thị xã Thuận An",
+                Ward = "Phường Lái Thiêu",
+                Street = "90 Đường Quốc lộ 13",
+                Latitude = 10.892301f,
+                Longitude = 106.70494f,
+                CreatedBy = "System",
+                UpdatedBy = "System",
+                CreatedAt = new DateTime(2025, 07, 23, 14, 19, 01, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 07, 23, 14, 19, 01, DateTimeKind.Utc),
+                IsDeleted = false,
+            }
+        );
             #endregion
         }
     }

@@ -16,6 +16,7 @@ namespace MamaFit.BusinessObjects.Entity
         public OrderStatus? Status { get; set; }
         public decimal? TotalAmount { get; set; }
         public decimal ShippingFee { get; set; }
+        public decimal? ServiceAmount { get; set; }
         public decimal? DiscountSubtotal { get; set; }
         public decimal? DepositSubtotal { get; set; }
         public decimal? RemainingBalance { get; set; }

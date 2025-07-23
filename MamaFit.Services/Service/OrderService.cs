@@ -431,7 +431,7 @@ public class OrderService : IOrderService
 
         var userId = GetCurrentUserId();
         var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
-        _validation.CheckNotFound(user, $"User with id{userId} not found");
+        _validation.CheckNotFound(user, $"User with id: {userId} not found");
 
         VoucherDiscount? voucher = null;
         MeasurementDiary? measurement = null;
@@ -525,7 +525,8 @@ public class OrderService : IOrderService
                     AddOnOption = x.AddOnOption,
                     Value = x.Value,
                 }).ToList(),
-                Price = preset.ComponentOptionPresets.Sum(co => co.ComponentOption!.Price),
+               // Price = preset.ComponentOptionPresets.Sum(co => co.ComponentOption!.Price),
+               Price = preset.Price,
                 Quantity = 1,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,

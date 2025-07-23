@@ -54,7 +54,7 @@ namespace MamaFit.Services.Service
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<PaginatedList<CategoryResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
+        public async Task<PaginatedList<CategoryResponseDto>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
         {
             var categoryList = await _unitOfWork.CategoryRepository.GetAllAsync(index, pageSize, search, sortBy);
 

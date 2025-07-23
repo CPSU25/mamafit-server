@@ -54,7 +54,7 @@ namespace MamaFit.Services.Service
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<PaginatedList<MaternityDressDetailResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
+        public async Task<PaginatedList<MaternityDressDetailResponseDto>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
         {
 
             var maternityDressDetailList = await _unitOfWork.MaternityDressDetailRepository.GetAllAsync(index, pageSize, search, sortBy);

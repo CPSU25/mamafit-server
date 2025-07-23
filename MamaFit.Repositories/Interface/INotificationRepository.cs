@@ -8,6 +8,6 @@ namespace MamaFit.Repositories.Interface;
 public interface INotificationRepository : IGenericRepository<Notification>
 {
     Task<PaginatedList<Notification>> GetAllAsync(int index, int pageSize, string? search, NotificationType? type,
-        string? sortBy);
-    Task<PaginatedList<Notification>> GetAllByTokenAsync(string receiverId, int index, int pageSize, string? search, NotificationType? type, string? sortBy);
+        EntitySortBy? sortBy);
+    Task<PaginatedList<Notification>> GetAllByTokenAsync(string receiverId, int index, int pageSize, string? search, NotificationType? type, EntitySortBy? sortBy);
 }

@@ -1,6 +1,7 @@
 ﻿using MamaFit.BusinessObjects.DBContext;
 using MamaFit.BusinessObjects.DTO.DesignRequestDto;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
@@ -15,7 +16,7 @@ namespace MamaFit.Repositories.Repository
         {
         }
 
-        public async Task<PaginatedList<DesignRequest>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
+        public async Task<PaginatedList<DesignRequest>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
         {
             var query = _dbSet
                 .Include(d => d.User)
@@ -27,11 +28,11 @@ namespace MamaFit.Repositories.Repository
                 query = query.Where(d => d.Description!.Contains(search));
             }
 
-            query = sortBy?.ToLower() switch
+            query = sortBy switch
             {
-                "createdat_asc" => query.OrderBy(d => d.CreatedAt),
-                "createdat_desc" => query.OrderByDescending(d => d.CreatedAt),
-                _ => query.OrderByDescending(d => d.CreatedAt)
+                EntitySortBy.CREATED_AT_ASC => query.OrderBy(u => u.CreatedAt),
+                EntitySortBy.CREATED_AT_DESC => query.OrderByDescending(u => u.CreatedAt),
+                _ => query.OrderByDescending(u => u.CreatedAt)
             };
 
             var pagedResult = await GetPaging(query, index, pageSize);

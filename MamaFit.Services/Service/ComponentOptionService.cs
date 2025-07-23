@@ -56,7 +56,7 @@ namespace MamaFit.Services.Service
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<PaginatedList<ComponentOptionResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
+        public async Task<PaginatedList<ComponentOptionResponseDto>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
         {
             var optionList = await _unitOfWork.ComponentOptionRepository.GetAllAsync(index, pageSize, search, sortBy);
 

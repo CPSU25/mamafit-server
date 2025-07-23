@@ -33,7 +33,7 @@ public class AddOnRepository : GenericRepository<AddOn>, IAddOnRepository
         {
             EntitySortBy.CREATED_AT_ASC => query.OrderBy(u => u.CreatedAt),
             EntitySortBy.CREATED_AT_DESC => query.OrderByDescending(u => u.CreatedAt),
-            _ => query.OrderByDescending(u => u.CreatedAt) // default
+            _ => query.OrderByDescending(u => u.CreatedAt)
         };
 
         return await GetPaging(query, index, pageSize);

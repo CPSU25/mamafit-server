@@ -1,5 +1,6 @@
 ﻿using MamaFit.BusinessObjects.DBContext;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
@@ -13,7 +14,7 @@ namespace MamaFit.Repositories.Repository
         {
         }
 
-        public async Task<PaginatedList<MaternityDressDetail>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
+        public async Task<PaginatedList<MaternityDressDetail>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
         {
             var query = _dbSet
                 .Where(x => !x.IsDeleted);
@@ -23,12 +24,12 @@ namespace MamaFit.Repositories.Repository
                 query = query.Where(x => x.Name.Contains(search));
             }
 
-            query = sortBy?.ToLower() switch
+            query = sortBy switch
             {
-                "name_asc" => query.OrderBy(x => x.Name),
-                "name_desc" => query.OrderByDescending(x => x.Name),
-                "createdat_asc" => query.OrderBy(x => x.CreatedAt),
-                "createdat_desc" => query.OrderByDescending(x => x.CreatedAt),
+                
+                
+                EntitySortBy.CREATED_AT_ASC => query.OrderBy(u => u.CreatedAt),
+                EntitySortBy.CREATED_AT_DESC => query.OrderByDescending(u => u.CreatedAt),
                 _ => query.OrderByDescending(x => x.CreatedAt)
             };
 
@@ -39,7 +40,7 @@ namespace MamaFit.Repositories.Repository
             return new PaginatedList<MaternityDressDetail>(list, paged.TotalCount, paged.PageNumber, pageSize);
         }
 
-        public async Task<PaginatedList<MaternityDressDetail>> GetAllByMaternityDressId(string maternityDressId, int index, int pageSize, string? search, string? sortBy)
+        public async Task<PaginatedList<MaternityDressDetail>> GetAllByMaternityDressId(string maternityDressId, int index, int pageSize, string? search, EntitySortBy? sortBy)
         {
             var query = _dbSet.Where(x => !x.IsDeleted && x.MaternityDressId!.Equals(maternityDressId));
 
@@ -48,12 +49,12 @@ namespace MamaFit.Repositories.Repository
                 query = query.Where(x => x.Name!.Contains(search));
             }
 
-            query = sortBy?.ToLower() switch
+            query = sortBy switch
             {
-                "name_asc" => query.OrderBy(x => x.Name),
-                "name_desc" => query.OrderByDescending(x => x.Name),
-                "createdat_asc" => query.OrderBy(x => x.CreatedAt),
-                "createdat_desc" => query.OrderByDescending(x => x.CreatedAt),
+                
+                
+                EntitySortBy.CREATED_AT_ASC => query.OrderBy(u => u.CreatedAt),
+                EntitySortBy.CREATED_AT_DESC => query.OrderByDescending(u => u.CreatedAt),
                 _ => query.OrderByDescending(x => x.CreatedAt)
             };
 

@@ -1,4 +1,5 @@
 ﻿using MamaFit.BusinessObjects.DTO.StyleDto;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,7 @@ namespace MamaFit.API.Controllers
             [FromQuery] int index = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] string? search = null,
-            [FromQuery] string? sortBy = "createdat_desc")
+            [FromQuery] EntitySortBy? sortBy = EntitySortBy.CREATED_AT_DESC)
         {
             var styles = await _styleService.GetAllAsync(index, pageSize, search, sortBy);
             return Ok(new ResponseModel<PaginatedList<StyleResponseDto>>(
@@ -38,7 +39,7 @@ namespace MamaFit.API.Controllers
             [FromQuery] int index = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] string? search = null,
-            [FromQuery] string? sortBy = "createdat_desc")
+            [FromQuery] EntitySortBy? sortBy = EntitySortBy.CREATED_AT_DESC)
         {
             var styles = await _styleService.GetAllByCategoryAsync(categoryId, index, pageSize, search, sortBy);
             return Ok(new ResponseModel<PaginatedList<StyleResponseDto>>(

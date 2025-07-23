@@ -52,7 +52,7 @@ namespace MamaFit.Services.Service
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<PaginatedList<ComponentResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? sortBy)
+        public async Task<PaginatedList<ComponentResponseDto>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
         {
             var cachedComponent = await _cacheService.GetAsync<PaginatedList<ComponentResponseDto>>($"components_{index}_{pageSize}_{search}_{sortBy}");
 

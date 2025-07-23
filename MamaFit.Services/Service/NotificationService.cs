@@ -37,7 +37,7 @@ public class NotificationService : INotificationService
     }
 
     public async Task<PaginatedList<NotificationResponseDto>> GetNotificationsByAccessTokenAsync(string accessToken,
-        int index = 1, int pageSize = 10,  string? search = null, NotificationType? type = null, string? sortBy = null)
+        int index = 1, int pageSize = 10,  string? search = null, NotificationType? type = null, EntitySortBy? sortBy = null)
     {
         var userId = JwtTokenHelper.ExtractUserId(accessToken);
 
@@ -54,7 +54,7 @@ public class NotificationService : INotificationService
     }
 
     public async Task<PaginatedList<NotificationResponseDto>> GetAllNotificationsAsync(int index = 1, int pageSize = 10,
-        string? search = null, NotificationType? type = null, string? sortBy = null)
+        string? search = null, NotificationType? type = null, EntitySortBy? sortBy = null)
     {
         var notifications = await _unitOfWork.NotificationRepository.GetAllAsync(index, pageSize, search, type, sortBy);
         var responseItems = notifications.Items

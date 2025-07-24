@@ -14,4 +14,5 @@ public class VoucherBatchBaseDto
     public int? DiscountValue { get; set; }
     public float? MinimumOrderValue { get; set; }
     public float? MaximumDiscountValue { get; set; }
+    public bool? IsAutoGenerate { get; set; } = false;
 }

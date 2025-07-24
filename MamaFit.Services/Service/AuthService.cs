@@ -89,7 +89,7 @@ public class AuthService : IAuthService
             Code = otpHash,
             ExpiredAt = DateTime.UtcNow.AddMinutes(5),
             OTPType = OTPType.CHANGE_PHONE_NUMBER,
-            Metadata = model.PhoneNumber
+            MetaData = model.PhoneNumber
         };
 
         await _unitOfWork.OTPRepository.CreateOTPAsync(otp);
@@ -114,11 +114,11 @@ public class AuthService : IAuthService
         if (otp == null || otp.ExpiredAt < DateTime.UtcNow)
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Invalid or expired OTP!");
 
-        if (otp.Metadata != model.PhoneNumber)
+        if (otp.MetaData != model.PhoneNumber)
             throw new ErrorException(StatusCodes.Status400BadRequest,
                 ApiCodes.BAD_REQUEST, "OTP does not match the phone number provided.");
 
-        string newPhone = otp.Metadata;
+        string newPhone = otp.MetaData;
         if (string.IsNullOrWhiteSpace(newPhone))
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "No phone number attached to OTP!");
 

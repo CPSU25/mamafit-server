@@ -56,6 +56,47 @@ public class AuthService : IAuthService
         return _mapper.Map<PermissionResponseDto>(user);
     }
 
+    public async Task CreateSystemAccountAsync(SystemAccountRequestDto model)
+    {
+        await _validation.ValidateAndThrowAsync(model);
+        var existingUser = await _unitOfWork.UserRepository.GetByEmailPhoneAsync(model.UserEmail, model.PhoneNumber);
+        if (existingUser != null)
+        {
+            if (existingUser.IsVerify)
+                throw new ErrorException(StatusCodes.Status400BadRequest,
+                    ApiCodes.BAD_REQUEST, "Email or phone number has already been registered!");
+            throw new ErrorException(StatusCodes.Status409Conflict,
+                ApiCodes.CONFLICT, "An unverified account with this email or phone already exists.");
+        }
+        
+        var newUser = new ApplicationUser
+        {
+            UserName = model.UserName,
+            FullName = model.FullName,
+            UserEmail = model.UserEmail.ToLower(),
+            PhoneNumber = model.PhoneNumber,
+            CreatedAt = DateTime.UtcNow,
+            CreatedBy = "System",
+            IsVerify = true,
+        };
+        
+        var salt = HashHelper.GenerateSalt();
+        newUser.Salt = salt;
+        newUser.HashPassword = HashHelper.HashPassword(model.Password, salt);
+        
+        var role = await _unitOfWork.RoleRepository.GetByIdAsync(model.RoleId);
+        if (role == null)
+        {
+            throw new ErrorException(StatusCodes.Status404NotFound,
+                ApiCodes.NOT_FOUND, $"Role with ID {model.RoleId} not found.");
+        }
+        
+        newUser.RoleId = role.Id;
+        
+        await _unitOfWork.UserRepository.InsertWithoutAuditAsync(newUser);
+        await _unitOfWork.SaveChangesAsync();
+    }
+    
     public async Task LogoutAsync(LogoutRequestDto model)
     {
         var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("userId");

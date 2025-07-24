@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MamaFit.BusinessObjects.DBContext
 {
-    public class ApplicationDbContext : Microsoft.EntityFrameworkCore.DbContext
+    public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext()
         {
@@ -102,7 +102,7 @@ namespace MamaFit.BusinessObjects.DBContext
 
             #endregion
 
-            #region Configure FluentApi
+            #region Configure Fluent Api
 
             modelBuilder.Entity<ApplicationUser>(options =>
             {

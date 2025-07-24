@@ -10,6 +10,8 @@ public interface IAuthService
 {
     Task<PermissionResponseDto> GetCurrentUserAsync();
     Task CreateSystemAccountAsync(SystemAccountRequestDto model);
+    Task VerifyPhoneOtpAsync(VerifyPhoneOtpDto model);
+    Task UpdatePhoneNumberAsync(PhoneNumberRequestDto model);
     Task<TokenResponseDto> SignInAsync(LoginRequestDto model);
     Task LogoutAsync(LogoutRequestDto model);
     Task ResendOtpAsync(SendOTPRequestDto model);

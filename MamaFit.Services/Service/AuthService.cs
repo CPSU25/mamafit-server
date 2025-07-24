@@ -56,6 +56,78 @@ public class AuthService : IAuthService
         return _mapper.Map<PermissionResponseDto>(user);
     }
 
+    public async Task UpdatePhoneNumberAsync(PhoneNumberRequestDto model)
+    {
+        await _validation.ValidateAndThrowAsync(model);
+
+        var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("userId");
+        if (string.IsNullOrWhiteSpace(userId))
+            throw new ErrorException(StatusCodes.Status401Unauthorized, "Unauthorized access!");
+
+        var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+        if (user == null)
+            throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "User not found!");
+
+        if (user.PhoneNumber == model.PhoneNumber)
+            throw new ErrorException(StatusCodes.Status400BadRequest,
+                ApiCodes.BAD_REQUEST, "This phone number is already set.");
+
+        var isPhoneInUse = await _unitOfWork.UserRepository.GetByPhoneNumberAsync(model.PhoneNumber);
+        if (isPhoneInUse != null && isPhoneInUse.Id != user.Id && isPhoneInUse.IsVerify)
+            throw new ErrorException(StatusCodes.Status400BadRequest,
+                ApiCodes.BAD_REQUEST, "Phone number is already used by another verified account!");
+
+        // Xoá OTP cũ nếu có
+        var oldOtps = await _unitOfWork.OTPRepository.GetOTPAsync(user.Id, null, OTPType.CHANGE_PHONE_NUMBER);
+        if (oldOtps != null) await _unitOfWork.OTPRepository.DeleteOTPAsync(oldOtps);
+
+        string otpCode = GenerateOtpCode();
+        string otpHash = HashHelper.HashOtp(otpCode);
+        var otp = new OTP
+        {
+            UserId = user.Id,
+            Code = otpHash,
+            ExpiredAt = DateTime.UtcNow.AddMinutes(5),
+            OTPType = OTPType.CHANGE_PHONE_NUMBER,
+            Metadata = model.PhoneNumber
+        };
+
+        await _unitOfWork.OTPRepository.CreateOTPAsync(otp);
+        await _unitOfWork.SaveChangesAsync();
+
+        await SendOtpEmailAsync(user.UserEmail, otpCode);
+    }
+
+    public async Task VerifyPhoneOtpAsync(VerifyPhoneOtpDto model)
+    {
+        var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("userId");
+        if (string.IsNullOrWhiteSpace(userId))
+            throw new ErrorException(StatusCodes.Status401Unauthorized, "Unauthorized access!");
+
+        var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+        if (user == null)
+            throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "User not found!");
+
+        string otpHash = HashHelper.HashOtp(model.OtpCode);
+        var otp = await _unitOfWork.OTPRepository.GetOTPAsync(user.Id, otpHash, OTPType.CHANGE_PHONE_NUMBER);
+
+        if (otp == null || otp.ExpiredAt < DateTime.UtcNow)
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Invalid or expired OTP!");
+
+        if (otp.Metadata != model.PhoneNumber)
+            throw new ErrorException(StatusCodes.Status400BadRequest,
+                ApiCodes.BAD_REQUEST, "OTP does not match the phone number provided.");
+
+        string newPhone = otp.Metadata;
+        if (string.IsNullOrWhiteSpace(newPhone))
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "No phone number attached to OTP!");
+
+        user.PhoneNumber = newPhone;
+        await _unitOfWork.UserRepository.UpdateUserAsync(user);
+        await _unitOfWork.OTPRepository.DeleteOTPAsync(otp);
+        await _unitOfWork.SaveChangesAsync();
+    }
+    
     public async Task CreateSystemAccountAsync(SystemAccountRequestDto model)
     {
         await _validation.ValidateAndThrowAsync(model);

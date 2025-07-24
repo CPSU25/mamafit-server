@@ -3,6 +3,7 @@
     public enum OTPType
     {
         REGISTER,
-        FORGOT_PASSWORD
+        FORGOT_PASSWORD,
+        CHANGE_PHONE_NUMBER,
     }
 }

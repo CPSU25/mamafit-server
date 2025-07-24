@@ -51,6 +51,10 @@ namespace MamaFit.Repositories.Repository
         public async Task<PaginatedList<Appointment>> GetByUserId(string userId, int index, int pageSize, string? search, AppointmentOrderBy? sortBy)
         {
             var query = _dbSet
+                .Include(x => x.User)
+                .ThenInclude(x => x.Role)
+                .Include(x => x.Branch)
+                .Include(x => x.Staff)
                .AsNoTracking()
                .Where(a => !a.IsDeleted && a.User != null && a.User.Id == userId);
 

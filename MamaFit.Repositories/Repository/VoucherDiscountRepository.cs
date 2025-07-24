@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MamaFit.Repositories.Repository;
 
-public class VoucherDiscountRepository : GenericRepository<VoucherDiscount> , IVoucherDiscountRepository
+public class VoucherDiscountRepository : GenericRepository<VoucherDiscount>, IVoucherDiscountRepository
 {
     public VoucherDiscountRepository(ApplicationDbContext context, IHttpContextAccessor accessor) : base(context, accessor)
     {
@@ -21,7 +21,17 @@ public class VoucherDiscountRepository : GenericRepository<VoucherDiscount> , IV
             query = query.Where(x => x.Code.Contains(codeSearch));
         return await query.GetPaginatedList(index, pageSize);
     }
-    
+
+    public async Task<List<VoucherDiscount>> GetAllByCurrentUserAsync(string userId)
+    {
+        var query = await _dbSet
+            .Include(x => x.VoucherBatch)
+            .Where(x => x.UserId == userId && !x.IsDeleted && x.Status == BusinessObjects.Enum.VoucherStatus.ACTIVE)
+            .ToListAsync();
+
+        return query;
+    }
+
     public async Task<VoucherDiscount> GetVoucherDiscountWithBatch(string id)
     {
         var voucherDiscount = await _dbSet.Include(x => x.VoucherBatch)

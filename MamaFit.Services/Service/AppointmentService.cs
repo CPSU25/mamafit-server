@@ -197,8 +197,9 @@ namespace MamaFit.Services.Service
             }
         }
 
-        public async Task<PaginatedList<AppointmentResponseDto>> GetByUserId(string userId, int index, int pageSize, string? search, AppointmentOrderBy? sortBy)
+        public async Task<PaginatedList<AppointmentResponseDto>> GetByUserId(int index, int pageSize, string? search, AppointmentOrderBy? sortBy)
         {
+            var userId = GetCurrentUserId();
             var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
             if (user == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, $"User not found with id {userId}");
@@ -217,6 +218,11 @@ namespace MamaFit.Services.Service
             );
 
             return paginatedResponse;
+        }
+
+        private string GetCurrentUserId()
+        {
+            return _contextAccessor.HttpContext?.User?.FindFirst("userId")?.Value ?? "System";
         }
     }
 }

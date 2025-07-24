@@ -1,13 +1,15 @@
-﻿using MamaFit.BusinessObjects.Entity;
+﻿using MamaFit.BusinessObjects.DTO.BranchDto;
+using MamaFit.BusinessObjects.DTO.UserDto;
+using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 
 namespace MamaFit.BusinessObjects.DTO.AppointmentDto
 {
     public class AppointmentResponseDto
     {
-        public ApplicationUser? User { get; set; }
-        public ApplicationUser? Staff { get; set; }
-        public Branch? Branch { get; set; }
+        public UserReponseDto? User { get; set; }
+        public UserReponseDto? Staff { get; set; }
+        public BranchResponseDto? Branch { get; set; }
         public string? FullName { get; set; } = null!;
         public string? PhoneNumber { get; set; } = null!;
         public DateTime BookingTime { get; set; }

@@ -35,6 +35,23 @@ namespace MamaFit.API.Controllers
         }
 
         [Authorize]
+        [HttpGet("user")]
+        public async Task<IActionResult> GetByUserId(
+            [FromQuery] int index = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? search = null,
+            [FromQuery] AppointmentOrderBy? sortBy = AppointmentOrderBy.CREATED_AT_DESC)
+        {
+            var appointments = await _appointmentService.GetByUserId(index, pageSize, search, sortBy);
+            return Ok(new ResponseModel<PaginatedList<AppointmentResponseDto>>(
+                StatusCodes.Status200OK,
+                ApiCodes.SUCCESS,
+                appointments,
+                "Get all appointments by user successfully!"
+            ));
+        }
+
+        [Authorize]
         [HttpGet("{appointmentId}")]
         public async Task<IActionResult> GetById([FromRoute] string appointmentId)
         {

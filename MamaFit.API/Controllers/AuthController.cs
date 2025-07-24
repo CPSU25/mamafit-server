@@ -33,6 +33,18 @@ namespace MamaFit.API.Controllers
             ));
         }
 
+        [HttpPost("create-system-account")]
+        public async Task<IActionResult> CreateSystemAccount([FromBody] SystemAccountRequestDto model)
+        {
+            await _authService.CreateSystemAccountAsync(model);
+            return Ok(new ResponseModel<object>(
+                StatusCodes.Status201Created,
+                ApiCodes.CREATED,
+                null,
+                "Create system account successfully!"
+            ));
+        }
+        
         [HttpPost("send-otp")]
         public async Task<IActionResult> SendOtp([FromBody] SendOTPRequestDto model)
         {

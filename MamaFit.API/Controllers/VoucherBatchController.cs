@@ -1,6 +1,7 @@
 using MamaFit.BusinessObjects.DTO.VoucherBatchDto;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MamaFit.API.Controllers;
@@ -55,6 +56,7 @@ public class VoucherBatchController : ControllerBase
         ));
     }
     
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] VoucherBatchRequestDto requestDto)
     {

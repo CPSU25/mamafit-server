@@ -49,22 +49,34 @@ public class VoucherBatchService : IVoucherBatchService
     public async Task<VoucherBatchResponseDto> CreateVoucherBatchAsync(VoucherBatchRequestDto requestDto)
     {
         await _validation.ValidateAndThrowAsync(requestDto);
-        var existedBatch = await _unitOfWork.VoucherBatchRepository.IsBatchExistedAsync(requestDto.BatchCode, requestDto.BatchName);
-        _validation.CheckConflict(existedBatch, "Voucher batch with the same code and name already exists");
-        var voucherBatch = _mapper.Map<VoucherBatch>(requestDto);
 
+        var existedBatch = await _unitOfWork.VoucherBatchRepository.IsBatchExistedAsync(requestDto.BatchCode!, requestDto.BatchName!);
+        _validation.CheckConflict(existedBatch, "Voucher batch with the same code and name already exists");
+
+        var voucherBatch = _mapper.Map<VoucherBatch>(requestDto);
         voucherBatch.RemainingQuantity = requestDto.TotalQuantity;
 
-        if(voucherBatch.DiscountType == DiscountType.PERCENTAGE)
+        if (voucherBatch.DiscountType == DiscountType.PERCENTAGE && voucherBatch.DiscountValue > 100)
         {
-            if (voucherBatch.DiscountValue > 100)
-                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "DiscountValue must be between 0 and 100");
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "DiscountValue must be between 0 and 100");
         }
 
         await _unitOfWork.VoucherBatchRepository.InsertAsync(voucherBatch);
         await _unitOfWork.SaveChangesAsync();
+        
+        if (voucherBatch.IsAutoGenerate == true && voucherBatch.TotalQuantity.HasValue)
+        {
+            var generatedVouchers = GenerateVoucherDiscounts(voucherBatch, voucherBatch.TotalQuantity.Value);
+            foreach (var voucher in generatedVouchers)
+            {
+                await _unitOfWork.VoucherDiscountRepository.InsertAsync(voucher);
+            }
+            await _unitOfWork.SaveChangesAsync();
+        }
+
         return _mapper.Map<VoucherBatchResponseDto>(voucherBatch);
     }
+
     
     public async Task<VoucherBatchResponseDto> UpdateVoucherBatchAsync(string id, VoucherBatchRequestDto requestDto)
     {
@@ -72,11 +84,11 @@ public class VoucherBatchService : IVoucherBatchService
         var voucherBatch = await _unitOfWork.VoucherBatchRepository.GetByIdNotDeletedAsync(id);
         _validation.CheckNotFound(voucherBatch, "Voucher batch not found");
         
-        var existedBatch = await _unitOfWork.VoucherBatchRepository.IsBatchExistedAsync(requestDto.BatchCode, requestDto.BatchName);
+        var existedBatch = await _unitOfWork.VoucherBatchRepository.IsBatchExistedAsync(requestDto.BatchCode!, requestDto.BatchName!);
         _validation.CheckConflict(existedBatch, "Voucher batch with the same code and name already exists");
         
         voucherBatch = _mapper.Map(requestDto, voucherBatch);
-        await _unitOfWork.VoucherBatchRepository.UpdateAsync(voucherBatch);
+        await _unitOfWork.VoucherBatchRepository.UpdateAsync(voucherBatch!);
         await _unitOfWork.SaveChangesAsync();
         return _mapper.Map<VoucherBatchResponseDto>(voucherBatch);
     }
@@ -85,7 +97,7 @@ public class VoucherBatchService : IVoucherBatchService
     {
         var voucherBatch = await _unitOfWork.VoucherBatchRepository.GetByIdNotDeletedAsync(id);
         _validation.CheckNotFound(voucherBatch, "Voucher batch not found");
-        await _unitOfWork.VoucherBatchRepository.SoftDeleteAsync(voucherBatch.Id);
+        await _unitOfWork.VoucherBatchRepository.SoftDeleteAsync(voucherBatch!.Id);
         await _unitOfWork.SaveChangesAsync();
     }
 
@@ -103,9 +115,38 @@ public class VoucherBatchService : IVoucherBatchService
         return responseItems;
     }
 
+    private List<VoucherDiscount> GenerateVoucherDiscounts(VoucherBatch batch, int quantity)
+    {
+        var vouchers = new List<VoucherDiscount>();
+        for (int i = 0; i < quantity; i++)
+        {
+            var code = $"{batch.BatchCode?.ToUpper()}-{GenerateRandomCode(6)}";
+            var voucher = new VoucherDiscount
+            {
+                VoucherBatchId = batch.Id,
+                Code = code,
+                Status = VoucherStatus.ACTIVE,
+                UserId = GetCurrentUserId(),
+                CreatedAt = DateTime.UtcNow,
+                CreatedBy = "System"
+            };
+            vouchers.Add(voucher);
+        }
+
+        return vouchers;
+    }
+
+    private static string GenerateRandomCode(int length)
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        var random = new Random();
+        return new string(Enumerable.Repeat(chars, length)
+            .Select(s => s[random.Next(s.Length)]).ToArray());
+    }
+    
     private string GetCurrentUserId()
     {
-        var userId = _context.HttpContext?.User?.FindFirst("userId")?.Value;
+        var userId = _context.HttpContext?.User.FindFirst("userId")?.Value;
         return userId ?? string.Empty;
     }
 }

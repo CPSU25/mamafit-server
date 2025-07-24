@@ -7,7 +7,7 @@ namespace MamaFit.BusinessObjects.Entity
     {
         public string? UserId { get; set; }
         public string? Code { get; set; }
-        public string? Metadata { get; set; }
+        public string? MetaData { get; set; }
         public DateTime ExpiredAt { get; set; }
         public OTPType OTPType { get; set; }
         

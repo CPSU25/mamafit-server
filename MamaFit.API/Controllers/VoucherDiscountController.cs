@@ -29,7 +29,19 @@ public class VoucherDiscountController : ControllerBase
             "Get all voucher discounts successfully!"
         ));
     }
-    
+
+    [HttpGet("current-user")]
+    public async Task<IActionResult> GetAllByCurrentUser()
+    {
+        var result = await _service.GetAllByCurrentUser();
+        return Ok(new ResponseModel<List<VoucherDiscountResponseDto>>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            result,
+            "Get all voucher discounts by current user successfully!"
+        ));
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById([FromRoute] string id)
     {

@@ -472,7 +472,7 @@ public class OrderService : IOrderService
         {
             if (voucher.VoucherBatch.DiscountType == DiscountType.PERCENTAGE)
             {
-                discountValue = (voucher.VoucherBatch.DiscountValue / 100) * subTotalAmount;
+                discountValue = (decimal) voucher.VoucherBatch.DiscountValue! / 100 * subTotalAmount;
             }
             else if (voucher.VoucherBatch.DiscountType == DiscountType.FIXED)
             {

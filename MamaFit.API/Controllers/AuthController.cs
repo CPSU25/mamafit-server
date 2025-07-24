@@ -33,6 +33,32 @@ namespace MamaFit.API.Controllers
             ));
         }
 
+        [Authorize]
+        [HttpPut("update-phone-number")]
+        public async Task<IActionResult> UpdatePhoneNumber([FromBody] PhoneNumberRequestDto model)
+        {
+            await _authService.UpdatePhoneNumberAsync(model);
+            return Ok(new ResponseModel<object>(
+                StatusCodes.Status200OK,
+                ApiCodes.SUCCESS,
+                null,
+                "Update phone number successfully! Please verify your phone number with the OTP sent to your phone."
+            ));
+        }
+        
+        [Authorize]
+        [HttpPost("verify-phone-otp")]
+        public async Task<IActionResult> VerifyPhoneOtp([FromBody] VerifyPhoneOtpDto model)
+        {
+            await _authService.VerifyPhoneOtpAsync(model);
+            return Ok(new ResponseModel<object>(
+                StatusCodes.Status200OK,
+                ApiCodes.SUCCESS,
+                null,
+                "Verify phone OTP successfully!"
+            ));
+        }
+        
         [HttpPost("create-system-account")]
         public async Task<IActionResult> CreateSystemAccount([FromBody] SystemAccountRequestDto model)
         {

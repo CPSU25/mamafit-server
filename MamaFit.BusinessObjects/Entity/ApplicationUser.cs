@@ -15,10 +15,6 @@ namespace MamaFit.BusinessObjects.Entity
         public string? PhoneNumber { get; set; }
         public bool IsVerify { get; set; } = false;
         public string? RoleId { get; set; }
-
-        //Related chat
-        public string? CurrentConnectionId { get; set; }    
-
         
         //Navigation properties
         public ApplicationUserRole? Role { get; set; }

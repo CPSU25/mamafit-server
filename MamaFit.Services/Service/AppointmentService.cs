@@ -34,7 +34,7 @@ namespace MamaFit.Services.Service
             return _contextAccessor.HttpContext?.User?.FindFirst("name")?.Value ?? "System";
         }
 
-        public async Task CreateAsync(AppointmentRequestDto requestDto)
+        public async Task<string> CreateAsync(AppointmentRequestDto requestDto)
         {
             var userName = GetCurrentUserName();
 
@@ -55,7 +55,9 @@ namespace MamaFit.Services.Service
             await _unitOfWork.SaveChangesAsync();
 
             var dateOnly = DateOnly.FromDateTime(requestDto.BookingTime);
-            await _cacheService.RemoveAsync($"appointment_slots_{requestDto.BranchId}_{dateOnly}");
+            await _cacheService.RemoveByPrefixAsync($"appointment_slots_{requestDto.BranchId}");
+
+            return newAppointment.Id;
         }
 
         public async Task DeleteAsync(string id)
@@ -115,7 +117,7 @@ namespace MamaFit.Services.Service
             await _unitOfWork.SaveChangesAsync();
 
             var dateOnly = DateOnly.FromDateTime(requestDto.BookingTime);
-            await _cacheService.RemoveAsync($"appointment_slots_{requestDto.BranchId}_{dateOnly}");
+            await _cacheService.RemoveByPrefixAsync($"appointment_slots_{requestDto.BranchId}");
         }
 
         public async Task CheckInAsync(string id)
@@ -212,6 +214,7 @@ namespace MamaFit.Services.Service
         {
             var slotCacheKey = $"appointment_slots_{branchId}_{date}";
             var cachedSlots = await _cacheService.GetAsync<List<AppointmentSlotResponseDto>>(slotCacheKey);
+
             if(cachedSlots == null)
             {
                 var branch = await _unitOfWork.BranchRepository.GetDetailById(branchId);

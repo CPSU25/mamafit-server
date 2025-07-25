@@ -4,6 +4,7 @@ using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
+using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
 
@@ -13,10 +14,13 @@ namespace MamaFit.Services.Service
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public BranchService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly ICacheService _cacheService;
+
+        public BranchService(IUnitOfWork unitOfWork, IMapper mapper, ICacheService cacheService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _cacheService = cacheService;
         }
 
         public async Task CreateAsync(BranchCreateDto requestDto)
@@ -46,6 +50,11 @@ namespace MamaFit.Services.Service
 
             await _unitOfWork.BranchRepository.SoftDeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
+
+            var slotCacheKey = $"appointment_slots_{branch.Id}";
+
+            // Xóa cache liên quan đến slot của branch này
+            await _cacheService.RemoveByPrefixAsync(slotCacheKey);
         }
 
         public async Task<PaginatedList<BranchResponseDto>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
@@ -85,6 +94,10 @@ namespace MamaFit.Services.Service
             _mapper.Map(requestDto,oldBranch);
             await _unitOfWork.BranchRepository.UpdateAsync(oldBranch);
             await _unitOfWork.SaveChangesAsync();
+            var slotCacheKey = $"appointment_slots_{oldBranch.Id}";
+
+            // Xóa cache liên quan đến slot của branch này
+            await _cacheService.RemoveByPrefixAsync(slotCacheKey);
         }
     }
 }

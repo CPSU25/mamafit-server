@@ -1,3 +1,6 @@
+using MamaFit.BusinessObjects.DTO.MaternityDressDetailDto;
+using MamaFit.BusinessObjects.DTO.PresetDto;
+
 namespace MamaFit.BusinessObjects.DTO.OrderItemDto;
 
 public class OrderItemResponseDto : OrderItemBaseDto
@@ -7,4 +10,7 @@ public class OrderItemResponseDto : OrderItemBaseDto
     public string? UpdatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+    
+    public MaternityDressDetailResponseDto MaternityDressDetail { get; set; } = new ();
+    public PresetGetAllResponseDto Preset { get; set; } = new ();
 }

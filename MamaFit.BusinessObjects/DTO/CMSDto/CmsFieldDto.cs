@@ -6,6 +6,8 @@
         public decimal DesignRequestServiceFee { get; set; }
         public float DepositRate { get; set; }
         public int PresetVersions { get; set; }
+        public int WarrantyTime { get; set; }
+        public int AppointmentSlotInterval { get; set; }
         //public CmsPickAddress? GhtkPickAddress { get; set; }
     }
 }

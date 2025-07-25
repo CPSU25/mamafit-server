@@ -8,10 +8,7 @@ namespace MamaFit.BusinessObjects.DTO.AppointmentDto
     public class AppointmentResponseDto
     {
         public UserReponseDto? User { get; set; }
-        public UserReponseDto? Staff { get; set; }
         public BranchResponseDto? Branch { get; set; }
-        public string? FullName { get; set; } = null!;
-        public string? PhoneNumber { get; set; } = null!;
         public DateTime BookingTime { get; set; }
         public string? Note { get; set; }
         public AppointmentStatus? Status { get; set; }

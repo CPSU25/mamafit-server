@@ -8,5 +8,6 @@ namespace MamaFit.Repositories.Interface
     public interface IBranchRepository : IGenericRepository<Branch>
     {
         Task<PaginatedList<Branch>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy);
+        Task<Branch> GetDetailById(string branchId);
     }
 }

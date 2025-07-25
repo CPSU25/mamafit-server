@@ -51,6 +51,20 @@ namespace MamaFit.API.Controllers
             ));
         }
 
+        [HttpGet("slot")]
+        public async Task<IActionResult> GetSlot(
+            [FromQuery] string branchId,
+            [FromQuery] DateOnly date)
+        {
+            var slots = await _appointmentService.GetSlotAsync(branchId, date);
+            return Ok(new ResponseModel<List<AppointmentSlotResponseDto>>(
+                StatusCodes.Status200OK,
+                ApiCodes.SUCCESS,
+                slots,
+                "Get appointment slots successfully!"
+            ));
+        }
+
         [Authorize]
         [HttpGet("{appointmentId}")]
         public async Task<IActionResult> GetById([FromRoute] string appointmentId)

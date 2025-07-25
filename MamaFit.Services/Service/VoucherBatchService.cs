@@ -126,7 +126,6 @@ public class VoucherBatchService : IVoucherBatchService
                 VoucherBatchId = batch.Id,
                 Code = code,
                 Status = VoucherStatus.ACTIVE,
-                UserId = GetCurrentUserId(),
                 CreatedAt = DateTime.UtcNow,
                 CreatedBy = "System"
             };

@@ -51,6 +51,9 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
     {
         return await _dbSet.AsNoTracking()
             .Include(x => x.OrderItems)
+            .ThenInclude(x => x.MaternityDressDetail)
+            .Include(x => x.OrderItems)
+            .ThenInclude(x => x.Preset)
             .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
     }
 

@@ -96,8 +96,8 @@ namespace MamaFit.Repositories.Repository
 
             var slots = new List<AppointmentSlotResponseDto>();
 
-            var currentTime = branch.OpeningHour;
-            var workEnd = branch.ClosingHour;
+            var currentTime = branch.OpeningHour.AddHours(-7);
+            var workEnd = branch.ClosingHour.AddHours(-7);
 
             // Tạo các slot chia đều theo slotInterval
             while (currentTime.Add(slotInterval) <= workEnd)
@@ -110,7 +110,7 @@ namespace MamaFit.Repositories.Repository
 
                 slots.Add(new AppointmentSlotResponseDto
                 {
-                    Slot = new List<TimeOnly> { slotStart, slotEnd },
+                    Slot = new List<TimeOnly> { slotStart.AddHours(7), slotEnd.AddHours(7) },
                     IsBooked = isBooked
                 });
 

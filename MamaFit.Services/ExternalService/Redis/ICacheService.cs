@@ -16,4 +16,5 @@ public interface ICacheService
     Task KeyExpireAsync(string key, TimeSpan expiry);
     Task RemoveKeyAsync(string key);
     Task<List<string>> ScanKeysByPatternAsync(string pattern);
+    Task RemoveByPrefixAsync(string prefix);
 }

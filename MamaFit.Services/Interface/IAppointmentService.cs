@@ -9,7 +9,7 @@ public interface IAppointmentService
     Task<AppointmentResponseDto> GetByIdAsync(string id);
     Task<PaginatedList<AppointmentResponseDto>> GetByUserId(int index, int pageSize, string? search, AppointmentOrderBy? sortBy);
     Task<List<AppointmentSlotResponseDto>> GetSlotAsync(string branchId, DateOnly date);
-    Task CreateAsync(AppointmentRequestDto requestDto);
+    Task<string> CreateAsync(AppointmentRequestDto requestDto);
     Task UpdateAsync(string id, AppointmentRequestDto requestDto);
     Task DeleteAsync(string id);
     Task CheckInAsync(string id);

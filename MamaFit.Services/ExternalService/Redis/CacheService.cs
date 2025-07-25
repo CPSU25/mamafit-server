@@ -117,4 +117,15 @@ public class CacheService : ICacheService
 
         return result.ToList();
     }
+
+    public async Task RemoveByPrefixAsync(string prefix)
+    {
+        string pattern = $"{prefix}*";
+        var keys = await ScanKeysByPatternAsync(pattern);
+        if (keys.Count > 0)
+        {
+            var redisKeys = keys.Select(k => (RedisKey)k).ToArray();
+            await _db.KeyDeleteAsync(redisKeys);
+        }
+    }
 }

@@ -81,12 +81,12 @@ namespace MamaFit.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AppointmentRequestDto requestDto)
         {
-            await _appointmentService.CreateAsync(requestDto);
+            string appointmentId = await _appointmentService.CreateAsync(requestDto);
             return StatusCode(StatusCodes.Status201Created,
                 new ResponseModel<string>(
                     StatusCodes.Status201Created,
                     ApiCodes.CREATED,
-                    null,
+                    appointmentId,
                     "Created appointment successfully!"
                 ));
         }

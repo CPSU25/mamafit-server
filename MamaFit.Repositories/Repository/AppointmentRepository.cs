@@ -16,6 +16,15 @@ namespace MamaFit.Repositories.Repository
         {
         }
 
+        public async Task<Appointment?> GetByIdNotDeletedAsync(string id)
+        {
+            return await _dbSet
+                .Include(x => x.User)
+                .ThenInclude(x => x!.Role)
+                .Include(x => x.Branch)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted);
+        }
         public async Task<PaginatedList<Appointment>> GetAllAsync(int index, int pageSize, string? search, AppointmentOrderBy? sortBy)
         {
             var query = _dbSet.AsNoTracking()

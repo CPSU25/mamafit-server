@@ -97,7 +97,7 @@ namespace MamaFit.Services.Service
 
         public async Task<AppointmentResponseDto> GetByIdAsync(string id)
         {
-            var oldAppointment = await _unitOfWork.AppointmentRepository.GetByIdAsync(id);
+            var oldAppointment = await _unitOfWork.AppointmentRepository.GetByIdNotDeletedAsync(id);
             _validationService.CheckNotFound(oldAppointment, $"Appointment not found with id {id}"); 
 
             return _mapper.Map<AppointmentResponseDto>(oldAppointment);

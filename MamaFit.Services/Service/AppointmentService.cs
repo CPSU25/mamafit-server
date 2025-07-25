@@ -53,6 +53,9 @@ namespace MamaFit.Services.Service
 
             await _unitOfWork.AppointmentRepository.InsertAsync(newAppointment);
             await _unitOfWork.SaveChangesAsync();
+
+            var dateOnly = DateOnly.FromDateTime(requestDto.BookingTime);
+            await _cacheService.RemoveAsync($"appointment_slots_{requestDto.BranchId}_{dateOnly}");
         }
 
         public async Task DeleteAsync(string id)
@@ -110,6 +113,9 @@ namespace MamaFit.Services.Service
 
             await _unitOfWork.AppointmentRepository.UpdateAsync(appointment);
             await _unitOfWork.SaveChangesAsync();
+
+            var dateOnly = DateOnly.FromDateTime(requestDto.BookingTime);
+            await _cacheService.RemoveAsync($"appointment_slots_{requestDto.BranchId}_{dateOnly}");
         }
 
         public async Task CheckInAsync(string id)
@@ -204,15 +210,23 @@ namespace MamaFit.Services.Service
 
         public async Task<List<AppointmentSlotResponseDto>> GetSlotAsync(string branchId, DateOnly date)
         {
-            var branch = await _unitOfWork.BranchRepository.GetDetailById(branchId);
-            _validationService.CheckNotFound(branch, $"Branch not found with id {branchId}");
+            var slotCacheKey = $"appointment_slots_{branchId}_{date}";
+            var cachedSlots = await _cacheService.GetAsync<List<AppointmentSlotResponseDto>>(slotCacheKey);
+            if(cachedSlots == null)
+            {
+                var branch = await _unitOfWork.BranchRepository.GetDetailById(branchId);
+                _validationService.CheckNotFound(branch, $"Branch not found with id {branchId}");
 
-            var config = await _configService.GetConfig();
-            var slotInterval = TimeSpan.FromMinutes(config.Fields.AppointmentSlotInterval);
+                var config = await _configService.GetConfig();
+                var slotInterval = TimeSpan.FromMinutes(config.Fields.AppointmentSlotInterval);
 
-            var slots = await _unitOfWork.AppointmentRepository.GetSlot(branch, date, slotInterval);
+                var slots = await _unitOfWork.AppointmentRepository.GetSlot(branch, date, slotInterval);
 
-            return slots;
+                await _cacheService.SetAsync(slotCacheKey, slots); // Cache for 7 days
+                return slots;
+            }
+
+            return cachedSlots;
         }
     }
 }

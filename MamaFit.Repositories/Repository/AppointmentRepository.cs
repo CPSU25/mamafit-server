@@ -86,7 +86,7 @@ namespace MamaFit.Repositories.Repository
 
         public async Task<List<AppointmentSlotResponseDto>> GetSlot(Branch branch, DateOnly date, TimeSpan slotInterval)
         {
-            var dateTime = date.ToDateTime(TimeOnly.MinValue);
+            var dateTime = date.ToDateTime(TimeOnly.MaxValue).ToUniversalTime();
 
             var bookedSlots = await _dbSet
                 .AsNoTracking()
@@ -106,7 +106,7 @@ namespace MamaFit.Repositories.Repository
                 var slotEnd = currentTime.Add(slotInterval);
 
                 // Kiểm tra xem slotStart đã được đặt chưa
-                bool isBooked = bookedSlots.Contains(slotStart);
+                bool isBooked = bookedSlots.Any(b => b >= slotStart && b < slotEnd);
 
                 slots.Add(new AppointmentSlotResponseDto
                 {

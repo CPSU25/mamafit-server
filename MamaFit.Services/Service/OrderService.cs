@@ -264,6 +264,7 @@ public class OrderService : IOrderService
             }
 
             voucher.Status = VoucherStatus.USED;
+            await _unitOfWork.VoucherDiscountRepository.UpdateAsync(voucher);
         }
 
         // Tính merchandise subtotal sau khi trừ discount
@@ -478,6 +479,9 @@ public class OrderService : IOrderService
             {
                 discountValue = voucher.VoucherBatch.DiscountValue;
             }
+
+            voucher.Status = VoucherStatus.USED;
+            await _unitOfWork.VoucherDiscountRepository.UpdateAsync(voucher);
         }
 
         // Tính merchandise subtotal sau khi trừ discount

@@ -5,6 +5,7 @@ using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace MamaFit.Repositories.Repository
 {
@@ -45,6 +46,17 @@ namespace MamaFit.Repositories.Repository
             );
 
             return responsePaginatedList;
+        }
+
+        public async Task<Branch> GetDetailById(string branchId)
+        {
+            var branch = await _dbSet
+                .Include(b => b.BranchManager)
+                .Include(b => b.Appointments)
+                .Include(b => b.BranchMaternityDressDetail)
+                .FirstOrDefaultAsync(b => b.Id == branchId && !b.IsDeleted);
+
+            return branch;
         }
     }
 }

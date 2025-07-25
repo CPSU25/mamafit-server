@@ -44,11 +44,12 @@ namespace MamaFit.Services.Mapper
     {
         public MapperEntities()
         {
-            //TokenDto Mapper
+            #region Token Mapper
             CreateMap<ApplicationUserToken, TokenResponseDto>().ReverseMap();
             CreateMap<ApplicationUserToken, RefreshTokenRequestDto>().ReverseMap();
+            #endregion
 
-            //User Mapper
+            #region User Mapper
             CreateMap<ApplicationUser, UserReponseDto>()
                 .ForMember(dest => dest.RoleName,
                     opt => opt.MapFrom(src => src.Role != null ? src.Role.RoleName : null))
@@ -56,84 +57,96 @@ namespace MamaFit.Services.Mapper
             CreateMap<ApplicationUser, PermissionResponseDto>()
                 .ForMember(dest => dest.RoleName,
                     opt => opt.MapFrom(src => src.Role != null ? src.Role.RoleName : null));
-
             CreateMap<ApplicationUser, RegisterUserRequestDto>();
             CreateMap<RegisterUserRequestDto, ApplicationUser>()
                 .ForMember(dest => dest.HashPassword, opt => opt.Ignore())
                 .ForMember(dest => dest.Salt, opt => opt.Ignore());
             CreateMap<ApplicationUser, SendOTPRequestDto>().ReverseMap();
+            #endregion
 
-            //Role Mapper
+            #region Role Mapper
             CreateMap<ApplicationUserRole, RoleResponseDto>().ReverseMap();
             CreateMap<ApplicationUserRole, RoleRequestDto>().ReverseMap();
+            #endregion
 
-            //MaternityDress Mapper
+            #region MaternityDress Mapper
             CreateMap<MaternityDress, MaternityDressRequestDto>().ReverseMap();
             CreateMap<MaternityDress, MaternityDressResponseDto>()
                 .ForMember(dest => dest.StyleName, otp => otp.MapFrom(x => x.Style!.Name))
                 .ReverseMap();
-
             CreateMap<MaternityDress, MaternityDressGetAllResponseDto>()
                 .ForMember(dest => dest.Price, otp => otp.MapFrom(x => x.Details.Select(x => x.Price)))
                 .ReverseMap();
+            #endregion
 
-            //MaternityDressDetail Mappper
+            #region MaternityDressDetail Mapper
             CreateMap<MaternityDressDetail, MaternityDressDetailRequestDto>().ReverseMap();
             CreateMap<MaternityDressDetail, MaternityDressDetailResponseDto>().ReverseMap();
+            #endregion
 
-            //Category Mapper
+            #region Category Mapper
             CreateMap<Category, CategoryRequestDto>().ReverseMap();
             CreateMap<Category, CategoryResponseDto>().ReverseMap();
             CreateMap<Category, CategoryGetByIdResponse>().ReverseMap();
+            #endregion
 
-            //Style Mapper
+            #region Style Mapper
             CreateMap<Style, StyleRequestDto>().ReverseMap();
             CreateMap<Style, StyleResponseDto>().ReverseMap();
             CreateMap<Style, StyleGetByIdResponseDto>()
                 .ForMember(dest => dest.Presets, otp => otp.MapFrom(src => src.Presets))
                 .ReverseMap();
+            #endregion
 
-            //Component Mapper
+            #region Component Mapper
             CreateMap<Component, ComponentRequestDto>().ReverseMap();
             CreateMap<Component, ComponentResponseDto>().ReverseMap();
             CreateMap<Component, ComponentGetByIdResponseDto>().ReverseMap();
+            #endregion
 
-            //ComponentOption Mapper
+            #region ComponentOption Mapper
             CreateMap<ComponentOption, ComponentOptionRequestDto>().ReverseMap();
             CreateMap<ComponentOption, ComponentOptionResponseDto>()
                 .ForMember(dest => dest.ComponentName, otp => otp.MapFrom(src => src.Component!.Name))
                 .ForMember(dest => dest.ComponentId, otp => otp.MapFrom(src => src.Component!.Id))
                 .ReverseMap();
+            #endregion
 
-            //DesignRequest Mapper
+            #region DesignRequest Mapper
             CreateMap<DesignRequest, DesignRequestCreateDto>().ReverseMap();
             CreateMap<DesignRequest, DesignResponseDto>()
                 .ForMember(dest => dest.Username, otp => otp.MapFrom(src => src.User!.UserName))
                 .ForMember(dest => dest.UserId, otp => otp.MapFrom(src => src.UserId))
                 .ReverseMap();
             CreateMap<DesignRequest, OrderDesignRequestDto>().ReverseMap();
+            #endregion
 
-            //Appointment Mapper 
+            #region Appointment Mapper
             CreateMap<Appointment, AppointmentRequestDto>().ReverseMap();
             CreateMap<Appointment, AppointmentResponseDto>().ReverseMap();
+            #endregion
 
-            //Branch Mapper
+            #region Branch Mapper
             CreateMap<Branch, BranchCreateDto>().ReverseMap();
             CreateMap<Branch, BranchResponseDto>().ReverseMap();
+            #endregion
 
-            //Measurement Mapper
+            #region Measurement Mapper
             CreateMap<Measurement, MeasurementDto>().ReverseMap();
-            CreateMap<MeasurementDiary, MeasurementDiaryDto>().ReverseMap();
             CreateMap<Measurement, MeasurementCreateDto>().ReverseMap();
             CreateMap<Measurement, CreateMeasurementDto>().ReverseMap();
-            CreateMap<MeasurementDiary, MeasurementDiaryDto>().ReverseMap();
             CreateMap<Measurement, UpdateMeasurementDto>().ReverseMap();
             CreateMap<Measurement, MeasurementResponseDto>().ReverseMap();
-            CreateMap<MeasurementDiary, MeasurementDiaryResponseDto>().ReverseMap();
-            CreateMap<MeasurementDiary, DiaryWithMeasurementDto>()
-                .ReverseMap();
+            #endregion
 
-            //Chat Mapper 
+            #region MeasurementDiary Mapper
+            CreateMap<MeasurementDiary, MeasurementDiaryResponseDto>().ReverseMap();
+            CreateMap<MeasurementDiary, DiaryWithMeasurementDto>().ReverseMap();
+            CreateMap<MeasurementDiary, MeasurementDiaryDto>().ReverseMap();
+            CreateMap<MeasurementDiary, MeasurementDiaryDto>().ReverseMap();
+            #endregion
+
+            #region Chat Mapper
             CreateMap<ChatMessage, ChatMessageCreateDto>().ReverseMap();
             CreateMap<ChatMessage, ChatMessageResponseDto>()
                 .ForMember(dest => dest.SenderName, otp => otp.MapFrom(src => src.Sender.FullName))
@@ -166,27 +179,31 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.MemberId, opt => opt.MapFrom(src => src.UserId))
                 .ForMember(dest => dest.MemberAvatar, otp => otp.MapFrom(src => src.User.ProfilePicture))
                 .ForMember(dest => dest.MemberName, opt => opt.MapFrom(src => src.User.FullName));
+            #endregion
 
-            //MaternityDressTask Mapper
+            #region MaternityDressTask Mapper
             CreateMap<MaternityDressTask, MaternityDressTaskRequestDto>().ReverseMap();
             CreateMap<MaternityDressTask, MaternityDressTaskResponseDto>().ReverseMap();
             CreateMap<MaternityDressTask, MaternityDressTaskDetailResponseDto>()
                 .ForMember(dest => dest.Detail, opt => opt.MapFrom(src =>
                     src.OrderItemTasks != null ? src.OrderItemTasks.FirstOrDefault() : null))
                 .ReverseMap();
+            #endregion
 
-            //VoucherBatch Mapper
+            #region VoucherBatch Mapper
             CreateMap<VoucherBatch, VoucherBatchRequestDto>().ReverseMap();
             CreateMap<VoucherBatch, VoucherBatchResponseDto>().ReverseMap();
             CreateMap<VoucherBatch, VoucherBatchDetailResponseDto>()
                 .ForMember(dest => dest.Details, opt => opt.MapFrom(src => src.VoucherDiscounts))
                 .ReverseMap();
+            #endregion
 
-            //VoucherDiscount Mapper
+            #region VoucherDiscount Mapper
             CreateMap<VoucherDiscount, VoucherDiscountRequestDto>().ReverseMap();
             CreateMap<VoucherDiscount, VoucherDiscountResponseDto>().ReverseMap();
+            #endregion
 
-            //Order Mapper
+            #region Order Mapper
             CreateMap<Order, OrderRequestDto>().ReverseMap();
             CreateMap<Order, OrderReadyToBuyRequestDto>().ReverseMap();
             CreateMap<Order, OrderResponseDto>().ReverseMap();
@@ -195,8 +212,9 @@ namespace MamaFit.Services.Mapper
             CreateMap<Order, OrderGetByIdResponseDto>()
                 .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.OrderItems))
                 .ReverseMap();
+            #endregion
 
-            //OrderItem Mapper
+            #region OrderItem Mapper
             CreateMap<OrderItem, OrderItemReadyToBuyRequestDto>().ReverseMap();
             CreateMap<OrderItem, OrderItemResponseDto>().ReverseMap();
             CreateMap<OrderItem, OrderItemGetByIdResponseDto>()
@@ -209,21 +227,24 @@ namespace MamaFit.Services.Mapper
                     .Distinct()
                     .ToList()))
                 .ReverseMap();
+            #endregion
 
-            // OrderItemTask Mapper
+            #region OrderItemTask Mapper
             CreateMap<OrderItemTask, OrderItemTaskResponseDto>()
                 .ForMember(dest => dest.ChargeId, otp => otp.MapFrom(src => src.UserId))
                 .ForMember(dest => dest.ChargeName, otp => otp.MapFrom(src => src.User!.FullName))
                 .ReverseMap();
+            #endregion
 
-            //Milestone Mapper
+            #region Milestone Mapper
             CreateMap<Milestone, MilestoneRequestDto>().ReverseMap();
             CreateMap<Milestone, MilestoneResponseDto>().ReverseMap();
             CreateMap<Milestone, MilestoneGetByIdResponseDto>()
                 .ForMember(dest => dest.Tasks, otp => otp.MapFrom(src => src.MaternityDressTasks))
                 .ReverseMap();
+            #endregion
 
-            // Notification Mapper
+            #region Notification Mapper
             CreateMap<Notification, NotificationResponseDto>()
                 .ForMember(dest => dest.Metadata, opt => opt.MapFrom(
                     src => string.IsNullOrEmpty(src.Metadata)
@@ -235,27 +256,33 @@ namespace MamaFit.Services.Mapper
                     src => src.Metadata == null
                         ? null
                         : JsonConvert.SerializeObject(src.Metadata)));
+            #endregion
 
-            //BranchMaternityDressDetail Mapper
+            #region BranchMaternityDressDetail Mapper
             CreateMap<BranchMaternityDressDetail, BranchMaternityDressDetailDto>().ReverseMap();
+            #endregion
 
-            //WarrantyHistory Mapper
+            #region WarrantyHistory Mapper
             CreateMap<WarrantyHistory, WarrantyHistoryRequestDto>().ReverseMap();
             CreateMap<WarrantyHistory, WarrantyHistoryResponseDto>().ReverseMap();
+            #endregion
 
-            //Address Mapper
+            #region Adress Mapper
             CreateMap<Address, AddressRequestDto>().ReverseMap();
             CreateMap<Address, AddressResponseDto>().ReverseMap();
+            #endregion
 
-            //Feedback Mapper
+            #region Feedback Mapper
             CreateMap<Feedback, FeedbackRequestDto>().ReverseMap();
             CreateMap<Feedback, FeedbackResponseDto>().ReverseMap();
+            #endregion
 
-            //CartItem Mapper
+            #region CartItem Mapper
             CreateMap<CartItem, CartItemRequestDto>().ReverseMap();
             CreateMap<CartItem, CartItemResponseDto>().ReverseMap();
+            #endregion
 
-            //Preset Mapper
+            #region Preset Mapper
             CreateMap<Preset, PresetCreateRequestDto>().ReverseMap();
             CreateMap<Preset, PresetUpdateRequestDto>().ReverseMap();
             CreateMap<Preset, PresetGetAllResponseDto>()
@@ -265,28 +292,35 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.ComponentOptions,
                     otp => otp.MapFrom(src => src.ComponentOptionPresets.Select(x => x.ComponentOption)))
                 .ReverseMap();
+            #endregion
 
-            //WarrantyRequest Mapper
+            #region WarrantyRequest Mapper
             CreateMap<WarrantyRequest, WarrantyRequestCreateDto>().ReverseMap();
             CreateMap<WarrantyRequest, WarrantyRequestUpdateDto>().ReverseMap();
             CreateMap<WarrantyRequest, WarrantyRequestGetAllDto>().ReverseMap();
             CreateMap<WarrantyRequest, WarrantyRequestGetByIdDto>().ReverseMap();
-            
-            //MaternityDressService Mapper
+            #endregion
+
+            #region AddOn Mapper
             CreateMap<AddOn, AddOnDto>().ReverseMap();
             CreateMap<AddOn, AddOnRequestDto>().ReverseMap();
-            
-            //AddOnOption Mapper
+            #endregion
+
+            #region AddOnOption Mapper
             CreateMap<AddOnOption, AddOnOptionDto>().ReverseMap();
             CreateMap<AddOnOption, AddOnOptionRequestDto>().ReverseMap();
-            
-            //Position Mapper
+            #endregion
+
+            #region Position Mapper
             CreateMap<Position, PositionDto>().ReverseMap();
             CreateMap<Position, PositionRequestDto>().ReverseMap();
-            
-            //Size Mapper
+            #endregion
+
+            #region Size Mapper
             CreateMap<Size, SizeDto>().ReverseMap();
             CreateMap<Size, SizeRequestDto>().ReverseMap();
+            #endregion
+
         }
     }
 }

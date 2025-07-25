@@ -10,5 +10,6 @@ namespace MamaFit.Repositories.Interface
     {
         Task<PaginatedList<Appointment>> GetAllAsync(int index, int pageSize, string? search, AppointmentOrderBy? sortBy);
         Task<PaginatedList<Appointment>> GetByUserId(string userId, int index, int pageSize, string? search, AppointmentOrderBy? sortBy);
+        Task<List<AppointmentSlotResponseDto>> GetSlot(Branch branch, DateOnly date, TimeSpan slotInterval);
     }
 }

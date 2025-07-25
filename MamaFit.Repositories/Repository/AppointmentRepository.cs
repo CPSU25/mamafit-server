@@ -54,7 +54,6 @@ namespace MamaFit.Repositories.Repository
                 .Include(x => x.User)
                 .ThenInclude(x => x.Role)
                 .Include(x => x.Branch)
-                .Include(x => x.Staff)
                .AsNoTracking()
                .Where(a => !a.IsDeleted && a.User != null && a.User.Id == userId);
 
@@ -83,6 +82,42 @@ namespace MamaFit.Repositories.Repository
                 .ToList();
 
             return new PaginatedList<Appointment>(listAppointment, pagedResult.TotalCount, pagedResult.PageNumber, pageSize);
+        }
+
+        public async Task<List<AppointmentSlotResponseDto>> GetSlot(Branch branch, DateOnly date, TimeSpan slotInterval)
+        {
+            var dateTime = date.ToDateTime(TimeOnly.MinValue);
+
+            var bookedSlots = await _dbSet
+                .AsNoTracking()
+                .Where(a => !a.IsDeleted && a.BranchId == branch.Id && a.BookingTime.Date == dateTime.Date)
+                .Select(a => TimeOnly.FromDateTime(a.BookingTime))
+                .ToListAsync();
+
+            var slots = new List<AppointmentSlotResponseDto>();
+
+            var currentTime = branch.OpeningHour;
+            var workEnd = branch.ClosingHour;
+
+            // Tạo các slot chia đều theo slotInterval
+            while (currentTime.Add(slotInterval) <= workEnd)
+            {
+                var slotStart = currentTime;
+                var slotEnd = currentTime.Add(slotInterval);
+
+                // Kiểm tra xem slotStart đã được đặt chưa
+                bool isBooked = bookedSlots.Contains(slotStart);
+
+                slots.Add(new AppointmentSlotResponseDto
+                {
+                    Slot = new List<TimeOnly> { slotStart, slotEnd },
+                    IsBooked = isBooked
+                });
+
+                currentTime = slotEnd;
+            }
+
+            return slots;
         }
     }
 }

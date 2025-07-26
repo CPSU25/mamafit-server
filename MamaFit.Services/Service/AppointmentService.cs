@@ -36,13 +36,41 @@ namespace MamaFit.Services.Service
 
         public async Task<string> CreateAsync(AppointmentRequestDto requestDto)
         {
-            var userName = GetCurrentUserName();
+                var userName = GetCurrentUserName();
 
             var branch = await _unitOfWork.BranchRepository.GetByIdAsync(requestDto.BranchId);
             _validationService.CheckNotFound(branch, $"Branch not found with id {requestDto.BranchId}");
 
             var user = await _unitOfWork.UserRepository.GetByIdAsync(requestDto.UserId);
             _validationService.CheckNotFound(user, $"User not found with id {requestDto.UserId}");
+
+            var dateOnly = DateOnly.FromDateTime(requestDto.BookingTime);
+            var slotList = await GetSlotAsync(requestDto.BranchId, dateOnly);
+
+            var bookingTime = TimeOnly.FromDateTime(requestDto.BookingTime).AddHours(7);
+
+            // Kiểm tra nếu thời gian này đã bị đặt rồi (bị trùng)
+            bool isDuplicated = slotList.Any(slot =>
+                slot.IsBooked &&
+                bookingTime == slot.Slot[0]);
+
+            if (isDuplicated)
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                    $"Booking time {bookingTime} is already booked by another user." +
+                    $" Please choose another time slot.");
+
+
+            // Kiểm tra nếu thời gian có nằm trong slot hợp lệ hay không
+            bool isValid = slotList.Any(slot =>
+                !slot.IsBooked &&
+                bookingTime >= slot.Slot[0] &&
+                bookingTime < slot.Slot[1]);
+
+            if (!isValid)
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                    $"Booking time {requestDto.BookingTime:t} is not within any available slot." +
+                    $" Please choose a valid time range.");
+
 
             var config = await _configService.GetConfig();
 
@@ -51,7 +79,7 @@ namespace MamaFit.Services.Service
                     $"User {user.UserName} has reached the maximum number of appointments for the day" +
                     $". Please try again tomorrow.");
 
-            if(user.Appointments.Count(x => x.Status == AppointmentStatus.UP_COMING) >= config.Fields.MaxAppointmentPerUser)
+            if (user.Appointments.Count(x => x.Status == AppointmentStatus.UP_COMING) >= config.Fields.MaxAppointmentPerUser)
                 throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                     $"User {user.UserName} has reached the maximum number of upcoming appointments" +
                     $". Please cancel an existing appointment before booking a new one.");
@@ -67,7 +95,6 @@ namespace MamaFit.Services.Service
             await _unitOfWork.AppointmentRepository.InsertAsync(newAppointment);
             await _unitOfWork.SaveChangesAsync();
 
-            var dateOnly = DateOnly.FromDateTime(requestDto.BookingTime);
             await _cacheService.RemoveByPrefixAsync($"appointment_slots_{requestDto.BranchId}");
 
             return newAppointment.Id;
@@ -111,7 +138,7 @@ namespace MamaFit.Services.Service
         public async Task<AppointmentResponseDto> GetByIdAsync(string id)
         {
             var oldAppointment = await _unitOfWork.AppointmentRepository.GetByIdNotDeletedAsync(id);
-            _validationService.CheckNotFound(oldAppointment, $"Appointment not found with id {id}"); 
+            _validationService.CheckNotFound(oldAppointment, $"Appointment not found with id {id}");
 
             return _mapper.Map<AppointmentResponseDto>(oldAppointment);
         }
@@ -228,7 +255,7 @@ namespace MamaFit.Services.Service
             var slotCacheKey = $"appointment_slots_{branchId}_{date}";
             var cachedSlots = await _cacheService.GetAsync<List<AppointmentSlotResponseDto>>(slotCacheKey);
 
-            if(cachedSlots == null)
+            if (cachedSlots == null)
             {
                 var branch = await _unitOfWork.BranchRepository.GetDetailById(branchId);
                 _validationService.CheckNotFound(branch, $"Branch not found with id {branchId}");

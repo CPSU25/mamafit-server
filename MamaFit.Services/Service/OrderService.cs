@@ -576,5 +576,6 @@ public class OrderService : IOrderService
     public async Task WebhookForContentfulWhenUpdateData(CmsServiceBaseDto request)
     {
         await _cacheService.SetAsync("cms:service:base", request,TimeSpan.FromDays(30));
+        await _cacheService.RemoveByPrefixAsync("appointment_slots");
     }
 }

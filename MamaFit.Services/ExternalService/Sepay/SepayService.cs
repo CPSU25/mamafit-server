@@ -69,12 +69,86 @@ public class SepayService : ISepayService
 
         var order = await _unitOfWork.OrderRepository.GetByCodeAsync(orderCode);
         _validationService.CheckNotFound(order, $"Order with code {orderCode} not found");
-        
+
         if (order.PaymentStatus == PaymentStatus.PAID_FULL ||
-            (order.PaymentType == PaymentType.DEPOSIT && order.PaymentStatus == PaymentStatus.PAID_DEPOSIT))
+            order.PaymentStatus == PaymentStatus.PAID_DEPOSIT_COMPLETED)
         {
-            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
-                "Order has already been paid");
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Order already paid");
+        }
+
+        await _transactionService.CreateTransactionAsync(payload, order.Id, order.Code);
+
+        if (order.PaymentType == PaymentType.DEPOSIT)
+        {
+            if (order.PaymentStatus == PaymentStatus.PENDING)
+            {
+                // Lần đầu thanh toán (cọc)
+                await _orderService.UpdateOrderStatusAsync(
+                    order.Id,
+                    OrderStatus.CONFIRMED,
+                    PaymentStatus.PAID_DEPOSIT
+                );
+
+                // Gửi noti thông báo
+                await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
+                {
+                    NotificationTitle = "Deposit Payment Successful",
+                    NotificationContent =
+                        $"Your deposit for order {order.Code} has been received. Remaining: {order.RemainingBalance:C}",
+                    Metadata = new()
+                    {
+                        { "orderId", order.Id },
+                        { "paymentStatus", PaymentStatus.PAID_DEPOSIT.ToString() },
+                        { "remainingBalance", order.RemainingBalance?.ToString() ?? "0" }
+                    },
+                    Type = NotificationType.PAYMENT,
+                    ReceiverId = order.UserId
+                });
+            }
+            else if (order.PaymentStatus == PaymentStatus.PAID_DEPOSIT)
+            {
+                // Thanh toán phần còn lại
+                await _orderService.UpdateOrderStatusAsync(
+                    order.Id,
+                    OrderStatus.PACKAGING,
+                    PaymentStatus.PAID_DEPOSIT_COMPLETED
+                );
+
+                await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
+                {
+                    NotificationTitle = "Final Payment Successful",
+                    NotificationContent = $"Remaining balance for order {order.Code} has been paid.",
+                    Metadata = new()
+                    {
+                        { "orderId", order.Id },
+                        { "paymentStatus", PaymentStatus.PAID_DEPOSIT_COMPLETED.ToString() }
+                    },
+                    Type = NotificationType.PAYMENT,
+                    ReceiverId = order.UserId
+                });
+            }
+        }
+        else
+        {
+            // Thanh toán full
+            await _orderService.UpdateOrderStatusAsync(
+                order.Id,
+                OrderStatus.IN_PRODUCTION,
+                PaymentStatus.PAID_FULL
+            );
+
+            await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
+            {
+                NotificationTitle = "Payment Successful",
+                NotificationContent = $"Your payment for order {order.Code} has been successfully processed.",
+                Metadata = new()
+                {
+                    { "orderId", order.Id },
+                    { "paymentStatus", PaymentStatus.PAID_FULL.ToString() }
+                },
+                Type = NotificationType.PAYMENT,
+                ReceiverId = order.UserId
+            });
         }
 
         var milestoneList = await _unitOfWork.MilestoneRepository.GetAllAsync();
@@ -97,53 +171,6 @@ public class SepayService : ISepayService
         {
             await _orderItemService.AssignTaskToOrderItemAsync(assignRequest);
         }
-
-        await _transactionService.CreateTransactionAsync(payload, order.Id, order.Code);
-        
-        if (order.PaymentType == PaymentType.DEPOSIT)
-        {
-            await _orderService.UpdateOrderStatusAsync(
-                order.Id,
-                OrderStatus.CONFIRMED,
-                PaymentStatus.PAID_DEPOSIT
-            );
-
-            await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
-            {
-                NotificationTitle = "Deposit Payment Successful",
-                NotificationContent =
-                    $"Your deposit payment for order {order.Code} has been successfully processed. Remaining balance: {order.RemainingBalance:C}",
-                Metadata = new Dictionary<string, string>()
-                {
-                    { "orderId", order.Id },
-                    { "paymentStatus", PaymentStatus.PAID_DEPOSIT.ToString() },
-                    { "remainingBalance", order.RemainingBalance?.ToString() ?? "0" }
-                },
-                Type = NotificationType.PAYMENT,
-                ReceiverId = order.UserId
-            });
-        }
-        else
-        {
-            await _orderService.UpdateOrderStatusAsync(
-                order.Id,
-                OrderStatus.IN_PRODUCTION,
-                PaymentStatus.PAID_FULL
-            );
-
-            await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
-            {
-                NotificationTitle = "Payment Successful",
-                NotificationContent = $"Your payment for order {order.Code} has been successfully processed.",
-                Metadata = new Dictionary<string, string>()
-                {
-                    { "orderId", order.Id },
-                    { "paymentStatus", PaymentStatus.PAID_FULL.ToString() }
-                },
-                Type = NotificationType.PAYMENT,
-                ReceiverId = order.UserId
-            });
-        }
     }
 
     public async Task<SepayQrResponse> CreatePaymentQrAsync(string orderId)
@@ -154,28 +181,30 @@ public class SepayService : ISepayService
             throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Order not found");
         }
 
-        if (order.PaymentStatus != PaymentStatus.PENDING)
+        if (order.PaymentStatus == PaymentStatus.PAID_FULL ||
+            order.PaymentStatus == PaymentStatus.PAID_DEPOSIT_COMPLETED)
         {
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
-                "Order is not in pending payment status or already paid");
+                "Order has already been fully paid");
         }
 
-        // Xác định số tiền cần thanh toán
         decimal paymentAmount;
         if (order.PaymentType == PaymentType.DEPOSIT)
         {
-            // Nếu là deposit, lấy DepositSubtotal
-            paymentAmount = order.DepositSubtotal ?? 0;
-            if (paymentAmount == 0)
+            if (order.PaymentStatus == PaymentStatus.PAID_DEPOSIT)
             {
-                // Tính toán nếu chưa có
-                var merchandiseAfterDiscount = (order.SubTotalAmount ?? 0) - (order.DiscountSubtotal ?? 0);
-                paymentAmount = merchandiseAfterDiscount / 2;
+                // Lần 2 thanh toán
+                paymentAmount = order.RemainingBalance ?? 0;
+            }
+            else
+            {
+                // Lần đầu thanh toán
+                paymentAmount = order.TotalPaid ?? 0;
             }
         }
         else
         {
-            // Nếu là full payment, lấy TotalAmount
+            // Thanh toán 1 lần
             paymentAmount = order.TotalAmount ?? 0;
         }
 
@@ -187,13 +216,13 @@ public class SepayService : ISepayService
             template: "qronly",
             download: "true");
 
-        var qrResponse = new SepayQrResponse
+        return new SepayQrResponse
         {
             QrUrl = qrUrl,
             OrderWithItem = _mapper.Map<OrderWithItemResponseDto>(order),
         };
-        return qrResponse;
     }
+
 
     private string GenerateSepayQrUrl(string accountNumber, string bankCode, decimal? amount, string description,
         string template, string download)

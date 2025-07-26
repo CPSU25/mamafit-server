@@ -68,63 +68,50 @@ public class OrderService : IOrderService
     }
 
     public async Task UpdateOrderStatusAsync(string id, OrderStatus orderStatus, PaymentStatus paymentStatus)
-{
-    var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
-    _validation.CheckNotFound(order, "Order not found");
-
-    if (order.Status == OrderStatus.COMPLETED && order.PaymentStatus == PaymentStatus.PAID_FULL)
     {
-        throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Order is already completed and paid.");
-    }
-    
-    order.Status = orderStatus;
-    order.PaymentStatus = paymentStatus;
+        var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
+        _validation.CheckNotFound(order, "Order not found");
 
-    // Xử lý riêng cho deposit payment
-    if (order.PaymentType == PaymentType.DEPOSIT && paymentStatus == PaymentStatus.PAID_DEPOSIT)
-    {
-        // Kiểm tra xem các field deposit đã được tính chưa
-        if (!order.DepositSubtotal.HasValue || !order.RemainingBalance.HasValue)
+        if (order.Status == OrderStatus.COMPLETED && 
+             (order.PaymentStatus == PaymentStatus.PAID_FULL || order.PaymentStatus == PaymentStatus.PAID_DEPOSIT_COMPLETED))
         {
-            // Tính toán deposit và remaining balance nếu chưa có
-            if (order.SubTotalAmount.HasValue)
-            {
-                // Tính merchandise sau khi trừ discount
-                var merchandiseAfterDiscount = order.SubTotalAmount.Value - (order.DiscountSubtotal ?? 0);
-                order.DepositSubtotal = merchandiseAfterDiscount / 2;
-                order.RemainingBalance = merchandiseAfterDiscount - order.DepositSubtotal;
-            }
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Order already completed and paid.");
         }
         
-        // Đảm bảo status là CONFIRMED khi thanh toán deposit thành công
-        order.Status = OrderStatus.CONFIRMED;
-    }
-    
-    await _unitOfWork.OrderRepository.UpdateAsync(order);
-    await _unitOfWork.SaveChangesAsync();
-
-    // Tạo notification
-    var notificationContent = paymentStatus == PaymentStatus.PAID_DEPOSIT 
-        ? $"Your order with code {order.Code} deposit has been paid. Status: {orderStatus.ToString().ToLowerInvariant()}."
-        : $"Your order with code {order.Code} has been updated to {orderStatus.ToString().ToLowerInvariant()}.";
-
-    var notification = new NotificationRequestDto()
-    {
-        ReceiverId = order.UserId,
-        NotificationTitle = "Order Status Updated",
-        NotificationContent = notificationContent,
-        Type = NotificationType.ORDER_PROGRESS,
-        ActionUrl = $"/order/{order.Id}",
-        Metadata = new Dictionary<string, string>()
+        order.Status = orderStatus;
+        order.PaymentStatus = paymentStatus;
+        
+        await _unitOfWork.OrderRepository.UpdateAsync(order);
+        await _unitOfWork.SaveChangesAsync();
+        
+        string notificationContent = paymentStatus switch
         {
-            { "orderId", order.Id },
-            { "paymentStatus", paymentStatus.ToString() },
-            { "orderStatus", orderStatus.ToString() }
-        }
-    };
+            PaymentStatus.PAID_DEPOSIT =>
+                $"Your deposit for order {order.Code} has been received. Order is now {orderStatus.ToString().ToLowerInvariant()}.",
+            PaymentStatus.PAID_DEPOSIT_COMPLETED =>
+                $"Final payment for order {order.Code} confirmed. Order is now {orderStatus.ToString().ToLowerInvariant()}.",
+            PaymentStatus.PAID_FULL =>
+                $"Full payment for order {order.Code} confirmed. Order is now {orderStatus.ToString().ToLowerInvariant()}.",
+            _ =>
+                $"Order {order.Code} status updated to {orderStatus.ToString().ToLowerInvariant()}."
+        };
 
-    await _notificationService.SendAndSaveNotificationAsync(notification);
-}
+        await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
+        {
+            ReceiverId = order.UserId,
+            NotificationTitle = "Order Status Updated",
+            NotificationContent = notificationContent,
+            Type = NotificationType.ORDER_PROGRESS,
+            ActionUrl = $"/order/{order.Id}",
+            Metadata = new Dictionary<string, string>
+            {
+                { "orderId", order.Id },
+                { "paymentStatus", paymentStatus.ToString() },
+                { "orderStatus", orderStatus.ToString() }
+            }
+        });
+    }
+
 
     public async Task<PaginatedList<OrderResponseDto>> GetAllAsync(int index, int pageSize, DateTime? startDate,
         DateTime? endDate)
@@ -440,7 +427,8 @@ public class OrderService : IOrderService
 
         if (request.VoucherDiscountId != null)
         {
-            voucher = await _unitOfWork.VoucherDiscountRepository.GetVoucherDiscountWithBatch(request.VoucherDiscountId);
+            voucher = await _unitOfWork.VoucherDiscountRepository
+                .GetVoucherDiscountWithBatch(request.VoucherDiscountId);
             _validation.CheckNotFound(voucher, $"Voucher with id: {request.VoucherDiscountId} not found");
         }
 
@@ -465,6 +453,7 @@ public class OrderService : IOrderService
                 });
             }
         }
+
         var addOnListTotalPrice = addOnOptions.Sum(x => x.AddOnOption!.Price);
         var subTotalAmount = preset!.Price;
         decimal? discountValue = 0;
@@ -473,7 +462,7 @@ public class OrderService : IOrderService
         {
             if (voucher.VoucherBatch.DiscountType == DiscountType.PERCENTAGE)
             {
-                discountValue = (decimal) voucher.VoucherBatch.DiscountValue! / 100 * subTotalAmount;
+                discountValue = (decimal)voucher.VoucherBatch.DiscountValue! / 100 * subTotalAmount;
             }
             else if (voucher.VoucherBatch.DiscountType == DiscountType.FIXED)
             {
@@ -533,8 +522,8 @@ public class OrderService : IOrderService
                     AddOnOption = x.AddOnOption,
                     Value = x.Value,
                 }).ToList(),
-               // Price = preset.ComponentOptionPresets.Sum(co => co.ComponentOption!.Price),
-               Price = preset.Price,
+                // Price = preset.ComponentOptionPresets.Sum(co => co.ComponentOption!.Price),
+                Price = preset.Price,
                 Quantity = 1,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,

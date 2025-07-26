@@ -133,7 +133,7 @@ public class SepayService : ISepayService
             // Thanh toán full
             await _orderService.UpdateOrderStatusAsync(
                 order.Id,
-                OrderStatus.IN_PRODUCTION,
+                OrderStatus.CONFIRMED,
                 PaymentStatus.PAID_FULL
             );
 

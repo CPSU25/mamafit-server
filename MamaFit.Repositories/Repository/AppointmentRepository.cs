@@ -22,6 +22,8 @@ namespace MamaFit.Repositories.Repository
                 .Include(x => x.User)
                 .ThenInclude(x => x!.Role)
                 .Include(x => x.Branch)
+                .ThenInclude(x => x.BranchManager)
+                .ThenInclude(x => x!.Role)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted);
         }
@@ -63,6 +65,8 @@ namespace MamaFit.Repositories.Repository
                 .Include(x => x.User)
                 .ThenInclude(x => x.Role)
                 .Include(x => x.Branch)
+                .ThenInclude(x => x.BranchManager)
+                .ThenInclude(x => x!.Role)
                .AsNoTracking()
                .Where(a => !a.IsDeleted && a.User != null && a.User.Id == userId);
 

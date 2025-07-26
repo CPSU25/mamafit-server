@@ -30,7 +30,7 @@ public class VoucherDiscountService : IVoucherDiscountService
         var responseItems = voucherDiscounts.Items
             .Select(voucher => _mapper.Map<VoucherDiscountResponseDto>(voucher))
             .ToList();
-        
+
         return new PaginatedList<VoucherDiscountResponseDto>(
             responseItems,
             voucherDiscounts.TotalCount,
@@ -38,15 +38,15 @@ public class VoucherDiscountService : IVoucherDiscountService
             pageSize
         );
     }
-    
+
     public async Task<VoucherDiscountResponseDto> GetByIdAsync(string id)
     {
         var voucherDiscount = await _unitOfWork.VoucherDiscountRepository.GetByIdNotDeletedAsync(id);
         _validation.CheckNotFound(voucherDiscount, "Voucher discount not found");
-        
+
         return _mapper.Map<VoucherDiscountResponseDto>(voucherDiscount);
     }
-    
+
     public async Task CreateAsync(VoucherDiscountRequestDto request)
     {
         await _validation.ValidateAndThrowAsync(request);
@@ -62,7 +62,7 @@ public class VoucherDiscountService : IVoucherDiscountService
         await _unitOfWork.VoucherDiscountRepository.InsertAsync(voucherDiscount);
         await _unitOfWork.SaveChangesAsync();
     }
-    
+
     public async Task UpdateAsync(string id, VoucherDiscountRequestDto request)
     {
         var voucherDiscount = await _unitOfWork.VoucherDiscountRepository.GetByIdNotDeletedAsync(id);
@@ -75,12 +75,12 @@ public class VoucherDiscountService : IVoucherDiscountService
         await _unitOfWork.VoucherDiscountRepository.UpdateAsync(voucherDiscount);
         await _unitOfWork.SaveChangesAsync();
     }
-    
+
     public async Task DeleteAsync(string id)
     {
         var voucherDiscount = await _unitOfWork.VoucherDiscountRepository.GetByIdNotDeletedAsync(id);
         _validation.CheckNotFound(voucherDiscount, "Voucher discount not found");
-        
+
         await _unitOfWork.VoucherDiscountRepository.SoftDeleteAsync(id);
         await _unitOfWork.SaveChangesAsync();
     }
@@ -98,5 +98,24 @@ public class VoucherDiscountService : IVoucherDiscountService
     {
         return _httpContextAccessor.HttpContext?.User.FindFirst("userId")?.Value
                ?? throw new InvalidOperationException("User ID not found in the current context.");
+    }
+
+    public async Task AssignVoucherDiscount(string vouchetBatchId, string userId)
+    {
+        var voucherBatch = await _unitOfWork.VoucherBatchRepository.GetDetailVoucherBatchAsync(vouchetBatchId);
+        _validation.CheckNotFound(voucherBatch, $"Voucher batch not found with id: {vouchetBatchId}");
+
+        var user = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(userId);
+        _validation.CheckNotFound(user, $"User not found with id: {userId}");
+
+        if (voucherBatch.RemainingQuantity > 0)
+        {
+            user.VoucherDiscounts.Add(voucherBatch.VoucherDiscounts.First(x => !x.IsDeleted && x.UserId == null));
+            voucherBatch.RemainingQuantity -= 1;
+            await _unitOfWork.VoucherBatchRepository.UpdateAsync(voucherBatch);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        else
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "No remaining vouchers in this batch.");
     }
 }

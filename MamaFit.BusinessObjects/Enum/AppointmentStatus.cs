@@ -8,7 +8,7 @@ namespace MamaFit.BusinessObjects.Enum
 {
     public enum AppointmentStatus
     {
-        UP_COMMING,
+        UP_COMING,
         CHECKED_IN,
         CHECKED_OUT,
         CANCELED,

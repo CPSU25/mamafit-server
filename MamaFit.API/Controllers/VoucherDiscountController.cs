@@ -30,15 +30,15 @@ public class VoucherDiscountController : ControllerBase
         ));
     }
 
-    [HttpGet("current-user")]
-    public async Task<IActionResult> GetAllByCurrentUser()
+    [HttpPut("assign/{voucherBatchId}/{userId}")]
+    public async Task<IActionResult> AssignVoucherDiscount([FromRoute] string voucherBatchId, [FromRoute] string userId)
     {
-        var result = await _service.GetAllByCurrentUser();
-        return Ok(new ResponseModel<List<VoucherDiscountResponseDto>>(
+        await _service.AssignVoucherDiscount(voucherBatchId, userId);
+        return Ok(new ResponseModel<string>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
-            result,
-            "Get all voucher discounts by current user successfully!"
+            null,
+            "Assign voucher discount successfully!"
         ));
     }
 

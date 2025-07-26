@@ -1,4 +1,6 @@
-﻿namespace MamaFit.BusinessObjects.DTO.DesignRequestDto
+﻿using MamaFit.BusinessObjects.DTO.OrderItemDto;
+
+namespace MamaFit.BusinessObjects.DTO.DesignRequestDto
 {
     public class DesignResponseDto
     {
@@ -11,5 +13,7 @@
         public DateTime? UpdatedAt { get; set; }
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }
+        
+        public OrderItemResponseDto? OrderItem { get; set; }
     }
 }

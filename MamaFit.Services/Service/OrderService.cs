@@ -30,10 +30,11 @@ public class OrderService : IOrderService
     private readonly IConfigurationSection _contentfulSettings;
     private readonly IConfiguration _configuration;
     private readonly ICacheService _cacheService;
+    private readonly IConfigService _configService;
 
     public OrderService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation,
         INotificationService notificationService, IHttpContextAccessor contextAccessor, HttpClient httpClient,
-        IConfiguration configuration, ICacheService cacheService)
+        IConfiguration configuration, ICacheService cacheService, IConfigService configService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -49,6 +50,7 @@ public class OrderService : IOrderService
         var entryId = _contentfulSettings!.GetSection("EntryId").Value;
         _contentfulClient = new ContentfulClient(httpClient, contentKey, null, spaceId, false);
         _cacheService = cacheService;
+        _configService = configService;
     }
 
     public async Task<PaginatedList<OrderResponseDto>> GetByTokenAsync(string accessToken, int index = 1,
@@ -68,63 +70,63 @@ public class OrderService : IOrderService
     }
 
     public async Task UpdateOrderStatusAsync(string id, OrderStatus orderStatus, PaymentStatus paymentStatus)
-{
-    var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
-    _validation.CheckNotFound(order, "Order not found");
-
-    if (order.Status == OrderStatus.COMPLETED && order.PaymentStatus == PaymentStatus.PAID_FULL)
     {
-        throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Order is already completed and paid.");
-    }
-    
-    order.Status = orderStatus;
-    order.PaymentStatus = paymentStatus;
+        var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
+        _validation.CheckNotFound(order, "Order not found");
 
-    // Xử lý riêng cho deposit payment
-    if (order.PaymentType == PaymentType.DEPOSIT && paymentStatus == PaymentStatus.PAID_DEPOSIT)
-    {
-        // Kiểm tra xem các field deposit đã được tính chưa
-        if (!order.DepositSubtotal.HasValue || !order.RemainingBalance.HasValue)
+        if (order.Status == OrderStatus.COMPLETED && order.PaymentStatus == PaymentStatus.PAID_FULL)
         {
-            // Tính toán deposit và remaining balance nếu chưa có
-            if (order.SubTotalAmount.HasValue)
-            {
-                // Tính merchandise sau khi trừ discount
-                var merchandiseAfterDiscount = order.SubTotalAmount.Value - (order.DiscountSubtotal ?? 0);
-                order.DepositSubtotal = merchandiseAfterDiscount / 2;
-                order.RemainingBalance = merchandiseAfterDiscount - order.DepositSubtotal;
-            }
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Order is already completed and paid.");
         }
-        
-        // Đảm bảo status là CONFIRMED khi thanh toán deposit thành công
-        order.Status = OrderStatus.CONFIRMED;
-    }
-    
-    await _unitOfWork.OrderRepository.UpdateAsync(order);
-    await _unitOfWork.SaveChangesAsync();
 
-    // Tạo notification
-    var notificationContent = paymentStatus == PaymentStatus.PAID_DEPOSIT 
-        ? $"Your order with code {order.Code} deposit has been paid. Status: {orderStatus.ToString().ToLowerInvariant()}."
-        : $"Your order with code {order.Code} has been updated to {orderStatus.ToString().ToLowerInvariant()}.";
+        order.Status = orderStatus;
+        order.PaymentStatus = paymentStatus;
 
-    var notification = new NotificationRequestDto()
-    {
-        ReceiverId = order.UserId,
-        NotificationTitle = "Order Status Updated",
-        NotificationContent = notificationContent,
-        Type = NotificationType.ORDER_PROGRESS,
-        ActionUrl = $"/order/{order.Id}",
-        Metadata = new Dictionary<string, string>()
+        // Xử lý riêng cho deposit payment
+        if (order.PaymentType == PaymentType.DEPOSIT && paymentStatus == PaymentStatus.PAID_DEPOSIT)
+        {
+            // Kiểm tra xem các field deposit đã được tính chưa
+            if (!order.DepositSubtotal.HasValue || !order.RemainingBalance.HasValue)
+            {
+                // Tính toán deposit và remaining balance nếu chưa có
+                if (order.SubTotalAmount.HasValue)
+                {
+                    // Tính merchandise sau khi trừ discount
+                    var merchandiseAfterDiscount = order.SubTotalAmount.Value - (order.DiscountSubtotal ?? 0);
+                    order.DepositSubtotal = merchandiseAfterDiscount / 2;
+                    order.RemainingBalance = merchandiseAfterDiscount - order.DepositSubtotal;
+                }
+            }
+
+            // Đảm bảo status là CONFIRMED khi thanh toán deposit thành công
+            order.Status = OrderStatus.CONFIRMED;
+        }
+
+        await _unitOfWork.OrderRepository.UpdateAsync(order);
+        await _unitOfWork.SaveChangesAsync();
+
+        // Tạo notification
+        var notificationContent = paymentStatus == PaymentStatus.PAID_DEPOSIT
+            ? $"Your order with code {order.Code} deposit has been paid. Status: {orderStatus.ToString().ToLowerInvariant()}."
+            : $"Your order with code {order.Code} has been updated to {orderStatus.ToString().ToLowerInvariant()}.";
+
+        var notification = new NotificationRequestDto()
+        {
+            ReceiverId = order.UserId,
+            NotificationTitle = "Order Status Updated",
+            NotificationContent = notificationContent,
+            Type = NotificationType.ORDER_PROGRESS,
+            ActionUrl = $"/order/{order.Id}",
+            Metadata = new Dictionary<string, string>()
         {
             { "orderId", order.Id },
             { "paymentStatus", paymentStatus.ToString() },
             { "orderStatus", orderStatus.ToString() }
         }
-    };
+        };
 
-    await _notificationService.SendAndSaveNotificationAsync(notification);
-}
+        await _notificationService.SendAndSaveNotificationAsync(notification);
+    }
 
     public async Task<PaginatedList<OrderResponseDto>> GetAllAsync(int index, int pageSize, DateTime? startDate,
         DateTime? endDate)
@@ -244,6 +246,8 @@ public class OrderService : IOrderService
             dressDetails.Add(_mapper.Map<MaternityDressDetail>(dress));
         }
 
+        var config = await _configService.GetConfig();
+
         var subTotalAmount = request.OrderItems.Sum(item =>
         {
             var dress = dressDetails.FirstOrDefault(d => d.Id == item.MaternityDressDetailId);
@@ -305,6 +309,7 @@ public class OrderService : IOrderService
             ItemType = ItemType.READY_TO_BUY,
             Price = d.Price,
             Quantity = request.OrderItems.First(i => i.MaternityDressDetailId == d.Id).Quantity,
+            WarrantyNumber = config.Fields.WarrantyTime,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
             CreatedBy = "System"
@@ -385,6 +390,8 @@ public class OrderService : IOrderService
                 "Design request service fee not found in CMS.");
         }
 
+        var config = await _configService.GetConfig();
+
         var order = new Order
         {
             UserId = userId,
@@ -412,6 +419,7 @@ public class OrderService : IOrderService
                     },
                     ItemType = ItemType.DESIGN_REQUEST,
                     Price = (decimal)designFee!,
+                    WarrantyNumber = config!.Fields!.WarrantyTime,
                     Quantity = 1,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
@@ -473,7 +481,7 @@ public class OrderService : IOrderService
         {
             if (voucher.VoucherBatch.DiscountType == DiscountType.PERCENTAGE)
             {
-                discountValue = (decimal) voucher.VoucherBatch.DiscountValue! / 100 * subTotalAmount;
+                discountValue = (decimal)voucher.VoucherBatch.DiscountValue! / 100 * subTotalAmount;
             }
             else if (voucher.VoucherBatch.DiscountType == DiscountType.FIXED)
             {
@@ -488,6 +496,8 @@ public class OrderService : IOrderService
         var merchandiseAfterDiscount = subTotalAmount - discountValue;
         var totalAmount = merchandiseAfterDiscount + request.ShippingFee + addOnListTotalPrice;
         var depositSubtotal = merchandiseAfterDiscount / 2;
+
+        var config = await _configService.GetConfig();
 
         var order = _mapper.Map<Order>(request);
         order.User = user!;
@@ -533,8 +543,9 @@ public class OrderService : IOrderService
                     AddOnOption = x.AddOnOption,
                     Value = x.Value,
                 }).ToList(),
-               // Price = preset.ComponentOptionPresets.Sum(co => co.ComponentOption!.Price),
-               Price = preset.Price,
+                // Price = preset.ComponentOptionPresets.Sum(co => co.ComponentOption!.Price),
+                Price = preset.Price,
+                WarrantyNumber = config!.Fields!.WarrantyTime,
                 Quantity = 1,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
@@ -575,7 +586,7 @@ public class OrderService : IOrderService
 
     public async Task WebhookForContentfulWhenUpdateData(CmsServiceBaseDto request)
     {
-        await _cacheService.SetAsync("cms:service:base", request,TimeSpan.FromDays(30));
+        await _cacheService.SetAsync("cms:service:base", request, TimeSpan.FromDays(30));
         await _cacheService.RemoveByPrefixAsync("appointment_slots");
     }
 }

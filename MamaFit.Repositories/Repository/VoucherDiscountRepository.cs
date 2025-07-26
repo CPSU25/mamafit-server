@@ -17,9 +17,9 @@ public class VoucherDiscountRepository : GenericRepository<VoucherDiscount>, IVo
 
     public async Task<PaginatedList<VoucherDiscount>> GetAllAsync(int index, int pageSize, string? codeSearch)
     {
-        var query = _dbSet.Where(x => !x.IsDeleted);
+        var query = _dbSet.AsQueryable();
         if (!string.IsNullOrWhiteSpace(codeSearch))
-            query = query.Where(x => x.Code.Contains(codeSearch));
+            query = query.Where(x => x.Code!.Contains(codeSearch));
         return await query.GetPaginatedList(index, pageSize);
     }
 
@@ -27,20 +27,15 @@ public class VoucherDiscountRepository : GenericRepository<VoucherDiscount>, IVo
     {
         var query = await _dbSet
             .Include(x => x.VoucherBatch)
-            .Where(x => x.UserId == userId && !x.IsDeleted && x.Status == VoucherStatus.ACTIVE)
+            .Where(x => x.UserId == userId && x.Status == VoucherStatus.ACTIVE)
             .ToListAsync();
 
         return query;
     }
 
-    public async Task<VoucherDiscount> GetVoucherDiscountWithBatch(string id)
+    public async Task<VoucherDiscount?> GetVoucherDiscountWithBatch(string id)
     {
-        var voucherDiscount = await _dbSet.Include(x => x.VoucherBatch)
-            .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
-        if (voucherDiscount == null)
-        {
-            throw new KeyNotFoundException("Voucher discount not found");
-        }
-        return voucherDiscount;
+         return await _dbSet.Include(x => x.VoucherBatch)
+            .FirstOrDefaultAsync(x => x.Id == id);
     }
 }

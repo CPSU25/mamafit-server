@@ -76,7 +76,6 @@ public class VoucherBatchService : IVoucherBatchService
 
         return _mapper.Map<VoucherBatchResponseDto>(voucherBatch);
     }
-
     
     public async Task<VoucherBatchResponseDto> UpdateVoucherBatchAsync(string id, VoucherBatchRequestDto requestDto)
     {

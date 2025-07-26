@@ -1,5 +1,6 @@
 using MamaFit.BusinessObjects.DBContext;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
@@ -29,9 +30,19 @@ public class VoucherBatchRepository : GenericRepository<VoucherBatch>, IVoucherB
         var result = await _dbSet
             .Include(x => x.VoucherDiscounts)
             .AsNoTracking()
-            .Where( x => x.VoucherDiscounts.Any(x => x.UserId == userId)).ToListAsync();
+            .Where( x => x.VoucherDiscounts.Any(x => x.UserId == userId) && 
+            x.VoucherDiscounts.Any(vd => vd.Status == VoucherStatus.ACTIVE)).ToListAsync();
 
         return result;
+    }
+
+    public Task<VoucherBatch> GetDetailVoucherBatchAsync(string id)
+    {
+        var voucherBatch = _dbSet
+            .Include(x => x.VoucherDiscounts)
+            .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
+
+        return voucherBatch;
     }
 
     public async Task<bool> IsBatchExistedAsync(string batchCode, string batchName)

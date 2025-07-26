@@ -47,6 +47,7 @@ namespace MamaFit.Services.Service
             var newAppointment = _mapper.Map<Appointment>(requestDto);
             newAppointment.User = user;
             newAppointment.Branch = branch;
+            newAppointment.Status = AppointmentStatus.UP_COMING;
             newAppointment.CreatedAt = DateTime.UtcNow;
             newAppointment.CreatedBy = userName;
             newAppointment.UpdatedBy = userName;

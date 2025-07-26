@@ -8,6 +8,8 @@
         public int PresetVersions { get; set; }
         public int WarrantyTime { get; set; }
         public int AppointmentSlotInterval { get; set; }
+        public int MaxAppointmentPerDay { get; set; }
+        public int MaxAppointmentPerUser { get; set; }
         //public CmsPickAddress? GhtkPickAddress { get; set; }
     }
 }

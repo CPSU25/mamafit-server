@@ -15,12 +15,14 @@ public class OrderItemService : IOrderItemService
     private readonly IMapper _mapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IValidationService _validation;
-    public OrderItemService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation, IHttpContextAccessor httpContextAccessor)
+    private readonly IConfigService _configService;
+    public OrderItemService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation, IHttpContextAccessor httpContextAccessor, IConfigService configService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _validation = validation;
         _httpContextAccessor = httpContextAccessor;
+        _configService = configService;
     }
 
     public async Task<PaginatedList<OrderItemResponseDto>> GetAllOrderItemsAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate)
@@ -52,6 +54,8 @@ public class OrderItemService : IOrderItemService
     {
         await _validation.ValidateAndThrowAsync(model);
 
+        var config = await _configService.GetConfig();
+
         var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(model.OrderId);
         _validation.CheckNotFound(order, "Order is not exist!");
 
@@ -59,6 +63,7 @@ public class OrderItemService : IOrderItemService
         _validation.CheckNotFound(maternityDressDetail, "Maternity dress detail is not exist!");
 
         var orderItem = _mapper.Map<OrderItem>(model);
+        orderItem.WarrantyNumber = config.Fields.WarrantyTime;
         await _unitOfWork.OrderItemRepository.InsertAsync(orderItem);
         await _unitOfWork.SaveChangesAsync();
 

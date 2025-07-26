@@ -44,6 +44,18 @@ namespace MamaFit.Services.Service
             var user = await _unitOfWork.UserRepository.GetByIdAsync(requestDto.UserId);
             _validationService.CheckNotFound(user, $"User not found with id {requestDto.UserId}");
 
+            var config = await _configService.GetConfig();
+
+            if (user.Appointments.Count(x => x.BookingTime.Date == requestDto.BookingTime.Date) >= config.Fields.MaxAppointmentPerDay)
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                    $"User {user.UserName} has reached the maximum number of appointments for the day" +
+                    $". Please try again tomorrow.");
+
+            if(user.Appointments.Count(x => x.Status == AppointmentStatus.UP_COMING) >= config.Fields.MaxAppointmentPerUser)
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                    $"User {user.UserName} has reached the maximum number of upcoming appointments" +
+                    $". Please cancel an existing appointment before booking a new one.");
+
             var newAppointment = _mapper.Map<Appointment>(requestDto);
             newAppointment.User = user;
             newAppointment.Branch = branch;

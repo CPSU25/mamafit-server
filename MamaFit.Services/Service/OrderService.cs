@@ -30,10 +30,11 @@ public class OrderService : IOrderService
     private readonly IConfigurationSection _contentfulSettings;
     private readonly IConfiguration _configuration;
     private readonly ICacheService _cacheService;
+    private readonly IConfigService _configService;
 
     public OrderService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation,
         INotificationService notificationService, IHttpContextAccessor contextAccessor, HttpClient httpClient,
-        IConfiguration configuration, ICacheService cacheService)
+        IConfiguration configuration, ICacheService cacheService, IConfigService configService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -49,6 +50,7 @@ public class OrderService : IOrderService
         var entryId = _contentfulSettings!.GetSection("EntryId").Value;
         _contentfulClient = new ContentfulClient(httpClient, contentKey, null, spaceId, false);
         _cacheService = cacheService;
+        _configService = configService;
     }
 
     public async Task<PaginatedList<OrderResponseDto>> GetByTokenAsync(string accessToken, int index = 1,
@@ -71,7 +73,7 @@ public class OrderService : IOrderService
     {
         var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
         _validation.CheckNotFound(order, "Order not found");
-
+        
         if (order.Status == OrderStatus.COMPLETED && 
              (order.PaymentStatus == PaymentStatus.PAID_FULL || order.PaymentStatus == PaymentStatus.PAID_DEPOSIT_COMPLETED))
         {
@@ -111,7 +113,6 @@ public class OrderService : IOrderService
             }
         });
     }
-
 
     public async Task<PaginatedList<OrderResponseDto>> GetAllAsync(int index, int pageSize, DateTime? startDate,
         DateTime? endDate)
@@ -231,6 +232,8 @@ public class OrderService : IOrderService
             dressDetails.Add(_mapper.Map<MaternityDressDetail>(dress));
         }
 
+        var config = await _configService.GetConfig();
+
         var subTotalAmount = request.OrderItems.Sum(item =>
         {
             var dress = dressDetails.FirstOrDefault(d => d.Id == item.MaternityDressDetailId);
@@ -292,6 +295,7 @@ public class OrderService : IOrderService
             ItemType = ItemType.READY_TO_BUY,
             Price = d.Price,
             Quantity = request.OrderItems.First(i => i.MaternityDressDetailId == d.Id).Quantity,
+            WarrantyNumber = config.Fields.WarrantyTime,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
             CreatedBy = "System"
@@ -372,6 +376,8 @@ public class OrderService : IOrderService
                 "Design request service fee not found in CMS.");
         }
 
+        var config = await _configService.GetConfig();
+
         var order = new Order
         {
             UserId = userId,
@@ -399,6 +405,7 @@ public class OrderService : IOrderService
                     },
                     ItemType = ItemType.DESIGN_REQUEST,
                     Price = (decimal)designFee!,
+                    WarrantyNumber = config!.Fields!.WarrantyTime,
                     Quantity = 1,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
@@ -478,6 +485,8 @@ public class OrderService : IOrderService
         var totalAmount = merchandiseAfterDiscount + request.ShippingFee + addOnListTotalPrice;
         var depositSubtotal = merchandiseAfterDiscount / 2;
 
+        var config = await _configService.GetConfig();
+
         var order = _mapper.Map<Order>(request);
         order.User = user!;
         order.VoucherDiscount = voucher;
@@ -524,6 +533,7 @@ public class OrderService : IOrderService
                 }).ToList(),
                 // Price = preset.ComponentOptionPresets.Sum(co => co.ComponentOption!.Price),
                 Price = preset.Price,
+                WarrantyNumber = config.Fields!.WarrantyTime,
                 Quantity = 1,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
@@ -564,7 +574,7 @@ public class OrderService : IOrderService
 
     public async Task WebhookForContentfulWhenUpdateData(CmsServiceBaseDto request)
     {
-        await _cacheService.SetAsync("cms:service:base", request,TimeSpan.FromDays(30));
+        await _cacheService.SetAsync("cms:service:base", request, TimeSpan.FromDays(30));
         await _cacheService.RemoveByPrefixAsync("appointment_slots");
     }
 }

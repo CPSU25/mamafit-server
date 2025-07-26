@@ -38,6 +38,8 @@ public class UserRepository : GenericRepository<ApplicationUser>, IUserRepositor
     {
         var user = await _dbSet
             .Include(x => x.Role)
+            .Include(x => x.Appointments)
+            .Include(x => x.Orders)
             .Where(x => !x.IsDeleted && x.Id == id)
             .FirstOrDefaultAsync();
         return user;

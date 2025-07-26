@@ -1,9 +1,11 @@
-﻿namespace MamaFit.BusinessObjects.DTO.BranchDto
+﻿using MamaFit.BusinessObjects.DTO.UserDto;
+
+namespace MamaFit.BusinessObjects.DTO.BranchDto
 {
     public class BranchResponseDto
     {
         public string? Id { get; set; }
-        public string? BranchManagerId { get; set; }
+        public UserReponseDto? BranchManager { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
         public TimeOnly? OpeningHour { get; set; }

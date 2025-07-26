@@ -75,11 +75,9 @@ namespace MamaFit.Repositories.Repository
             query = sortBy switch
             {
                 AppointmentOrderBy.UPCOMMING_AT_ASC => query
-                    .Where(u => u.BookingTime > DateTime.UtcNow)
                     .OrderBy(u => u.BookingTime),
 
                 AppointmentOrderBy.UPCOMMING_AT_DESC => query
-                    .Where(u => u.BookingTime > DateTime.UtcNow)
                     .OrderByDescending(u => u.BookingTime),
 
                 AppointmentOrderBy.CREATED_AT_ASC => query.OrderBy(u => u.CreatedAt),

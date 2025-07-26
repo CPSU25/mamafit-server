@@ -1,5 +1,6 @@
 using MamaFit.BusinessObjects.DBContext;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
@@ -26,7 +27,7 @@ public class VoucherDiscountRepository : GenericRepository<VoucherDiscount>, IVo
     {
         var query = await _dbSet
             .Include(x => x.VoucherBatch)
-            .Where(x => x.UserId == userId && !x.IsDeleted && x.Status == BusinessObjects.Enum.VoucherStatus.ACTIVE)
+            .Where(x => x.UserId == userId && !x.IsDeleted && x.Status == VoucherStatus.ACTIVE)
             .ToListAsync();
 
         return query;

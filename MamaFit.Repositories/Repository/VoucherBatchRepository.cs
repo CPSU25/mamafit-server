@@ -28,10 +28,28 @@ public class VoucherBatchRepository : GenericRepository<VoucherBatch>, IVoucherB
     public async Task<List<VoucherBatch>> GetAllMyVoucherAsync(string userId)
     {
         var result = await _dbSet
-            .Include(x => x.VoucherDiscounts)
-            .AsNoTracking()
-            .Where( x => x.VoucherDiscounts.Any(x => x.UserId == userId) && 
-            x.VoucherDiscounts.Any(vd => vd.Status == VoucherStatus.ACTIVE)).ToListAsync();
+         .Where(x => x.VoucherDiscounts.Any(v => v.UserId == userId && v.Status == VoucherStatus.ACTIVE))
+         .Select(x => new VoucherBatch
+         {
+             BatchName = x.BatchName,
+             BatchCode = x.BatchCode,
+             Description = x.Description,
+             StartDate = x.StartDate,
+             EndDate = x.EndDate,
+             TotalQuantity = x.TotalQuantity,
+             RemainingQuantity = x.RemainingQuantity,
+             DiscountType = x.DiscountType,
+             DiscountValue = x.DiscountValue,
+             MinimumOrderValue = x.MinimumOrderValue,
+             MaximumDiscountValue = x.MaximumDiscountValue,
+             IsAutoGenerate = x.IsAutoGenerate ?? false,
+
+             VoucherDiscounts = x.VoucherDiscounts
+                 .Where(v => v.UserId == userId && v.Status == VoucherStatus.ACTIVE)
+                 .ToList()
+         })
+         .AsNoTracking()
+         .ToListAsync();
 
         return result;
     }
@@ -47,7 +65,7 @@ public class VoucherBatchRepository : GenericRepository<VoucherBatch>, IVoucherB
 
     public async Task<bool> IsBatchExistedAsync(string batchCode, string batchName)
     {
-        return await _dbSet.AsNoTracking().AnyAsync(x => 
+        return await _dbSet.AsNoTracking().AnyAsync(x =>
             x.BatchCode == batchCode && x.BatchName == batchName && !x.IsDeleted);
     }
 }

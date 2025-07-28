@@ -13,7 +13,5 @@ namespace MamaFit.BusinessObjects.DTO.DesignRequestDto
         public DateTime? UpdatedAt { get; set; }
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }
-        
-        public OrderItemResponseDto? OrderItem { get; set; }
     }
 }

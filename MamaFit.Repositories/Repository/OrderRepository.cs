@@ -19,6 +19,15 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
     public async Task<PaginatedList<Order>> GetByTokenAsync(int index, int pageSize, string token, string? search, OrderStatus? status = null)
     {
         var query = _dbSet
+            .Include(x => x.OrderItems)
+            .ThenInclude(x => x.MaternityDressDetail)
+            .Include(x => x.OrderItems)
+            .ThenInclude(x => x.Preset)
+            .ThenInclude(x => x.Style)
+            .Include(x => x.OrderItems)
+            .ThenInclude(x => x.DesignRequest)
+            .ThenInclude(x => x.User)
+            .AsNoTracking()
             .Where(x => !x.IsDeleted && x.UserId == token);
         if (!string.IsNullOrWhiteSpace(search))
         {
@@ -30,7 +39,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
         }
         return await query.GetPaginatedList(index, pageSize);
     }
-    
+
     public async Task<PaginatedList<Order>> GetAllAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate)
     {
         var query = _dbSet.Where(x => !x.IsDeleted);
@@ -54,6 +63,12 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .ThenInclude(x => x.MaternityDressDetail)
             .Include(x => x.OrderItems)
             .ThenInclude(x => x.Preset)
+            .Include(x => x.OrderItems)
+            .ThenInclude(x => x.DesignRequest)
+            .ThenInclude(x => x.User)
+            .Include(x => x.Branch)
+            .Include(x => x.Address)
+            .Include(x => x.VoucherDiscount)
             .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
     }
 

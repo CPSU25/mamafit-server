@@ -206,7 +206,9 @@ namespace MamaFit.Services.Mapper
             #region Order Mapper
             CreateMap<Order, OrderRequestDto>().ReverseMap();
             CreateMap<Order, OrderReadyToBuyRequestDto>().ReverseMap();
-            CreateMap<Order, OrderResponseDto>().ReverseMap();
+            CreateMap<Order, OrderResponseDto>()
+                .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.OrderItems))
+                .ReverseMap();
             CreateMap<Order, OrderWithItemResponseDto>().ReverseMap();
             CreateMap<Order, OrderPresetCreateRequestDto>().ReverseMap();
             CreateMap<Order, OrderGetByIdResponseDto>()

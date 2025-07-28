@@ -1,3 +1,4 @@
+using MamaFit.BusinessObjects.DTO.DesignRequestDto;
 using MamaFit.BusinessObjects.DTO.MaternityDressDetailDto;
 using MamaFit.BusinessObjects.DTO.PresetDto;
 
@@ -13,4 +14,5 @@ public class OrderItemResponseDto : OrderItemBaseDto
     
     public MaternityDressDetailResponseDto MaternityDressDetail { get; set; } = new ();
     public PresetGetAllResponseDto Preset { get; set; } = new ();
+    public DesignResponseDto DesignRequest { get; set; } = new();
 }

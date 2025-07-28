@@ -1,5 +1,4 @@
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
-using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 
 namespace MamaFit.BusinessObjects.DTO.OrderDto;

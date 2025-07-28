@@ -143,7 +143,6 @@ namespace MamaFit.Services.Mapper
             CreateMap<MeasurementDiary, MeasurementDiaryResponseDto>().ReverseMap();
             CreateMap<MeasurementDiary, DiaryWithMeasurementDto>().ReverseMap();
             CreateMap<MeasurementDiary, MeasurementDiaryDto>().ReverseMap();
-            CreateMap<MeasurementDiary, MeasurementDiaryDto>().ReverseMap();
             #endregion
 
             #region Chat Mapper
@@ -154,7 +153,6 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.MessageTimestamp, otp => otp.MapFrom(src => src.CreatedAt))
                 .ReverseMap();
             CreateMap<ChatRoom, ChatRoomCreateDto>().ReverseMap();
-            CreateMap<ChatRoom, ChatRoomResponseDto>().ReverseMap();
             CreateMap<ChatRoom, ChatRoomResponseDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
                 .ForMember(dest => dest.MemberCount, opt => opt.MapFrom(src => src.Members.Count))

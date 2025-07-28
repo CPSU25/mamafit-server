@@ -305,7 +305,6 @@ namespace MamaFit.API.DependencyInjection
             services.AddAutoMapper();
             services.AddRepositories();
             services.AddServices();
-            services.AddAutoMapper();
             services.AddSignalR()
                 .AddHubOptions<ChatHub>(options => { options.EnableDetailedErrors = true; })
                 .AddHubOptions<NotificationHub>(options => { options.EnableDetailedErrors = true; });
@@ -313,7 +312,6 @@ namespace MamaFit.API.DependencyInjection
 
         private static void AddAutoMapper(this IServiceCollection services)
         {
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddAutoMapper(typeof(MapperEntities).Assembly);
         }
     }

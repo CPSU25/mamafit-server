@@ -17,14 +17,15 @@ public class RoleRepository : GenericRepository<ApplicationUserRole>, IRoleRepos
     
     public async Task<PaginatedList<ApplicationUserRole>> GetRolesAsync(int index, int pageSize, string? nameSearch)
     {
-        var query = _dbSet.Where(x => !x.IsDeleted);
+        var query = _dbSet.AsNoTracking().Where(x => !x.IsDeleted);
         
         if (!string.IsNullOrWhiteSpace(nameSearch))
             query = query.Where(x => x.RoleName.Contains(nameSearch));
         
-        return await query.GetPaginatedList(index, pageSize);
+        return await query.OrderByDescending(x => x.CreatedAt)
+            .GetPaginatedList(index, pageSize);
     }
-
+    
     public async Task<ApplicationUserRole?> GetByNameAsync(string name)
     {
         return await _dbSet.AsNoTracking()

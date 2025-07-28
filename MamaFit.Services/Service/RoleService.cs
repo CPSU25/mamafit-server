@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using AutoMapper;
 using MamaFit.BusinessObjects.DTO.RoleDto;
 using MamaFit.BusinessObjects.Entity;
@@ -45,7 +46,7 @@ public class RoleService : IRoleService
             roles.PageNumber,
             pageSize
         );
-
+        
         await _cache.SetAsync(cacheKey, responsePaginatedList, TimeSpan.FromMinutes(15));
         return responsePaginatedList;
     }

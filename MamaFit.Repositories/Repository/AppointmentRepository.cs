@@ -1,6 +1,7 @@
 ﻿using MamaFit.BusinessObjects.DBContext;
 using MamaFit.BusinessObjects.DTO.AppointmentDto;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
@@ -101,7 +102,9 @@ namespace MamaFit.Repositories.Repository
 
             var bookedSlots = await _dbSet
                 .AsNoTracking()
-                .Where(a => !a.IsDeleted && a.BranchId == branch.Id && a.BookingTime.Date == dateTime.Date)
+                .Where(a => !a.IsDeleted && a.BranchId == branch.Id
+                && a.BookingTime.Date == dateTime.Date
+                && a.Status != AppointmentStatus.CANCELED)
                 .Select(a => TimeOnly.FromDateTime(a.BookingTime))
                 .ToListAsync();
 

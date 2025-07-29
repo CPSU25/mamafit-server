@@ -45,6 +45,18 @@ namespace MamaFit.API.Controllers
             ));
         }
 
+        [HttpGet("order-item/{orderItemId}")]
+        public async Task<IActionResult> GetMilestoneByOrderItemId([FromRoute] string orderItemId)
+        {
+            var milestones = await _milestoneService.GetMilestoneByOrderItemId(orderItemId);
+            return Ok(new ResponseModel<List<MilestoneAchiveOrderItemResponseDto>>(
+                StatusCodes.Status200OK,
+                ApiCodes.SUCCESS,
+                milestones,
+                "Get milestones by order item successfully!"
+            ));
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] MilestoneRequestDto request)
         {

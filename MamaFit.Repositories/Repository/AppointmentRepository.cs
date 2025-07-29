@@ -102,7 +102,8 @@ namespace MamaFit.Repositories.Repository
 
             var bookedSlots = await _dbSet
                 .AsNoTracking()
-                .Where(a => !a.IsDeleted && a.BranchId == branch.Id
+                .Where(a => !a.IsDeleted 
+                && a.BranchId == branch.Id
                 && a.BookingTime.Date == dateTime.Date
                 && a.Status != AppointmentStatus.CANCELED)
                 .Select(a => TimeOnly.FromDateTime(a.BookingTime))

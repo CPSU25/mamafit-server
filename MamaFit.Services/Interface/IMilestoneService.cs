@@ -4,10 +4,11 @@ using MamaFit.Repositories.Infrastructure;
 
 namespace MamaFit.Services.Interface
 {
-    public interface IMilestoneService 
+    public interface IMilestoneService
     {
         Task<PaginatedList<MilestoneResponseDto>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy);
         Task<MilestoneGetByIdResponseDto> GetByIdAsync(string? id);
+        Task<List<MilestoneAchiveOrderItemResponseDto>> GetMilestoneByOrderItemId(string orderItemId);
         Task CreateAsync(MilestoneRequestDto request);
         Task UpdateAsync(string id, MilestoneRequestDto request);
         Task DeleteAsync(string id);

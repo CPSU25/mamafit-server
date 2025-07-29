@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using MamaFit.BusinessObjects.DTO.MaternityDressTaskDto;
 using MamaFit.BusinessObjects.DTO.MilestoneDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
+using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.Interface;
 
 namespace MamaFit.Services.Service
@@ -13,13 +15,15 @@ namespace MamaFit.Services.Service
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IValidationService _validationService;
+        private readonly ICacheService _cacheService;
 
-        public MilestoneService(IMapper mapper, IValidationService validationService, IUnitOfWork unitOfWork)
+        public MilestoneService(IMapper mapper, IValidationService validationService, IUnitOfWork unitOfWork, ICacheService cacheService)
         {
 
             _mapper = mapper;
             _validationService = validationService;
             _unitOfWork = unitOfWork;
+            _cacheService = cacheService;
         }
 
         public async Task CreateAsync(MilestoneRequestDto request)
@@ -60,6 +64,51 @@ namespace MamaFit.Services.Service
             _validationService.CheckNotFound(milestone, $"Milestone with id:{id} is not found");
 
             return _mapper.Map<MilestoneGetByIdResponseDto>(milestone);
+        }
+
+        public async Task<List<MilestoneAchiveOrderItemResponseDto>> GetMilestoneByOrderItemId(string orderItemId)
+        {
+            var cacheKey = $"MilestoneAchiveOrderItemResponseDto_{orderItemId}";
+            var cachedData = await _cacheService.GetAsync<List<MilestoneAchiveOrderItemResponseDto>>(cacheKey);
+            if (cachedData != null)
+            {
+                return cachedData;
+            }
+
+            var milestoneList = await _unitOfWork.MilestoneRepository.GetByOrderItemId(orderItemId);
+            _validationService.CheckNotFound(milestoneList, $"Milestone with order item id:{orderItemId} is not found");
+
+            var milestoneAchiveList = new List<MilestoneAchiveOrderItemResponseDto>();
+
+            foreach (var milestone in milestoneList)
+            {
+                float progress = (float)milestone.MaternityDressTasks.Count(x => x.OrderItemTasks.Any(x => x.Status == OrderItemTaskStatus.DONE))
+                / milestone.MaternityDressTasks.Count * 100;
+                var filteredTasks = milestone.MaternityDressTasks
+                    .Where(m => m.OrderItemTasks.Any(o =>
+                        o.OrderItemId == orderItemId &&
+                            (o.Status == OrderItemTaskStatus.IN_PROGRESS || o.Status == OrderItemTaskStatus.PENDING)))
+                    .OrderBy(m => m.SequenceOrder)
+                    .ToList();  
+
+                var currentTask = filteredTasks.FirstOrDefault();
+
+                var achiveOrderItem = new MilestoneAchiveOrderItemResponseDto
+                {
+                    MilestoneId = milestone.Id,
+                    MilestoneName = milestone.Name,
+                    Progress = progress,
+                    CurrentTask = new MaternityDressTaskForMilestoneAchiveResponseDto
+                    {
+                        Id = currentTask!.Id,
+                        Name = currentTask!.Name,
+                    }
+                };
+
+                milestoneAchiveList.Add(achiveOrderItem);
+            }
+            await _cacheService.SetAsync(cacheKey, milestoneAchiveList);
+            return milestoneAchiveList;
         }
 
         public async Task UpdateAsync(string id, MilestoneRequestDto request)

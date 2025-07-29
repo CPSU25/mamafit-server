@@ -4,6 +4,7 @@ using MamaFit.BusinessObjects.DTO.OrderItemTaskDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
+using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
 
@@ -16,13 +17,16 @@ public class OrderItemService : IOrderItemService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IValidationService _validation;
     private readonly IConfigService _configService;
-    public OrderItemService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation, IHttpContextAccessor httpContextAccessor, IConfigService configService)
+    private readonly ICacheService _cacheService;
+
+    public OrderItemService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation, IHttpContextAccessor httpContextAccessor, IConfigService configService, ICacheService cacheService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _validation = validation;
         _httpContextAccessor = httpContextAccessor;
         _configService = configService;
+        _cacheService = cacheService;
     }
 
     public async Task<PaginatedList<OrderItemResponseDto>> GetAllOrderItemsAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate)
@@ -170,6 +174,8 @@ public class OrderItemService : IOrderItemService
 
     public async Task CheckListStatusForOrderItemTaskAsync(OrderItemCheckTaskRequestDto request)
     {
+        var cacheKey = "MilestoneAchiveOrderItemResponseDto";
+
         foreach (var task in request.MaternityDressTaskIds!)
         {
             var orderItemTask = await _unitOfWork.OrderItemTaskRepository.GetDetailAsync(new OrderItemTaskGetDetail
@@ -186,6 +192,7 @@ public class OrderItemService : IOrderItemService
             await _unitOfWork.OrderItemTaskRepository.UpdateOrderItemTaskStatusAsync(orderItemTask, request.Status);
         }
 
+        await _cacheService.RemoveByPrefixAsync(cacheKey);
         await _unitOfWork.SaveChangesAsync();
     }
 }

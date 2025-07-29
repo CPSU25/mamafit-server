@@ -48,5 +48,19 @@ namespace MamaFit.Repositories.Repository
 
             return milestone;
         }
+
+        public Task<List<Milestone>> GetByOrderItemId(string orderItemId)
+        {
+            var query = _dbSet
+                .Include(x => x.MaternityDressTasks)
+                    .ThenInclude(mdt => mdt.OrderItemTasks)
+                        .ThenInclude(x => x.OrderItem)
+                .Where(x => x.MaternityDressTasks
+                    .Any(mdt => mdt.OrderItemTasks
+                        .Any(oit => oit.OrderItemId == orderItemId)) && !x.IsDeleted)
+                .ToListAsync();
+
+            return query;
+        }
     }
 }

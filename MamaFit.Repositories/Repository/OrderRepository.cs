@@ -16,6 +16,48 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
     {
     }
 
+    public async Task<List<Order>> GetOrdersByDesignerAsync(string designerId)
+    {
+        return await _context.Orders
+            .Where(o => o.OrderItems.Any(oi =>
+                oi.ItemType == ItemType.DESIGN_REQUEST &&
+                oi.DesignRequest != null &&
+                oi.DesignRequest.UserId == designerId))
+            .Include(o => o.OrderItems.Where(oi =>
+                oi.ItemType == ItemType.DESIGN_REQUEST &&
+                oi.DesignRequest != null &&
+                oi.DesignRequest.UserId == designerId))
+            .ThenInclude(oi => oi.DesignRequest)
+            .ToListAsync();
+    }
+
+    public async Task<List<Order>> GetOrdersByBranchManagerAsync(string managerId)
+    {
+        var branchIds = await _context.Branches
+            .Where(b => b.BranchManagerId == managerId)
+            .Select(b => b.Id)
+            .ToListAsync();
+        
+        return await _context.Orders
+            .Where(o => branchIds.Contains(o.BranchId!))
+            .Include(o => o.OrderItems)
+            .ThenInclude(oi => oi.DesignRequest)
+            .ToListAsync();
+    }
+
+    public async Task<List<Order>> GetOrdersByAssignedStaffAsync(string staffId)
+    {
+        return await _context.Orders
+            .Where(o => o.OrderItems.Any(oi =>
+                oi.OrderItemTasks.Any(task => task.UserId == staffId)))
+            .Include(o => o.OrderItems
+                .Where(oi => oi.OrderItemTasks.Any(task => task.UserId == staffId)))
+            .ThenInclude(oi => oi.OrderItemTasks)
+            .Include(o => o.OrderItems)
+            .ThenInclude(oi => oi.DesignRequest)
+            .ToListAsync();
+    }
+
     public async Task<PaginatedList<Order>> GetByTokenAsync(int index, int pageSize, string token, string? search, OrderStatus? status = null)
     {
         var query = _dbSet

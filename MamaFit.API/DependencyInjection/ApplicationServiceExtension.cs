@@ -147,7 +147,12 @@ namespace MamaFit.API.DependencyInjection
                     PrepareSchemaIfNecessary = true,
                     DistributedLockTimeout = TimeSpan.FromMinutes(2)
                 }));
-            services.AddHangfireServer();
+
+            services.AddHangfireServer(options =>
+            {
+                options.WorkerCount = 5; // Tối ưu kết nối
+            });
+
             return services;
         }
 

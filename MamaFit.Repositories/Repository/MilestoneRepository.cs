@@ -55,6 +55,7 @@ namespace MamaFit.Repositories.Repository
                 .Include(x => x.MaternityDressTasks)
                     .ThenInclude(mdt => mdt.OrderItemTasks)
                         .ThenInclude(x => x.OrderItem)
+                .OrderBy(x => x.SequenceOrder)
                 .Where(x => x.MaternityDressTasks
                     .Any(mdt => mdt.OrderItemTasks
                         .Any(oit => oit.OrderItemId == orderItemId)) && !x.IsDeleted)

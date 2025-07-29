@@ -12,6 +12,7 @@ public interface IOrderService
         string? search = null, OrderStatus? status = null);
     Task<PaginatedList<OrderResponseDto>> GetAllAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate);
     Task<OrderGetByIdResponseDto> GetOrderByIdAsync(string id);
+    Task<List<MyOrderStatusCount>> GetMyOrderStatusCounts();
     Task<OrderResponseDto> CreateOrderAsync(OrderRequestDto model);
     Task UpdateOrderStatusAsync(string id, OrderStatus orderStatus, PaymentStatus paymentStatus);
     Task<OrderResponseDto> UpdateOrderAsync(string id, OrderRequestDto model);

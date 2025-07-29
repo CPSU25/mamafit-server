@@ -1,8 +1,5 @@
 ﻿using AutoMapper;
 using Contentful.Core;
-using Contentful.Core.Configuration;
-using Contentful.Core.Models;
-using MamaFit.BusinessObjects.DTO.AddOnDto;
 using MamaFit.BusinessObjects.DTO.CMSDto;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
@@ -576,5 +573,28 @@ public class OrderService : IOrderService
     {
         await _cacheService.SetAsync("cms:service:base", request, TimeSpan.FromDays(30));
         await _cacheService.RemoveByPrefixAsync("appointment_slots");
+    }
+
+    public async Task<List<MyOrderStatusCount>> GetMyOrderStatusCounts()
+    {
+        var userId = GetCurrentUserId();
+        var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+        _validation.CheckNotFound(user, $"User with id: {userId} not found");
+
+        List<MyOrderStatusCount>? myOrderStatusCounts = new List<MyOrderStatusCount>();
+
+        foreach (OrderStatus status in Enum.GetValues(typeof(OrderStatus)))
+        {
+            int count = user.Orders.Count(x => x.Status == status);
+            var statusCount = new MyOrderStatusCount
+            {
+                OrderStatus = status,
+                OrderNumber = count
+            };
+
+            myOrderStatusCounts.Add(statusCount);
+        }
+
+        return myOrderStatusCounts;
     }
 }

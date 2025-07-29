@@ -37,6 +37,8 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
         {
             query = query.Where(x => x.Status == status.Value);
         }
+
+        query = query.OrderByDescending(x => x.CreatedAt);
         return await query.GetPaginatedList(index, pageSize);
     }
 
@@ -60,12 +62,13 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
     {
         return await _dbSet.AsNoTracking()
             .Include(x => x.OrderItems)
-            .ThenInclude(x => x.MaternityDressDetail)
+                .ThenInclude(x => x.MaternityDressDetail)
             .Include(x => x.OrderItems)
-            .ThenInclude(x => x.Preset)
+                .ThenInclude(x => x.Preset)
+                    .ThenInclude(x => x.Style)
             .Include(x => x.OrderItems)
-            .ThenInclude(x => x.DesignRequest)
-            .ThenInclude(x => x.User)
+                .ThenInclude(x => x.DesignRequest)
+                    .ThenInclude(x => x.User)
             .Include(x => x.Branch)
             .Include(x => x.Address)
             .Include(x => x.VoucherDiscount)

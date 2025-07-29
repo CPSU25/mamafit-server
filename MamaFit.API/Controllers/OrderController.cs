@@ -41,7 +41,20 @@ public class OrderController : ControllerBase
             "Get orders by access token successfully!"
         ));
     }
-    
+
+    [Authorize]
+    [HttpGet("my-order-status-counts")]
+    public async Task<IActionResult> GetMyOrderStatusCounts()
+    {
+        var result = await _service.GetMyOrderStatusCounts();
+        return Ok(new ResponseModel<List<MyOrderStatusCount>>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            result,
+            "Get my order status counts successfully!"
+        ));
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetAll(
         [FromQuery] int index = 1,

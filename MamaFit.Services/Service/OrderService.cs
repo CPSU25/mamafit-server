@@ -3,6 +3,7 @@ using Contentful.Core;
 using MamaFit.BusinessObjects.DTO.CMSDto;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
+using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Helper;
@@ -48,6 +49,46 @@ public class OrderService : IOrderService
         _contentfulClient = new ContentfulClient(httpClient, contentKey, null, spaceId, false);
         _cacheService = cacheService;
         _configService = configService;
+    }
+
+    
+    public async Task<List<OrderResponseDto>> GetOrdersForAssignedStaffAsync()
+    {
+        var userId = GetCurrentUserId();
+        var orders = await _unitOfWork.OrderRepository.GetOrdersByAssignedStaffAsync(userId);
+
+        return orders.Select(order =>
+        {
+            var orderDto = _mapper.Map<OrderResponseDto>(order);
+            orderDto.Items = order.OrderItems.Select(oi => _mapper.Map<OrderItemResponseDto>(oi)).ToList();
+            return orderDto;
+        }).ToList();
+    }
+    
+    public async Task<List<OrderResponseDto>> GetOrdersForBranchManagerAsync()
+    {
+        var userId = GetCurrentUserId();
+        var orders = await _unitOfWork.OrderRepository.GetOrdersByBranchManagerAsync(userId);
+
+        return orders.Select(order =>
+        {
+            var orderDto = _mapper.Map<OrderResponseDto>(order);
+            orderDto.Items = order.OrderItems.Select(oi => _mapper.Map<OrderItemResponseDto>(oi)).ToList();
+            return orderDto;
+        }).ToList();
+    }
+
+    public async Task<List<OrderResponseDto>> GetOrdersForDesignerAsync()
+    {
+        var userId = GetCurrentUserId(); // lấy user từ JWT
+        var orders = await _unitOfWork.OrderRepository.GetOrdersByDesignerAsync(userId);
+
+        return orders.Select(order =>
+        {
+            var orderDto = _mapper.Map<OrderResponseDto>(order);
+            orderDto.Items = order.OrderItems.Select(oi => _mapper.Map<OrderItemResponseDto>(oi)).ToList();
+            return orderDto;
+        }).ToList();
     }
 
     public async Task<PaginatedList<OrderResponseDto>> GetByTokenAsync(string accessToken, int index = 1,

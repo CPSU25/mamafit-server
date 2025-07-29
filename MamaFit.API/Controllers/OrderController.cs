@@ -43,6 +43,45 @@ public class OrderController : ControllerBase
     }
 
     [Authorize]
+    [HttpGet("designer-orders")]
+    public async Task<IActionResult> GetOrdersForDesigner()
+    {
+        var result = await _service.GetOrdersForDesignerAsync();
+        return Ok(new ResponseModel<List<OrderResponseDto>>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            result,
+            "Get orders for designer successfully!"
+        ));
+    }
+
+    [Authorize]
+    [HttpGet("branch-manager-orders")]
+    public async Task<IActionResult> GetOrdersForBranchManager()
+    {
+        var result = await _service.GetOrdersForBranchManagerAsync();
+        return Ok(new ResponseModel<List<OrderResponseDto>>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            result,
+            "Get orders for branch manager successfully!"
+        ));
+    }
+
+    [Authorize]
+    [HttpGet("assigned-staff-orders")]
+    public async Task<IActionResult> GetOrdersForAssignedStaff()
+    {
+        var result = await _service.GetOrdersForAssignedStaffAsync();
+        return Ok(new ResponseModel<List<OrderResponseDto>>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            result,
+            "Get orders for assigned staff successfully!"
+        ));
+    }
+    
+    [Authorize]
     [HttpGet("my-order-status-counts")]
     public async Task<IActionResult> GetMyOrderStatusCounts()
     {
@@ -55,6 +94,7 @@ public class OrderController : ControllerBase
         ));
     }
 
+    [Authorize(Roles = "Admin, Manager")]
     [HttpGet]
     public async Task<IActionResult> GetAll(
         [FromQuery] int index = 1,
@@ -147,6 +187,7 @@ public class OrderController : ControllerBase
                 "Unauthorized access to webhook!"
             ));
         }
+
         await _service.WebhookForContentfulWhenUpdateData(request);
         return Ok(new ResponseModel<string>(
             StatusCodes.Status200OK,
@@ -182,7 +223,7 @@ public class OrderController : ControllerBase
             "Update order status successfully!"
         ));
     }
-    
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteOrder([FromRoute] string id)
     {

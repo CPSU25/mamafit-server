@@ -9,5 +9,6 @@ namespace MamaFit.Repositories.Interface
     {
         Task<PaginatedList<Milestone>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy);
         Task<Milestone> GetByIdDetailAsync(string id);
+        Task<List<Milestone>> GetByOrderItemId(string orderItemId);
     }
 }

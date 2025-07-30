@@ -22,4 +22,6 @@ public class MeasurementDiaryResponseDto
     public string? UpdatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+    
+    public List<MeasurementResponseDto>? Measurements { get; set; } = new List<MeasurementResponseDto>();
 }

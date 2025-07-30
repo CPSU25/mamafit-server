@@ -13,7 +13,6 @@ namespace MamaFit.BusinessObjects.DTO.MaternityDressTaskDto
         public string? CreatedBy { get; set; } = string.Empty;
         public DateTime? UpdatedAt { get; set; } = null;
         public string? UpdatedBy { get; set; } = string.Empty;
-        
-        public MilestoneResponseDto? Milestone { get; set; }
+
     }
 }

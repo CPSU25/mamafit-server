@@ -8,6 +8,7 @@ namespace MamaFit.Repositories.Interface
     {
         Task<List<OrderItemTask>> GetTasksByAssignedStaffAsync(string staffId);
         Task<OrderItemTask> GetDetailAsync(OrderItemTaskGetDetail request);
+        Task<OrderItemTask> GetByIdAsync(string maternityDressTaskId, string orderItemId);
         Task UpdateOrderItemTaskStatusAsync(OrderItemTask task, OrderItemTaskStatus status);
         Task UpdateAsync(OrderItemTask task);
     }

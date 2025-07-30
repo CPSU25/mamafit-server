@@ -1,4 +1,5 @@
 using MamaFit.BusinessObjects.DTO.OrderItemTaskDto;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
@@ -23,11 +24,26 @@ public class OrderItemTaskController : ControllerBase
         [FromHeader(Name = "Authorization")] string accessToken)
     {
         var tasks = await _orderItemTaskService.GetTasksByAssignedStaffAsync(accessToken);
-        return Ok(new ResponseModel<List<AssignStaffDto>>(
+        return Ok(new ResponseModel<StaffTasksGroupedResponse>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
             tasks,
             "Get tasks by assigned staff successfully!"
+        ));
+    }
+
+    [HttpPut("{dressTaskId}/{orderItemId}")]
+    [Authorize]
+    public async Task<IActionResult> UpdateStatusAsync(
+        [FromRoute] string dressTaskId,
+        [FromRoute] string orderItemId,
+        [FromForm] OrderItemTaskStatus status)
+    { 
+        await _orderItemTaskService.UpdateStatusAsync(dressTaskId, orderItemId, status);
+        return Ok(new ResponseModel(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            "Update order item task status successfully!"
         ));
     }
 }

@@ -54,6 +54,7 @@ public class OrderItemTaskService : IOrderItemTaskService
 
                 return new OrderItemTaskGetByTokenResponse
                 {
+                    Id = representative.OrderItemTask.OrderItem.Id,
                     CreatedAt = representative.OrderItemTask.CreatedAt,
                     UpdatedAt = (DateTime)representative.OrderItemTask.UpdatedAt,
                     CreatedBy = representative.OrderItemTask.CreatedBy,

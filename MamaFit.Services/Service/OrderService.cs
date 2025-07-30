@@ -514,6 +514,11 @@ public class OrderService : IOrderService
                 discountValue = voucher.VoucherBatch.DiscountValue;
             }
 
+            if (discountValue > subTotalAmount)
+            {
+                discountValue = subTotalAmount;
+            }
+            
             voucher.Status = VoucherStatus.USED;
             await _unitOfWork.VoucherDiscountRepository.UpdateAsync(voucher);
         }

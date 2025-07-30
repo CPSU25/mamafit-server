@@ -37,6 +37,7 @@ namespace MamaFit.Repositories.Repository
                 .Include(x => x.Preset)
                 .Include(x => x.OrderItemTasks)
                     .ThenInclude(x => x.User)
+                        .ThenInclude(x => x.Role)
                 .Include(x => x.OrderItemTasks)
                     .ThenInclude(x => x.MaternityDressTask)
                         .ThenInclude(x => x!.Milestone)

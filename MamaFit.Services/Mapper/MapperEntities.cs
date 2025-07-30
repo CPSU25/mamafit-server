@@ -233,6 +233,7 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.ChargeId, otp => otp.MapFrom(src => src.UserId))
                 .ForMember(dest => dest.ChargeName, otp => otp.MapFrom(src => src.User!.FullName))
                 .ReverseMap();
+            CreateMap<OrderItemTask, AssignStaffDto>().ReverseMap();
             #endregion
 
             #region Milestone Mapper
@@ -319,6 +320,8 @@ namespace MamaFit.Services.Mapper
             CreateMap<Size, SizeDto>().ReverseMap();
             CreateMap<Size, SizeRequestDto>().ReverseMap();
             #endregion
+            
+            
 
         }
     }

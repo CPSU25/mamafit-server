@@ -12,7 +12,7 @@ public class OrderItemResponseDto : OrderItemBaseDto
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     
-    public MaternityDressDetailResponseDto MaternityDressDetail { get; set; } = new ();
-    public PresetGetAllResponseDto Preset { get; set; } = new ();
-    public DesignResponseDto DesignRequest { get; set; } = new();
+    public MaternityDressDetailResponseDto MaternityDressDetail { get; set; }
+    public PresetGetAllResponseDto Preset { get; set; }
+    public DesignResponseDto DesignRequest { get; set; }
 }

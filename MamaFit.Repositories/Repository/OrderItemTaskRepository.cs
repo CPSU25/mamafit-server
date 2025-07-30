@@ -54,17 +54,18 @@ namespace MamaFit.Repositories.Repository
 
         public async Task<List<OrderItemTask>> GetTasksByAssignedStaffAsync(string userId)
         {
-            return await _context.OrderItemsTasks
+            var result = await _context.OrderItemsTasks
                 .Where(t => t.UserId == userId)
                 .Include(t => t.MaternityDressTask).ThenInclude(t => t!.Milestone)
-                .Include(t => t.OrderItem).ThenInclude(o => o!.Preset)
+                .Include(t => t.OrderItem).ThenInclude(o => o!.Preset).ThenInclude(x => x.Style)
                 .Include(t => t.OrderItem).ThenInclude(o => o!.DesignRequest)
                 .Include(t => t.OrderItem).ThenInclude(o => o!.MaternityDressDetail)
-                .AsNoTracking()
                 .ToListAsync();
+
+            return result;
         }
 
-        
+
         private string GetCurrentUserName()
         {
             var username = _httpContextAccessor.HttpContext?.User?.FindFirst("userName")?.Value;

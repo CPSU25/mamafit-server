@@ -13,6 +13,7 @@ public interface IOrderItemService
     Task<OrderItemResponseDto> UpdateOrderItemAsync(string id, OrderItemRequestDto model);
     Task DeleteOrderItemAsync(string id);
     Task AssignTaskToOrderItemAsync(AssignTaskToOrderItemRequestDto request);
-    Task AssignChargeToOrderItemAsync(AssignChargeToOrderItemRequestDto request);
+    Task AssignChargeToOrderItemAsync(AssignChargeToOrderItemRequestDto request, ApplicationUser user);
+    Task AssignChargeToOrderItemListAsync(List<AssignChargeToOrderItemRequestDto> requests);
     Task CheckListStatusForOrderItemTaskAsync(OrderItemCheckTaskRequestDto request);
 }

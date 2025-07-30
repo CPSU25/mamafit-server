@@ -2514,223 +2514,6 @@ namespace MamaFit.BusinessObjects.Data
 
             #endregion
 
-            #region Seed Milestone, MaternityDressTask
-            modelBuilder.Entity<Milestone>().HasData(
-                new Milestone
-                {
-                    Id = "e8e56df1c7e0467d9dfc15df96735c10",
-                    Name = "Khám phá nhu cầu",
-                    Description = "Tìm hiểu nhu cầu và phong cách của khách hàng",
-                    SequenceOrder = 1,
-                    ApplyFor = [ItemType.DESIGN_REQUEST, ItemType.PRESET, ItemType.READY_TO_BUY],
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new Milestone
-                {
-                    Id = "ef9791c0d0e14e48b6b98432cdd9e60c",
-                    Name = "Chọn hoặc tạo mẫu đầm",
-                    Description = "Khách chọn mẫu có sẵn hoặc thiết kế mới",
-                    SequenceOrder = 2,
-                    ApplyFor = [ItemType.DESIGN_REQUEST, ItemType.PRESET],
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new Milestone
-                {
-                    Id = "2a3477f9db80487b89ad8cdebe1e5f13",
-                    Name = "Thử và điều chỉnh",
-                    Description = "Thử đầm và tinh chỉnh theo phản hồi",
-                    SequenceOrder = 3,
-                    ApplyFor = [ItemType.DESIGN_REQUEST, ItemType.PRESET],
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new Milestone
-                {
-                    Id = "b3e3ad7a80b946f9b42f0ddf2f00aeec",
-                    Name = "Kiểm tra chất lượng",
-                    Description = "Đánh giá và đóng gói trước khi giao",
-                    SequenceOrder = 4,
-                    ApplyFor = [ItemType.DESIGN_REQUEST, ItemType.PRESET, ItemType.READY_TO_BUY],
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new Milestone
-                {
-                    Id = "316f055b3e2e4c6fa44f6a16dca0e6f1",
-                    Name = "Giao hàng và phản hồi",
-                    Description = "Giao đến khách và lấy đánh giá",
-                    SequenceOrder = 5,
-                    ApplyFor = [ItemType.DESIGN_REQUEST, ItemType.PRESET, ItemType.READY_TO_BUY],
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                }
-            );
-
-            modelBuilder.Entity<MaternityDressTask>().HasData(
-                new MaternityDressTask
-                {
-                    Id = "9c8ebd7bc6d643efab54ef2b09925f04",
-                    MilestoneId = "e8e56df1c7e0467d9dfc15df96735c10",
-                    Name = "Tư vấn phong cách",
-                    Description = "Chọn style phù hợp",
-                    SequenceOrder = 1,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "5f8ce7b8139f4b0996c2b71f901c7ef6",
-                    MilestoneId = "e8e56df1c7e0467d9dfc15df96735c10",
-                    Name = "Xác định dịp sử dụng",
-                    Description = "Tiệc, chụp ảnh, thường ngày...",
-                    SequenceOrder = 2,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "89bb40304a8d45f7a0e2178c6aeea462",
-                    MilestoneId = "ef9791c0d0e14e48b6b98432cdd9e60c",
-                    Name = "Chọn mẫu sẵn",
-                    Description = "Preset styles",
-                    SequenceOrder = 1,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "86c0cbaac35c4f62b029aaed8cce8e9c",
-                    MilestoneId = "ef9791c0d0e14e48b6b98432cdd9e60c",
-                    Name = "Thiết kế mới",
-                    Description = "Tạo mẫu theo ý khách",
-                    SequenceOrder = 2,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "35f95d06385f4b6994416dcb2bba1f6f",
-                    MilestoneId = "2a3477f9db80487b89ad8cdebe1e5f13",
-                    Name = "Thử đầm",
-                    Description = "Thử trực tiếp hoặc feedback ảnh",
-                    SequenceOrder = 1,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "6fd0f813c191449ab2b7a07039cd9e7c",
-                    MilestoneId = "2a3477f9db80487b89ad8cdebe1e5f13",
-                    Name = "Tinh chỉnh",
-                    Description = "Sửa theo feedback",
-                    SequenceOrder = 2,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "f48b2f18763e4e6b80b4a85ce95b8264",
-                    MilestoneId = "b3e3ad7a80b946f9b42f0ddf2f00aeec",
-                    Name = "Kiểm tra ngoại hình",
-                    Description = "Đường may, màu sắc, nếp vải",
-                    SequenceOrder = 1,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "d6c9fddce1cc4cd28bd54094f5e48c56",
-                    MilestoneId = "b3e3ad7a80b946f9b42f0ddf2f00aeec",
-                    Name = "Đo đạc & so sánh",
-                    Description = "Kiểm tra số đo đúng không",
-                    SequenceOrder = 2,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "197fd3b727a1400cbde58a4f28ab5f93",
-                    MilestoneId = "b3e3ad7a80b946f9b42f0ddf2f00aeec",
-                    Name = "Đóng gói sản phẩm",
-                    Description = "Gói chuẩn theo mẫu thương hiệu",
-                    SequenceOrder = 3,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "c1ff5d242bb14aa59e17c34753c9e189",
-                    MilestoneId = "316f055b3e2e4c6fa44f6a16dca0e6f1",
-                    Name = "Giao hàng",
-                    Description = "Ship theo địa chỉ khách chọn",
-                    SequenceOrder = 1,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "fb2e3a1c38f14091a8b016dfbdcf80e0",
-                    MilestoneId = "316f055b3e2e4c6fa44f6a16dca0e6f1",
-                    Name = "Ghi nhận phản hồi",
-                    Description = "Gửi form đánh giá hoặc khảo sát",
-                    SequenceOrder = 2,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                }
-            );
-
-            #endregion
-
             #region Seed Diary, Address, Voucher, Branch
             modelBuilder.Entity<MeasurementDiary>().HasData(
                 new MeasurementDiary
@@ -3136,7 +2919,7 @@ namespace MamaFit.BusinessObjects.Data
                     Id = "d677453018e04408ba1d0ddec81e5ffd",
                     Name = "Design",
                     Description = "Design process for custom design requests",
-                    ApplyFor = { ItemType.DESIGN_REQUEST },
+                    ApplyFor = [ItemType.DESIGN_REQUEST],
                     SequenceOrder = 1,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
@@ -3149,7 +2932,7 @@ namespace MamaFit.BusinessObjects.Data
                     Id = "130a30e16f764ec7b29c1461f932d10a",
                     Name = "Preset Production",
                     Description = "Production process for preset orders",
-                    ApplyFor = { ItemType.PRESET },
+                    ApplyFor = [ItemType.PRESET],
                     SequenceOrder = 1,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
@@ -3162,7 +2945,7 @@ namespace MamaFit.BusinessObjects.Data
                     Id = "e1235c985155490d9f701a5e35d490ed",
                     Name = "Add On",
                     Description = "Additional customization or services",
-                    ApplyFor = { ItemType.READY_TO_BUY, ItemType.PRESET },
+                    ApplyFor = [ItemType.READY_TO_BUY, ItemType.PRESET],
                     SequenceOrder = 2,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
@@ -3175,7 +2958,7 @@ namespace MamaFit.BusinessObjects.Data
                     Id = "5110afc434844342984a1db6944536dc",
                     Name = "Warranty Check",
                     Description = "Initial warranty assessment for preset orders",
-                    ApplyFor = { ItemType.PRESET },
+                    ApplyFor = [ItemType.PRESET],
                     SequenceOrder = 3,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
@@ -3188,7 +2971,7 @@ namespace MamaFit.BusinessObjects.Data
                     Id = "08c1f3fd1f71460e9a4afefc14fa01cb",
                     Name = "In Warrnaty",
                     Description = "Warranty repair or replacement",
-                    ApplyFor = { ItemType.PRESET },
+                    ApplyFor = [ItemType.PRESET],
                     SequenceOrder = 4,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
@@ -3201,7 +2984,7 @@ namespace MamaFit.BusinessObjects.Data
                     Id = "3bc69c7f00d44442bc3dd095637b4172",
                     Name = "Quality Check",
                     Description = "Quality control checks for all order types",
-                    ApplyFor = { ItemType.PRESET, ItemType.READY_TO_BUY },
+                    ApplyFor = [ItemType.PRESET, ItemType.READY_TO_BUY],
                     SequenceOrder = 5,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
@@ -3214,7 +2997,7 @@ namespace MamaFit.BusinessObjects.Data
                     Id = "e1d5cb20d3e5460b9067113cf4615fa7",
                     Name = "Quality Check Warranty",
                     Description = "Quality control checks for warranty preset",
-                    ApplyFor = { ItemType.PRESET },
+                    ApplyFor = [ItemType.PRESET],
                     SequenceOrder = 5,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
@@ -3227,7 +3010,7 @@ namespace MamaFit.BusinessObjects.Data
                     Id = "afa0cfb3844a4bf99e79b40a009b8f58",
                     Name = "Packing & Delivery",
                     Description = "Final packing and delivery for customer",
-                    ApplyFor = { ItemType.READY_TO_BUY, ItemType.PRESET },
+                    ApplyFor = [ItemType.READY_TO_BUY, ItemType.PRESET],
                     SequenceOrder = 6,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
@@ -3236,7 +3019,6 @@ namespace MamaFit.BusinessObjects.Data
                     IsDeleted = false
                 }
             );
-
             modelBuilder.Entity<MaternityDressTask>().HasData(
 
                 new MaternityDressTask

@@ -11,6 +11,7 @@ public interface IOrderItemService
     Task<OrderItemGetByIdResponseDto> GetOrderItemByIdAsync(string id);
     Task<OrderItemResponseDto> CreateOrderItemAsync(OrderItemRequestDto model);
     Task<OrderItemResponseDto> UpdateOrderItemAsync(string id, OrderItemRequestDto model);
+    Task<DesignerInfoOrderItemResponseDto> GetDesignerInfoByOrderItemIdAsync(string orderItemId);
     Task DeleteOrderItemAsync(string id);
     Task AssignTaskToOrderItemAsync(AssignTaskToOrderItemRequestDto request);
     Task AssignChargeToOrderItemAsync(AssignChargeToOrderItemRequestDto request, ApplicationUser user);

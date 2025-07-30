@@ -78,5 +78,18 @@ namespace MamaFit.Repositories.Repository
 
             return result;
         }
+
+        public Task<List<Preset>> GetPresetByDesignRequestId(string designRequestId)
+        {
+            var presets = _dbSet
+                .Include(x => x.ComponentOptionPresets)
+                .ThenInclude(cop => cop.ComponentOption)
+                .ThenInclude(co => co.Component)
+                .Include(x => x.Style)
+                .Where(x => x.DesignRequest.Id == designRequestId && !x.DesignRequest.IsDeleted)
+                .ToListAsync();
+
+            return presets;
+        }
     }
 }

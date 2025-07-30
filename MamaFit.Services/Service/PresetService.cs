@@ -128,5 +128,15 @@ namespace MamaFit.Services.Service
             _validationService.CheckNotFound(presets, $"No presets found for component option with ID {componentOptionIds}.");
             return presets.Select(preset => _mapper.Map<PresetGetByIdResponseDto>(preset)).ToList();
         }
+
+        public async Task<List<PresetGetByIdResponseDto>> GetPresetByDesignRequestId(string designRequestId)
+        {
+            var presets = await _unitOfWork.PresetRepository.GetPresetByDesignRequestId(designRequestId);
+            _validationService.CheckNotFound(presets, $"No presets found for design request with ID {designRequestId}.");
+
+            var result = presets.Select(preset => _mapper.Map<PresetGetByIdResponseDto>(preset)).ToList();
+
+            return result;
+        }
     }
 }

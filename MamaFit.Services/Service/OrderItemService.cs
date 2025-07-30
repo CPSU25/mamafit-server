@@ -154,7 +154,7 @@ public class OrderItemService : IOrderItemService
 
         foreach (var orderItemId in request.OrderItemIds!)
         {
-            var orderItem = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(orderItemId!);
+            var orderItem = await _unitOfWork.OrderItemRepository.GetDetailById(orderItemId!);
             _validation.CheckNotFound(orderItem, $"Order item with id:{orderItemId} is not exist!");
 
             foreach (var task in milestone.MaternityDressTasks!)
@@ -168,9 +168,11 @@ public class OrderItemService : IOrderItemService
                     orderItemTask.UserId = personInCharge!.Id;
                     orderItemTask.UpdatedBy = user?.UserName ?? "System";
                     orderItemTask.UpdatedAt = DateTime.UtcNow;
+
+                    await _unitOfWork.OrderItemTaskRepository.UpdateAsync(orderItemTask);
                 }
             }
-            await _unitOfWork.OrderItemRepository.UpdateAsync(orderItem);
+            await _unitOfWork.OrderItemRepository.UpdateAsync(orderItem!);
         }
         await _unitOfWork.SaveChangesAsync();
     }

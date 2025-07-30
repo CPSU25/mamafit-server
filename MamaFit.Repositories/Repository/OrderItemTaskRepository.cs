@@ -31,6 +31,12 @@ namespace MamaFit.Repositories.Repository
             return orderItemTask;
         }
 
+        public async Task UpdateAsync(OrderItemTask task)
+        {
+            _context.Entry(task).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+
         public async Task UpdateOrderItemTaskStatusAsync(OrderItemTask task, OrderItemTaskStatus status)
         {
             task.Status = status;

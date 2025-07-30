@@ -10,5 +10,6 @@ namespace MamaFit.Repositories.Interface
             DateTime? endDate);
 
         Task<OrderItem> GetDetailById(string orderItemId);
+        Task<List<OrderItem>> GetOrderItemByUserId(string userId);
     }
 }

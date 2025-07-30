@@ -45,5 +45,22 @@ namespace MamaFit.Repositories.Repository
 
             return result!;
         }
+
+        public Task<List<OrderItem>> GetOrderItemByUserId(string userId)
+        {
+            var result = _dbSet
+                .Include(x => x.DesignRequest)
+                .Include(x => x.MaternityDressDetail)
+                .Include(x => x.Preset)
+                .Include(x => x.OrderItemTasks)
+                    .ThenInclude(x => x.User)
+                        .ThenInclude(x => x.Role)
+                .Include(x => x.OrderItemTasks)
+                    .ThenInclude(x => x.MaternityDressTask)
+                        .ThenInclude(x => x!.Milestone)
+                .Where(x => !x.IsDeleted && x.OrderItemTasks.Select(x => x.UserId == userId).Any()).ToListAsync();
+
+            return result;
+        }
     }
 }

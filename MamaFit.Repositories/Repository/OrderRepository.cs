@@ -113,6 +113,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .Include(x => x.OrderItems)
                 .ThenInclude(x => x.DesignRequest)
                     .ThenInclude(x => x.User)
+                        .ThenInclude(x => x.Role)
             .Include(x => x.Branch)
             .Include(x => x.Address)
             .Include(x => x.VoucherDiscount)

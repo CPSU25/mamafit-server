@@ -102,6 +102,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IMaternityDressTaskService, MaternityDressTaskService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IOrderItemService, OrderItemService>();
+            services.AddScoped<IOrderItemTaskService, OrderItemTaskService>();
             services.AddScoped<IMilestoneService, MilestoneService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IExpoNotificationService, ExpoNotificationService>();

@@ -1,4 +1,5 @@
-﻿using MamaFit.BusinessObjects.Enum;
+﻿using MamaFit.BusinessObjects.DTO.MilestoneDto;
+using MamaFit.BusinessObjects.Enum;
 
 namespace MamaFit.BusinessObjects.DTO.MaternityDressTaskDto
 {
@@ -13,6 +14,6 @@ namespace MamaFit.BusinessObjects.DTO.MaternityDressTaskDto
         public DateTime? UpdatedAt { get; set; } = null;
         public string? UpdatedBy { get; set; } = string.Empty;
         
-        
+        public MilestoneResponseDto? Milestone { get; set; }
     }
 }

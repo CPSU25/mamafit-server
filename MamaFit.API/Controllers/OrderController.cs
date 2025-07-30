@@ -41,19 +41,7 @@ public class OrderController : ControllerBase
             "Get orders by access token successfully!"
         ));
     }
-
-    [Authorize]
-    [HttpGet("designer-orders")]
-    public async Task<IActionResult> GetOrdersForDesigner()
-    {
-        var result = await _service.GetOrdersForDesignerAsync();
-        return Ok(new ResponseModel<List<OrderResponseDto>>(
-            StatusCodes.Status200OK,
-            ApiCodes.SUCCESS,
-            result,
-            "Get orders for designer successfully!"
-        ));
-    }
+    
 
     [Authorize]
     [HttpGet("branch-manager-orders")]
@@ -65,19 +53,6 @@ public class OrderController : ControllerBase
             ApiCodes.SUCCESS,
             result,
             "Get orders for branch manager successfully!"
-        ));
-    }
-
-    [Authorize]
-    [HttpGet("assigned-staff-orders")]
-    public async Task<IActionResult> GetOrdersForAssignedStaff()
-    {
-        var result = await _service.GetOrdersForAssignedStaffAsync();
-        return Ok(new ResponseModel<List<OrderResponseDto>>(
-            StatusCodes.Status200OK,
-            ApiCodes.SUCCESS,
-            result,
-            "Get orders for assigned staff successfully!"
         ));
     }
     

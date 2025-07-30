@@ -109,13 +109,13 @@ namespace MamaFit.Services.Service
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<PaginatedList<AppointmentResponseDto>> GetAllAsync(int index, int pageSize, string? search, AppointmentOrderBy? sortBy)
+        public async Task<PaginatedList<AppointmentResponseDto>> GetAllAsync(int index, int pageSize, DateTime? StartDate, DateTime? EndDate, AppointmentOrderBy? sortBy)
         {
-            var paginatedResponse = await _cacheService.GetAsync<PaginatedList<AppointmentResponseDto>>($"appointments_{index}_{pageSize}_{search}_{sortBy}");
+            var paginatedResponse = await _cacheService.GetAsync<PaginatedList<AppointmentResponseDto>>($"appointments_{index}_{pageSize}_{StartDate}_{EndDate}_{sortBy}");
 
             if (paginatedResponse == null)
             {
-                var appointmentList = await _unitOfWork.AppointmentRepository.GetAllAsync(index, pageSize, search, sortBy);
+                var appointmentList = await _unitOfWork.AppointmentRepository.GetAllAsync(index, pageSize, StartDate, EndDate, sortBy);
 
                 // Map từng phần tử trong danh sách Items
                 var responseList = appointmentList.Items.Select(item => _mapper.Map<AppointmentResponseDto>(item)).ToList();
@@ -128,7 +128,7 @@ namespace MamaFit.Services.Service
                     appointmentList.PageSize
                 );
 
-                await _cacheService.SetAsync($"appointments_{index}_{pageSize}_{search}_{sortBy}", paginatedResponse);
+                await _cacheService.SetAsync($"appointments_{index}_{pageSize}_{StartDate}_{EndDate}_{sortBy}", paginatedResponse);
                 return paginatedResponse;
             }
 

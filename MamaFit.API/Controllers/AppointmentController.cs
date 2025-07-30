@@ -22,10 +22,11 @@ namespace MamaFit.API.Controllers
         public async Task<IActionResult> GetAll(
             [FromQuery] int index = 1,
             [FromQuery] int pageSize = 10,
-            [FromQuery] string? search = null,
+            [FromQuery] DateTime? startDate = null,
+            [FromQuery] DateTime? endDate = null,
             [FromQuery] AppointmentOrderBy? sortBy = AppointmentOrderBy.CREATED_AT_DESC)
         {
-            var appointments = await _appointmentService.GetAllAsync(index, pageSize, search, sortBy);
+            var appointments = await _appointmentService.GetAllAsync(index, pageSize, startDate, endDate, sortBy);
             return Ok(new ResponseModel<PaginatedList<AppointmentResponseDto>>(
                 StatusCodes.Status200OK,
                 ApiCodes.SUCCESS,

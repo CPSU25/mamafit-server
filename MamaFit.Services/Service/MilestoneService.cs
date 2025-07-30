@@ -17,9 +17,9 @@ namespace MamaFit.Services.Service
         private readonly IValidationService _validationService;
         private readonly ICacheService _cacheService;
 
-        public MilestoneService(IMapper mapper, IValidationService validationService, IUnitOfWork unitOfWork, ICacheService cacheService)
+        public MilestoneService(IMapper mapper, IValidationService validationService, IUnitOfWork unitOfWork,
+            ICacheService cacheService)
         {
-
             _mapper = mapper;
             _validationService = validationService;
             _unitOfWork = unitOfWork;
@@ -43,7 +43,8 @@ namespace MamaFit.Services.Service
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<PaginatedList<MilestoneResponseDto>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
+        public async Task<PaginatedList<MilestoneResponseDto>> GetAllAsync(int index, int pageSize, string? search,
+            EntitySortBy? sortBy)
         {
             var milestoneList = await _unitOfWork.MilestoneRepository.GetAllAsync(index, pageSize, search, sortBy);
 
@@ -82,31 +83,38 @@ namespace MamaFit.Services.Service
 
             foreach (var milestone in milestoneList)
             {
-                float progress = (float)milestone.MaternityDressTasks.Count(x => x.OrderItemTasks.Any(x => x.Status == OrderItemTaskStatus.DONE))
-                / milestone.MaternityDressTasks.Count * 100;
-                var filteredTasks = milestone.MaternityDressTasks
+                var totalTaskCount = milestone.MaternityDressTasks.Count;
+                var doneTaskCount = milestone.MaternityDressTasks
+                    .Count(x => x.OrderItemTasks.Any(t =>
+                        t.OrderItemId == orderItemId && t.Status == OrderItemTaskStatus.DONE));
+
+                float progress = totalTaskCount == 0 ? 0 : (float)doneTaskCount / totalTaskCount * 100;
+
+                var currentTask = milestone.MaternityDressTasks
                     .Where(m => m.OrderItemTasks.Any(o =>
                         o.OrderItemId == orderItemId &&
-                            (o.Status == OrderItemTaskStatus.IN_PROGRESS || o.Status == OrderItemTaskStatus.PENDING)))
+                        (o.Status == OrderItemTaskStatus.IN_PROGRESS || o.Status == OrderItemTaskStatus.PENDING)))
                     .OrderBy(m => m.SequenceOrder)
-                    .ToList();  
-
-                var currentTask = filteredTasks.FirstOrDefault();
+                    .FirstOrDefault();
 
                 var achiveOrderItem = new MilestoneAchiveOrderItemResponseDto
                 {
                     MilestoneId = milestone.Id,
                     MilestoneName = milestone.Name,
                     Progress = progress,
-                    CurrentTask = new MaternityDressTaskForMilestoneAchiveResponseDto
-                    {
-                        Id = currentTask!.Id,
-                        Name = currentTask!.Name,
-                    }
+                    IsDone = progress >= 100,
+                    CurrentTask = currentTask != null
+                        ? new MaternityDressTaskForMilestoneAchiveResponseDto
+                        {
+                            Id = currentTask.Id,
+                            Name = currentTask.Name,
+                        }
+                        : null
                 };
 
                 milestoneAchiveList.Add(achiveOrderItem);
             }
+
             await _cacheService.SetAsync(cacheKey, milestoneAchiveList);
             return milestoneAchiveList;
         }

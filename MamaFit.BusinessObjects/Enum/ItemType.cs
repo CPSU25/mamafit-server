@@ -4,6 +4,7 @@
     {
         READY_TO_BUY,// Có sẵn hàng
         PRESET, // Có sẵn options
-        DESIGN_REQUEST // Tạo mới tất cả
+        DESIGN_REQUEST,// Tạo mới tất cả
+        WARRANTY, // Bảo hành
     }
 }

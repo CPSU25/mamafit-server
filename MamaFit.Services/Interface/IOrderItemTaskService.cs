@@ -5,6 +5,6 @@ namespace MamaFit.Services.Interface;
 
 public interface IOrderItemTaskService
 {
-    Task<StaffTasksGroupedResponse> GetTasksByAssignedStaffAsync(string accessToken);
+    Task<List<OrderItemTaskGetByTokenResponse>> GetTasksByAssignedStaffAsync(string accessToken);
     Task UpdateStatusAsync(string dressTaskId, string orderItemId, OrderItemTaskStatus status);
 }

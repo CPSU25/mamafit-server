@@ -24,7 +24,7 @@ public class OrderItemTaskController : ControllerBase
         [FromHeader(Name = "Authorization")] string accessToken)
     {
         var tasks = await _orderItemTaskService.GetTasksByAssignedStaffAsync(accessToken);
-        return Ok(new ResponseModel<StaffTasksGroupedResponse>(
+        return Ok(new ResponseModel<List<OrderItemTaskGetByTokenResponse>>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
             tasks,

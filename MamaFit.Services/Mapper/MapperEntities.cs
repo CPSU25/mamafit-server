@@ -186,6 +186,11 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.Detail, opt => opt.MapFrom(src =>
                     src.OrderItemTasks != null ? src.OrderItemTasks.FirstOrDefault() : null))
                 .ReverseMap();
+            CreateMap<MaternityDressTask, MaternityDressTaskOrderTaskResponseDto>()
+                .ForMember(dest => dest.Status, otp => otp.MapFrom(x => x.OrderItemTasks!.FirstOrDefault().Status))
+                .ForMember(dest => dest.Note, otp => otp.MapFrom(x => x.OrderItemTasks!.FirstOrDefault().Note))
+                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.OrderItemTasks!.FirstOrDefault().Image))
+                .ReverseMap();
             #endregion
 
             #region VoucherBatch Mapper
@@ -219,7 +224,7 @@ namespace MamaFit.Services.Mapper
             CreateMap<OrderItem, OrderItemResponseDto>().ReverseMap();
             CreateMap<OrderItem, OrderItemGetByIdResponseDto>()
                 .ForMember(dest => dest.MaternityDressDetail, opt => opt.MapFrom(src => src.MaternityDressDetail))
-               .ForMember(dest => dest.Milestones, opt => opt.MapFrom(src =>
+                .ForMember(dest => dest.Milestones, opt => opt.MapFrom(src =>
                     src.OrderItemTasks
                     .Where(x => x.MaternityDressTask!.Milestone != null)
                     .Select(x => x.MaternityDressTask!.Milestone)
@@ -233,10 +238,18 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.ChargeId, otp => otp.MapFrom(src => src.UserId))
                 .ForMember(dest => dest.ChargeName, otp => otp.MapFrom(src => src.User!.FullName))
                 .ReverseMap();
-            
+
             CreateMap<OrderItemTask, StaffTaskDetailDto>()
                 .ForMember(dest => dest.MaternityDressTaskId, opt => opt.MapFrom(src => src.MaternityDressTaskId))
                 .ForMember(dest => dest.MaternityDressTask, opt => opt.MapFrom(src => src.MaternityDressTask));
+
+            CreateMap<OrderItemTask, OrderItemTaskGetByTokenResponse>()
+                .ForMember(dest => dest.Milestones, otp => otp.MapFrom(src => src.MaternityDressTask.Milestone))
+                .ForMember(dest => dest.DesignRequest, otp => otp.MapFrom(src => src.OrderItem.DesignRequest))
+                .ForMember(dest => dest.Preset, otp => otp.MapFrom(src => src.OrderItem.Preset))
+                .ForMember(dest => dest.MaternityDressDetail, otp => otp.MapFrom(src => src.OrderItem.MaternityDressDetail))
+                .ReverseMap()
+                ;
             #endregion
 
             #region Milestone Mapper
@@ -246,6 +259,9 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.Tasks, otp => otp.MapFrom(src => src.MaternityDressTasks))
                 .ReverseMap();
             CreateMap<Milestone, MilestoneResponseMinDto>();
+            CreateMap<Milestone, MilestoneGetByIdOrderTaskResponseDto>()
+                .ForMember(dest => dest.MaternityDressTasks, otp => otp.MapFrom(src => src.MaternityDressTasks))
+                .ReverseMap();
             #endregion
 
             #region Notification Mapper
@@ -324,8 +340,8 @@ namespace MamaFit.Services.Mapper
             CreateMap<Size, SizeDto>().ReverseMap();
             CreateMap<Size, SizeRequestDto>().ReverseMap();
             #endregion
-            
-            
+
+
 
         }
     }

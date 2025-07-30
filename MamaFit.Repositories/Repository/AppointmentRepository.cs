@@ -28,7 +28,7 @@ namespace MamaFit.Repositories.Repository
                 .AsNoTracking()
                 .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted);
         }
-        public async Task<PaginatedList<Appointment>> GetAllAsync(int index, int pageSize, string? search, AppointmentOrderBy? sortBy)
+        public async Task<PaginatedList<Appointment>> GetAllAsync(int index, int pageSize, DateTime? StartDate, DateTime? EndDate, AppointmentOrderBy? sortBy)
         {
             var query = _dbSet.AsNoTracking()
                 .Include(x => x.User)
@@ -37,6 +37,10 @@ namespace MamaFit.Repositories.Repository
                 .ThenInclude(x => x.BranchManager)
                 .ThenInclude(x => x!.Role)
                 .Where(a => !a.IsDeleted);
+
+            query = query.Where(query =>
+                (!StartDate.HasValue || query.BookingTime >= StartDate.Value) &&
+                (!EndDate.HasValue || query.BookingTime <= EndDate.Value)) ?? query;
 
             query = sortBy switch
             {
@@ -107,7 +111,7 @@ namespace MamaFit.Repositories.Repository
 
             var bookedSlots = await _dbSet
                 .AsNoTracking()
-                .Where(a => !a.IsDeleted 
+                .Where(a => !a.IsDeleted
                 && a.BranchId == branch.Id
                 && a.BookingTime.Date == dateTime.Date
                 && a.Status != AppointmentStatus.CANCELED)

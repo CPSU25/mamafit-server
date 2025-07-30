@@ -1,13 +1,15 @@
 using AutoMapper;
-using Contentful.Core.Models.Management;
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.DTO.OrderItemTaskDto;
+using MamaFit.BusinessObjects.DTO.UserDto;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
+using System.ComponentModel.Design;
 
 namespace MamaFit.Services.Service;
 
@@ -208,5 +210,32 @@ public class OrderItemService : IOrderItemService
 
         await _cacheService.RemoveByPrefixAsync(cacheKey);
         await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task<DesignerInfoOrderItemResponseDto> GetDesignerInfoByOrderItemIdAsync(string orderItemId)
+    {
+        var currentUserId = GetCurrentUserId();
+        var user = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(currentUserId);
+        _validation.CheckNotFound(user, "Current user is not exist!");
+
+        var orderItem = await _unitOfWork.OrderItemRepository.GetDetailById(orderItemId);
+        _validation.CheckNotFound(orderItem, $"Order item with id:{orderItemId} is not exist!");
+
+        var designerId = orderItem.OrderItemTasks
+            .Where(x => x.MaternityDressTask.Milestone.ApplyFor.Contains(ItemType.DESIGN_REQUEST))
+            .Select(x => x.UserId)
+            .FirstOrDefault();
+
+        var designerInfo = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(designerId);
+
+        var chatRoom = await _unitOfWork.ChatRepository.GetRoomBetweenUsersAsync(designerInfo?.Id, currentUserId) ?? null;
+
+        var response = new DesignerInfoOrderItemResponseDto
+        {
+            ChatRoomId = chatRoom?.Id,
+            Designer = _mapper.Map<UserReponseDto>(designerInfo) ?? null
+        };
+
+        return response;
     }
 }

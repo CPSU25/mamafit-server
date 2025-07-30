@@ -44,6 +44,18 @@ public class OrderItemController : ControllerBase
         ));
     }
 
+    [HttpGet("designer-info/{orderItemId}")]
+    public async Task<IActionResult> GetDesignerInfoByOrderItemId([FromRoute] string orderItemId)
+    {
+        var result = await _service.GetDesignerInfoByOrderItemIdAsync(orderItemId);
+        return Ok(new ResponseModel<DesignerInfoOrderItemResponseDto>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            result,
+            "Get designer info by order item ID successfully!"
+        ));
+    }
+
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] OrderItemRequestDto model)
     {

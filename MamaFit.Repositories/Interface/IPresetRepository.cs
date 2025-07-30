@@ -11,5 +11,6 @@ namespace MamaFit.Repositories.Interface
         public Task<Preset> GetDetailById(string id);
         public Task<Preset> GetDefaultPresetByStyleId(string styleId);
         public Task<List<Preset>> GetAllPresetByComponentOptionId(List<string> componentOptionId);
+        public Task<List<Preset>> GetPresetByDesignRequestId(string designRequestId);
     }
 }

@@ -41,6 +41,18 @@ namespace MamaFit.API.Controllers
             ));
         }
 
+        [HttpGet("design-request/{designRequestId}")]
+        public async Task<IActionResult> GetPresetByDesignRequestId([FromRoute] string designRequestId)
+        {
+            var presets = await _presetService.GetPresetByDesignRequestId(designRequestId);
+            return Ok(new ResponseModel<List<PresetGetByIdResponseDto>>(
+                StatusCodes.Status200OK,
+                ApiCodes.SUCCESS,
+                presets,
+                "Get presets by design request ID successfully!"
+            ));
+        }
+
         [HttpGet("default/{styleId}")]
         public async Task<IActionResult> GetDefaultPresetByStyleId([FromRoute] string styleId)
         {

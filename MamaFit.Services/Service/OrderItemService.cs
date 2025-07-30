@@ -1,4 +1,5 @@
 using AutoMapper;
+using Contentful.Core.Models.Management;
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.DTO.OrderItemTaskDto;
 using MamaFit.BusinessObjects.Entity;
@@ -111,7 +112,7 @@ public class OrderItemService : IOrderItemService
 
         var orderItemTasks = new List<OrderItemTask>();
 
-        foreach(var milestoneId in request.MilestoneIds!)
+        foreach (var milestoneId in request.MilestoneIds!)
         {
             var milestone = await _unitOfWork.MilestoneRepository.GetByIdDetailAsync(milestoneId!);
             _validation.CheckNotFound(milestone, $"Milestone with id:{milestoneId} is not exist!");
@@ -129,7 +130,7 @@ public class OrderItemService : IOrderItemService
                 });
             }
         }
-        
+
         orderItem.OrderItemTasks = orderItemTasks;
 
         await _unitOfWork.OrderItemRepository.UpdateAsync(orderItem);
@@ -141,11 +142,8 @@ public class OrderItemService : IOrderItemService
         return _httpContextAccessor.HttpContext?.User.FindFirst("userId")?.Value ?? string.Empty;
     }
 
-    public async Task AssignChargeToOrderItemAsync(AssignChargeToOrderItemRequestDto request)
+    public async Task AssignChargeToOrderItemAsync(AssignChargeToOrderItemRequestDto request, ApplicationUser user)
     {
-        var currentUserId = GetCurrentUserId() ?? null;
-        var user = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(currentUserId);
-
         var milestone = await _unitOfWork.MilestoneRepository.GetByIdDetailAsync(request.MilestoneId!);
         _validation.CheckNotFound(milestone, $"Milestone with id:{request.MilestoneId} is not exist!");
 
@@ -175,6 +173,17 @@ public class OrderItemService : IOrderItemService
             await _unitOfWork.OrderItemRepository.UpdateAsync(orderItem!);
         }
         await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task AssignChargeToOrderItemListAsync(List<AssignChargeToOrderItemRequestDto> requests)
+    {
+        var currentUserId = GetCurrentUserId() ?? null;
+        var user = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(currentUserId);
+
+        foreach (var request in requests)
+        {
+            await AssignChargeToOrderItemAsync(request, user);
+        }
     }
 
     public async Task CheckListStatusForOrderItemTaskAsync(OrderItemCheckTaskRequestDto request)

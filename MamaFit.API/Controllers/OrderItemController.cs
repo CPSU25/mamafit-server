@@ -69,9 +69,9 @@ public class OrderItemController : ControllerBase
     }
 
     [HttpPost("assign-charge")]
-    public async Task<IActionResult> AssignChargeToOrderItem([FromBody] AssignChargeToOrderItemRequestDto request)
+    public async Task<IActionResult> AssignChargeToOrderItem([FromBody] List<AssignChargeToOrderItemRequestDto> requests)
     {
-        await _service.AssignChargeToOrderItemAsync(request);
+        await _service.AssignChargeToOrderItemListAsync(requests);
         return Ok(new ResponseModel<string>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,

@@ -38,4 +38,14 @@ public class AddOnRepository : GenericRepository<AddOn>, IAddOnRepository
 
         return await GetPaging(query, index, pageSize);
     }
+    
+    public async Task<AddOn?> GetByIdAsync(string id)
+    {
+        return await _dbSet.AsNoTracking()
+            .Include(x => x.AddOnOptions!)
+            .ThenInclude(x => x.Position)
+            .Include(x => x.AddOnOptions!)
+            .ThenInclude(x => x.Size)
+            .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted);
+    }
 }

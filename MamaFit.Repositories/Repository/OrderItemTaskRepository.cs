@@ -30,6 +30,12 @@ namespace MamaFit.Repositories.Repository
             return orderItemTask;
         }
 
+        public async Task<OrderItemTask> GetByIdAsync(string maternityDressTaskId, string orderItemId)
+        {
+            var orderItemTask = await _context.OrderItemsTasks.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.MaternityDressTaskId == maternityDressTaskId && x.OrderItemId == orderItemId);
+            return orderItemTask;
+        }
         public async Task UpdateAsync(OrderItemTask task)
         {
             _context.Entry(task).State = EntityState.Modified;
@@ -48,18 +54,17 @@ namespace MamaFit.Repositories.Repository
 
         public async Task<List<OrderItemTask>> GetTasksByAssignedStaffAsync(string userId)
         {
-            return await _context.OrderItemsTasks.AsNoTracking()
+            return await _context.OrderItemsTasks
                 .Where(t => t.UserId == userId)
-                .Include(t => t.MaternityDressTask)
-                .ThenInclude(t => t!.Milestone)
-                .Include(t => t.OrderItem)
-                .ThenInclude(t => t!.DesignRequest)
-                .Include(t => t.OrderItem)
-                .ThenInclude(t => t!.MaternityDressDetail)
-                .Include(t => t.OrderItem)
-                .ThenInclude(t => t!.Preset)
+                .Include(t => t.MaternityDressTask).ThenInclude(t => t!.Milestone)
+                .Include(t => t.OrderItem).ThenInclude(o => o!.Preset)
+                .Include(t => t.OrderItem).ThenInclude(o => o!.DesignRequest)
+                .Include(t => t.OrderItem).ThenInclude(o => o!.MaternityDressDetail)
+                .AsNoTracking()
                 .ToListAsync();
         }
+
+        
         private string GetCurrentUserName()
         {
             var username = _httpContextAccessor.HttpContext?.User?.FindFirst("userName")?.Value;

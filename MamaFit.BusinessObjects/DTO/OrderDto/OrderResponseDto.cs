@@ -1,4 +1,5 @@
 using MamaFit.BusinessObjects.DTO.AddressDto;
+using MamaFit.BusinessObjects.DTO.MeasurementDto;
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.Entity;
 
@@ -17,5 +18,7 @@ public class OrderResponseDto : OrderBaseDto
     public string? UpdatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+    
+    public MeasurementDiaryResponseDto? MeasurementDiary { get; set; }
     public List<OrderItemResponseDto>? Items { get; set; }
 }

@@ -3,7 +3,7 @@
     public class AssignChargeToOrderItemRequestDto
     {
         public string? ChargeId { get; set; } // Charge ID to be assigned to the order item Designer or Staff
-        public string? OrderItemId { get; set; }
+        public List<string>? OrderItemIds { get; set; }
         public string? MilestoneId { get; set; }
     }
 }

@@ -2514,223 +2514,6 @@ namespace MamaFit.BusinessObjects.Data
 
             #endregion
 
-            #region Seed Milestone, MaternityDressTask
-            modelBuilder.Entity<Milestone>().HasData(
-                new Milestone
-                {
-                    Id = "e8e56df1c7e0467d9dfc15df96735c10",
-                    Name = "Khám phá nhu cầu",
-                    Description = "Tìm hiểu nhu cầu và phong cách của khách hàng",
-                    SequenceOrder = 1,
-                    ApplyFor = [ItemType.DESIGN_REQUEST, ItemType.PRESET, ItemType.READY_TO_BUY],
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new Milestone
-                {
-                    Id = "ef9791c0d0e14e48b6b98432cdd9e60c",
-                    Name = "Chọn hoặc tạo mẫu đầm",
-                    Description = "Khách chọn mẫu có sẵn hoặc thiết kế mới",
-                    SequenceOrder = 2,
-                    ApplyFor = [ItemType.DESIGN_REQUEST, ItemType.PRESET],
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new Milestone
-                {
-                    Id = "2a3477f9db80487b89ad8cdebe1e5f13",
-                    Name = "Thử và điều chỉnh",
-                    Description = "Thử đầm và tinh chỉnh theo phản hồi",
-                    SequenceOrder = 3,
-                    ApplyFor = [ItemType.DESIGN_REQUEST, ItemType.PRESET],
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new Milestone
-                {
-                    Id = "b3e3ad7a80b946f9b42f0ddf2f00aeec",
-                    Name = "Kiểm tra chất lượng",
-                    Description = "Đánh giá và đóng gói trước khi giao",
-                    SequenceOrder = 4,
-                    ApplyFor = [ItemType.DESIGN_REQUEST, ItemType.PRESET, ItemType.READY_TO_BUY],
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new Milestone
-                {
-                    Id = "316f055b3e2e4c6fa44f6a16dca0e6f1",
-                    Name = "Giao hàng và phản hồi",
-                    Description = "Giao đến khách và lấy đánh giá",
-                    SequenceOrder = 5,
-                    ApplyFor = [ItemType.DESIGN_REQUEST, ItemType.PRESET, ItemType.READY_TO_BUY],
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                }
-            );
-
-            modelBuilder.Entity<MaternityDressTask>().HasData(
-                new MaternityDressTask
-                {
-                    Id = "9c8ebd7bc6d643efab54ef2b09925f04",
-                    MilestoneId = "e8e56df1c7e0467d9dfc15df96735c10",
-                    Name = "Tư vấn phong cách",
-                    Description = "Chọn style phù hợp",
-                    SequenceOrder = 1,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "5f8ce7b8139f4b0996c2b71f901c7ef6",
-                    MilestoneId = "e8e56df1c7e0467d9dfc15df96735c10",
-                    Name = "Xác định dịp sử dụng",
-                    Description = "Tiệc, chụp ảnh, thường ngày...",
-                    SequenceOrder = 2,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "89bb40304a8d45f7a0e2178c6aeea462",
-                    MilestoneId = "ef9791c0d0e14e48b6b98432cdd9e60c",
-                    Name = "Chọn mẫu sẵn",
-                    Description = "Preset styles",
-                    SequenceOrder = 1,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "86c0cbaac35c4f62b029aaed8cce8e9c",
-                    MilestoneId = "ef9791c0d0e14e48b6b98432cdd9e60c",
-                    Name = "Thiết kế mới",
-                    Description = "Tạo mẫu theo ý khách",
-                    SequenceOrder = 2,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "35f95d06385f4b6994416dcb2bba1f6f",
-                    MilestoneId = "2a3477f9db80487b89ad8cdebe1e5f13",
-                    Name = "Thử đầm",
-                    Description = "Thử trực tiếp hoặc feedback ảnh",
-                    SequenceOrder = 1,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "6fd0f813c191449ab2b7a07039cd9e7c",
-                    MilestoneId = "2a3477f9db80487b89ad8cdebe1e5f13",
-                    Name = "Tinh chỉnh",
-                    Description = "Sửa theo feedback",
-                    SequenceOrder = 2,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "f48b2f18763e4e6b80b4a85ce95b8264",
-                    MilestoneId = "b3e3ad7a80b946f9b42f0ddf2f00aeec",
-                    Name = "Kiểm tra ngoại hình",
-                    Description = "Đường may, màu sắc, nếp vải",
-                    SequenceOrder = 1,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "d6c9fddce1cc4cd28bd54094f5e48c56",
-                    MilestoneId = "b3e3ad7a80b946f9b42f0ddf2f00aeec",
-                    Name = "Đo đạc & so sánh",
-                    Description = "Kiểm tra số đo đúng không",
-                    SequenceOrder = 2,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "197fd3b727a1400cbde58a4f28ab5f93",
-                    MilestoneId = "b3e3ad7a80b946f9b42f0ddf2f00aeec",
-                    Name = "Đóng gói sản phẩm",
-                    Description = "Gói chuẩn theo mẫu thương hiệu",
-                    SequenceOrder = 3,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "c1ff5d242bb14aa59e17c34753c9e189",
-                    MilestoneId = "316f055b3e2e4c6fa44f6a16dca0e6f1",
-                    Name = "Giao hàng",
-                    Description = "Ship theo địa chỉ khách chọn",
-                    SequenceOrder = 1,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "fb2e3a1c38f14091a8b016dfbdcf80e0",
-                    MilestoneId = "316f055b3e2e4c6fa44f6a16dca0e6f1",
-                    Name = "Ghi nhận phản hồi",
-                    Description = "Gửi form đánh giá hoặc khảo sát",
-                    SequenceOrder = 2,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    IsDeleted = false
-                }
-            );
-
-            #endregion
-
             #region Seed Diary, Address, Voucher, Branch
             modelBuilder.Entity<MeasurementDiary>().HasData(
                 new MeasurementDiary
@@ -3126,6 +2909,379 @@ namespace MamaFit.BusinessObjects.Data
                 IsDeleted = false,
             }
         );
+            #endregion
+
+            #region Seed Milestone, Task
+            modelBuilder.Entity<Milestone>().HasData(
+
+                new Milestone
+                {
+                    Id = "d677453018e04408ba1d0ddec81e5ffd",
+                    Name = "Design",
+                    Description = "Design process for custom design requests",
+                    ApplyFor = [ItemType.DESIGN_REQUEST],
+                    SequenceOrder = 1,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "Admin",
+                    CreatedAt = DateTime.Parse("2025-07-29 17:18:05"),
+                    UpdatedAt = DateTime.Parse("2025-07-29 17:18:05"),
+                    IsDeleted = false
+                },
+                new Milestone
+                {
+                    Id = "130a30e16f764ec7b29c1461f932d10a",
+                    Name = "Preset Production",
+                    Description = "Production process for preset orders",
+                    ApplyFor = [ItemType.PRESET],
+                    SequenceOrder = 1,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "Admin",
+                    CreatedAt = DateTime.Parse("2025-07-29 17:18:56"),
+                    UpdatedAt = DateTime.Parse("2025-07-29 17:18:56"),
+                    IsDeleted = false
+                },
+                new Milestone
+                {
+                    Id = "e1235c985155490d9f701a5e35d490ed",
+                    Name = "Add On",
+                    Description = "Additional customization or services",
+                    ApplyFor = [ItemType.READY_TO_BUY, ItemType.PRESET],
+                    SequenceOrder = 2,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "Admin",
+                    CreatedAt = DateTime.Parse("2025-07-29 17:20:31"),
+                    UpdatedAt = DateTime.Parse("2025-07-29 17:20:31"),
+                    IsDeleted = false
+                },
+                new Milestone
+                {
+                    Id = "5110afc434844342984a1db6944536dc",
+                    Name = "Warranty Check",
+                    Description = "Initial warranty assessment for preset orders",
+                    ApplyFor = [ItemType.PRESET],
+                    SequenceOrder = 3,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "Admin",
+                    CreatedAt = DateTime.Parse("2025-07-29 17:21:41"),
+                    UpdatedAt = DateTime.Parse("2025-07-29 17:21:41"),
+                    IsDeleted = false
+                },
+                new Milestone
+                {
+                    Id = "08c1f3fd1f71460e9a4afefc14fa01cb",
+                    Name = "In Warrnaty",
+                    Description = "Warranty repair or replacement",
+                    ApplyFor = [ItemType.PRESET],
+                    SequenceOrder = 4,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "Admin",
+                    CreatedAt = DateTime.Parse("2025-07-29 17:52:28"),
+                    UpdatedAt = DateTime.Parse("2025-07-29 17:52:28"),
+                    IsDeleted = false
+                },
+                new Milestone
+                {
+                    Id = "3bc69c7f00d44442bc3dd095637b4172",
+                    Name = "Quality Check",
+                    Description = "Quality control checks for all order types",
+                    ApplyFor = [ItemType.PRESET, ItemType.READY_TO_BUY],
+                    SequenceOrder = 5,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "Admin",
+                    CreatedAt = DateTime.Parse("2025-07-29 17:54:47"),
+                    UpdatedAt = DateTime.Parse("2025-07-29 17:54:47"),
+                    IsDeleted = false
+                },
+                new Milestone
+                {
+                    Id = "e1d5cb20d3e5460b9067113cf4615fa7",
+                    Name = "Quality Check Warranty",
+                    Description = "Quality control checks for warranty preset",
+                    ApplyFor = [ItemType.PRESET],
+                    SequenceOrder = 5,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "Admin",
+                    CreatedAt = DateTime.Parse("2025-07-29 17:56:02"),
+                    UpdatedAt = DateTime.Parse("2025-07-29 17:56:02"),
+                    IsDeleted = false
+                },
+                new Milestone
+                {
+                    Id = "afa0cfb3844a4bf99e79b40a009b8f58",
+                    Name = "Packing & Delivery",
+                    Description = "Final packing and delivery for customer",
+                    ApplyFor = [ItemType.READY_TO_BUY, ItemType.PRESET],
+                    SequenceOrder = 6,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "Admin",
+                    CreatedAt = DateTime.Parse("2025-07-29 17:56:43"),
+                    UpdatedAt = DateTime.Parse("2025-07-29 17:56:43"),
+                    IsDeleted = false
+                }
+            );
+            modelBuilder.Entity<MaternityDressTask>().HasData(
+
+                new MaternityDressTask
+                {
+                    Id = "e067e4747bdd40d4a665d79b91285bdf",
+                    MilestoneId = "130a30e16f764ec7b29c1461f932d10a",
+                    Name = "Check Order Details",
+                    Description = "Review preset order specifications and measurements",
+                    SequenceOrder = 1,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "Admin",
+                    CreatedAt = DateTime.Parse("2025-07-29 17:57:33"),
+                    UpdatedAt = DateTime.Parse("2025-07-29 18:10:50"),
+                    IsDeleted = false
+                },
+                new MaternityDressTask
+                {
+                    Id = "26ab09cb782a4e8db409f39079ac24f1",
+                    MilestoneId = "130a30e16f764ec7b29c1461f932d10a",
+                    Name = "Prepare Materials",
+                    Description = "Gather required fabrics and materials for preset design",
+                    SequenceOrder = 2,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "Admin",
+                    CreatedAt = DateTime.Parse("2025-07-29 17:58:10"),
+                    UpdatedAt = DateTime.Parse("2025-07-29 17:58:10"),
+                    IsDeleted = false
+                },
+                new MaternityDressTask
+                {
+                    Id = "524ae555a1644d37a8b66dd26724c792",
+                    MilestoneId = "130a30e16f764ec7b29c1461f932d10a",
+                    Name = "Cut Fabric",
+                    Description = "Cut fabric pieces according to preset pattern",
+                    SequenceOrder = 3,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "Admin",
+                    CreatedAt = DateTime.Parse("2025-07-29 17:58:34"),
+                    UpdatedAt = DateTime.Parse("2025-07-29 17:58:34"),
+                    IsDeleted = false
+                },
+    new MaternityDressTask
+    {
+        Id = "b085a91ce1f9400ba1f8bfc973f2c568",
+        MilestoneId = "130a30e16f764ec7b29c1461f932d10a",
+        Name = "Sew Garment",
+        Description = "Complete main sewing process",
+        SequenceOrder = 4,
+        CreatedBy = "Admin",
+        UpdatedBy = "Admin",
+        CreatedAt = DateTime.Parse("2025-07-29 18:00:01"),
+        UpdatedAt = DateTime.Parse("2025-07-29 18:00:01"),
+        IsDeleted = false
+    },
+    new MaternityDressTask
+    {
+        Id = "23de35d6fb194c398d09ce00ae01eeea",
+        MilestoneId = "130a30e16f764ec7b29c1461f932d10a",
+        Name = "Attach Details",
+        Description = "Add buttons, zippers, and finishing touches",
+        SequenceOrder = 5,
+        CreatedBy = "Admin",
+        UpdatedBy = "Admin",
+        CreatedAt = DateTime.Parse("2025-07-29 18:01:12"),
+        UpdatedAt = DateTime.Parse("2025-07-29 18:01:12"),
+        IsDeleted = false
+    },
+    new MaternityDressTask
+    {
+        Id = "6bc65fa7010a4adf93cd52135cc0aa4e",
+        MilestoneId = "130a30e16f764ec7b29c1461f932d10a",
+        Name = "Initial Fitting Check",
+        Description = "Basic fitting verification",
+        SequenceOrder = 6,
+        CreatedBy = "Admin",
+        UpdatedBy = "Admin",
+        CreatedAt = DateTime.Parse("2025-07-29 18:01:35"),
+        UpdatedAt = DateTime.Parse("2025-07-29 18:01:35"),
+        IsDeleted = false
+    },
+    new MaternityDressTask
+    {
+        Id = "26049f6a1a964dc5b659e4991eb475c5",
+        MilestoneId = "d677453018e04408ba1d0ddec81e5ffd",
+        Name = "Create preset with design request",
+        Description = "Create preset for customer",
+        SequenceOrder = 1,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-07-29 18:15:23"),
+        UpdatedAt = DateTime.Parse("2025-07-29 18:15:23"),
+        IsDeleted = false
+    },
+    new MaternityDressTask
+    {
+        Id = "4d5854acc4c34ff294d0cc8e29f558e8",
+        MilestoneId = "3bc69c7f00d44442bc3dd095637b4172",
+        Name = "Visual Inspection",
+        Description = "Check overall appearance and construction quality",
+        SequenceOrder = 1,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-07-29 18:31:03"),
+        UpdatedAt = DateTime.Parse("2025-07-29 18:31:03"),
+        IsDeleted = false
+    },
+    new MaternityDressTask
+    {
+        Id = "667a4387ded44595b8385f31ff3010d0",
+        MilestoneId = "3bc69c7f00d44442bc3dd095637b4172",
+        Name = "Seam Quality Check",
+        Description = "Inspect all seams for strength and finishing",
+        SequenceOrder = 2,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-07-29 18:31:28"),
+        UpdatedAt = DateTime.Parse("2025-07-29 18:31:28"),
+        IsDeleted = false
+    },
+    new MaternityDressTask
+    {
+        Id = "8694d2af4cef4b2a869d69b2c11ca16e",
+        MilestoneId = "3bc69c7f00d44442bc3dd095637b4172",
+        Name = "Measurement Verification",
+        Description = "Verify garment measurements against specifications",
+        SequenceOrder = 3,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-07-29 18:31:50"),
+        UpdatedAt = DateTime.Parse("2025-07-29 18:31:50"),
+        IsDeleted = false
+    },
+    new MaternityDressTask
+    {
+        Id = "eaf8da4628664f4083af4bf73639b2ea",
+        MilestoneId = "3bc69c7f00d44442bc3dd095637b4172",
+        Name = "Fabric Quality Check",
+        Description = "Check for fabric defects or issues",
+        SequenceOrder = 4,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-07-29 18:32:14"),
+        UpdatedAt = DateTime.Parse("2025-07-29 18:32:14"),
+        IsDeleted = false
+    },
+    new MaternityDressTask
+    {
+        Id = "bfef208943f5429abaf5ad7265df20c3",
+        MilestoneId = "3bc69c7f00d44442bc3dd095637b4172",
+        Name = "Functional Testing",
+        Description = "Test zippers, buttons, and other functional elements",
+        SequenceOrder = 3,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-07-29 18:32:36"),
+        UpdatedAt = DateTime.Parse("2025-07-29 18:32:36"),
+        IsDeleted = false
+    },
+    new MaternityDressTask
+    {
+        Id = "16a506ee77974fdaac4eeb2310f56ff0",
+        MilestoneId = "5110afc434844342984a1db6944536dc",
+        Name = "Inspect Returned Item",
+        Description = "Examine returned garment for reported issues",
+        SequenceOrder = 1,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-07-29 18:34:31"),
+        UpdatedAt = DateTime.Parse("2025-07-29 18:34:31"),
+        IsDeleted = false
+    },
+    new MaternityDressTask
+    {
+        Id = "efcc1a38a9cd4fd38a68bc18437f726b",
+        MilestoneId = "5110afc434844342984a1db6944536dc",
+        Name = "Assess Warranty Validity",
+        Description = "Determine if issue is covered under warranty terms",
+        SequenceOrder = 2,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-07-29 18:34:43"),
+        UpdatedAt = DateTime.Parse("2025-07-29 18:34:43"),
+        IsDeleted = false
+    },
+    new MaternityDressTask
+    {
+        Id = "32e620585a454e7bbe7bf9314e7577ce",
+        MilestoneId = "e1235c985155490d9f701a5e35d490ed",
+        Name = "Apply Customizations",
+        Description = "Execute additional features and embroidery",
+        SequenceOrder = 1,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-07-29 18:39:52"),
+        UpdatedAt = DateTime.Parse("2025-07-29 18:39:52"),
+        IsDeleted = false
+    },
+    new MaternityDressTask
+    {
+        Id = "b13f33bdf3fa48059226c45033349224",
+        MilestoneId = "08c1f3fd1f71460e9a4afefc14fa01cb",
+        Name = "Prepare Repair",
+        Description = "Set up repair workspace and materials",
+        SequenceOrder = 1,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-07-29 18:41:01"),
+        UpdatedAt = DateTime.Parse("2025-07-29 18:41:01"),
+        IsDeleted = false
+    },
+    new MaternityDressTask
+    {
+        Id = "cca010d95a774c578cd3910aced360e2",
+        MilestoneId = "08c1f3fd1f71460e9a4afefc14fa01cb",
+        Name = "Execute Repair",
+        Description = "Perform repair or replacement work",
+        SequenceOrder = 2,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-07-29 18:41:19"),
+        UpdatedAt = DateTime.Parse("2025-07-29 18:41:19"),
+        IsDeleted = false
+    },
+    new MaternityDressTask
+    {
+        Id = "6cbafb0310074107892958b2325df8d0",
+        MilestoneId = "e1d5cb20d3e5460b9067113cf4615fa7",
+        Name = "Inspect Repair Work",
+        Description = "Check quality of repaired areas",
+        SequenceOrder = 1,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-07-29 18:41:47"),
+        UpdatedAt = DateTime.Parse("2025-07-29 18:41:47"),
+        IsDeleted = false
+    },
+    new MaternityDressTask
+    {
+        Id = "f4f2ebc128514d3a923b82451c575967",
+        MilestoneId = "afa0cfb3844a4bf99e79b40a009b8f58",
+        Name = "Package Product",
+        Description = "Pack in branded packaging with care instructions",
+        SequenceOrder = 1,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-07-29 18:43:13"),
+        UpdatedAt = DateTime.Parse("2025-07-29 18:43:13"),
+        IsDeleted = false
+    },
+    new MaternityDressTask
+    {
+        Id = "13a6b12c7ae643809c13ee2863e86b10",
+        MilestoneId = "afa0cfb3844a4bf99e79b40a009b8f58",
+        Name = "Prepare Shipping",
+        Description = "Create shipping label and arrange delivery",
+        SequenceOrder = 2,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-07-29 18:43:31"),
+        UpdatedAt = DateTime.Parse("2025-07-29 18:43:31"),
+        IsDeleted = false
+    }
+);
             #endregion
         }
     }

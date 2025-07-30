@@ -9,4 +9,6 @@ public interface IAddOnRepository : IGenericRepository<AddOn>
 {
     Task<PaginatedList<AddOn>> GetAllAsync(int index, int pageSize, string? search,
         EntitySortBy? sortBy);
+
+    Task<AddOn?> GetByIdAsync(string id);
 }

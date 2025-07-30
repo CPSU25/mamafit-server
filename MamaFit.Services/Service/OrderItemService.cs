@@ -146,29 +146,32 @@ public class OrderItemService : IOrderItemService
         var currentUserId = GetCurrentUserId() ?? null;
         var user = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(currentUserId);
 
-        var orderItem = await _unitOfWork.OrderItemRepository.GetDetailById(request.OrderItemId!);
-        _validation.CheckNotFound(orderItem, $"Order item with id:{request.OrderItemId} is not exist!");
-
         var milestone = await _unitOfWork.MilestoneRepository.GetByIdDetailAsync(request.MilestoneId!);
         _validation.CheckNotFound(milestone, $"Milestone with id:{request.MilestoneId} is not exist!");
 
         var personInCharge = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(request.ChargeId!);
         _validation.CheckNotFound(personInCharge, $"Person in charge with id:{request.ChargeId} is not exist!");
 
-        foreach (var task in milestone.MaternityDressTasks!)
+        foreach (var orderItemId in request.OrderItemIds!)
         {
-            var orderItemTask = orderItem!.OrderItemTasks!
-                .FirstOrDefault(x => x.MaternityDressTask != null && x.MaternityDressTask.Equals(task));
+            var orderItem = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(orderItemId!);
+            _validation.CheckNotFound(orderItem, $"Order item with id:{orderItemId} is not exist!");
 
-            if (orderItemTask != null)
+            foreach (var task in milestone.MaternityDressTasks!)
             {
-                orderItemTask.User = personInCharge;
-                orderItemTask.UserId = personInCharge!.Id;
-                orderItemTask.UpdatedBy = user?.UserName ?? "System";
-                orderItemTask.UpdatedAt = DateTime.UtcNow;
+                var orderItemTask = orderItem!.OrderItemTasks!
+                    .FirstOrDefault(x => x.MaternityDressTask != null && x.MaternityDressTask.Equals(task));
+
+                if (orderItemTask != null)
+                {
+                    orderItemTask.User = personInCharge;
+                    orderItemTask.UserId = personInCharge!.Id;
+                    orderItemTask.UpdatedBy = user?.UserName ?? "System";
+                    orderItemTask.UpdatedAt = DateTime.UtcNow;
+                }
             }
+            await _unitOfWork.OrderItemRepository.UpdateAsync(orderItem);
         }
-        await _unitOfWork.OrderItemRepository.UpdateAsync(orderItem);
         await _unitOfWork.SaveChangesAsync();
     }
 

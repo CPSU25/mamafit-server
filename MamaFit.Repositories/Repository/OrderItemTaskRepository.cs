@@ -36,6 +36,7 @@ namespace MamaFit.Repositories.Repository
                 .FirstOrDefaultAsync(x => x.MaternityDressTaskId == maternityDressTaskId && x.OrderItemId == orderItemId);
             return orderItemTask;
         }
+
         public async Task UpdateAsync(OrderItemTask task)
         {
             _context.Entry(task).State = EntityState.Modified;

@@ -1,17 +1,12 @@
 ﻿using AutoMapper;
-using MamaFit.BusinessObjects.DTO.DesignRequestDto;
-using MamaFit.BusinessObjects.DTO.MaternityDressDetailDto;
 using MamaFit.BusinessObjects.DTO.MaternityDressTaskDto;
 using MamaFit.BusinessObjects.DTO.MilestoneDto;
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.DTO.OrderItemTaskDto;
-using MamaFit.BusinessObjects.DTO.PresetDto;
-using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
-using MamaFit.Repositories.Helper;
-using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Interface;
 using MamaFit.Services.Interface;
+using Microsoft.AspNetCore.Http;
 
 namespace MamaFit.Services.Service;
 
@@ -20,17 +15,19 @@ public class OrderItemTaskService : IOrderItemTaskService
     private readonly IOrderItemTaskRepository _repo;
     private readonly IMapper _mapper;
     private readonly IValidationService _validation;
-    
-    public OrderItemTaskService(IOrderItemTaskRepository repo, IMapper mapper, IValidationService validation)
+    private readonly IHttpContextAccessor _contextAccessor;
+
+    public OrderItemTaskService(IOrderItemTaskRepository repo, IMapper mapper, IValidationService validation, IHttpContextAccessor contextAccessor)
     {
         _repo = repo;
         _mapper = mapper;
         _validation = validation;
+        _contextAccessor = contextAccessor;
     }
 
-    public async Task<List<OrderItemTaskGetByTokenResponse>> GetTasksByAssignedStaffAsync(string accessToken)
+    public async Task<List<OrderItemTaskGetByTokenResponse>> GetTasksByAssignedStaffAsync()
     {
-        var userId = JwtTokenHelper.ExtractUserId(accessToken);
+        var userId = GetCurrentUserId();
         var orderItemTasks = await _repo.GetTasksByAssignedStaffAsync(userId);
         _validation.CheckNotFound(orderItemTasks, "No tasks found for the assigned staff");
 
@@ -72,12 +69,29 @@ public class OrderItemTaskService : IOrderItemTaskService
         return groupedByOrderItem;
     }
 
-    public async Task UpdateStatusAsync(string dressTaskId, string orderItemId, OrderItemTaskStatus status)
+    public async Task<List<OrderItemTaskGetByTokenResponse>> GetTasksByOrderItemIdAsync(string orderItemId)
+    {
+        var listOrderItemTask = await  GetTasksByAssignedStaffAsync();
+
+        var response = listOrderItemTask.Where(x => x.OrderItem.Id == orderItemId).ToList();
+        _validation.CheckNotFound(response, $"OrderItemTask with OrderItemId: {orderItemId} is not found");
+        return response;
+    }
+
+    public async Task UpdateStatusAsync(string dressTaskId, string orderItemId, OrderItemTaskUpdateRequestDto request)
     {
         var task = await _repo.GetByIdAsync(dressTaskId, orderItemId);
         _validation.CheckNotFound(task, "Order item task not found");
-        
-        await _repo.UpdateOrderItemTaskStatusAsync(task, status);
+
+        task.Note = request.Note;
+        task.Status = request.Status;
+        task.Image = request.Image;
+
         await _repo.UpdateAsync(task);
+    }
+
+    private string GetCurrentUserId()
+    {
+        return _contextAccessor.HttpContext.User.FindFirst("userId").Value ?? "System";
     }
 }

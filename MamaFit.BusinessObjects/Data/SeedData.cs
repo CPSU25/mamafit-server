@@ -2923,8 +2923,8 @@ namespace MamaFit.BusinessObjects.Data
                     SequenceOrder = 1,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
-                    CreatedAt = DateTime.Parse("2025-07-29 17:18:05"),
-                    UpdatedAt = DateTime.Parse("2025-07-29 17:18:05"),
+                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
                     IsDeleted = false
                 },
                 new Milestone
@@ -2936,8 +2936,8 @@ namespace MamaFit.BusinessObjects.Data
                     SequenceOrder = 1,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
-                    CreatedAt = DateTime.Parse("2025-07-29 17:18:56"),
-                    UpdatedAt = DateTime.Parse("2025-07-29 17:18:56"),
+                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
                     IsDeleted = false
                 },
                 new Milestone
@@ -2945,12 +2945,12 @@ namespace MamaFit.BusinessObjects.Data
                     Id = "e1235c985155490d9f701a5e35d490ed",
                     Name = "Add On",
                     Description = "Additional customization or services",
-                    ApplyFor = [ItemType.READY_TO_BUY, ItemType.PRESET],
+                    ApplyFor = [ItemType.ADD_ON],
                     SequenceOrder = 2,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
-                    CreatedAt = DateTime.Parse("2025-07-29 17:20:31"),
-                    UpdatedAt = DateTime.Parse("2025-07-29 17:20:31"),
+                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
                     IsDeleted = false
                 },
                 new Milestone
@@ -2958,12 +2958,12 @@ namespace MamaFit.BusinessObjects.Data
                     Id = "5110afc434844342984a1db6944536dc",
                     Name = "Warranty Check",
                     Description = "Initial warranty assessment for preset orders",
-                    ApplyFor = [ItemType.PRESET],
+                    ApplyFor = [ItemType.WARRANTY],
                     SequenceOrder = 3,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
-                    CreatedAt = DateTime.Parse("2025-07-29 17:21:41"),
-                    UpdatedAt = DateTime.Parse("2025-07-29 17:21:41"),
+                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
                     IsDeleted = false
                 },
                 new Milestone
@@ -2971,12 +2971,12 @@ namespace MamaFit.BusinessObjects.Data
                     Id = "08c1f3fd1f71460e9a4afefc14fa01cb",
                     Name = "In Warrnaty",
                     Description = "Warranty repair or replacement",
-                    ApplyFor = [ItemType.PRESET],
+                    ApplyFor = [ItemType.WARRANTY],
                     SequenceOrder = 4,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
-                    CreatedAt = DateTime.Parse("2025-07-29 17:52:28"),
-                    UpdatedAt = DateTime.Parse("2025-07-29 17:52:28"),
+                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
                     IsDeleted = false
                 },
                 new Milestone
@@ -2988,8 +2988,8 @@ namespace MamaFit.BusinessObjects.Data
                     SequenceOrder = 5,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
-                    CreatedAt = DateTime.Parse("2025-07-29 17:54:47"),
-                    UpdatedAt = DateTime.Parse("2025-07-29 17:54:47"),
+                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
                     IsDeleted = false
                 },
                 new Milestone
@@ -2997,12 +2997,12 @@ namespace MamaFit.BusinessObjects.Data
                     Id = "e1d5cb20d3e5460b9067113cf4615fa7",
                     Name = "Quality Check Warranty",
                     Description = "Quality control checks for warranty preset",
-                    ApplyFor = [ItemType.PRESET],
+                    ApplyFor = [ItemType.WARRANTY],
                     SequenceOrder = 5,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
-                    CreatedAt = DateTime.Parse("2025-07-29 17:56:02"),
-                    UpdatedAt = DateTime.Parse("2025-07-29 17:56:02"),
+                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
                     IsDeleted = false
                 },
                 new Milestone
@@ -3014,8 +3014,8 @@ namespace MamaFit.BusinessObjects.Data
                     SequenceOrder = 6,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
-                    CreatedAt = DateTime.Parse("2025-07-29 17:56:43"),
-                    UpdatedAt = DateTime.Parse("2025-07-29 17:56:43"),
+                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
                     IsDeleted = false
                 }
             );
@@ -3030,8 +3030,8 @@ namespace MamaFit.BusinessObjects.Data
                     SequenceOrder = 1,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
-                    CreatedAt = DateTime.Parse("2025-07-29 17:57:33"),
-                    UpdatedAt = DateTime.Parse("2025-07-29 18:10:50"),
+                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
                     IsDeleted = false
                 },
                 new MaternityDressTask
@@ -3043,8 +3043,8 @@ namespace MamaFit.BusinessObjects.Data
                     SequenceOrder = 2,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
-                    CreatedAt = DateTime.Parse("2025-07-29 17:58:10"),
-                    UpdatedAt = DateTime.Parse("2025-07-29 17:58:10"),
+                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
                     IsDeleted = false
                 },
                 new MaternityDressTask
@@ -3056,8 +3056,8 @@ namespace MamaFit.BusinessObjects.Data
                     SequenceOrder = 3,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
-                    CreatedAt = DateTime.Parse("2025-07-29 17:58:34"),
-                    UpdatedAt = DateTime.Parse("2025-07-29 17:58:34"),
+                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
                     IsDeleted = false
                 },
     new MaternityDressTask
@@ -3069,8 +3069,8 @@ namespace MamaFit.BusinessObjects.Data
         SequenceOrder = 4,
         CreatedBy = "Admin",
         UpdatedBy = "Admin",
-        CreatedAt = DateTime.Parse("2025-07-29 18:00:01"),
-        UpdatedAt = DateTime.Parse("2025-07-29 18:00:01"),
+        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
         IsDeleted = false
     },
     new MaternityDressTask
@@ -3082,8 +3082,8 @@ namespace MamaFit.BusinessObjects.Data
         SequenceOrder = 5,
         CreatedBy = "Admin",
         UpdatedBy = "Admin",
-        CreatedAt = DateTime.Parse("2025-07-29 18:01:12"),
-        UpdatedAt = DateTime.Parse("2025-07-29 18:01:12"),
+        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
         IsDeleted = false
     },
     new MaternityDressTask
@@ -3095,8 +3095,8 @@ namespace MamaFit.BusinessObjects.Data
         SequenceOrder = 6,
         CreatedBy = "Admin",
         UpdatedBy = "Admin",
-        CreatedAt = DateTime.Parse("2025-07-29 18:01:35"),
-        UpdatedAt = DateTime.Parse("2025-07-29 18:01:35"),
+        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
         IsDeleted = false
     },
     new MaternityDressTask
@@ -3108,8 +3108,8 @@ namespace MamaFit.BusinessObjects.Data
         SequenceOrder = 1,
         CreatedBy = "System",
         UpdatedBy = "System",
-        CreatedAt = DateTime.Parse("2025-07-29 18:15:23"),
-        UpdatedAt = DateTime.Parse("2025-07-29 18:15:23"),
+        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
         IsDeleted = false
     },
     new MaternityDressTask
@@ -3121,8 +3121,8 @@ namespace MamaFit.BusinessObjects.Data
         SequenceOrder = 1,
         CreatedBy = "System",
         UpdatedBy = "System",
-        CreatedAt = DateTime.Parse("2025-07-29 18:31:03"),
-        UpdatedAt = DateTime.Parse("2025-07-29 18:31:03"),
+        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
         IsDeleted = false
     },
     new MaternityDressTask
@@ -3134,8 +3134,8 @@ namespace MamaFit.BusinessObjects.Data
         SequenceOrder = 2,
         CreatedBy = "System",
         UpdatedBy = "System",
-        CreatedAt = DateTime.Parse("2025-07-29 18:31:28"),
-        UpdatedAt = DateTime.Parse("2025-07-29 18:31:28"),
+        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
         IsDeleted = false
     },
     new MaternityDressTask
@@ -3147,8 +3147,8 @@ namespace MamaFit.BusinessObjects.Data
         SequenceOrder = 3,
         CreatedBy = "System",
         UpdatedBy = "System",
-        CreatedAt = DateTime.Parse("2025-07-29 18:31:50"),
-        UpdatedAt = DateTime.Parse("2025-07-29 18:31:50"),
+        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
         IsDeleted = false
     },
     new MaternityDressTask
@@ -3160,8 +3160,8 @@ namespace MamaFit.BusinessObjects.Data
         SequenceOrder = 4,
         CreatedBy = "System",
         UpdatedBy = "System",
-        CreatedAt = DateTime.Parse("2025-07-29 18:32:14"),
-        UpdatedAt = DateTime.Parse("2025-07-29 18:32:14"),
+        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
         IsDeleted = false
     },
     new MaternityDressTask
@@ -3173,8 +3173,8 @@ namespace MamaFit.BusinessObjects.Data
         SequenceOrder = 3,
         CreatedBy = "System",
         UpdatedBy = "System",
-        CreatedAt = DateTime.Parse("2025-07-29 18:32:36"),
-        UpdatedAt = DateTime.Parse("2025-07-29 18:32:36"),
+        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
         IsDeleted = false
     },
     new MaternityDressTask
@@ -3186,8 +3186,8 @@ namespace MamaFit.BusinessObjects.Data
         SequenceOrder = 1,
         CreatedBy = "System",
         UpdatedBy = "System",
-        CreatedAt = DateTime.Parse("2025-07-29 18:34:31"),
-        UpdatedAt = DateTime.Parse("2025-07-29 18:34:31"),
+        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
         IsDeleted = false
     },
     new MaternityDressTask
@@ -3199,8 +3199,8 @@ namespace MamaFit.BusinessObjects.Data
         SequenceOrder = 2,
         CreatedBy = "System",
         UpdatedBy = "System",
-        CreatedAt = DateTime.Parse("2025-07-29 18:34:43"),
-        UpdatedAt = DateTime.Parse("2025-07-29 18:34:43"),
+        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
         IsDeleted = false
     },
     new MaternityDressTask
@@ -3212,8 +3212,8 @@ namespace MamaFit.BusinessObjects.Data
         SequenceOrder = 1,
         CreatedBy = "System",
         UpdatedBy = "System",
-        CreatedAt = DateTime.Parse("2025-07-29 18:39:52"),
-        UpdatedAt = DateTime.Parse("2025-07-29 18:39:52"),
+        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
         IsDeleted = false
     },
     new MaternityDressTask
@@ -3225,8 +3225,8 @@ namespace MamaFit.BusinessObjects.Data
         SequenceOrder = 1,
         CreatedBy = "System",
         UpdatedBy = "System",
-        CreatedAt = DateTime.Parse("2025-07-29 18:41:01"),
-        UpdatedAt = DateTime.Parse("2025-07-29 18:41:01"),
+        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
         IsDeleted = false
     },
     new MaternityDressTask
@@ -3238,8 +3238,8 @@ namespace MamaFit.BusinessObjects.Data
         SequenceOrder = 2,
         CreatedBy = "System",
         UpdatedBy = "System",
-        CreatedAt = DateTime.Parse("2025-07-29 18:41:19"),
-        UpdatedAt = DateTime.Parse("2025-07-29 18:41:19"),
+        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
         IsDeleted = false
     },
     new MaternityDressTask
@@ -3251,8 +3251,8 @@ namespace MamaFit.BusinessObjects.Data
         SequenceOrder = 1,
         CreatedBy = "System",
         UpdatedBy = "System",
-        CreatedAt = DateTime.Parse("2025-07-29 18:41:47"),
-        UpdatedAt = DateTime.Parse("2025-07-29 18:41:47"),
+        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
         IsDeleted = false
     },
     new MaternityDressTask
@@ -3264,8 +3264,8 @@ namespace MamaFit.BusinessObjects.Data
         SequenceOrder = 1,
         CreatedBy = "System",
         UpdatedBy = "System",
-        CreatedAt = DateTime.Parse("2025-07-29 18:43:13"),
-        UpdatedAt = DateTime.Parse("2025-07-29 18:43:13"),
+        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
         IsDeleted = false
     },
     new MaternityDressTask
@@ -3277,11 +3277,199 @@ namespace MamaFit.BusinessObjects.Data
         SequenceOrder = 2,
         CreatedBy = "System",
         UpdatedBy = "System",
-        CreatedAt = DateTime.Parse("2025-07-29 18:43:31"),
-        UpdatedAt = DateTime.Parse("2025-07-29 18:43:31"),
+        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
         IsDeleted = false
     }
 );
+            #endregion
+
+            #region Seed Order, OrderItem, DesignRequest
+            modelBuilder.Entity<DesignRequest>().HasData(
+                new DesignRequest
+                {
+                    Id = "fd0c024a84c8480293cac04abbd9e1f3",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    OrderItemId = "72c04744b2e946f8a2c83accf903990c",
+                    Description = "cho xin 2k",
+                    Images = ["{https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/design-requests%2F59d9afea-509e-4461-b70a-a01d8b6f97a4-1_all_13969.jpg?alt=media&token=817d9139-6fd3-43d8-b3ff-84b81c2f3e5a,https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/design-requests%2F1000028470.jpg?alt=media&token=3fb91ccb-66d7-408e-a5cd-c0a22a5683ed}"],
+                    CreatedBy = "user",
+                    UpdatedBy = "user",
+                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    IsDeleted = false
+                }
+            );
+
+            modelBuilder.Entity<Order>().HasData(
+                new Order
+                {
+                    Id = "4ee90ac635d84ae88099f2349260c8c0",
+                    AddressId = "7aa93cf1dcea43e68da114d7c991a732",
+                    BranchId = null,
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    VoucherDiscountId = "dd3104e0d7b7451c946b93bb281441a2",
+                    MeasurementDiaryId = "107edb79f9f04079afad1a8a42141578",
+                    IsOnline = true,
+                    Type = 0,
+                    Code = "O65002",
+                    Status = OrderStatus.CONFIRMED,
+                    PaymentType = 0,
+                    CanceledAt = null,
+                    CanceledReason = null,
+                    SubTotalAmount = 2000.0m,
+                    WarrantyCode = null,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Order
+                {
+                    Id = "978d260a7468478e981fc950f1e8d109",
+                    AddressId = null,
+                    BranchId = "b536f146c8f04bbc9949fc70a31fda8f",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    VoucherDiscountId = null,
+                    MeasurementDiaryId = "107edb79f9f04079afad1a8a42141578",
+                    IsOnline = true,
+                    Type = 0,
+                    Code = "O23484",
+                    Status = OrderStatus.CONFIRMED,
+                    PaymentType = 0,
+                    CanceledAt = null,
+                    CanceledReason = null,
+                    SubTotalAmount = 2000.0m,
+                    WarrantyCode = null,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Order
+                {
+                    Id = "f9d5fc35d2e643c19484a57d0d449894",
+                    AddressId = "7aa93cf1dcea43e68da114d7c991a732",
+                    BranchId = null,
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    VoucherDiscountId = "a445f49f53904919ba8ab9b0bcdf9f9d",
+                    MeasurementDiaryId = "107edb79f9f04079afad1a8a42141578",
+                    IsOnline = true,
+                    Type = 0,
+                    Code = "O65841",
+                    Status = OrderStatus.CONFIRMED,
+                    PaymentType = PaymentType.FULL,
+                    CanceledAt = null,
+                    CanceledReason = null,
+                    SubTotalAmount = 2000.0m,
+                    WarrantyCode = null,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Order
+                {
+                    Id = "b08b1e2e2e5944ddbb2765a580e75a12",
+                    AddressId = null,
+                    BranchId = null,
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    VoucherDiscountId = null,
+                    MeasurementDiaryId = null,
+                    IsOnline = true,
+                    Type = 0,
+                    Code = "O53415",
+                    Status = OrderStatus.CONFIRMED,
+                    PaymentType = PaymentType.FULL,
+                    CanceledAt = null,
+                    CanceledReason = null,
+                    SubTotalAmount = 2000.0m,
+                    WarrantyCode = null,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    IsDeleted = false
+                }
+            );
+
+            modelBuilder.Entity<OrderItem>().HasData(
+                new OrderItem
+                {
+                    Id = "35522c330ef64f6a80d557cb02cdeb45",
+                    OrderId = "4ee90ac635d84ae88099f2349260c8c0",
+                    ParentOrderItemId = null,
+                    MaternityDressDetailId = null,
+                    PresetId = "6ab0daed7fe54e9fa791bfcb6bf1a043",
+                    ItemType = ItemType.PRESET,
+                    Price = 2000.0m,
+                    Quantity = 1,
+                    WarrantyDate = null,
+                    WarrantyNumber = 3,
+                    CreatedBy = "user",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new OrderItem
+                {
+                    Id = "37430bd997ff475ba9dc079db343b222",
+                    OrderId = "978d260a7468478e981fc950f1e8d109",
+                    ParentOrderItemId = null,
+                    MaternityDressDetailId = null,
+                    PresetId = "6ab0daed7fe54e9fa791bfcb6bf1a043",
+                    ItemType = ItemType.PRESET,
+                    Price = 2000.0m,
+                    Quantity = 1,
+                    WarrantyDate = null,
+                    WarrantyNumber = 3,
+                    CreatedBy = "user",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new OrderItem
+                {
+                    Id = "3b0b2c32e25d412097933ee711c4f12e",
+                    OrderId = "f9d5fc35d2e643c19484a57d0d449894",
+                    ParentOrderItemId = null,
+                    MaternityDressDetailId = null,
+                    PresetId = "6ab0daed7fe54e9fa791bfcb6bf1a043",
+                    ItemType = ItemType.PRESET,
+                    Price = 2000.0m,
+                    Quantity = 1,
+                    WarrantyDate = null,
+                    WarrantyNumber = 3,
+                    CreatedBy = "user",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new OrderItem
+                {
+                    Id = "72c04744b2e946f8a2c83accf903990c",
+                    OrderId = "b08b1e2e2e5944ddbb2765a580e75a12",
+                    ParentOrderItemId = null,
+                    MaternityDressDetailId = null,
+                    PresetId = "6ab0daed7fe54e9fa791bfcb6bf1a043",
+                    ItemType = ItemType.DESIGN_REQUEST,
+                    Price = 2000.0m,
+                    Quantity = 1,
+                    WarrantyDate = null,
+                    WarrantyNumber = 3,
+                    CreatedBy = "user",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    IsDeleted = false
+                }
+            );
             #endregion
         }
     }

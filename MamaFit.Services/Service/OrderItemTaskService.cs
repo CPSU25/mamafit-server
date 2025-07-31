@@ -34,51 +34,42 @@ public class OrderItemTaskService : IOrderItemTaskService
         var orderItemTasks = await _repo.GetTasksByAssignedStaffAsync(userId);
         _validation.CheckNotFound(orderItemTasks, "No tasks found for the assigned staff");
 
-        //Lấy tasks của milestone
-        var allTasksWithMilestones = orderItemTasks
-            .Where(x => x.MaternityDressTask != null && x.MaternityDressTask.Milestone != null)
-            .Select(x => new
-            {
-                OrderItemTask = x,
-                Task = x.MaternityDressTask,
-                Milestone = x.MaternityDressTask.Milestone
-            })
-            .ToList();
+        var groupedByOrderItem = orderItemTasks
+        .Where(x => x.OrderItem != null)
+        .GroupBy(x => x.OrderItem.Id)
+        .Select(orderGroup =>
+        {
+            var representative = orderGroup.First();
 
-        //Nhóm theo group id
-        var groupedByMilestone = allTasksWithMilestones
-            .GroupBy(x => x.Milestone.Id)
-            .Select(group =>
-            {
-                var representative = group.First();
-
-                return new OrderItemTaskGetByTokenResponse
+            var milestoneGroups = orderGroup
+                .Where(x => x.MaternityDressTask != null && x.MaternityDressTask.Milestone != null)
+                .GroupBy(x => x.MaternityDressTask.Milestone.Id)
+                .Select(milestoneGroup =>
                 {
-                    Id = representative.OrderItemTask.OrderItem.Id,
-                    CreatedAt = representative.OrderItemTask.CreatedAt,
-                    UpdatedAt = (DateTime)representative.OrderItemTask.UpdatedAt,
-                    CreatedBy = representative.OrderItemTask.CreatedBy,
-                    UpdatedBy = representative.OrderItemTask.UpdatedBy,
-                    Preset = _mapper.Map<PresetGetAllResponseDto>(representative.OrderItemTask.OrderItem.Preset),
-                    DesignRequest = _mapper.Map<DesignResponseDto>(representative.OrderItemTask.OrderItem.DesignRequest),
-                    MaternityDressDetail = _mapper.Map<MaternityDressDetailResponseDto>(representative.OrderItemTask.OrderItem.MaternityDressDetail),
+                    var milestoneRep = milestoneGroup.First().MaternityDressTask.Milestone;
 
-                    Milestones = new MilestoneGetByIdOrderTaskResponseDto
+                    return new MilestoneGetByIdOrderTaskResponseDto
                     {
-                        Name = representative.Milestone.Name,
-                        Description = representative.Milestone.Description,
-                        ApplyFor = representative.Milestone.ApplyFor,
-                        SequenceOrder = representative.Milestone.SequenceOrder,
-
-                        MaternityDressTasks = group
-                            .Select(g => _mapper.Map<MaternityDressTaskOrderTaskResponseDto>(g.Task))
+                        Name = milestoneRep.Name,
+                        Description = milestoneRep.Description,
+                        ApplyFor = milestoneRep.ApplyFor,
+                        SequenceOrder = milestoneRep.SequenceOrder,
+                        MaternityDressTasks = milestoneGroup
+                            .Select(x => _mapper.Map<MaternityDressTaskOrderTaskResponseDto>(x.MaternityDressTask))
                             .ToList()
-                    }
-                };
-            })
-            .ToList();
+                    };
+                })
+                .ToList();
 
-        return groupedByMilestone;
+            return new OrderItemTaskGetByTokenResponse
+            {
+                OrderItem = _mapper.Map<OrderItemResponseDto>(representative.OrderItem),
+                Milestones = milestoneGroups
+            };
+        })
+        .ToList();
+
+        return groupedByOrderItem;
     }
 
     public async Task UpdateStatusAsync(string dressTaskId, string orderItemId, OrderItemTaskStatus status)

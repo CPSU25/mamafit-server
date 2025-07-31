@@ -3,8 +3,9 @@ using MamaFit.BusinessObjects.DTO.OrderItemDto;
 
 namespace MamaFit.BusinessObjects.DTO.OrderItemTaskDto
 {
-    public class OrderItemTaskGetByTokenResponse : OrderItemResponseDto
+    public class OrderItemTaskGetByTokenResponse
     {
-        public MilestoneGetByIdOrderTaskResponseDto? Milestones { get; set; }
+        public OrderItemResponseDto? OrderItem { get; set; }
+        public List<MilestoneGetByIdOrderTaskResponseDto>? Milestones { get; set; }
     }
 }

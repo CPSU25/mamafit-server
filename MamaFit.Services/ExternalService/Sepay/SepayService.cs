@@ -167,6 +167,22 @@ public class SepayService : ISepayService
             };
         }).ToList();
 
+        if(order.OrderItems.Select(x => x.OrderItemAddOnOptions) != null)
+        {
+            var matchingAddOnMilestones = milestoneList
+                .Where(m => m.ApplyFor!.Contains(ItemType.ADD_ON))
+                .Select(m => m.Id)
+                .ToList();
+
+            assignRequests.AddRange(order.OrderItems
+                .Where(x => x.OrderItemAddOnOptions != null)
+                .SelectMany(orderItem => orderItem.OrderItemAddOnOptions.Select(addOnOption => new AssignTaskToOrderItemRequestDto
+                {
+                    OrderItemId = orderItem.Id,
+                    MilestoneIds = matchingAddOnMilestones
+                })));
+        }
+
         foreach (var assignRequest in assignRequests)
         {
             await _orderItemService.AssignTaskToOrderItemAsync(assignRequest);

@@ -9,6 +9,7 @@ using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Helper;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
+using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -25,6 +26,7 @@ public class SepayService : ISepayService
     private readonly ITransactionService _transactionService;
     private readonly INotificationService _notificationService;
     private readonly IOrderItemService _orderItemService;
+    private readonly ICacheService _cacheService;
 
     public SepayService(IUnitOfWork unitOfWork,
         IOptions<SepaySettings> sepaySettings,
@@ -33,7 +35,8 @@ public class SepayService : ISepayService
         ITransactionService transactionService,
         IMapper mapper,
         INotificationService notificationService,
-        IOrderItemService orderItemService)
+        IOrderItemService orderItemService,
+        ICacheService cacheService)
     {
         _unitOfWork = unitOfWork;
         _sepaySettings = sepaySettings.Value;
@@ -43,6 +46,7 @@ public class SepayService : ISepayService
         _mapper = mapper;
         _notificationService = notificationService;
         _orderItemService = orderItemService;
+        _cacheService = cacheService;
     }
 
     public async Task<string> GetPaymentStatusAsync(string orderId)
@@ -187,6 +191,8 @@ public class SepayService : ISepayService
         {
             await _orderItemService.AssignTaskToOrderItemAsync(assignRequest);
         }
+
+        await _cacheService.RemoveByPrefixAsync("MilestoneAchiveOrderItemResponseDto_");
     }
 
     public async Task<SepayQrResponse> CreatePaymentQrAsync(string orderId)

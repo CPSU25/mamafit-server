@@ -12,7 +12,7 @@ namespace MamaFit.API.Controllers;
 public class OrderItemTaskController : ControllerBase
 {
     private readonly IOrderItemTaskService _orderItemTaskService;
-    
+
     public OrderItemTaskController(IOrderItemTaskService orderItemTaskService)
     {
         _orderItemTaskService = orderItemTaskService;
@@ -20,10 +20,22 @@ public class OrderItemTaskController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> GetTasksByAssignedStaffAsync(
-        [FromHeader(Name = "Authorization")] string accessToken)
+    public async Task<IActionResult> GetTasksByAssignedStaffAsync()
     {
-        var tasks = await _orderItemTaskService.GetTasksByAssignedStaffAsync(accessToken);
+        var tasks = await _orderItemTaskService.GetTasksByAssignedStaffAsync();
+        return Ok(new ResponseModel<List<OrderItemTaskGetByTokenResponse>>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            tasks,
+            "Get tasks by assigned staff successfully!"
+        ));
+    }
+
+    [HttpGet("order-item/{orderItemId}")]
+    [Authorize]
+    public async Task<IActionResult> GetTasksByOrderItemId(string orderItemId)
+    {
+        var tasks = await _orderItemTaskService.GetTasksByOrderItemIdAsync(orderItemId);
         return Ok(new ResponseModel<List<OrderItemTaskGetByTokenResponse>>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
@@ -37,9 +49,9 @@ public class OrderItemTaskController : ControllerBase
     public async Task<IActionResult> UpdateStatusAsync(
         [FromRoute] string dressTaskId,
         [FromRoute] string orderItemId,
-        [FromForm] OrderItemTaskStatus status)
-    { 
-        await _orderItemTaskService.UpdateStatusAsync(dressTaskId, orderItemId, status);
+        [FromBody] OrderItemTaskUpdateRequestDto request)
+    {
+        await _orderItemTaskService.UpdateStatusAsync(dressTaskId, orderItemId, request);
         return Ok(new ResponseModel(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,

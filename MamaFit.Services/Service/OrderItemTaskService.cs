@@ -1,17 +1,12 @@
 ﻿using AutoMapper;
-using MamaFit.BusinessObjects.DTO.DesignRequestDto;
-using MamaFit.BusinessObjects.DTO.MaternityDressDetailDto;
 using MamaFit.BusinessObjects.DTO.MaternityDressTaskDto;
 using MamaFit.BusinessObjects.DTO.MilestoneDto;
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.DTO.OrderItemTaskDto;
-using MamaFit.BusinessObjects.DTO.PresetDto;
-using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
-using MamaFit.Repositories.Helper;
-using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Interface;
 using MamaFit.Services.Interface;
+using Microsoft.AspNetCore.Http;
 
 namespace MamaFit.Services.Service;
 
@@ -20,73 +15,83 @@ public class OrderItemTaskService : IOrderItemTaskService
     private readonly IOrderItemTaskRepository _repo;
     private readonly IMapper _mapper;
     private readonly IValidationService _validation;
-    
-    public OrderItemTaskService(IOrderItemTaskRepository repo, IMapper mapper, IValidationService validation)
+    private readonly IHttpContextAccessor _contextAccessor;
+
+    public OrderItemTaskService(IOrderItemTaskRepository repo, IMapper mapper, IValidationService validation, IHttpContextAccessor contextAccessor)
     {
         _repo = repo;
         _mapper = mapper;
         _validation = validation;
+        _contextAccessor = contextAccessor;
     }
 
-    public async Task<List<OrderItemTaskGetByTokenResponse>> GetTasksByAssignedStaffAsync(string accessToken)
+    public async Task<List<OrderItemTaskGetByTokenResponse>> GetTasksByAssignedStaffAsync()
     {
-        var userId = JwtTokenHelper.ExtractUserId(accessToken);
+        var userId = GetCurrentUserId();
         var orderItemTasks = await _repo.GetTasksByAssignedStaffAsync(userId);
         _validation.CheckNotFound(orderItemTasks, "No tasks found for the assigned staff");
 
-        //Lấy tasks của milestone
-        var allTasksWithMilestones = orderItemTasks
-            .Where(x => x.MaternityDressTask != null && x.MaternityDressTask.Milestone != null)
-            .Select(x => new
-            {
-                OrderItemTask = x,
-                Task = x.MaternityDressTask,
-                Milestone = x.MaternityDressTask.Milestone
-            })
-            .ToList();
+        var groupedByOrderItem = orderItemTasks
+        .Where(x => x.OrderItem != null)
+        .GroupBy(x => x.OrderItem.Id)
+        .Select(orderGroup =>
+        {
+            var representative = orderGroup.First();
 
-        //Nhóm theo group id
-        var groupedByMilestone = allTasksWithMilestones
-            .GroupBy(x => x.Milestone.Id)
-            .Select(group =>
-            {
-                var representative = group.First();
-
-                return new OrderItemTaskGetByTokenResponse
+            var milestoneGroups = orderGroup
+                .Where(x => x.MaternityDressTask != null && x.MaternityDressTask.Milestone != null)
+                .GroupBy(x => x.MaternityDressTask.Milestone.Id)
+                .Select(milestoneGroup =>
                 {
-                    Id = representative.OrderItemTask.OrderItem.Id,
-                    CreatedAt = representative.OrderItemTask.CreatedAt,
-                    UpdatedAt = (DateTime)representative.OrderItemTask.UpdatedAt,
-                    CreatedBy = representative.OrderItemTask.CreatedBy,
-                    UpdatedBy = representative.OrderItemTask.UpdatedBy,
-                    Preset = _mapper.Map<PresetGetAllResponseDto>(representative.OrderItemTask.OrderItem.Preset),
-                    DesignRequest = _mapper.Map<DesignResponseDto>(representative.OrderItemTask.OrderItem.DesignRequest),
-                    MaternityDressDetail = _mapper.Map<MaternityDressDetailResponseDto>(representative.OrderItemTask.OrderItem.MaternityDressDetail),
+                    var milestoneRep = milestoneGroup.First().MaternityDressTask.Milestone;
 
-                    Milestones = new MilestoneGetByIdOrderTaskResponseDto
+                    return new MilestoneGetByIdOrderTaskResponseDto
                     {
-                        Name = representative.Milestone.Name,
-                        Description = representative.Milestone.Description,
-                        ApplyFor = representative.Milestone.ApplyFor,
-                        SequenceOrder = representative.Milestone.SequenceOrder,
-
-                        MaternityDressTasks = group
-                            .Select(g => _mapper.Map<MaternityDressTaskOrderTaskResponseDto>(g.Task))
+                        Name = milestoneRep.Name,
+                        Description = milestoneRep.Description,
+                        ApplyFor = milestoneRep.ApplyFor,
+                        SequenceOrder = milestoneRep.SequenceOrder,
+                        MaternityDressTasks = milestoneGroup
+                            .Select(x => _mapper.Map<MaternityDressTaskOrderTaskResponseDto>(x.MaternityDressTask))
                             .ToList()
-                    }
-                };
-            })
-            .ToList();
+                    };
+                })
+                .ToList();
 
-        return groupedByMilestone;
+            return new OrderItemTaskGetByTokenResponse
+            {
+                OrderItem = _mapper.Map<OrderItemResponseDto>(representative.OrderItem),
+                Milestones = milestoneGroups
+            };
+        })
+        .ToList();
+
+        return groupedByOrderItem;
     }
 
-    public async Task UpdateStatusAsync(string dressTaskId, string orderItemId, OrderItemTaskStatus status)
+    public async Task<List<OrderItemTaskGetByTokenResponse>> GetTasksByOrderItemIdAsync(string orderItemId)
+    {
+        var listOrderItemTask = await  GetTasksByAssignedStaffAsync();
+
+        var response = listOrderItemTask.Where(x => x.OrderItem.Id == orderItemId).ToList();
+        _validation.CheckNotFound(response, $"OrderItemTask with OrderItemId: {orderItemId} is not found");
+        return response;
+    }
+
+    public async Task UpdateStatusAsync(string dressTaskId, string orderItemId, OrderItemTaskUpdateRequestDto request)
     {
         var task = await _repo.GetByIdAsync(dressTaskId, orderItemId);
         _validation.CheckNotFound(task, "Order item task not found");
-        
-        await _repo.UpdateOrderItemTaskStatusAsync(task, status);
+
+        task.Note = request.Note;
+        task.Status = request.Status;
+        task.Image = request.Image;
+
         await _repo.UpdateAsync(task);
+    }
+
+    private string GetCurrentUserId()
+    {
+        return _contextAccessor.HttpContext.User.FindFirst("userId").Value ?? "System";
     }
 }

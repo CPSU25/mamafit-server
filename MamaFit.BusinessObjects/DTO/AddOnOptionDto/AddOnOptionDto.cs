@@ -6,8 +6,7 @@ public class AddOnOptionDto
 {
     public string Id { get; set; }
     public string ? AddOnId { get; set; }
-    public string? PositionId { get; set; }
-    public string? SizeId { get; set; }
+    public string? Value { get; set; }
     public string? Name { get; set; }
     public string? Description { get; set; }
     public decimal Price { get; set; }

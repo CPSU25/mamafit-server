@@ -73,7 +73,19 @@ public class MeasurementDiaryService : IMeasurementDiaryService
         var diary = await _unitOfWork.MeasurementDiaryRepository.GetDiaryByIdAsync(id, startDate, endDate);
         if (diary == null)
             throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Measurement diary not found");
-        return _mapper.Map<DiaryWithMeasurementDto>(diary);
+        var response = _mapper.Map<DiaryWithMeasurementDto>(diary);
+
+        foreach (var measurementDto in response.Measurements)
+        {
+            var matchedEntity = diary.Measurements.FirstOrDefault(m => m.Id == measurementDto.Id);
+            if (matchedEntity != null && matchedEntity.Orders != null && matchedEntity.Orders.Any() 
+                && matchedEntity.Orders.Any(x => x.Status != BusinessObjects.Enum.OrderStatus.CANCELLED)
+                && matchedEntity.Orders.Any(x => x.Status != BusinessObjects.Enum.OrderStatus.COMPLETED))
+            {
+                measurementDto.IsLocked = true;
+            }
+        }
+        return response;
     }
     
     public async Task<PaginatedList<MeasurementDiaryResponseDto>> GetDiariesByUserIdAsync(int index, int pageSize, string userId, string? nameSearch = null)

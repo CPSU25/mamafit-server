@@ -34,6 +34,7 @@ namespace MamaFit.Repositories.Repository
         {
             var orderItemTask = await _context.OrderItemsTasks
                 .Include(x => x.OrderItem).ThenInclude(x => x.Order)
+                .Include(x => x.MaternityDressTask).ThenInclude(x => x.Milestone)
                 .FirstOrDefaultAsync(x => x.MaternityDressTaskId == maternityDressTaskId && x.OrderItemId == orderItemId);
             return orderItemTask;
         }

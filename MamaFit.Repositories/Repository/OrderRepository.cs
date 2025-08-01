@@ -134,8 +134,9 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
 
     public async Task<Order?> GetByCodeAsync(string code)
     {
-        return await _dbSet.AsNoTracking()
-            .Include(x => x.OrderItems)
+        return await _dbSet
+            .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemTasks).ThenInclude(x => x.MaternityDressTask).ThenInclude(x => x.Milestone)
+            .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemAddOnOptions).ThenInclude(x => x.AddOnOption).ThenInclude(x => x.AddOn)
             .FirstOrDefaultAsync(x => x.Code == code && !x.IsDeleted);
     }
 }

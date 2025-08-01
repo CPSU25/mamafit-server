@@ -99,8 +99,7 @@ namespace MamaFit.Services.Service
 
                 var achiveOrderItem = new MilestoneAchiveOrderItemResponseDto
                 {
-                    MilestoneId = milestone.Id,
-                    MilestoneName = milestone.Name,
+                    Milestone = _mapper.Map<MilestoneResponseDto>(milestone),
                     Progress = progress,
                     IsDone = progress >= 100,
                     CurrentTask = currentTask != null

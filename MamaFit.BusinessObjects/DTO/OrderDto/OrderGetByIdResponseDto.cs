@@ -6,8 +6,8 @@ namespace MamaFit.BusinessObjects.DTO.OrderDto
 {
     public class OrderGetByIdResponseDto : OrderResponseDto
     {
-        public AddressResponseDto Address { get; set; } = new();
-        public BranchResponseDto Branch { get; set; } = new();
-        public VoucherDiscountResponseDto VoucherDiscount { get; set; } = new();
+        public AddressResponseDto? Address { get; set; }
+        public BranchResponseDto? Branch { get; set; }
+        public VoucherDiscountResponseDto? VoucherDiscount { get; set; }
     }
 }

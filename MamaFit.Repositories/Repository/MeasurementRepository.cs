@@ -15,6 +15,15 @@ public class MeasurementRepository : GenericRepository<Measurement>, IMeasuremen
     {
     }
 
+    public async Task<List<Measurement>> GetAllWithDiariesAsync()
+    {
+        return await _dbSet
+            .Include(m => m.MeasurementDiary)
+            .Where(m => !m.IsDeleted && m.MeasurementDiary != null)
+            .OrderBy(m => m.MeasurementDiaryId)
+            .ThenBy(m => m.WeekOfPregnancy)
+            .ToListAsync();
+    }
     public async Task<PaginatedList<Measurement>> GetAllAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate)
     {
         var query = _dbSet.Where(x => !x.IsDeleted);

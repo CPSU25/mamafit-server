@@ -111,11 +111,15 @@ namespace MamaFit.Services.Service
 
         public async Task<PaginatedList<AppointmentResponseDto>> GetAllAsync(int index, int pageSize, DateTime? StartDate, DateTime? EndDate, AppointmentOrderBy? sortBy)
         {
+            var userId = GetCurrentUserId();
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+            if (user == null)
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, $"User not found with id {userId}");
             var paginatedResponse = await _cacheService.GetAsync<PaginatedList<AppointmentResponseDto>>($"appointments_{index}_{pageSize}_{StartDate}_{EndDate}_{sortBy}");
 
             if (paginatedResponse == null)
             {
-                var appointmentList = await _unitOfWork.AppointmentRepository.GetAllAsync(index, pageSize, StartDate, EndDate, sortBy);
+                var appointmentList = await _unitOfWork.AppointmentRepository.GetAllAsync(userId, index, pageSize, StartDate, EndDate, sortBy);
 
                 // Map từng phần tử trong danh sách Items
                 var responseList = appointmentList.Items.Select(item => _mapper.Map<AppointmentResponseDto>(item)).ToList();

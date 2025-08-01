@@ -28,15 +28,21 @@ namespace MamaFit.Repositories.Repository
                 .AsNoTracking()
                 .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted);
         }
-        public async Task<PaginatedList<Appointment>> GetAllAsync(int index, int pageSize, DateTime? StartDate, DateTime? EndDate, AppointmentOrderBy? sortBy)
+        public async Task<PaginatedList<Appointment>> GetAllAsync(string branchManagerId, int index, int pageSize, DateTime? StartDate, DateTime? EndDate, AppointmentOrderBy? sortBy)
         {
+            var branch = await _context.Branches
+                .AsNoTracking()
+                .FirstOrDefaultAsync(b => b.BranchManagerId == branchManagerId);
+            
+            if (branch == null)
+                throw new Exception("Branch not found for this branch manager.");
+            
             var query = _dbSet.AsNoTracking()
                 .Include(x => x.User)
                 .ThenInclude(x => x.Role)
                 .Include(x => x.Branch)
-                .ThenInclude(x => x.BranchManager)
-                .ThenInclude(x => x!.Role)
-                .Where(a => !a.IsDeleted);
+                .ThenInclude(x => x.BranchManager).ThenInclude(x => x!.Role)
+                .Where(a => !a.IsDeleted && a.BranchId == branch.Id);
 
             query = query.Where(query =>
                 (!StartDate.HasValue || query.BookingTime >= StartDate.Value) &&

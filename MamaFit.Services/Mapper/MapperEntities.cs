@@ -340,8 +340,6 @@ namespace MamaFit.Services.Mapper
             CreateMap<Size, SizeRequestDto>().ReverseMap();
             #endregion
 
-
-
         }
     }
 }

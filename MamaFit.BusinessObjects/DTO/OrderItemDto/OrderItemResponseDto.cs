@@ -15,4 +15,5 @@ public class OrderItemResponseDto : OrderItemBaseDto
     public MaternityDressDetailResponseDto MaternityDressDetail { get; set; }
     public PresetGetAllResponseDto Preset { get; set; }
     public DesignResponseDto DesignRequest { get; set; }
+    public List<AddOnOptionDto.AddOnOptionDto>? AddOnOptions { get; set; }
 }

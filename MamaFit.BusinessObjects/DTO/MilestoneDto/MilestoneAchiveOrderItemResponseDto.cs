@@ -4,8 +4,7 @@ namespace MamaFit.BusinessObjects.DTO.MilestoneDto
 {
     public class MilestoneAchiveOrderItemResponseDto
     {
-        public string MilestoneId { get; set; } = string.Empty;
-        public string MilestoneName { get; set; } = string.Empty;
+        public MilestoneResponseDto? Milestone {  get; set; }
         public float Progress { get; set; } = 0.0f;
         public bool IsDone { get; set; } = false;
         public MaternityDressTaskForMilestoneAchiveResponseDto CurrentTask { get; set; } = new();

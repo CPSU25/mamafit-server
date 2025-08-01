@@ -117,6 +117,8 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .Include(x => x.Branch)
             .Include(x => x.Address)
             .Include(x => x.VoucherDiscount)
+            .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemAddOnOptions).ThenInclude(x => x.AddOnOption).ThenInclude(x => x.Size)
+            .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemAddOnOptions).ThenInclude(x => x.AddOnOption).ThenInclude(x => x.Position)
             .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
     }
 

@@ -21,7 +21,7 @@ namespace MamaFit.Repositories.Repository
 
         public async Task<OrderItemTask> GetDetailAsync(OrderItemTaskGetDetail request)
         {
-            var orderItemTask = await _context.OrderItemsTasks.AsNoTracking().
+            var orderItemTask = await _context.OrderItemsTasks.
                 Include(x => x.User).
                 Include(x => x.MaternityDressTask).
                 Include(x => x.OrderItem).
@@ -32,7 +32,8 @@ namespace MamaFit.Repositories.Repository
 
         public async Task<OrderItemTask> GetByIdAsync(string maternityDressTaskId, string orderItemId)
         {
-            var orderItemTask = await _context.OrderItemsTasks.AsNoTracking()
+            var orderItemTask = await _context.OrderItemsTasks
+                .Include(x => x.OrderItem).ThenInclude(x => x.Order)
                 .FirstOrDefaultAsync(x => x.MaternityDressTaskId == maternityDressTaskId && x.OrderItemId == orderItemId);
             return orderItemTask;
         }
@@ -57,6 +58,7 @@ namespace MamaFit.Repositories.Repository
         {
             var result = await _context.OrderItemsTasks
                 .Where(t => t.UserId == userId)
+                .Include(x => x.OrderItem).ThenInclude(x => x.Order).ThenInclude(x => x.MeasurementDiary)
                 .Include(t => t.MaternityDressTask).ThenInclude(t => t!.Milestone)
                 .Include(t => t.OrderItem).ThenInclude(o => o!.Preset).ThenInclude(x => x.Style)
                 .Include(t => t.OrderItem).ThenInclude(o => o!.DesignRequest)

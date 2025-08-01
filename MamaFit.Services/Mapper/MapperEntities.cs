@@ -325,7 +325,7 @@ namespace MamaFit.Services.Mapper
 
             #region AddOnOption Mapper
             CreateMap<AddOnOption, AddOnOptionDto>()
-                .ForMember(dest => dest.Value, otp => otp.MapFrom(src => src.OrderItemAddOnOptions.Select(x => x.Value).First()))
+                .ForMember(dest => dest.Value, otp => otp.MapFrom(src => src.OrderItemAddOnOptions.Select(x => x.Value).FirstOrDefault()))
                 .ReverseMap();
             CreateMap<AddOnOption, AddOnOptionRequestDto>().ReverseMap();
             #endregion

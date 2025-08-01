@@ -10,6 +10,7 @@ public interface IMeasurementService
     Task<PaginatedList<MeasurementResponseDto>> GetAllMeasurementsAsync(int index, int pageSize, DateTime? startDate,
         DateTime? endDate);
     Task<MeasurementResponseDto> GetMeasurementByIdAsync(string id);
+    Task<MeasurementResponseDto> GetMeasurementByDiaryIdAsync(string diaryId);
     Task<MeasurementDto> GenerateMeasurementPreviewAsync(MeasurementCreateDto dto);
     Task<MeasurementDto> GenerateMeasurementDiaryPreviewAsync(MeasurementDiaryDto dto);
     Task<string> CreateDiaryWithMeasurementAsync(MeasurementDiaryCreateRequest request);

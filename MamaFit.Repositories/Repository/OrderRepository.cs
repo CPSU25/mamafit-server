@@ -103,8 +103,8 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
     public async Task<Order?> GetByIdWithItems(string id)
     {
         return await _dbSet.AsNoTracking()
-            .Include(x => x.MeasurementDiary)
-            .ThenInclude(x => x.Measurements)
+            .Include(x => x.Measurement)
+            .ThenInclude(x => x.MeasurementDiary)
             .Include(x => x.OrderItems)
                 .ThenInclude(x => x.MaternityDressDetail)
             .Include(x => x.OrderItems)

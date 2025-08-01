@@ -58,7 +58,7 @@ namespace MamaFit.Repositories.Repository
         {
             var result = await _context.OrderItemsTasks
                 .Where(t => t.UserId == userId)
-                .Include(x => x.OrderItem).ThenInclude(x => x.Order).ThenInclude(x => x.MeasurementDiary)
+                .Include(x => x.OrderItem).ThenInclude(x => x.Order).ThenInclude(x => x.Measurement).ThenInclude(x => x.MeasurementDiary)
                 .Include(t => t.MaternityDressTask).ThenInclude(t => t!.Milestone)
                 .Include(t => t.OrderItem).ThenInclude(o => o!.Preset).ThenInclude(x => x.Style)
                 .Include(t => t.OrderItem).ThenInclude(o => o!.DesignRequest)

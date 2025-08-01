@@ -2,7 +2,7 @@ namespace MamaFit.BusinessObjects.DTO.MeasurementDto;
 
 public class CreateMeasurementDto
 {
-    public string MeasurementDiaryId { get; set; } = string.Empty;
+    public string MeasurementId { get; set; } = string.Empty;
     public int WeekOfPregnancy { get; set; }
     public float Weight { get; set; }
     public float Neck { get; set; }

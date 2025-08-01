@@ -9,7 +9,7 @@ namespace MamaFit.BusinessObjects.Entity
         public string? BranchId { get; set; }
         public string? UserId { get; set; }
         public string? VoucherDiscountId { get; set; }
-        public string? MeasurementDiaryId { get; set; }
+        public string? MeasurementId { get; set; }
         public bool? IsOnline { get; set; } = true;
         public OrderType Type { get; set; }
         public string? Code { get; set; }
@@ -27,13 +27,13 @@ namespace MamaFit.BusinessObjects.Entity
         public PaymentType PaymentType { get; set; }
         public DateTime? CanceledAt { get; set; }
         public string? CanceledReason { get; set; }
-        public decimal? SubTotalAmount { get; set; } 
+        public decimal? SubTotalAmount { get; set; }
         public string? WarrantyCode { get; set; }
 
         // Navigation properties
         public ApplicationUser User { get; set; }
         public Address? Address { get; set; }
-        public MeasurementDiary? MeasurementDiary { get; set; }
+        public Measurement? Measurement { get; set; }
         public VoucherDiscount? VoucherDiscount { get; set; }
         public Branch? Branch { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();

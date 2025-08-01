@@ -232,7 +232,7 @@ public class OrderService : IOrderService
         _validation.CheckNotFound(user, $"User with id: {request.UserId} not found");
 
         VoucherDiscount? voucher = null;
-        MeasurementDiary? measurement = null;
+        Measurement? measurement = null;
 
         if (request.VoucherDiscountId != null)
         {
@@ -240,11 +240,11 @@ public class OrderService : IOrderService
             _validation.CheckNotFound(voucher, $"Voucher with id: {request.VoucherDiscountId} not found");
         }
 
-        if (request.MeasurementDiaryId != null)
+        if (request.MeasurementId != null)
         {
-            measurement = await _unitOfWork.MeasurementDiaryRepository.GetByIdAsync(request.MeasurementDiaryId);
+            measurement = await _unitOfWork.MeasurementRepository.GetByIdAsync(request.MeasurementId);
             _validation.CheckNotFound(measurement,
-                $"Measurement diary with id: {request.MeasurementDiaryId} not found");
+                $"Measurement diary with id: {request.MeasurementId} not found");
         }
 
         var dressDetails = new List<MaternityDressDetail>();
@@ -305,7 +305,7 @@ public class OrderService : IOrderService
         order.Type = OrderType.NORMAL;
         order.Code = GenerateOrderCode();
         order.Status = OrderStatus.CREATED;
-        order.MeasurementDiary = measurement;
+        order.Measurement = measurement;
         order.SubTotalAmount = subTotalAmount; // Merchandise subtotal gốc
         order.DiscountSubtotal = discountValue;
         order.ShippingFee = request.ShippingFee;
@@ -467,7 +467,7 @@ public class OrderService : IOrderService
         _validation.CheckNotFound(user, $"User with id: {userId} not found");
 
         VoucherDiscount? voucher = null;
-        MeasurementDiary? measurement = null;
+        Measurement? measurement = null;
         List<OrderItemAddOnOption>? addOnOptions = new List<OrderItemAddOnOption>();
 
         if (request.VoucherDiscountId != null)
@@ -477,11 +477,11 @@ public class OrderService : IOrderService
             _validation.CheckNotFound(voucher, $"Voucher with id: {request.VoucherDiscountId} not found");
         }
 
-        if (request.MeasurementDiaryId != null)
+        if (request.MeasurementId != null)
         {
-            measurement = await _unitOfWork.MeasurementDiaryRepository.GetByIdAsync(request.MeasurementDiaryId);
+            measurement = await _unitOfWork.MeasurementRepository.GetByIdAsync(request.MeasurementId);
             _validation.CheckNotFound(measurement,
-                $"Measurement diary with id: {request.MeasurementDiaryId} not found");
+                $"Measurement diary with id: {request.MeasurementId} not found");
         }
 
         if (request.Options is not null)
@@ -537,7 +537,7 @@ public class OrderService : IOrderService
         order.VoucherDiscountId = request.VoucherDiscountId ?? null;
         order.Code = GenerateOrderCode();
         order.Status = OrderStatus.CREATED;
-        order.MeasurementDiary = measurement;
+        order.Measurement = measurement;
         order.SubTotalAmount = subTotalAmount; // Merchandise subtotal gốc
         order.DiscountSubtotal = discountValue;
         order.ShippingFee = request.ShippingFee;

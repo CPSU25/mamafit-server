@@ -22,5 +22,6 @@ namespace MamaFit.BusinessObjects.Entity
         public float Hip { get; set; }
         // Navigation properties
         public MeasurementDiary? MeasurementDiary { get; set; }
+        public virtual ICollection<Order>? Orders { get; set; } = new List<Order>();
     }
 }

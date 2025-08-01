@@ -44,6 +44,7 @@ public class MeasurementDiaryRepository : GenericRepository<MeasurementDiary>, I
     {
         var query = _dbSet
             .Where(x => x.Id == id && !x.IsDeleted)
+            .Include(x => x.Measurements).ThenInclude(x => x.Orders)
             .Include(x => x.Measurements
                 .Where(m =>
                     (!startDate.HasValue || m.CreatedAt >= startDate.Value) &&

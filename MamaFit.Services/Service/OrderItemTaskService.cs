@@ -149,9 +149,9 @@ public class OrderItemTaskService : IOrderItemTaskService
         else if (task.MaternityDressTask!.Milestone.ApplyFor!.Contains(ItemType.DESIGN_REQUEST))
         {
             task.OrderItem!.Order!.Status = OrderStatus.COMPLETED;
-            await _repo.UpdateAsync(task);
-            return;
         }
+        await _repo.UpdateAsync(task);
+        return;
     }
 
     private string GetCurrentUserId()

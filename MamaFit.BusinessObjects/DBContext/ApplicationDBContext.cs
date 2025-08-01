@@ -189,6 +189,11 @@ namespace MamaFit.BusinessObjects.DBContext
                     .WithOne(oi => oi.Order)
                     .HasForeignKey(oi => oi.OrderId)
                     .OnDelete(DeleteBehavior.NoAction);
+
+                options.HasOne(x => x.Measurement)
+                    .WithMany(x => x.Orders)
+                    .HasForeignKey(x => x.MeasurementId)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<OrderItem>(options =>

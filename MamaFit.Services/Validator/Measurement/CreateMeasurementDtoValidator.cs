@@ -7,7 +7,7 @@ public class CreateMeasurementDtoValidator : AbstractValidator<CreateMeasurement
 {
     public CreateMeasurementDtoValidator()
     {
-        RuleFor(x => x.MeasurementDiaryId)
+        RuleFor(x => x.MeasurementId)
             .NotEmpty().WithMessage("Measurement diary ID is required.");
         RuleFor(x => x.WeekOfPregnancy)
             .GreaterThan(0).WithMessage("Week of pregnancy must be greater than 0.")

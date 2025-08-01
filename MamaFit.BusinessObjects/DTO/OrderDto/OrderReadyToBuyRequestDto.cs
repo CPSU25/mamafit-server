@@ -9,7 +9,7 @@ namespace MamaFit.BusinessObjects.DTO.OrderDto
         public string? AddressId { get; set; }
         public string? BranchId { get; set; }
         public string? VoucherDiscountId { get; set; }
-        public string? MeasurementDiaryId { get; set; }
+        public string? MeasurementId { get; set; }
         public decimal ShippingFee { get; set; } = 0;
         public bool IsOnline { get; set; } = true;
         public PaymentType PaymentType { get; set; }

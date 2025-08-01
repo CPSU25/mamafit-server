@@ -69,7 +69,7 @@ public class OrderItemTaskService : IOrderItemTaskService
             {
                 OrderItem = _mapper.Map<OrderItemResponseDto>(representative.OrderItem),
                 AddressId = representative.OrderItem.Order.AddressId,
-                MeasurementDiary = _mapper.Map<MeasurementDiaryResponseDto>(representative.OrderItem.Order.MeasurementDiary),
+                Measurement = _mapper.Map<MeasurementResponseDto>(representative.OrderItem.Order.Measurement),
                 OrderCode = representative.OrderItem.Order.Code,
                 Milestones = milestoneGroups
             };

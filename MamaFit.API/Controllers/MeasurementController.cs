@@ -43,6 +43,18 @@ public class MeasurementController : ControllerBase
             "Get measurement successfully!"
         ));
     }
+
+    [HttpGet("lasted/measurement-diary/{measurementDiaryId}")]
+    public async Task<IActionResult> GetLastedByMeasurementId(string measurementDiaryId)
+    {
+        var result = await _service.GetMeasurementByDiaryIdAsync(measurementDiaryId);
+        return Ok(new ResponseModel<MeasurementResponseDto>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            result,
+            "Get measurement successfully!"
+        ));
+    }
     
     [HttpPost("check-reminders")]
     public async Task<IActionResult> CheckAndSendReminders()

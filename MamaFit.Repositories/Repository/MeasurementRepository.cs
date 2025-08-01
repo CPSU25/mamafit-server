@@ -34,20 +34,24 @@ public class MeasurementRepository : GenericRepository<Measurement>, IMeasuremen
 
     public async Task<Measurement?> GetByIdAsync(string id)
     {
-        return await GetByIdNotDeletedAsync(id);   
+        return await _dbSet.Include(x => x.MeasurementDiary)
+            .Include(x => x.Orders)
+            .FirstOrDefaultAsync(x => x.Id == id);
     }
     
     public async Task<Measurement?> GetLatestMeasurementByDiaryIdAsync(string diaryId)
     {
         return await _dbSet
+            .Include(x => x.Orders)
+            .Include(x => x.MeasurementDiary)
             .Where(m => m.MeasurementDiaryId == diaryId && !m.IsDeleted)
             .OrderByDescending(m => m.WeekOfPregnancy)
             .FirstOrDefaultAsync();
     }
     
-    public async Task<bool> ValidateMeasurementExistenceAsync(string measurementDiaryId, int weekOfPregnancy)
+    public async Task<bool> ValidateMeasurementExistenceAsync(string MeasurementId, int weekOfPregnancy)
     {
-        return await _dbSet.AnyAsync(m => m.MeasurementDiaryId == measurementDiaryId && 
+        return await _dbSet.AnyAsync(m => m.MeasurementDiaryId == MeasurementId && 
                                       m.WeekOfPregnancy == weekOfPregnancy && 
                                       !m.IsDeleted);
     }

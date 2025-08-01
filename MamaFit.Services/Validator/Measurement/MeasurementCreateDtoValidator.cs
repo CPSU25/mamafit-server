@@ -7,7 +7,7 @@ public class MeasurementCreateDtoValidator : AbstractValidator<MeasurementCreate
 {
     public MeasurementCreateDtoValidator()
     {
-        RuleFor(x => x.MeasurementDiaryId)
+        RuleFor(x => x.MeasurementId)
             .NotEmpty().WithMessage("Measurement diary ID is required.");
 
         RuleFor(x => x.Weight)

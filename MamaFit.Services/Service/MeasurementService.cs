@@ -1,4 +1,5 @@
 using AutoMapper;
+using Azure;
 using MamaFit.BusinessObjects.DTO.MeasurementDto;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.Entity;
@@ -134,19 +135,38 @@ public class MeasurementService : IMeasurementService
     public async Task<MeasurementResponseDto> GetMeasurementByIdAsync(string id)
     {
         var measurement = await _unitOfWork.MeasurementRepository.GetByIdAsync(id);
-        if (measurement == null)
-            throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Measurement not found");
-        return _mapper.Map<MeasurementResponseDto>(measurement);
+        _validation.CheckNotFound(measurement, $"Measurement with id: {id} is not found");
+
+        var response = _mapper.Map<MeasurementResponseDto>(measurement);
+
+        if (measurement.Orders.Any())
+        {
+            response.IsLocked = true;
+        }
+        return response;
+    }
+
+    public async Task<MeasurementResponseDto> GetMeasurementByDiaryIdAsync(string diaryId)
+    {
+        var measurement = await _unitOfWork.MeasurementRepository.GetLatestMeasurementByDiaryIdAsync(diaryId);
+
+        var response = _mapper.Map<MeasurementResponseDto>(measurement);
+
+        if (measurement.Orders.Any())
+        {
+            response.IsLocked = true;
+        }
+        return response;
     }
 
     public async Task<MeasurementDto> GenerateMeasurementPreviewAsync(MeasurementCreateDto dto)
     {
         await _validation.ValidateAndThrowAsync(dto);
-        var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdNotDeletedAsync(dto.MeasurementDiaryId);
+        var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdNotDeletedAsync(dto.MeasurementId);
         _validation.CheckNotFound(diary, "Measurement diary not found");
         var weeksPregnant = CalculateWeeksPregnant(diary.PregnancyStartDate);
 
-        if (await _unitOfWork.MeasurementRepository.ValidateMeasurementExistenceAsync(dto.MeasurementDiaryId,
+        if (await _unitOfWork.MeasurementRepository.ValidateMeasurementExistenceAsync(dto.MeasurementId,
                 weeksPregnant))
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.NOT_FOUND,
                 "Measurement for this week already exists");
@@ -205,12 +225,12 @@ public class MeasurementService : IMeasurementService
     public async Task<MeasurementDto> CreateMeasurementAsync(CreateMeasurementDto dto)
     {
         await _validation.ValidateAndThrowAsync(dto);
-        var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdNotDeletedAsync(dto.MeasurementDiaryId);
+        var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdNotDeletedAsync(dto.MeasurementId);
         _validation.CheckNotFound(diary, "Measurement diary not found");
         var pregnancyStartDate = diary.PregnancyStartDate;
         var weeksPregnant = CalculateWeeksPregnant(pregnancyStartDate);
 
-        if (await _unitOfWork.MeasurementRepository.ValidateMeasurementExistenceAsync(dto.MeasurementDiaryId,
+        if (await _unitOfWork.MeasurementRepository.ValidateMeasurementExistenceAsync(dto.MeasurementId,
                 weeksPregnant))
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                 "Measurement for this week already exists");

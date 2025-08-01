@@ -2792,8 +2792,8 @@ namespace MamaFit.BusinessObjects.Data
                     Hip = 92.6f,
                     CreatedBy = "System",
                     UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
+                    CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
                     IsDeleted = false,
                 }
             );
@@ -3280,6 +3280,405 @@ namespace MamaFit.BusinessObjects.Data
         CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
         UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
         IsDeleted = false
+    }
+);
+            #endregion
+
+            #region Seed Order, OrderItem, Add_On, DesignRequest
+
+            modelBuilder.Entity<DesignRequest>().HasData(
+    new DesignRequest
+    {
+        Id = "183206a0f9c84c9db36fa9f6adbe47f1",
+        UserId = "f49aa51bbd304e77933e24bbed65b165",
+        OrderItemId = "6f186eb4a0674e0ea870fd63a5486738",
+        Description = "cho tui xin 2k nhe",
+        Images = new List<string>
+        {
+            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/design-requests%2F1000028470.jpg?alt=media&token=bd3c88c1-a4d5-4e96-b3cd-2bd9aca8a3ef",
+            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/design-requests%2F59d9afea-509e-4461-b70a-a01d8b6f97a4-1_all_13976.png?alt=media&token=27dbd078-5fb8-41db-8adf-df82ea6e876d",
+            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/design-requests%2F59d9afea-509e-4461-b70a-a01d8b6f97a4-1_all_13969.jpg?alt=media&token=2a831469-4e31-461a-bca2-b60e64f56bec"
+        },
+        CreatedBy = "user",
+        UpdatedBy = null,
+        CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+        IsDeleted = false
+    },
+    new DesignRequest
+    {
+        Id = "aab4c867cc2d4c079890a6104d1ce6da",
+        UserId = "f49aa51bbd304e77933e24bbed65b165",
+        OrderItemId = "2522e58fc7e74bf8bdbdc1c4784e56fe",
+        Description = "xin chao mamafit",
+        Images = new List<string>
+        {
+            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/design-requests%2F1000029159.png?alt=media&token=e95f7d9c-de57-4d7d-b405-62a9e3df83d0",
+            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/design-requests%2F1000029157.png?alt=media&token=d8cf93e9-5f01-4902-a732-02ed1f16ab75",
+            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/design-requests%2F1000029155.png?alt=media&token=af83a874-56db-4941-80a6-b63c67e1fe3a"
+        },
+        CreatedBy = "user",
+        UpdatedBy = null,
+        CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+        IsDeleted = false
+    }
+);
+
+            modelBuilder.Entity<Order>().HasData(
+                new Order
+                {
+                    Id = "d116622e6bce489ea74fc6ae3c907479",
+                    AddressId = null,
+                    BranchId = null,
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    VoucherDiscountId = null,
+                    MeasurementId = null,
+                    IsOnline = true,
+                    Type = 0,
+                    Code = "O56897",
+                    Status = 0,
+                    TotalAmount = 3000.0m,
+                    ShippingFee = 0,
+                    ServiceAmount = null,
+                    DiscountSubtotal = null,
+                    DepositSubtotal = null,
+                    RemainingBalance = null,
+                    TotalPaid = null,
+                    PaymentStatus = 0,
+                    PaymentMethod = 0,
+                    DeliveryMethod = 0,
+                    PaymentType = PaymentType.FULL,
+                    CanceledAt = null,
+                    CanceledReason = null,
+                    SubTotalAmount = 3000.0m,
+                    WarrantyCode = null,
+                    CreatedBy = "User",
+                    UpdatedBy = null,
+                    CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Order
+                {
+                    Id = "9af25006e3b043d9984fbc6185efe11d",
+                    AddressId = "7aa93cf1dcea43e68da114d7c991a732",
+                    BranchId = null,
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    VoucherDiscountId = null,
+                    MeasurementId = "ed58656f238a4835ae62467f0dbce35c",
+                    IsOnline = true,
+                    Type = 0,
+                    Code = "O58706",
+                    Status = 0,
+                    TotalAmount = 27150.0m,
+                    ShippingFee = 22000,
+                    ServiceAmount = 3150.0m,
+                    DiscountSubtotal = 0,
+                    DepositSubtotal = 1000.0m,
+                    RemainingBalance = 1000.0m,
+                    TotalPaid = 26150.0m,
+                    PaymentStatus = 0,
+                    PaymentMethod = PaymentMethod.ONLINE_BANKING,
+                    DeliveryMethod = DeliveryMethod.DELIVERY,
+                    PaymentType = 0,
+                    CanceledAt = null,
+                    CanceledReason = null,
+                    SubTotalAmount = 2000.0m,
+                    WarrantyCode = null,
+                    CreatedBy = "User",
+                    UpdatedBy = null,
+                    CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Order
+                {
+                    Id = "7d72109eb0f345909c58f87be3116d04",
+                    AddressId = null,
+                    BranchId = "1ca91da6e6874aac9f8a64a90a5779b2",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    VoucherDiscountId = null,
+                    MeasurementId = "ed58656f238a4835ae62467f0dbce35c",
+                    IsOnline = true,
+                    Type = 0,
+                    Code = "O13660",
+                    Status = 0,
+                    TotalAmount = 24000.0m,
+                    ShippingFee = 22000,
+                    ServiceAmount = 0,
+                    DiscountSubtotal = 0,
+                    DepositSubtotal = null,
+                    RemainingBalance = null,
+                    TotalPaid = 24000.0m,
+                    PaymentStatus = 0,
+                    PaymentMethod = PaymentMethod.ONLINE_BANKING,
+                    DeliveryMethod = 0,
+                    PaymentType = PaymentType.FULL,
+                    CanceledAt = null,
+                    CanceledReason = null,
+                    SubTotalAmount = 2000.0m,
+                    WarrantyCode = null,
+                    CreatedBy = "User",
+                    UpdatedBy = null,
+                    CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc) ,
+                    UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Order
+                {
+                    Id = "095925d56faa4797b3e31f7cb3f77a3b",
+                    AddressId = "f71162915b5846f8a470f05adc30e635",
+                    BranchId = null,
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    VoucherDiscountId = "0a707a6002ee409ca7d12028f7b7ccdf",
+                    MeasurementId = "ed58656f238a4835ae62467f0dbce35c",
+                    IsOnline = true,
+                    Type = 0,
+                    Code = "O71987",
+                    Status = 0,
+                    TotalAmount = 41100.0m,
+                    ShippingFee = 40000,
+                    ServiceAmount = 1100.0m,
+                    DiscountSubtotal = 2000.0m,
+                    DepositSubtotal = 0.0m,
+                    RemainingBalance = 0.0m,
+                    TotalPaid = 41100.0m,
+                    PaymentStatus = 0,
+                    PaymentMethod = PaymentMethod.ONLINE_BANKING,
+                    DeliveryMethod = DeliveryMethod.DELIVERY,
+                    PaymentType = 0,
+                    CanceledAt = null,
+                    CanceledReason = null,
+                    SubTotalAmount = 2000.0m,
+                    WarrantyCode = null,
+                    CreatedBy = "User",
+                    UpdatedBy = null,
+                    CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Order
+                {
+                    Id = "f10c67ae8be04c3fb810878dd82c2d56",
+                    AddressId = null,
+                    BranchId = null,
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    VoucherDiscountId = null,
+                    MeasurementId = null,
+                    IsOnline = true,
+                    Type = 0,
+                    Code = "O97749",
+                    Status = 0,
+                    TotalAmount = 3000.0m,
+                    ShippingFee = 0,
+                    ServiceAmount = null,
+                    DiscountSubtotal = null,
+                    DepositSubtotal = null,
+                    RemainingBalance = null,
+                    TotalPaid = null,
+                    PaymentStatus = 0,
+                    PaymentMethod = 0,
+                    DeliveryMethod = 0,
+                    PaymentType = PaymentType.FULL,
+                    CanceledAt = null,
+                    CanceledReason = null,
+                    SubTotalAmount = 3000.0m,
+                    WarrantyCode = null,
+                    CreatedBy = "User",
+                    UpdatedBy = null,
+                    CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Order
+                {
+                    Id = "ea64d6b0c556419bb718549e707e7a08",
+                    AddressId = null,
+                    BranchId = "896d6274c5a243758397d245dee2bbc9",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    VoucherDiscountId = null,
+                    MeasurementId = "ed58656f238a4835ae62467f0dbce35c",
+                    IsOnline = true,
+                    Type = 0,
+                    Code = "O57719",
+                    Status = 0,
+                    TotalAmount = 47650.0m,
+                    ShippingFee = 40000,
+                    ServiceAmount = 5650.0m,
+                    DiscountSubtotal = 0,
+                    DepositSubtotal = 1000.0m,
+                    RemainingBalance = 1000.0m,
+                    TotalPaid = 46650.0m,
+                    PaymentStatus = 0,
+                    PaymentMethod = PaymentMethod.ONLINE_BANKING,
+                    DeliveryMethod = 0,
+                    PaymentType = 0,
+                    CanceledAt = null,
+                    CanceledReason = null,
+                    SubTotalAmount = 2000.0m,
+                    WarrantyCode = null,
+                    CreatedBy = "User",
+                    UpdatedBy = null,
+                    CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+                    IsDeleted = false
+                }
+            );
+
+            modelBuilder.Entity<OrderItem>().HasData(
+                new OrderItem
+                {
+                    Id = "6f186eb4a0674e0ea870fd63a5486738",
+                    OrderId = "d116622e6bce489ea74fc6ae3c907479",
+                    ParentOrderItemId = null,
+                    MaternityDressDetailId = null,
+                    PresetId = null,
+                    ItemType = ItemType.DESIGN_REQUEST,
+                    Price = 3000.0m,
+                    Quantity = 1,
+                    WarrantyDate = null,
+                    WarrantyNumber = 3,
+                    CreatedBy = "user",
+                    UpdatedBy = null,
+                    CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+    new OrderItem
+    {
+        Id = "b5c1e49e540249d38793c82743ff98d6",
+        OrderId = "9af25006e3b043d9984fbc6185efe11d",
+        ParentOrderItemId = null,
+        MaternityDressDetailId = null,
+        PresetId = "6ab0daed7fe54e9fa791bfcb6bf1a043",
+        ItemType = ItemType.PRESET,
+        Price = 2000.0m,
+        Quantity = 1,
+        WarrantyDate = null,
+        WarrantyNumber = 3,
+        CreatedBy = "user",
+        UpdatedBy = null,
+        CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+        IsDeleted = false
+    },
+    new OrderItem
+    {
+        Id = "1d907aa17ebf42fb98a0e773eba8cfaa",
+        OrderId = "7d72109eb0f345909c58f87be3116d04",
+        ParentOrderItemId = null,
+        MaternityDressDetailId = null,
+        PresetId = "6fd08876dd804c01983236cb5277b406",
+        ItemType = ItemType.PRESET,
+        Price = 2000.0m,
+        Quantity = 1,
+        WarrantyDate = null,
+        WarrantyNumber = 3,
+        CreatedBy = "user",
+        UpdatedBy = null,
+        CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+        IsDeleted = false
+    },
+    new OrderItem
+    {
+        Id = "be5937c82bf64c2bb20b2579d8e5eace",
+        OrderId = "095925d56faa4797b3e31f7cb3f77a3b",
+        ParentOrderItemId = null,
+        MaternityDressDetailId = null,
+        PresetId = "68fca8f086454898ae81b1ea29890b60",
+        ItemType = ItemType.PRESET,
+        Price = 2000.0m,
+        Quantity = 1,
+        WarrantyDate = null,
+        WarrantyNumber = 3,
+        CreatedBy = "user",
+        UpdatedBy = null,
+        CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+        IsDeleted = false
+    },
+    new OrderItem
+    {
+        Id = "2522e58fc7e74bf8bdbdc1c4784e56fe",
+        OrderId = "f10c67ae8be04c3fb810878dd82c2d56",
+        ParentOrderItemId = null,
+        MaternityDressDetailId = null,
+        PresetId = null,
+        ItemType = ItemType.DESIGN_REQUEST,
+        Price = 3000.0m,
+        Quantity = 1,
+        WarrantyDate = null,
+        WarrantyNumber = 3,
+        CreatedBy = "user",
+        UpdatedBy = null,
+        CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+        IsDeleted = false
+    },
+    new OrderItem
+    {
+        Id = "9451712570b14aa7bc9fa93006d4d0db",
+        OrderId = "ea64d6b0c556419bb718549e707e7a08",
+        ParentOrderItemId = null,
+        MaternityDressDetailId = null,
+        PresetId = "fe88b53dce4c4938a7785fb9e3db1f0a",
+        ItemType = ItemType.PRESET,
+        Price = 2000.0m,
+        Quantity = 1,
+        WarrantyDate = null,
+        WarrantyNumber = 3,
+        CreatedBy = "user",
+        UpdatedBy = null,
+        CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+        IsDeleted = false
+    }
+);
+
+            modelBuilder.Entity<OrderItemAddOnOption>().HasData(
+    new OrderItemAddOnOption
+    {
+        OrderItemId = "b5c1e49e540249d38793c82743ff98d6",
+        AddOnOptionId = "0528ef2e60164a3aa4ee078e25e982b2",
+        Value = ""
+    },
+    new OrderItemAddOnOption
+    {
+        OrderItemId = "b5c1e49e540249d38793c82743ff98d6",
+        AddOnOptionId = "71655b636da34aa391d8691180ca763b",
+        Value = "MamaFit la so 1"
+    },
+    new OrderItemAddOnOption
+    {
+        OrderItemId = "be5937c82bf64c2bb20b2579d8e5eace",
+        AddOnOptionId = "c289f97217504ea4a0a16b7079cf5f2a",
+        Value = ""
+    },
+    new OrderItemAddOnOption
+    {
+        OrderItemId = "9451712570b14aa7bc9fa93006d4d0db",
+        AddOnOptionId = "0528ef2e60164a3aa4ee078e25e982b2",
+        Value = ""
+    },
+    new OrderItemAddOnOption
+    {
+        OrderItemId = "9451712570b14aa7bc9fa93006d4d0db",
+        AddOnOptionId = "3c7f15f87fc34c3f9448d52a2e98f3ed",
+        Value = "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/add-ons%2F1000029159.png?alt=media&token=ec0ac956-57e1-4973-be31-c47785db7e75"
+    },
+    new OrderItemAddOnOption
+    {
+        OrderItemId = "9451712570b14aa7bc9fa93006d4d0db",
+        AddOnOptionId = "71655b636da34aa391d8691180ca763b",
+        Value = "Dai Hoc FPT"
+    },
+    new OrderItemAddOnOption
+    {
+        OrderItemId = "9451712570b14aa7bc9fa93006d4d0db",
+        AddOnOptionId = "df081a39cfb246f8ae4be96cbb633893",
+        Value = ""
     }
 );
             #endregion

@@ -15,6 +15,16 @@
     <PackageReference Include="Hangfire.PostgreSql" Version="1.20.12" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.15" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.15" />
+    <!-- ML.NET packages -->
+    <PackageReference Include="Microsoft.ML" Version="3.0.1"/>
+    <PackageReference Include="Microsoft.ML.FastTree" Version="3.0.1"/>
+    <PackageReference Include="Microsoft.ML.Recommender" Version="0.21.1"/>
+
+    <!-- For data visualization -->
+    <PackageReference Include="OxyPlot.Core" Version="2.1.2"/>
+
+    <!-- Logging -->
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.3"/>
   </ItemGroup>
 
   <ItemGroup>

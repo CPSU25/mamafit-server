@@ -5,7 +5,7 @@ namespace MamaFit.Repositories.Interface.AI;
 
 public interface IAIModelMetricsRepository : IGenericRepository<AIModelMetrics>
 {
-    Task<AIModelMetrics> GetActiveModelMetricsAsync(string modelType);
-    Task<Dictionary<string, AIModelMetrics>> GetAllActiveMetricsAsync();
-    Task DeactivateOldMetricsAsync(string modelType);
+    Task<Dictionary<string, AIModelMetrics>> GetActiveModelsMetricsAsync();
+    Task<AIModelMetrics> GetActiveModelByTypeAsync(string modelType);
+    Task DeactivateOldModelsAsync(string modelType);
 }

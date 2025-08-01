@@ -25,10 +25,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MamaFit.Repositories", "Mam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MamaFit.BusinessObjects", "MamaFit.BusinessObjects\MamaFit.BusinessObjects.csproj", "{60A0A1CF-02B9-4817-BC66-0127C639D3FB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MamaFit.AI", "MamaFit.AI", "{334DFDBF-1A25-4651-BAC4-6AF2D2FBA742}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MamaFit.AI", "MamaFit.AI\MamaFit.AI.csproj", "{E590FC2F-4FCF-44B5-B909-19372A98AE8A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,10 +47,6 @@ Global
 		{60A0A1CF-02B9-4817-BC66-0127C639D3FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60A0A1CF-02B9-4817-BC66-0127C639D3FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60A0A1CF-02B9-4817-BC66-0127C639D3FB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E590FC2F-4FCF-44B5-B909-19372A98AE8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E590FC2F-4FCF-44B5-B909-19372A98AE8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E590FC2F-4FCF-44B5-B909-19372A98AE8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E590FC2F-4FCF-44B5-B909-19372A98AE8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -64,7 +56,6 @@ Global
 		{42DD4038-BC8B-4E9B-AA4E-29150627DF74} = {C5787510-60EC-4024-BFAC-69B0D9BE9767}
 		{5823E9EE-9B82-4249-95F0-341C54D4B87E} = {23B3F928-48F2-48F7-BCA5-F0021DC23158}
 		{60A0A1CF-02B9-4817-BC66-0127C639D3FB} = {330C30FD-1297-42C5-87B4-47C377465377}
-		{E590FC2F-4FCF-44B5-B909-19372A98AE8A} = {334DFDBF-1A25-4651-BAC4-6AF2D2FBA742}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ED66D7EE-499B-43B5-BB9B-D8FF8FF76C1C}

@@ -1,4 +1,5 @@
 ﻿using MamaFit.Repositories.Interface;
+using MamaFit.Repositories.Interface.AI;
 
 namespace MamaFit.Repositories.Implement
 {
@@ -39,6 +40,8 @@ namespace MamaFit.Repositories.Implement
         public IAddOnOptionRepository AddOnOptionRepository { get; }
         public IPositionRepository PositionRepository { get; }
         public ISizeRepository SizeRepository { get; }
+        public IAIModelMetricsRepository AIModelMetricsRepository { get; }
+        public IAIPredictionHistoryRepository IaiPredictionHistoryRepository { get; }
         int SaveChanges();
         Task<int> SaveChangesAsync();
         void BeginTransaction();

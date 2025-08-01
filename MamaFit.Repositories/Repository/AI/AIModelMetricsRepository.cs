@@ -13,35 +13,41 @@ public class AIModelMetricsRepository : GenericRepository<AIModelMetrics>, IAIMo
         : base(context, httpContextAccessor)
     {
     }
-    
-    public async Task<AIModelMetrics?> GetActiveModelMetricsAsync(string modelType)
+
+    public async Task<Dictionary<string, AIModelMetrics>> GetActiveModelsMetricsAsync()
     {
-        return await _dbSet
-            .Where(m => m.ModelType == modelType && !m.IsDeleted && m.IsActive)
-            .OrderByDescending(m => m.CreatedAt)
-            .FirstOrDefaultAsync();
-    }
-    
-    public async Task<Dictionary<string, AIModelMetrics>> GetAllActiveMetricsAsync()
-    {
-        return await _dbSet
-            .Where(m => !m.IsDeleted && m.IsActive)
-            .ToDictionaryAsync(m => m.ModelType, m => m);
-    }
-    
-    public async Task DeactivateOldMetricsAsync(string modelType)
-    {
-        var metrics = await _dbSet
-            .Where(m => m.ModelType == modelType && !m.IsDeleted && m.IsActive)
+        var activeModels = await _dbSet
+            .Where(m => m.IsActive && !m.IsDeleted)
             .ToListAsync();
 
-        foreach (var metric in metrics)
+        return activeModels.ToDictionary(m => m.ModelType, m => m);
+    }
+
+    public async Task<AIModelMetrics> GetActiveModelByTypeAsync(string modelType)
+    {
+        var model = await _dbSet
+            .FirstOrDefaultAsync(m => m.ModelType == modelType && m.IsActive && !m.IsDeleted);
+
+        if (model == null)
         {
-            metric.IsActive = false;
-            metric.UpdatedAt = DateTime.UtcNow;
+            throw new KeyNotFoundException($"No active model found for type: {modelType}");
         }
 
-        _context.UpdateRange(metrics);
+        return model;
+    }
+
+    public async Task DeactivateOldModelsAsync(string modelType)
+    {
+        var oldModels = await _dbSet
+            .Where(m => m.ModelType == modelType && m.IsActive && !m.IsDeleted)
+            .ToListAsync();
+
+        foreach (var model in oldModels)
+        {
+            model.IsActive = false;
+        }
+
+        _context.UpdateRange(oldModels);
         await _context.SaveChangesAsync();
     }
 }

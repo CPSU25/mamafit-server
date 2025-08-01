@@ -18,9 +18,7 @@ namespace MamaFit.BusinessObjects.DBContext
 
         //AI
         public DbSet<AIPredictionHistory> AIPredictionHistories { get; set; }
-        public DbSet<AIConversation> AIConversations { get; set; }
         public DbSet<AIModelMetrics> AIModelMetrics { get; set; }
-        
         //DbSet Chat
         public DbSet<ChatMessage> ChatMessages { get; set; }
         public DbSet<ChatRoom> ChatRooms { get; set; }
@@ -106,7 +104,6 @@ namespace MamaFit.BusinessObjects.DBContext
             modelBuilder.Entity<Position>().ToTable("Position");
             modelBuilder.Entity<Size>().ToTable("Size");
             modelBuilder.Entity<AIPredictionHistory>().ToTable("AIPredictionHistory");
-            modelBuilder.Entity<AIConversation>().ToTable("AIConversation");
             #endregion
 
             #region Configure Fluent Api
@@ -354,6 +351,23 @@ namespace MamaFit.BusinessObjects.DBContext
                 options.HasKey(cop => new { cop.PresetsId, cop.ComponentOptionsId });
             });
 
+            //AI
+            modelBuilder.Entity<AIPredictionHistory>(entity =>
+            {
+                entity.HasIndex(e => new { e.UserId, e.MeasurementDiaryId, e.TargetWeek });
+                entity.HasIndex(e => e.PredictedAt);
+    
+                entity.HasOne(e => e.ActualMeasurement)
+                    .WithMany()
+                    .HasForeignKey(e => e.ActualMeasurementId)
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            modelBuilder.Entity<AIModelMetrics>(entity =>
+            {
+                entity.HasIndex(e => new { e.ModelType, e.IsActive });
+                entity.HasIndex(e => e.ModelVersion);
+            });
             SeedData.Seed(modelBuilder);
 
             #endregion

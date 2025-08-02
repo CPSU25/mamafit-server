@@ -128,7 +128,7 @@ public class OrderItemTaskService : IOrderItemTaskService
             if (orderItem.ItemType == ItemType.DESIGN_REQUEST)
             {
                 task.OrderItem.Order.Status = OrderStatus.IN_DESIGN;
-                SendMessageAndNoti(task);
+                await SendMessageAndNoti(task);
             }
 
             if (orderItem.ItemType == ItemType.PRESET)

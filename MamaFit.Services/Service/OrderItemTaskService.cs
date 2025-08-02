@@ -170,8 +170,12 @@ public class OrderItemTaskService : IOrderItemTaskService
                                 if (deliveringProgress.Progress == 100 && packageProgress.IsDone)
                                     order.Status = OrderStatus.DELIVERING;
                             }
-                            else
+                            var keywordList = new[] { "quality check", "qc" };
+                            var qcProgress = progress.Where(x => keywordList.Any(k => x.Milestone!.Name!.ToLower().Contains(k)));
+                            if (qcProgress.Any(x => x.Progress == 100 && x.IsDone))
                                 order.Status = OrderStatus.PACKAGING;
+                            else 
+                                order.Status = OrderStatus.IN_QC;
                         }
                     }
                     else

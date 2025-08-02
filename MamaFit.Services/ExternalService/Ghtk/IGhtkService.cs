@@ -9,6 +9,7 @@ namespace MamaFit.Services.ExternalService.Ghtk;
 
 public interface IGhtkService
 {
+    Task<GhtkCreateAndCancelResult> CreateAndCancelOrderAsync(string orderId);
     Task<GhtkBaseResponse?> AuthenticateGhtkAsync();
     Task<GhtkBaseResponse?> SubmitOrderExpressAsync(string orderId);
     Task<GhtkTrackOrderResponse?> GetOrderStatusAsync(string trackingOrderCode);

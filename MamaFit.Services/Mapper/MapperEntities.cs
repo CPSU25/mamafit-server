@@ -139,7 +139,7 @@ namespace MamaFit.Services.Mapper
             CreateMap<Measurement, UpdateMeasurementDto>().ReverseMap();
             CreateMap<Measurement, MeasurementResponseDto>()
                 .ForMember(dest => dest.IsLocked, opt => opt.MapFrom(src =>
-                    src.Orders.Any(o =>
+                    src.Orders!.Any(o =>
                     o.Status != OrderStatus.CANCELLED &&
                     o.Status != OrderStatus.COMPLETED)))
                 .ReverseMap();
@@ -217,13 +217,13 @@ namespace MamaFit.Services.Mapper
             CreateMap<Order, OrderReadyToBuyRequestDto>().ReverseMap();
             CreateMap<Order, OrderResponseDto>()
                 .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.OrderItems))
-                .ForMember(dest => dest.MeasurementDiary, otp => otp.MapFrom(src => src.Measurement.MeasurementDiary))
+                .ForMember(dest => dest.MeasurementDiary, otp => otp.MapFrom(src => src.Measurement!.MeasurementDiary))
                 .ReverseMap();
             CreateMap<Order, OrderWithItemResponseDto>().ReverseMap();
             CreateMap<Order, OrderPresetCreateRequestDto>().ReverseMap();
             CreateMap<Order, OrderGetByIdResponseDto>()
                 .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.OrderItems))
-                .ForMember(dest => dest.MeasurementDiary, otp => otp.MapFrom(src => src.Measurement.MeasurementDiary))
+                .ForMember(dest => dest.MeasurementDiary, otp => otp.MapFrom(src => src.Measurement!.MeasurementDiary))
                 .ReverseMap();
             #endregion
 
@@ -330,7 +330,7 @@ namespace MamaFit.Services.Mapper
 
             #region AddOnOption Mapper
             CreateMap<AddOnOption, AddOnOptionDto>()
-                .ForMember(dest => dest.Value, otp => otp.MapFrom(src => src.OrderItemAddOnOptions.Select(x => x.Value).FirstOrDefault()))
+                .ForMember(dest => dest.Value, otp => otp.MapFrom(src => src.OrderItemAddOnOptions!.Select(x => x.Value).FirstOrDefault()))
                 .ReverseMap();
             CreateMap<AddOnOption, AddOnOptionRequestDto>().ReverseMap();
             #endregion

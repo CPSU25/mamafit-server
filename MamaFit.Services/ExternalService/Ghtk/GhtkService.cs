@@ -51,6 +51,33 @@ public class GhtkService : IGhtkService
         return JsonConvert.DeserializeObject<GhtkFailResponse>(content);
     }
 
+    public async Task<GhtkCreateAndCancelResult> CreateAndCancelOrderAsync(string orderId)
+    {
+        var createResp = await SubmitOrderExpressAsync(orderId);
+
+        string? trackingOrderCode = null;
+        if (createResp is GhtkOrderSubmitSuccessResponse createSuccess && createSuccess.Order != null)
+        {
+            trackingOrderCode = createSuccess.Order.Label;
+        }
+
+        GhtkBaseResponse? cancelResp = null;
+        if (!string.IsNullOrEmpty(trackingOrderCode))
+        {
+            cancelResp = await CancelOrderAsync(trackingOrderCode);
+        }
+
+        return new GhtkCreateAndCancelResult
+        {
+            CreateOrder = createResp,
+            CancelOrder = cancelResp,
+            Success = createResp?.Success == true && cancelResp?.Success == true,
+            Message = createResp?.Success != true ? "Tạo đơn thất bại"
+                : cancelResp?.Success != true ? "Tạo thành công, hủy thất bại"
+                : "Tạo đơn & hủy đơn thành công"
+        };
+    }
+
     public async Task<GhtkBaseResponse?> SubmitOrderExpressAsync(string orderId)
     {
         var order = await _unitOfWork.OrderRepository.GetWithItemsAndDressDetails(orderId);

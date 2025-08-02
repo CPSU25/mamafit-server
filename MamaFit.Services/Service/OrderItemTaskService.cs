@@ -171,7 +171,7 @@ public class OrderItemTaskService : IOrderItemTaskService
                                     order.Status = OrderStatus.DELIVERING;
                             }
                             else
-                                order.Status = OrderStatus.IN_QC;
+                                order.Status = OrderStatus.PACKAGING;
                         }
                     }
                     else

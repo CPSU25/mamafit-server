@@ -69,6 +69,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .Include(x => x.OrderItems)
             .ThenInclude(x => x.DesignRequest)
             .ThenInclude(x => x.User)
+            .Include(x => x.Measurement).ThenInclude(x => x.MeasurementDiary)
             .AsNoTracking()
             .Where(x => !x.IsDeleted && x.UserId == token);
         if (!string.IsNullOrWhiteSpace(search))

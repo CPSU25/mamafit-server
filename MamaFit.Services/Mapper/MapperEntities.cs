@@ -3,40 +3,41 @@ using MamaFit.BusinessObjects.DTO.AddOnDto;
 using MamaFit.BusinessObjects.DTO.AddOnOptionDto;
 using MamaFit.BusinessObjects.DTO.AddressDto;
 using MamaFit.BusinessObjects.DTO.AppointmentDto;
-using MamaFit.BusinessObjects.Entity;
-using MamaFit.BusinessObjects.DTO.MaternityDressDto;
-using MamaFit.BusinessObjects.DTO.CategoryDto;
-using MamaFit.BusinessObjects.DTO.StyleDto;
-using MamaFit.BusinessObjects.DTO.ComponentDto;
-using MamaFit.BusinessObjects.DTO.ComponentOptionDto;
-using MamaFit.BusinessObjects.DTO.MaternityDressDetailDto;
-using MamaFit.BusinessObjects.DTO.DesignRequestDto;
 using MamaFit.BusinessObjects.DTO.BranchDto;
 using MamaFit.BusinessObjects.DTO.BranchMaternityDressDetailDto;
 using MamaFit.BusinessObjects.DTO.CartItemDto;
-using MamaFit.BusinessObjects.DTO.MeasurementDto;
-using MamaFit.BusinessObjects.Entity.ChatEntity;
+using MamaFit.BusinessObjects.DTO.CategoryDto;
 using MamaFit.BusinessObjects.DTO.ChatMessageDto;
 using MamaFit.BusinessObjects.DTO.ChatRoomDto;
-using MamaFit.BusinessObjects.DTO.TokenDto;
-using MamaFit.BusinessObjects.DTO.VoucherBatchDto;
 using MamaFit.BusinessObjects.DTO.ChatRoomMemberDto;
+using MamaFit.BusinessObjects.DTO.ComponentDto;
+using MamaFit.BusinessObjects.DTO.ComponentOptionDto;
+using MamaFit.BusinessObjects.DTO.DesignRequestDto;
 using MamaFit.BusinessObjects.DTO.FeedbackDto;
-using MamaFit.BusinessObjects.DTO.OrderDto;
-using MamaFit.BusinessObjects.DTO.OrderItemDto;
-using MamaFit.BusinessObjects.DTO.VoucherDiscountDto;
+using MamaFit.BusinessObjects.DTO.MaternityDressDetailDto;
+using MamaFit.BusinessObjects.DTO.MaternityDressDto;
+using MamaFit.BusinessObjects.DTO.MaternityDressTaskDto;
+using MamaFit.BusinessObjects.DTO.MeasurementDto;
 using MamaFit.BusinessObjects.DTO.MilestoneDto;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
-using MamaFit.BusinessObjects.DTO.WarrantyHistoryDto;
-using MamaFit.BusinessObjects.DTO.RoleDto;
-using MamaFit.BusinessObjects.DTO.PresetDto;
-using MamaFit.BusinessObjects.DTO.WarrantyRequestDto;
-using Newtonsoft.Json;
+using MamaFit.BusinessObjects.DTO.OrderDto;
+using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.DTO.OrderItemTaskDto;
-using MamaFit.BusinessObjects.DTO.MaternityDressTaskDto;
 using MamaFit.BusinessObjects.DTO.PositionDto;
+using MamaFit.BusinessObjects.DTO.PresetDto;
+using MamaFit.BusinessObjects.DTO.RoleDto;
 using MamaFit.BusinessObjects.DTO.SizeDto;
+using MamaFit.BusinessObjects.DTO.StyleDto;
+using MamaFit.BusinessObjects.DTO.TokenDto;
 using MamaFit.BusinessObjects.DTO.UserDto;
+using MamaFit.BusinessObjects.DTO.VoucherBatchDto;
+using MamaFit.BusinessObjects.DTO.VoucherDiscountDto;
+using MamaFit.BusinessObjects.DTO.WarrantyHistoryDto;
+using MamaFit.BusinessObjects.DTO.WarrantyRequestDto;
+using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Entity.ChatEntity;
+using MamaFit.BusinessObjects.Enum;
+using Newtonsoft.Json;
 
 namespace MamaFit.Services.Mapper
 {
@@ -136,7 +137,12 @@ namespace MamaFit.Services.Mapper
             CreateMap<Measurement, MeasurementCreateDto>().ReverseMap();
             CreateMap<Measurement, CreateMeasurementDto>().ReverseMap();
             CreateMap<Measurement, UpdateMeasurementDto>().ReverseMap();
-            CreateMap<Measurement, MeasurementResponseDto>().ReverseMap();
+            CreateMap<Measurement, MeasurementResponseDto>()
+                .ForMember(dest => dest.IsLocked, opt => opt.MapFrom(src =>
+                    src.Orders.Any(o =>
+                    o.Status != OrderStatus.CANCELLED &&
+                    o.Status != OrderStatus.COMPLETED)))
+                .ReverseMap();
             #endregion
 
             #region MeasurementDiary Mapper
@@ -211,6 +217,7 @@ namespace MamaFit.Services.Mapper
             CreateMap<Order, OrderReadyToBuyRequestDto>().ReverseMap();
             CreateMap<Order, OrderResponseDto>()
                 .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.OrderItems))
+                .ForMember(dest => dest.MeasurementDiary, otp => otp.MapFrom(src => src.Measurement.MeasurementDiary))
                 .ReverseMap();
             CreateMap<Order, OrderWithItemResponseDto>().ReverseMap();
             CreateMap<Order, OrderPresetCreateRequestDto>().ReverseMap();

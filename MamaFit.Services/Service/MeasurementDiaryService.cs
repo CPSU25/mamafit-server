@@ -1,5 +1,6 @@
 using AutoMapper;
 using MamaFit.BusinessObjects.DTO.MeasurementDto;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Helper;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
@@ -75,19 +76,9 @@ public class MeasurementDiaryService : IMeasurementDiaryService
             throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Measurement diary not found");
         var response = _mapper.Map<DiaryWithMeasurementDto>(diary);
 
-        foreach (var measurementDto in response.Measurements)
-        {
-            var matchedEntity = diary.Measurements.FirstOrDefault(m => m.Id == measurementDto.Id);
-            if (matchedEntity != null && matchedEntity.Orders != null && matchedEntity.Orders.Any() 
-                && matchedEntity.Orders.Any(x => x.Status != BusinessObjects.Enum.OrderStatus.CANCELLED)
-                && matchedEntity.Orders.Any(x => x.Status != BusinessObjects.Enum.OrderStatus.COMPLETED))
-            {
-                measurementDto.IsLocked = true;
-            }
-        }
         return response;
     }
-    
+
     public async Task<PaginatedList<MeasurementDiaryResponseDto>> GetDiariesByUserIdAsync(int index, int pageSize, string userId, string? nameSearch = null)
     {
         var diaries = await _unitOfWork.MeasurementDiaryRepository.GetByUserIdAsync(index, pageSize, userId, nameSearch);

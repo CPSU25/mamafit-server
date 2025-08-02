@@ -73,7 +73,20 @@ namespace MamaFit.Services.Service
             if (chatHistory == null)
                 throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Chat room not found!");
 
-            return _mapper.Map<List<ChatMessageResponseDto>>(chatHistory);
+            var result = _mapper.Map<List<ChatMessageResponseDto>>(chatHistory);
+            
+            // Enrich response với sender info
+            foreach (var message in result)
+            {
+                var sender = chatHistory.FirstOrDefault(x => x.Id == message.Id)?.Sender;
+                if (sender != null)
+                {
+                    message.SenderName = sender.FullName ?? "";
+                    message.SenderAvatar = sender.ProfilePicture ?? "";
+                }
+            }
+            
+            return result;
         }
 
         public async Task<ChatMessageResponseDto> GetChatMessageById(string messageId)

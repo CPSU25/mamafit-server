@@ -1,4 +1,5 @@
 ﻿using MamaFit.BusinessObjects.Enum;
+using System.Text.Json;
 
 namespace MamaFit.BusinessObjects.DTO.ChatMessageDto
 {
@@ -13,5 +14,81 @@ namespace MamaFit.BusinessObjects.DTO.ChatMessageDto
         public bool IsRead { get; set; }
         public string ChatRoomId { get; set; } = string.Empty;
         public MessageType Type { get; set; } = MessageType.Text;
+        
+        /// <summary>
+        /// Automatically parse JSON message if Type is JSON. Returns parsed object with messageContent, OrderId, DesignRequestId
+        /// </summary>
+        public object? ParsedData
+        {
+            get
+            {
+                if (Type == MessageType.JSON && !string.IsNullOrEmpty(Message))
+                {
+                    try
+                    {
+                        var options = new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        };
+                        return JsonSerializer.Deserialize<JsonElement>(Message, options);
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                }
+                return null;
+            }
+        }
+        
+        /// <summary>
+        /// Get messageContent từ JSON parsed data
+        /// </summary>
+        public string? MessageContent
+        {
+            get
+            {
+                if (ParsedData is JsonElement element && element.TryGetProperty("messageContent", out var content))
+                {
+                    return content.GetString();
+                }
+                return Type == MessageType.JSON ? null : Message;
+            }
+        }
+        
+        /// <summary>
+        /// Get OrderId từ JSON parsed data
+        /// </summary>
+        public string? OrderId
+        {
+            get
+            {
+                if (ParsedData is JsonElement element && element.TryGetProperty("orderId", out var orderId))
+                {
+                    return orderId.GetString();
+                }
+                return null;
+            }
+        }
+        
+        /// <summary>
+        /// Get DesignRequestId từ JSON parsed data
+        /// </summary>
+        public string? DesignRequestId
+        {
+            get
+            {
+                if (ParsedData is JsonElement element && element.TryGetProperty("designRequestId", out var designRequestId))
+                {
+                    return designRequestId.GetString();
+                }
+                return null;
+            }
+        }
+        
+        /// <summary>
+        /// Kiểm tra xem message có phải là JSON hợp lệ không
+        /// </summary>
+        public bool IsValidJson => Type == MessageType.JSON && ParsedData != null;
     }
 }

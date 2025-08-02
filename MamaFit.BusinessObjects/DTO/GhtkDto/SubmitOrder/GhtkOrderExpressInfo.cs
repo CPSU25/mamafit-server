@@ -34,16 +34,8 @@ public class GhtkOrderExpressInfo
     public string Hamlet { get; set; } = "Khác";
     [JsonProperty("weight_option")]
     public string WeightOption { get; set; } = "gram";
-    [JsonProperty("delivery_option")]
-    public string DeliveryOption { get; set; } 
-    [JsonProperty("is_freeship")]
-    public string IsFreeship { get; set; }
     [JsonProperty("pick_money")]
     public decimal PickMoney { get; set; }
-    [JsonProperty("note")]
-    public string Note { get; set; }
     [JsonProperty("value")]
     public decimal? Value { get; set; }
-    [JsonProperty("transport")]
-    public string Transport { get; set; }
 }

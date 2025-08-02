@@ -1,5 +1,4 @@
 using AutoMapper;
-using Azure;
 using MamaFit.BusinessObjects.DTO.MeasurementDto;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.Entity;
@@ -20,7 +19,9 @@ public class MeasurementService : IMeasurementService
     private readonly INotificationService _notificationService;
 
     public MeasurementService(IMapper mapper,
-        IUnitOfWork unitOfWork, IBodyGrowthCalculator calculator, IValidationService validation,
+        IUnitOfWork unitOfWork,
+        IBodyGrowthCalculator calculator,
+        IValidationService validation,
         INotificationService notificationService)
     {
         _mapper = mapper;
@@ -138,6 +139,11 @@ public class MeasurementService : IMeasurementService
         _validation.CheckNotFound(measurement, $"Measurement with id: {id} is not found");
 
         var response = _mapper.Map<MeasurementResponseDto>(measurement);
+
+        if (measurement.Orders.Any())
+        {
+            response.IsLocked = true;
+        }
         return response;
     }
 
@@ -151,6 +157,7 @@ public class MeasurementService : IMeasurementService
         {
             response.IsLocked = true;
         }
+
         return response;
     }
 
@@ -292,6 +299,7 @@ public class MeasurementService : IMeasurementService
             var pregnancyStartDate = CalculatePregnancyStartDate(request.Diary);
             request.Diary.PregnancyStartDate = pregnancyStartDate;
         }
+
         await _unitOfWork.MeasurementDiaryRepository.SetActiveFalseForAllAsync(user.Id);
         var diaryEntity = _mapper.Map<MeasurementDiary>(request.Diary);
         diaryEntity.IsActive = true;

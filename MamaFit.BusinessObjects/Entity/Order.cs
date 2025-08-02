@@ -13,6 +13,7 @@ namespace MamaFit.BusinessObjects.Entity
         public bool? IsOnline { get; set; } = true;
         public OrderType Type { get; set; }
         public string? Code { get; set; }
+        public string? GhtkLabel { get; set; }
         public OrderStatus? Status { get; set; }
         public decimal? TotalAmount { get; set; }
         public decimal ShippingFee { get; set; }
@@ -29,6 +30,7 @@ namespace MamaFit.BusinessObjects.Entity
         public string? CanceledReason { get; set; }
         public decimal? SubTotalAmount { get; set; }
         public string? WarrantyCode { get; set; }
+        public DateTime? ReceivedAt { get; set; }
 
         // Navigation properties
         public ApplicationUser User { get; set; }

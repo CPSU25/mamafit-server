@@ -15,6 +15,7 @@ public class OrderWithItemResponseDto
     public bool? IsOnline { get; set; } = true;
     public OrderType Type { get; set; }
     public string? Code { get; set; }
+    public string? GhtkLabel { get; set; }
     public OrderStatus? Status { get; set; }
     public float TotalAmount { get; set; } 
     public float ShippingFee { get; set; }

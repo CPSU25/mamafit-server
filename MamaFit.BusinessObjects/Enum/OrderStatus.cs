@@ -7,6 +7,7 @@
         IN_DESIGN, // Designer đang làm việc với khách hàng
         IN_PRODUCTION, // nhà máy đang làm
         AWAITING_PAID_REST, //pass QC và đang đợi customer trả phần còn lại
+        AWAITING_DELIVERY, // DOI LEN DON HANG
         IN_QC, // nhà máy đã làm xong và đang kiểm tra chất lượng
         IN_WARRANTY, // đang bảo hành / sửa
         PACKAGING, // đóng gói

@@ -1,6 +1,5 @@
 ﻿using MamaFit.BusinessObjects.Data;
 using MamaFit.BusinessObjects.Entity;
-using MamaFit.BusinessObjects.Entity.AI;
 using MamaFit.BusinessObjects.Entity.ChatEntity;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,11 +14,6 @@ namespace MamaFit.BusinessObjects.DBContext
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
-
-        //AI
-        public DbSet<AIPredictionHistory> AIPredictionHistories { get; set; }
-        public DbSet<AIConversation> AIConversations { get; set; }
-        public DbSet<AIModelMetrics> AIModelMetrics { get; set; }
         
         //DbSet Chat
         public DbSet<ChatMessage> ChatMessages { get; set; }
@@ -105,8 +99,6 @@ namespace MamaFit.BusinessObjects.DBContext
             modelBuilder.Entity<Preset>().ToTable("Preset");
             modelBuilder.Entity<Position>().ToTable("Position");
             modelBuilder.Entity<Size>().ToTable("Size");
-            modelBuilder.Entity<AIPredictionHistory>().ToTable("AIPredictionHistory");
-            modelBuilder.Entity<AIConversation>().ToTable("AIConversation");
             #endregion
 
             #region Configure Fluent Api
@@ -353,7 +345,6 @@ namespace MamaFit.BusinessObjects.DBContext
             {
                 options.HasKey(cop => new { cop.PresetsId, cop.ComponentOptionsId });
             });
-
             SeedData.Seed(modelBuilder);
 
             #endregion

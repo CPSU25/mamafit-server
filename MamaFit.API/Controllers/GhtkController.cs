@@ -26,10 +26,21 @@ public class GhtkController : ControllerBase
         return Ok(result);
     }
     
-    [HttpPost("ghtk-submit-order/{orderId}")]
-    public async Task<IActionResult> SubmitOrderExpress([FromRoute] string orderId, [FromBody] GhtkRecipentDto dto)
+    [HttpPost("ghtk-create-cancel-order/{orderId}")]
+    public async Task<IActionResult> CreateAndCancelOrder([FromRoute] string orderId)
     {
-        var result = await _ghtkService.SubmitOrderExpressAsync(orderId, dto);
+        var result = await _ghtkService.CreateAndCancelOrderAsync(orderId);
+        if (result == null)
+            return StatusCode(500, new { success = false, message = "Không kết nối được GHTK" });
+        if (!result.Success)
+            return BadRequest(result);
+        return Ok(result);
+    }
+    
+    [HttpPost("ghtk-submit-order/{orderId}")]
+    public async Task<IActionResult> SubmitOrderExpress([FromRoute] string orderId)
+    {
+        var result = await _ghtkService.SubmitOrderExpressAsync(orderId);
         if (!result.Success)
             return StatusCode(400, result);
         return Ok(result);

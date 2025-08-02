@@ -51,10 +51,43 @@ public class GhtkService : IGhtkService
         return JsonConvert.DeserializeObject<GhtkFailResponse>(content);
     }
 
-    public async Task<GhtkBaseResponse?> SubmitOrderExpressAsync(string orderId, GhtkRecipentDto recipent)
+    public async Task<GhtkCreateAndCancelResult> CreateAndCancelOrderAsync(string orderId)
+    {
+        var createResp = await SubmitOrderExpressAsync(orderId);
+
+        string? trackingOrderCode = null;
+        if (createResp is GhtkOrderSubmitSuccessResponse createSuccess && createSuccess.Order != null)
+        {
+            trackingOrderCode = createSuccess.Order.Label;
+        }
+
+        GhtkBaseResponse? cancelResp = null;
+        if (!string.IsNullOrEmpty(trackingOrderCode))
+        {
+            cancelResp = await CancelOrderAsync(trackingOrderCode);
+        }
+
+        return new GhtkCreateAndCancelResult
+        {
+            CreateOrder = createResp,
+            CancelOrder = cancelResp,
+            Success = createResp?.Success == true && cancelResp?.Success == true,
+            Message = createResp?.Success != true ? "Tạo đơn thất bại"
+                : cancelResp?.Success != true ? "Tạo thành công, hủy thất bại"
+                : "Tạo đơn & hủy đơn thành công"
+        };
+    }
+
+    public async Task<GhtkBaseResponse?> SubmitOrderExpressAsync(string orderId)
     {
         var order = await _unitOfWork.OrderRepository.GetWithItemsAndDressDetails(orderId);
         _validationService.CheckNotFound(order, "Order not found");
+
+        if (order.User == null)
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT, "Order is missing user info");
+
+        if (order.Address == null)
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT, "Order is missing address info");
 
         var ghtkProducts = order.OrderItems.Select(item =>
         {
@@ -122,17 +155,13 @@ public class GhtkService : IGhtkService
             PickProvince = _ghtkSettings.PickProvince,
             PickDistrict = _ghtkSettings.PickDistrict,
             PickTel = _ghtkSettings.PickTel,
-            Tel = recipent.CustomerPhone,
-            Name = recipent.CustomerName,
-            Address = recipent.CustomerAddress,
-            Province = recipent.Province,
-            District = recipent.District,
-            Ward = recipent.Ward,
-            Note = recipent.Note ?? "Giao hàng MamaFit",
-            Value = value!,
-            Transport = recipent.Transport,
-            DeliveryOption = recipent.DeliveryOption,
-            IsFreeship = recipent.IsFreeship
+            Tel = order.User.PhoneNumber ?? "",
+            Name = order.User.FullName ?? "Khách hàng",
+            Address = order.Address!.Street ?? "",
+            Province = order.Address.Province ?? "",
+            District = order.Address.District ?? "",
+            Ward = order.Address.Ward ?? "",
+            Value = value!
         };
 
         var ghtkRequest = new GhtkOrderExpressRequest
@@ -148,10 +177,13 @@ public class GhtkService : IGhtkService
         var responseBody = await response.Content.ReadAsStringAsync();
 
         var baseResp = JsonConvert.DeserializeObject<GhtkBaseResponse>(responseBody);
-        if (baseResp.Success)
+        if (baseResp!.Success)
         {
             var successResp = JsonConvert.DeserializeObject<GhtkOrderSubmitSuccessResponse>(responseBody);
-
+            var label = successResp?.Order?.Label;
+            order.GhtkLabel = label;
+            await _unitOfWork.OrderRepository.UpdateAsync(order);
+            await _unitOfWork.SaveChangesAsync();
             if (successResp?.Order != null)
                 successResp.Order.Products = mappedProducts;
             return successResp;
@@ -175,10 +207,6 @@ public class GhtkService : IGhtkService
                     $"&pick_province={Uri.EscapeDataString(pickProvince)}" +
                     $"&pick_district={Uri.EscapeDataString(pickDistrict)}" +
                     $"&pick_address_id={Uri.EscapeDataString(pickAddressId)}";
-        if (!string.IsNullOrEmpty(dto.DeliveryOption))
-            query += $"&delivery_option={Uri.EscapeDataString(dto.DeliveryOption)}";
-        if (!string.IsNullOrEmpty(dto.Transport))
-            query += $"&transport={Uri.EscapeDataString(dto.Transport)}";
         var url = $"/services/shipment/fee?{query}";
         var response = await httpClient.GetAsync(url);
         var content = await response.Content.ReadAsStringAsync();

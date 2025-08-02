@@ -164,28 +164,20 @@ public class SepayService : ISepayService
                 .Select(m => m.Id)
                 .ToList();
 
+            if (orderItem.OrderItemAddOnOptions != null && orderItem.OrderItemAddOnOptions.Any())
+            {
+                var addOnMilestones = milestoneList
+                    .Where(m => m.ApplyFor!.Contains(ItemType.ADD_ON))
+                    .Select(m => m.Id);
+                matchingMilestones.AddRange(addOnMilestones);
+            }
+
             return new AssignTaskToOrderItemRequestDto
             {
                 OrderItemId = orderItem.Id,
                 MilestoneIds = matchingMilestones
             };
         }).ToList();
-
-        if(order.OrderItems.Select(x => x.OrderItemAddOnOptions) != null)
-        {
-            var matchingAddOnMilestones = milestoneList
-                .Where(m => m.ApplyFor!.Contains(ItemType.ADD_ON))
-                .Select(m => m.Id)
-                .ToList();
-
-            assignRequests.AddRange(order.OrderItems
-                .Where(x => x.OrderItemAddOnOptions != null)
-                .SelectMany(orderItem => orderItem.OrderItemAddOnOptions.Select(addOnOption => new AssignTaskToOrderItemRequestDto
-                {
-                    OrderItemId = orderItem.Id,
-                    MilestoneIds = matchingAddOnMilestones
-                })));
-        }
 
         foreach (var assignRequest in assignRequests)
         {

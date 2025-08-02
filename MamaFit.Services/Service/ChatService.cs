@@ -66,7 +66,7 @@ namespace MamaFit.Services.Service
 
             return _mapper.Map<ChatRoomResponseDto>(newRoom);
         }
-
+        
         public async Task<List<ChatMessageResponseDto>> GetChatHistoryAsync(string chatRoomId, int page, int pageSize)
         {
             var chatHistory = await _unitOfWork.ChatRepository.GetChatHistoryAsync(chatRoomId, page, pageSize);

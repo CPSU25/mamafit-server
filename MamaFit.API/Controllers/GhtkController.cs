@@ -26,6 +26,22 @@ public class GhtkController : ControllerBase
         return Ok(result);
     }
     
+    [HttpGet("ghtk/print-label/{trackingOrderCode}")]
+    public async Task<IActionResult> PrintLabel(
+        string trackingOrderCode, 
+        [FromQuery] string? original = null,
+        [FromQuery(Name = "paper_size")] string? paperSize = null)
+    {
+        var fileBytes = await _ghtkService.PrintGhtkLabelAsync(trackingOrderCode, original, paperSize);
+        if (fileBytes == null)
+            return NotFound("Không tìm thấy file PDF");
+
+        // Đặt tên file tải về, ví dụ dùng trackingOrderCode
+        var fileName = $"GHTK_Label_{trackingOrderCode}.pdf";
+
+        return File(fileBytes, "application/pdf", fileName);
+    }
+
     [HttpPost("ghtk-create-cancel-order/{orderId}")]
     public async Task<IActionResult> CreateAndCancelOrder([FromRoute] string orderId)
     {

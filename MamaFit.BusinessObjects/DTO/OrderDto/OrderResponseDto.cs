@@ -10,7 +10,7 @@ public class OrderResponseDto : OrderBaseDto
     public string Id { get; set; }
     public string? AddressId { get; set; } 
     public string? Code { get; set; }
-    public string? GhtkLabel { get; set; }
+    public string? TrackingOrderCode { get; set; }
     public decimal? DiscountSubtotal { get; set; }
     public decimal? DepositSubtotal { get; set; }
     public decimal? RemainingBalance { get; set; }

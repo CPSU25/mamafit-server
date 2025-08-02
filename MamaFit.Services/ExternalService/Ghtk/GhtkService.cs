@@ -181,7 +181,7 @@ public class GhtkService : IGhtkService
         {
             var successResp = JsonConvert.DeserializeObject<GhtkOrderSubmitSuccessResponse>(responseBody);
             var label = successResp?.Order?.Label;
-            order.GhtkLabel = label;
+            order.TrackingOrderCode = label;
             await _unitOfWork.OrderRepository.UpdateAsync(order);
             await _unitOfWork.SaveChangesAsync();
             if (successResp?.Order != null)
@@ -246,6 +246,30 @@ public class GhtkService : IGhtkService
         var response = await httpClient.GetAsync(url);
         var content = await response.Content.ReadAsStringAsync();
         return JsonConvert.DeserializeObject<GhtkAddressLevel4Response>(content);
+    }
+
+    public async Task<byte[]?> PrintGhtkLabelAsync(
+        string trackingOrderCode, 
+        string? original = null, 
+        string? paperSize = null)
+    {
+        var httpClient = _httpClientFactory.CreateClient("GhtkClient");
+
+        // Xây dựng URL với tham số truyền vào
+        var url = $"/services/label/{trackingOrderCode}";
+        var paramList = new List<string>();
+        if (!string.IsNullOrEmpty(original))
+            paramList.Add($"original={original}");
+        if (!string.IsNullOrEmpty(paperSize))
+            paramList.Add($"paper_size={paperSize}");
+        if (paramList.Any())
+            url += "?" + string.Join("&", paramList);
+
+        // Gửi GET, nhận PDF dạng binary
+        var response = await httpClient.GetAsync(url);
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadAsByteArrayAsync();
     }
 
     public async Task<GhtkListPickAddressResponse?> GetListPickAddressAsync()

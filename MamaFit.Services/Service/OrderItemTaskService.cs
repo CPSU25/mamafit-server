@@ -149,11 +149,6 @@ public class OrderItemTaskService : IOrderItemTaskService
                 return;
             }
         }
-        if(request.Status == OrderItemTaskStatus.PASS || request.Status == OrderItemTaskStatus.FAIL)
-        {
-            var progress = await _milestoneService.GetMilestoneByOrderItemId(orderItemId);
-            var qcProgress = progress.Where(x => x.Milestone.ApplyFor.Contains(ItemType.PRESET));
-        }
     }
 
     private string GetCurrentUserId()

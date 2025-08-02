@@ -4,6 +4,7 @@
     {
         Text,
         Image,
-        File
+        File,
+        JSON
     }
 }

@@ -18,7 +18,7 @@ public class MeasurementResponseDto
     public float Waist { get; set; }
     public float LegLength { get; set; }
     public float Hip { get; set; }
-    public bool IsLocked { get; set; } = false;
+    public bool IsLocked { get; set; }
     public string? CreatedBy { get; set; }
     public string? UpdatedBy { get; set; }
     public DateTime CreatedAt { get; set; }

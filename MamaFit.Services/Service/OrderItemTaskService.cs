@@ -1,15 +1,20 @@
 ﻿using AutoMapper;
+using MamaFit.BusinessObjects.DTO.ChatMessageDto;
 using MamaFit.BusinessObjects.DTO.MaternityDressTaskDto;
 using MamaFit.BusinessObjects.DTO.MeasurementDto;
 using MamaFit.BusinessObjects.DTO.MilestoneDto;
+using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.DTO.OrderItemTaskDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Interface;
+using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.Interface;
+using MamaFit.Services.Hubs;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SignalR;
 
 namespace MamaFit.Services.Service;
 
@@ -21,8 +26,18 @@ public class OrderItemTaskService : IOrderItemTaskService
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMilestoneService _milestoneService;
+    private readonly ICacheService _cacheService;
+    private readonly IChatService _chatService;
+    private readonly INotificationService _notificationService;
+    private readonly IHubContext<ChatHub> _chatHubContext;
+    private readonly IHubContext<NotificationHub> _notificationHubContext;
 
-    public OrderItemTaskService(IOrderItemTaskRepository repo, IMapper mapper, IValidationService validation, IHttpContextAccessor contextAccessor, IUnitOfWork unitOfWork, IMilestoneService milestoneService)
+    public OrderItemTaskService(IOrderItemTaskRepository repo, IMapper mapper, IValidationService validation,
+        IHttpContextAccessor contextAccessor, IUnitOfWork unitOfWork, IMilestoneService milestoneService,
+        IChatService chatService, INotificationService notificationService,
+        IHubContext<ChatHub> chatHubContext, IHubContext<NotificationHub> notificationHubContext,
+        ICacheService cacheService)
+
     {
         _repo = repo;
         _mapper = mapper;
@@ -30,6 +45,11 @@ public class OrderItemTaskService : IOrderItemTaskService
         _contextAccessor = contextAccessor;
         _unitOfWork = unitOfWork;
         _milestoneService = milestoneService;
+        _chatService = chatService;
+        _notificationService = notificationService;
+        _chatHubContext = chatHubContext;
+        _notificationHubContext = notificationHubContext;
+        _cacheService = cacheService;
     }
 
     public async Task<List<OrderItemTaskGetByTokenResponse>> GetTasksByAssignedStaffAsync()
@@ -39,42 +59,42 @@ public class OrderItemTaskService : IOrderItemTaskService
         _validation.CheckNotFound(orderItemTasks, "No tasks found for the assigned staff");
 
         var groupedByOrderItem = orderItemTasks
-        .Where(x => x.OrderItem != null)
-        .GroupBy(x => x.OrderItem.Id)
-        .Select(orderGroup =>
-        {
-            var representative = orderGroup.First();
-
-            var milestoneGroups = orderGroup
-                .Where(x => x.MaternityDressTask != null && x.MaternityDressTask.Milestone != null)
-                .GroupBy(x => x.MaternityDressTask.Milestone.Id)
-                .Select(milestoneGroup =>
-                {
-                    var milestoneRep = milestoneGroup.First().MaternityDressTask.Milestone;
-
-                    return new MilestoneGetByIdOrderTaskResponseDto
-                    {
-                        Name = milestoneRep.Name,
-                        Description = milestoneRep.Description,
-                        ApplyFor = milestoneRep.ApplyFor,
-                        SequenceOrder = milestoneRep.SequenceOrder,
-                        MaternityDressTasks = milestoneGroup
-                            .Select(x => _mapper.Map<MaternityDressTaskOrderTaskResponseDto>(x.MaternityDressTask))
-                            .ToList()
-                    };
-                })
-                .ToList();
-
-            return new OrderItemTaskGetByTokenResponse
+            .Where(x => x.OrderItem != null)
+            .GroupBy(x => x.OrderItem.Id)
+            .Select(orderGroup =>
             {
-                OrderItem = _mapper.Map<OrderItemResponseDto>(representative.OrderItem),
-                AddressId = representative.OrderItem.Order.AddressId,
-                Measurement = _mapper.Map<MeasurementResponseDto>(representative.OrderItem.Order.Measurement),
-                OrderCode = representative.OrderItem.Order.Code,
-                Milestones = milestoneGroups
-            };
-        })
-        .ToList();
+                var representative = orderGroup.First();
+
+                var milestoneGroups = orderGroup
+                    .Where(x => x.MaternityDressTask != null && x.MaternityDressTask.Milestone != null)
+                    .GroupBy(x => x.MaternityDressTask.Milestone.Id)
+                    .Select(milestoneGroup =>
+                    {
+                        var milestoneRep = milestoneGroup.First().MaternityDressTask.Milestone;
+
+                        return new MilestoneGetByIdOrderTaskResponseDto
+                        {
+                            Name = milestoneRep.Name,
+                            Description = milestoneRep.Description,
+                            ApplyFor = milestoneRep.ApplyFor,
+                            SequenceOrder = milestoneRep.SequenceOrder,
+                            MaternityDressTasks = milestoneGroup
+                                .Select(x => _mapper.Map<MaternityDressTaskOrderTaskResponseDto>(x.MaternityDressTask))
+                                .ToList()
+                        };
+                    })
+                    .ToList();
+
+                return new OrderItemTaskGetByTokenResponse
+                {
+                    OrderItem = _mapper.Map<OrderItemResponseDto>(representative.OrderItem),
+                    AddressId = representative.OrderItem.Order.AddressId,
+                    Measurement = _mapper.Map<MeasurementResponseDto>(representative.OrderItem.Order.Measurement),
+                    OrderCode = representative.OrderItem.Order.Code,
+                    Milestones = milestoneGroups
+                };
+            })
+            .ToList();
 
         return groupedByOrderItem;
     }
@@ -90,6 +110,7 @@ public class OrderItemTaskService : IOrderItemTaskService
 
     public async Task UpdateStatusAsync(string dressTaskId, string orderItemId, OrderItemTaskUpdateRequestDto request)
     {
+        var cacheKey = "MilestoneAchiveOrderItemResponseDto";
         var task = await _repo.GetByIdAsync(dressTaskId, orderItemId);
         _validation.CheckNotFound(task, "Order item task not found");
 
@@ -97,65 +118,135 @@ public class OrderItemTaskService : IOrderItemTaskService
         task.Status = request.Status;
         task.Image = request.Image;
 
+        await _repo.UpdateAsync(task);
+        await _cacheService.RemoveByPrefixAsync(cacheKey);
+
+        var orderItem = await _unitOfWork.OrderItemRepository.GetDetailById(orderItemId);
+        var order = task.OrderItem.Order;
         if (request.Status == OrderItemTaskStatus.IN_PROGRESS)
         {
-            if (task.MaternityDressTask!.Milestone!.ApplyFor!.Contains(ItemType.DESIGN_REQUEST))
+            if (orderItem.ItemType == ItemType.DESIGN_REQUEST)
             {
-                task.OrderItem!.Order!.Status = OrderStatus.IN_DESIGN;
-
-                await _repo.UpdateAsync(task);
-                return;
+                task.OrderItem.Order.Status = OrderStatus.IN_DESIGN;
+                await SendMessageAndNoti(task);
             }
-            task.OrderItem!.Order!.Status = OrderStatus.IN_PRODUCTION;
+
+            if (orderItem.ItemType == ItemType.PRESET)
+            {
+                task.OrderItem.Order.Status = OrderStatus.IN_PRODUCTION;
+            }
+
+            await _unitOfWork.OrderRepository.UpdateAsync(task.OrderItem.Order);
+            await _unitOfWork.SaveChangesAsync();
+            return;
         }
 
         if (request.Status == OrderItemTaskStatus.DONE)
         {
-            var applyFor = task.MaternityDressTask!.Milestone!.ApplyFor!;
-            bool hasPreset = applyFor.Contains(ItemType.PRESET);
-            bool hasAddon = applyFor.Contains(ItemType.ADD_ON);
-
-            if (hasPreset)
+            if (orderItem.ItemType == ItemType.DESIGN_REQUEST)
             {
-                var progressList = await _milestoneService.GetMilestoneByOrderItemId(orderItemId);
+                order.Status = OrderStatus.COMPLETED;
+            }
 
-                bool isCurrentMilestoneDone = progressList.Any(x =>
-                    x.Milestone.Id == task.MaternityDressTask.MilestoneId &&
-                    x.IsDone &&
-                    x.Progress == 100
-                );
-
-                if (!isCurrentMilestoneDone) return;
-
-                if (hasAddon)
+            if (orderItem.ItemType == ItemType.PRESET)
+            {
+                var progress = await _milestoneService.GetMilestoneByOrderItemId(orderItemId);
+                var presetProgress = progress.Where(x => x.Milestone.ApplyFor.Contains(ItemType.PRESET));
+                if (presetProgress.Any(x => x.Progress == 100 && x.IsDone))
                 {
-                    // Tìm milestone thuộc loại ADD_ON khác milestone hiện tại
-                    var addonMilestoneDone = progressList.Any(x =>
-                        x.Milestone.Id != task.MaternityDressTask.MilestoneId &&
-                        x.Milestone.ApplyFor.Contains(ItemType.ADD_ON) &&
-                        x.IsDone &&
-                        x.Progress == 100
-                    );
-
-                    if (!addonMilestoneDone) return;
+                    var hasAddOn = progress.Where(x => x.Milestone.ApplyFor.Contains(ItemType.ADD_ON));
+                    if (hasAddOn.Any())
+                    {
+                        if (hasAddOn.Any(x => x.Progress == 100 && x.IsDone))
+                        {
+                            order.Status = OrderStatus.IN_QC;
+                        }
+                    }
+                    else
+                    {
+                        order.Status = OrderStatus.IN_QC;
+                    }
                 }
 
-                // Cả milestone hiện tại (PRESET) và milestone ADD_ON (nếu có) đều đạt yêu cầu
-                task.OrderItem!.Order!.Status = OrderStatus.IN_QC;
-                await _repo.UpdateAsync(task);
+                await _unitOfWork.OrderRepository.UpdateAsync(order);
+                await _unitOfWork.SaveChangesAsync();
                 return;
             }
         }
-        else if (task.MaternityDressTask!.Milestone.ApplyFor!.Contains(ItemType.DESIGN_REQUEST))
-        {
-            task.OrderItem!.Order!.Status = OrderStatus.COMPLETED;
-        }
-        await _repo.UpdateAsync(task);
-        return;
     }
 
     private string GetCurrentUserId()
     {
         return _contextAccessor.HttpContext.User.FindFirst("userId").Value ?? "System";
+    }
+
+    private async Task SendMessageAndNoti(OrderItemTask task)
+    {
+        var designerId = GetCurrentUserId();
+        var customerId = task.OrderItem!.Order!.UserId;
+
+        if (!string.IsNullOrEmpty(customerId) && !string.IsNullOrEmpty(designerId))
+        {
+            try
+            {
+                // Tạo chat room giữa designer và khách hàng
+                var chatRoom = await _chatService.CreateChatRoomAsync(designerId, customerId);
+
+                // Gửi tin nhắn tự động từ designer đến customer
+                var welcomeMessage = new ChatMessageCreateDto()
+                {
+                    SenderId = designerId,
+                    ChatRoomId = chatRoom.Id,
+                    Message = "Xin chào, tôi có nhiệm vụ thiết kế váy cho bạn, bạn hãy nhắn lại với tôi nhé",
+                    Type = MessageType.Text
+                };
+
+                var sentMessage = await _chatService.CreateChatMessageAsync(welcomeMessage);
+
+                // Gửi tin nhắn đến customer qua SignalR
+                if (sentMessage != null)
+                {
+                    await _chatHubContext.Clients.Group(chatRoom.Id).SendAsync("ReceiveMessage", new
+                    {
+                        id = sentMessage.Id,
+                        message = sentMessage.Message,
+                        senderId = sentMessage.SenderId,
+                        senderName = sentMessage.SenderName,
+                        senderAvatar = sentMessage.SenderAvatar,
+                        chatRoomId = sentMessage.ChatRoomId,
+                        type = sentMessage.Type,
+                        messageTimestamp = sentMessage.MessageTimestamp.ToString("O")
+                    });
+                }
+
+                // Gửi thông báo đến khách hàng qua SignalR
+                await _chatHubContext.Clients.User(customerId)
+                    .SendAsync("InvitedToRoom", chatRoom.Id);
+
+                // Tạo và gửi notification
+                await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto()
+                {
+                    ReceiverId = customerId,
+                    NotificationTitle = "Designer đã bắt đầu làm việc trên thiết kế của bạn",
+                    NotificationContent =
+                        $"Designer đã bắt đầu xử lý yêu cầu thiết kế của bạn. Bạn có thể trò chuyện trực tiếp với designer để thảo luận chi tiết.",
+                    Type = NotificationType.ORDER_PROGRESS,
+                    ActionUrl = $"/chat/{chatRoom.Id}",
+                    Metadata = new Dictionary<string, string>
+                    {
+                        { "orderId", task.OrderItem.Order.Id },
+                        { "orderItemId", task.OrderItemId! },
+                        { "dressTaskId", task.MaternityDressTaskId! },
+                        { "chatRoomId", chatRoom.Id }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                // Log error nhưng không dừng việc update task
+                // Có thể log error tùy theo hệ thống logging của bạn
+                Console.WriteLine($"Error creating chat room or sending notification: {ex.Message}");
+            }
+        }
     }
 }

@@ -30,6 +30,7 @@ public class MeasurementDiaryRepository : GenericRepository<MeasurementDiary>, I
     public async Task<PaginatedList<MeasurementDiary>> GetByUserIdAsync(int index, int pageSize, string userId, string? nameSearch)
     {
         var query = _dbSet
+            .Include(x => x.Measurements).ThenInclude(x => x.Orders)
             .Where(x => x.UserId == userId && !x.IsDeleted);
 
         if (!string.IsNullOrWhiteSpace(nameSearch))

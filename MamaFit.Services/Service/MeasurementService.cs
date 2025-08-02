@@ -138,11 +138,6 @@ public class MeasurementService : IMeasurementService
         _validation.CheckNotFound(measurement, $"Measurement with id: {id} is not found");
 
         var response = _mapper.Map<MeasurementResponseDto>(measurement);
-
-        if (measurement.Orders.Any())
-        {
-            response.IsLocked = true;
-        }
         return response;
     }
 

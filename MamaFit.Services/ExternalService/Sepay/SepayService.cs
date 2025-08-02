@@ -5,6 +5,7 @@ using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.DTO.SepayDto;
+using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Helper;
 using MamaFit.Repositories.Implement;
@@ -108,6 +109,8 @@ public class SepayService : ISepayService
                     Type = NotificationType.PAYMENT,
                     ReceiverId = order.UserId
                 });
+
+                await AssignTasksForOrder(order);
             }
             else if (order.PaymentStatus == PaymentStatus.PAID_DEPOSIT)
             {
@@ -153,38 +156,8 @@ public class SepayService : ISepayService
                 Type = NotificationType.PAYMENT,
                 ReceiverId = order.UserId
             });
+            await AssignTasksForOrder(order);
         }
-
-        var milestoneList = await _unitOfWork.MilestoneRepository.GetAllAsync();
-
-        var assignRequests = order.OrderItems.Select(orderItem =>
-        {
-            var matchingMilestones = milestoneList
-                .Where(m => m.ApplyFor!.Contains((ItemType)orderItem.ItemType!))
-                .Select(m => m.Id)
-                .ToList();
-
-            if (orderItem.OrderItemAddOnOptions != null && orderItem.OrderItemAddOnOptions.Any())
-            {
-                var addOnMilestones = milestoneList
-                    .Where(m => m.ApplyFor!.Contains(ItemType.ADD_ON))
-                    .Select(m => m.Id);
-                matchingMilestones.AddRange(addOnMilestones);
-            }
-
-            return new AssignTaskToOrderItemRequestDto
-            {
-                OrderItemId = orderItem.Id,
-                MilestoneIds = matchingMilestones
-            };
-        }).ToList();
-
-        foreach (var assignRequest in assignRequests)
-        {
-            await _orderItemService.AssignTaskToOrderItemAsync(assignRequest);
-        }
-
-        await _cacheService.RemoveByPrefixAsync("MilestoneAchiveOrderItemResponseDto_");
     }
 
     public async Task<SepayQrResponse> CreatePaymentQrAsync(string orderId)
@@ -285,6 +258,40 @@ public class SepayService : ISepayService
         }
 
         return new string(result);
+    }
+
+    private async Task AssignTasksForOrder(Order order)
+    {
+        var milestoneList = await _unitOfWork.MilestoneRepository.GetAllAsync();
+
+        var assignRequests = order.OrderItems.Select(orderItem =>
+        {
+            var matchingMilestones = milestoneList
+                .Where(m => m.ApplyFor!.Contains((ItemType)orderItem.ItemType!))
+                .Select(m => m.Id)
+                .ToList();
+
+            if (orderItem.OrderItemAddOnOptions != null && orderItem.OrderItemAddOnOptions.Any())
+            {
+                var addOnMilestones = milestoneList
+                    .Where(m => m.ApplyFor!.Contains(ItemType.ADD_ON))
+                    .Select(m => m.Id);
+                matchingMilestones.AddRange(addOnMilestones);
+            }
+
+            return new AssignTaskToOrderItemRequestDto
+            {
+                OrderItemId = orderItem.Id,
+                MilestoneIds = matchingMilestones
+            };
+        }).ToList();
+
+        foreach (var assignRequest in assignRequests)
+        {
+            await _orderItemService.AssignTaskToOrderItemAsync(assignRequest);
+        }
+
+        await _cacheService.RemoveByPrefixAsync("MilestoneAchiveOrderItemResponseDto_");
     }
 
     private bool ValidateAuthHeader(string authHeader)

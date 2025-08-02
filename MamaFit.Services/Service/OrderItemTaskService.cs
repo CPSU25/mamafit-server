@@ -180,7 +180,7 @@ public class OrderItemTaskService : IOrderItemTaskService
                         if (packageProgress.Progress == 100 && packageProgress.IsDone)
                         {
                             order.Status = OrderStatus.AWAITING_DELIVERY;
-                            var deliveringProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).FirstOrDefault();
+                            var deliveringProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).FirstOrDefault();   
                             if (deliveringProgress.Progress == 100 && packageProgress.IsDone)
                                 order.Status = OrderStatus.DELIVERING;
                         }
@@ -302,4 +302,5 @@ public class OrderItemTaskService : IOrderItemTaskService
             }
         }
     }
+    
 }

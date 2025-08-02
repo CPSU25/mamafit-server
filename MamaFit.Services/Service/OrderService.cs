@@ -631,7 +631,7 @@ public class OrderService : IOrderService
 
         foreach (OrderStatus status in Enum.GetValues(typeof(OrderStatus)))
         {
-            int count = user.Orders.Count(x => x.Status == status);
+            int count = user.Orders.Count(x => x.Status == status && x.IsDeleted == false);
             var statusCount = new MyOrderStatusCount
             {
                 OrderStatus = status,

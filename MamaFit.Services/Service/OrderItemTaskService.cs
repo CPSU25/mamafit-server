@@ -15,6 +15,8 @@ using MamaFit.Services.Interface;
 using MamaFit.Services.Hubs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace MamaFit.Services.Service;
 
@@ -192,13 +194,28 @@ public class OrderItemTaskService : IOrderItemTaskService
                 // Tạo chat room giữa designer và khách hàng
                 var chatRoom = await _chatService.CreateChatRoomAsync(designerId, customerId);
 
-                // Gửi tin nhắn tự động từ designer đến customer
+                // Tạo object JSON đơn giản với 3 fields theo yêu cầu
+                var messageData = new
+                {
+                    messageContent = "Xin chào bạn tôi có nhiệm hay lắm!",
+                    OrderId = task.OrderItem.Order.Id,
+                    DesignRequestId = task.OrderItem.DesignRequest?.Id ?? ""
+                };
+
+                // Serialize JSON với options đúng để giữ Unicode
+                var jsonMessage = JsonSerializer.Serialize(messageData, new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                    WriteIndented = false
+                });
+
                 var welcomeMessage = new ChatMessageCreateDto()
                 {
                     SenderId = designerId,
                     ChatRoomId = chatRoom.Id,
-                    Message = "Xin chào, tôi có nhiệm vụ thiết kế váy cho bạn, bạn hãy nhắn lại với tôi nhé",
-                    Type = MessageType.Text
+                    Message = jsonMessage,
+                    Type = MessageType.JSON
                 };
 
                 var sentMessage = await _chatService.CreateChatMessageAsync(welcomeMessage);
@@ -243,8 +260,6 @@ public class OrderItemTaskService : IOrderItemTaskService
             }
             catch (Exception ex)
             {
-                // Log error nhưng không dừng việc update task
-                // Có thể log error tùy theo hệ thống logging của bạn
                 Console.WriteLine($"Error creating chat room or sending notification: {ex.Message}");
             }
         }

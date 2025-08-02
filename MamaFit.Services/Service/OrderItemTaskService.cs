@@ -11,8 +11,8 @@ using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Interface;
 using MamaFit.Services.ExternalService.Redis;
-using MamaFit.Services.Interface;
 using MamaFit.Services.Hubs;
+using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using System.Text.Json;
@@ -32,12 +32,11 @@ public class OrderItemTaskService : IOrderItemTaskService
     private readonly IChatService _chatService;
     private readonly INotificationService _notificationService;
     private readonly IHubContext<ChatHub> _chatHubContext;
-    private readonly IHubContext<NotificationHub> _notificationHubContext;
 
     public OrderItemTaskService(IOrderItemTaskRepository repo, IMapper mapper, IValidationService validation,
         IHttpContextAccessor contextAccessor, IUnitOfWork unitOfWork, IMilestoneService milestoneService,
         IChatService chatService, INotificationService notificationService,
-        IHubContext<ChatHub> chatHubContext, IHubContext<NotificationHub> notificationHubContext,
+        IHubContext<ChatHub> chatHubContext,
         ICacheService cacheService)
 
     {
@@ -50,7 +49,6 @@ public class OrderItemTaskService : IOrderItemTaskService
         _chatService = chatService;
         _notificationService = notificationService;
         _chatHubContext = chatHubContext;
-        _notificationHubContext = notificationHubContext;
         _cacheService = cacheService;
     }
 
@@ -124,7 +122,11 @@ public class OrderItemTaskService : IOrderItemTaskService
         await _cacheService.RemoveByPrefixAsync(cacheKey);
 
         var orderItem = await _unitOfWork.OrderItemRepository.GetDetailById(orderItemId);
-        var order = task.OrderItem.Order;
+        _validation.CheckNotFound(orderItem, $"OrderItem with id: {orderItemId} not found");
+
+        var order = task.OrderItem!.Order;
+        var progress = await _milestoneService.GetMilestoneByOrderItemId(orderItemId);
+
         if (request.Status == OrderItemTaskStatus.IN_PROGRESS)
         {
             if (orderItem.ItemType == ItemType.DESIGN_REQUEST)
@@ -135,10 +137,10 @@ public class OrderItemTaskService : IOrderItemTaskService
 
             if (orderItem.ItemType == ItemType.PRESET)
             {
-                task.OrderItem.Order.Status = OrderStatus.IN_PRODUCTION;
+                order.Status = OrderStatus.IN_PRODUCTION;
             }
 
-            await _unitOfWork.OrderRepository.UpdateAsync(task.OrderItem.Order);
+            await _unitOfWork.OrderRepository.UpdateAsync(order);
             await _unitOfWork.SaveChangesAsync();
             return;
         }
@@ -152,7 +154,6 @@ public class OrderItemTaskService : IOrderItemTaskService
 
             if (orderItem.ItemType == ItemType.PRESET)
             {
-                var progress = await _milestoneService.GetMilestoneByOrderItemId(orderItemId);
                 var presetProgress = progress.Where(x => x.Milestone.ApplyFor.Contains(ItemType.PRESET));
                 if (presetProgress.Any(x => x.Progress == 100 && x.IsDone))
                 {
@@ -161,19 +162,56 @@ public class OrderItemTaskService : IOrderItemTaskService
                     {
                         if (hasAddOn.Any(x => x.Progress == 100 && x.IsDone))
                         {
-                            order.Status = OrderStatus.IN_QC;
+                            var packageProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).Skip(1).FirstOrDefault();
+                            if (packageProgress.Progress == 100 && packageProgress.IsDone)
+                            {
+                                order.Status = OrderStatus.AWAITING_DELIVERY;
+                                var deliveringProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).FirstOrDefault();
+                                if (deliveringProgress.Progress == 100 && packageProgress.IsDone)
+                                    order.Status = OrderStatus.DELIVERING;
+                            }
+                            else
+                                order.Status = OrderStatus.IN_QC;
                         }
                     }
                     else
                     {
-                        order.Status = OrderStatus.IN_QC;
+                        var packageProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).Skip(1).FirstOrDefault();
+                        if (packageProgress.Progress == 100 && packageProgress.IsDone)
+                        {
+                            order.Status = OrderStatus.AWAITING_DELIVERY;
+                            var deliveringProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).FirstOrDefault();
+                            if (deliveringProgress.Progress == 100 && packageProgress.IsDone)
+                                order.Status = OrderStatus.DELIVERING;
+                        }
+                        else
+                            order.Status = OrderStatus.IN_QC;
                     }
                 }
-
                 await _unitOfWork.OrderRepository.UpdateAsync(order);
                 await _unitOfWork.SaveChangesAsync();
                 return;
             }
+        }
+
+        if (request.Status == OrderItemTaskStatus.PASS || request.Status == OrderItemTaskStatus.FAIL)
+        {
+            var keywordList = new[] { "quality check", "qc" };
+            var qcProgress = progress.Where(x => keywordList.Any(k => x.Milestone!.Name!.ToLower().Contains(k)));
+            if (qcProgress.Any(x => x.Progress == 100 && x.IsDone))
+            {
+                if (order.PaymentType == PaymentType.FULL && order.PaymentStatus == PaymentStatus.PAID_FULL)
+                {
+                    order.Status = OrderStatus.PACKAGING;
+                }
+                if (order.PaymentType == PaymentType.DEPOSIT && order.PaymentStatus == PaymentStatus.PAID_DEPOSIT)
+                {
+                    order.Status = OrderStatus.AWAITING_PAID_REST;
+                }
+            }
+
+            await _unitOfWork.OrderRepository.UpdateAsync(order);
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 

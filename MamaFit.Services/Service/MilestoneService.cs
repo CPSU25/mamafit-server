@@ -86,7 +86,7 @@ namespace MamaFit.Services.Service
                 var totalTaskCount = milestone.MaternityDressTasks.Count;
                 var doneTaskCount = milestone.MaternityDressTasks
                     .Count(x => x.OrderItemTasks.Any(t =>
-                        t.OrderItemId == orderItemId && t.Status == OrderItemTaskStatus.DONE));
+                        t.OrderItemId == orderItemId && t.Status == OrderItemTaskStatus.DONE || t.Status == OrderItemTaskStatus.PASS ));
 
                 float progress = totalTaskCount == 0 ? 0 : (float)doneTaskCount / totalTaskCount * 100;
 

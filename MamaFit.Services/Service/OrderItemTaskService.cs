@@ -8,6 +8,7 @@ using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Interface;
+using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
 
@@ -21,8 +22,9 @@ public class OrderItemTaskService : IOrderItemTaskService
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMilestoneService _milestoneService;
+    private readonly ICacheService _cacheService;
 
-    public OrderItemTaskService(IOrderItemTaskRepository repo, IMapper mapper, IValidationService validation, IHttpContextAccessor contextAccessor, IUnitOfWork unitOfWork, IMilestoneService milestoneService)
+    public OrderItemTaskService(IOrderItemTaskRepository repo, IMapper mapper, IValidationService validation, IHttpContextAccessor contextAccessor, IUnitOfWork unitOfWork, IMilestoneService milestoneService, ICacheService cacheService)
     {
         _repo = repo;
         _mapper = mapper;
@@ -30,6 +32,7 @@ public class OrderItemTaskService : IOrderItemTaskService
         _contextAccessor = contextAccessor;
         _unitOfWork = unitOfWork;
         _milestoneService = milestoneService;
+        _cacheService = cacheService;
     }
 
     public async Task<List<OrderItemTaskGetByTokenResponse>> GetTasksByAssignedStaffAsync()
@@ -90,6 +93,7 @@ public class OrderItemTaskService : IOrderItemTaskService
 
     public async Task UpdateStatusAsync(string dressTaskId, string orderItemId, OrderItemTaskUpdateRequestDto request)
     {
+        var cacheKey = "MilestoneAchiveOrderItemResponseDto";
         var task = await _repo.GetByIdAsync(dressTaskId, orderItemId);
         _validation.CheckNotFound(task, "Order item task not found");
 
@@ -97,61 +101,59 @@ public class OrderItemTaskService : IOrderItemTaskService
         task.Status = request.Status;
         task.Image = request.Image;
 
+        await _repo.UpdateAsync(task);
+        await _cacheService.RemoveByPrefixAsync(cacheKey);
+
+        var orderItem = await _unitOfWork.OrderItemRepository.GetDetailById(orderItemId);
+        var order = task.OrderItem.Order;
         if (request.Status == OrderItemTaskStatus.IN_PROGRESS)
         {
-            if (task.MaternityDressTask!.Milestone!.ApplyFor!.Contains(ItemType.DESIGN_REQUEST))
+            if(orderItem.ItemType == ItemType.DESIGN_REQUEST)
             {
-                task.OrderItem!.Order!.Status = OrderStatus.IN_DESIGN;
-
-                await _repo.UpdateAsync(task);
-                return;
+                task.OrderItem.Order.Status = OrderStatus.IN_DESIGN;
             }
-            task.OrderItem!.Order!.Status = OrderStatus.IN_PRODUCTION;
-        }
-
-        if (request.Status == OrderItemTaskStatus.DONE)
-        {
-            var applyFor = task.MaternityDressTask!.Milestone!.ApplyFor!;
-            bool hasPreset = applyFor.Contains(ItemType.PRESET);
-            bool hasAddon = applyFor.Contains(ItemType.ADD_ON);
-
-            if (hasPreset)
+            if(orderItem.ItemType == ItemType.PRESET)
             {
-                var progressList = await _milestoneService.GetMilestoneByOrderItemId(orderItemId);
-
-                bool isCurrentMilestoneDone = progressList.Any(x =>
-                    x.Milestone.Id == task.MaternityDressTask.MilestoneId &&
-                    x.IsDone &&
-                    x.Progress == 100
-                );
-
-                if (!isCurrentMilestoneDone) return;
-
-                if (hasAddon)
+                task.OrderItem.Order.Status = OrderStatus.IN_PRODUCTION;
+            }
+            await _unitOfWork.OrderRepository.UpdateAsync(task.OrderItem.Order);
+            await _unitOfWork.SaveChangesAsync();
+            return;
+        }
+        if(request.Status == OrderItemTaskStatus.DONE)
+        {
+            if(orderItem.ItemType == ItemType.DESIGN_REQUEST)
+            {
+                order.Status = OrderStatus.COMPLETED;
+            }
+            if(orderItem.ItemType== ItemType.PRESET)
+            {
+                var progress = await _milestoneService.GetMilestoneByOrderItemId(orderItemId);
+                var presetProgress = progress.Where(x => x.Milestone.ApplyFor.Contains(ItemType.PRESET));
+                if(presetProgress.Any(x => x.Progress == 100 && x.IsDone))
                 {
-                    // Tìm milestone thuộc loại ADD_ON khác milestone hiện tại
-                    var addonMilestoneDone = progressList.Any(x =>
-                        x.Milestone.Id != task.MaternityDressTask.MilestoneId &&
-                        x.Milestone.ApplyFor.Contains(ItemType.ADD_ON) &&
-                        x.IsDone &&
-                        x.Progress == 100
-                    );
-
-                    if (!addonMilestoneDone) return;
+                    var hasAddOn = progress.Where(x => x.Milestone.ApplyFor.Contains(ItemType.ADD_ON));
+                    if (hasAddOn.Any())
+                    {
+                        if(hasAddOn.Any(x => x.Progress == 100 && x.IsDone)){
+                            order.Status = OrderStatus.IN_QC;
+                        }
+                    }
+                    else
+                    {
+                        order.Status = OrderStatus.IN_QC;
+                    }
                 }
-
-                // Cả milestone hiện tại (PRESET) và milestone ADD_ON (nếu có) đều đạt yêu cầu
-                task.OrderItem!.Order!.Status = OrderStatus.IN_QC;
-                await _repo.UpdateAsync(task);
+                await _unitOfWork.OrderRepository.UpdateAsync(order);
+                await _unitOfWork.SaveChangesAsync();
                 return;
             }
         }
-        else if (task.MaternityDressTask!.Milestone.ApplyFor!.Contains(ItemType.DESIGN_REQUEST))
+        if(request.Status == OrderItemTaskStatus.PASS || request.Status == OrderItemTaskStatus.FAIL)
         {
-            task.OrderItem!.Order!.Status = OrderStatus.COMPLETED;
+            var progress = await _milestoneService.GetMilestoneByOrderItemId(orderItemId);
+            var qcProgress = progress.Where(x => x.Milestone.ApplyFor.Contains(ItemType.PRESET));
         }
-        await _repo.UpdateAsync(task);
-        return;
     }
 
     private string GetCurrentUserId()

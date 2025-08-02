@@ -13,7 +13,6 @@ namespace MamaFit.BusinessObjects.Entity
         public float? Fee { get; set; }
         public WarrantyRequestStatus? Status { get; set; }
         public int WarrantyRound { get; set; }
-
         
         //Navigation property
         public virtual ICollection<WarrantyHistory> WarrantyHistories { get; set; } = [];

@@ -1,6 +1,5 @@
 ﻿using MamaFit.BusinessObjects.DBContext;
 using MamaFit.Repositories.Interface;
-using MamaFit.Repositories.Interface.AI;
 
 namespace MamaFit.Repositories.Implement
 {
@@ -43,8 +42,6 @@ namespace MamaFit.Repositories.Implement
         public IAddOnOptionRepository AddOnOptionRepository { get; }
         public IPositionRepository PositionRepository { get; }
         public ISizeRepository SizeRepository { get; }
-        public IAIModelMetricsRepository AIModelMetricsRepository { get; }
-        public IAIPredictionHistoryRepository IaiPredictionHistoryRepository { get; }
 
         public UnitOfWork(ApplicationDbContext context,
             IUserRepository userRepository,
@@ -81,9 +78,7 @@ namespace MamaFit.Repositories.Implement
             IOrderItemTaskRepository orderItemTaskRepository,
             IAddOnOptionRepository addOnOptionRepository,
             IPositionRepository positionRepository,
-            ISizeRepository sizeRepository,
-            IAIModelMetricsRepository aiModelMetricsRepository,
-            IAIPredictionHistoryRepository iaiPredictionHistoryRepository)
+            ISizeRepository sizeRepository)
         {
             _context = context;
             UserRepository = userRepository;
@@ -121,8 +116,6 @@ namespace MamaFit.Repositories.Implement
             AddOnOptionRepository = addOnOptionRepository;
             PositionRepository = positionRepository;
             SizeRepository = sizeRepository;
-            AIModelMetricsRepository = aiModelMetricsRepository;
-            IaiPredictionHistoryRepository = iaiPredictionHistoryRepository;
         }
 
         public int SaveChanges()

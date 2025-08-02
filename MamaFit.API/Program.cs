@@ -11,7 +11,6 @@ using MamaFit.Services.ExternalService.CronJob;
 using MamaFit.Services.ExternalService.Filter;
 using MamaFit.Services.Validator;
 using NLog;
-using StackExchange.Redis;
 
 namespace MamaFit.API
 {

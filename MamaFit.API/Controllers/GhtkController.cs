@@ -27,9 +27,9 @@ public class GhtkController : ControllerBase
     }
     
     [HttpPost("ghtk-submit-order/{orderId}")]
-    public async Task<IActionResult> SubmitOrderExpress([FromRoute] string orderId, [FromBody] GhtkRecipentDto dto)
+    public async Task<IActionResult> SubmitOrderExpress([FromRoute] string orderId)
     {
-        var result = await _ghtkService.SubmitOrderExpressAsync(orderId, dto);
+        var result = await _ghtkService.SubmitOrderExpressAsync(orderId);
         if (!result.Success)
             return StatusCode(400, result);
         return Ok(result);

@@ -18,4 +18,9 @@ public interface IGhtkService
         string? address);
     Task<GhtkListPickAddressResponse?> GetListPickAddressAsync();
     Task<GhtkBaseResponse?> GetFeeAsync(GhtkFeeRequestDto dto);
+
+    Task<byte[]?> PrintGhtkLabelAsync(
+        string trackingOrderCode,
+        string? original = null,
+        string? paperSize = null);
 }

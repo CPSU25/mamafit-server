@@ -43,26 +43,45 @@ public class FlexibleAIMeasurementService : IAIMeasurementCalculationService
     {
         try
         {
-            if (_configuration.GetValue<bool>("AI:Providers:Groq:Enabled") &&
-                await _groqService.IsAvailable())
+            if (_configuration.GetValue<bool>("AI:Providers:Groq:Enabled"))
             {
-                _activeProvider = _groqService;
-                _logger.LogInformation("Using Groq for AI calculations");
+                try
+                {
+                    if (await _groqService.IsAvailable())
+                    {
+                        _activeProvider = _groqService;
+                        _logger.LogInformation("Using Groq for AI calculations");
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error checking Groq availability");
+                }
             }
-            else if (_configuration.GetValue<bool>("AI:Providers:Ollama:Enabled") &&
-                     await _ollamaService.IsAvailable())
+
+            if (_configuration.GetValue<bool>("AI:Providers:Ollama:Enabled"))
             {
-                _activeProvider = _ollamaService;
-                _logger.LogInformation("Using Ollama for AI calculations");
+                try
+                {
+                    if (await _ollamaService.IsAvailable())
+                    {
+                        _activeProvider = _ollamaService;
+                        _logger.LogInformation("Using Ollama for AI calculations");
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error checking Ollama availability");
+                }
             }
-            else
-            {
-                _logger.LogWarning("No AI provider available, will use calculator fallback");
-            }
+
+            _logger.LogWarning("No available AI provider");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error initializing AI provider");
+            _logger.LogError(ex, "Critical error initializing AI providers");
         }
     }
 
@@ -74,49 +93,66 @@ public class FlexibleAIMeasurementService : IAIMeasurementCalculationService
     {
         try
         {
-            var cacheKey = GenerateCacheKey(targetWeek, currentInput);
-            if (_cache.TryGetValue<MeasurementDto>(cacheKey, out var cached))
-            {
-                _logger.LogInformation("Returning cached AI calculation");
-                return cached;
-            }
-
             if (_activeProvider == null)
             {
-                _logger.LogWarning("No AI provider available");
-                return CalculateWithFallback(diary, currentInput, lastMeasurement, targetWeek);
+                await InitializeProvider();
+                
+                if (_activeProvider == null)
+                {
+                    return CalculateWithFallback(diary, currentInput, lastMeasurement, targetWeek);
+                }
             }
 
-            var prompt = FlexibleMeasurementPrompts.GetFlexibleCalculationPrompt(
-                diary, currentInput, lastMeasurement, targetWeek);
-
-            _logger.LogInformation($"Requesting AI calculation from {_activeProvider.GetProviderName()}");
-            var response = await _activeProvider.GenerateResponseAsync(prompt);
-
-            // Parse and validate
-            var measurements = ParseAIResponse(response);
-
-            if (measurements != null)
+            string? prompt = null;
+            try
             {
-                // Apply safety validations only
-                measurements = ApplySafetyValidations(measurements, diary, targetWeek);
-                measurements.WeekOfPregnancy = targetWeek;
+                prompt = FlexibleMeasurementPrompts.GetFlexibleCalculationPrompt(
+                    diary, currentInput, lastMeasurement, targetWeek);
 
-                // Cache for 1 hour
-                var cacheOptions = new MemoryCacheEntryOptions()
-                    .SetAbsoluteExpiration(TimeSpan.FromHours(1));
-                _cache.Set(cacheKey, measurements, cacheOptions);
+                _logger.LogInformation($"Requesting AI calculation from {_activeProvider.GetProviderName()}");
+                var response = await _activeProvider.GenerateResponseAsync(prompt);
+                var measurements = ParseAIResponse(response);
 
-                _logger.LogInformation($"AI calculation successful for week {targetWeek}");
-                return measurements;
+                if (measurements != null)
+                {
+                    return ApplySafetyValidations(measurements, diary, targetWeek);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error with {_activeProvider?.GetProviderName() ?? "active provider"}");
+                
+                if (_activeProvider is GroqService &&
+                    _configuration.GetValue<bool>("AI:Providers:Ollama:Enabled") &&
+                    !string.IsNullOrEmpty(prompt))
+                {
+                    try
+                    {
+                        if (await _ollamaService.IsAvailable())
+                        {
+                            _activeProvider = _ollamaService;
+                            
+                            var retryResponse = await _ollamaService.GenerateResponseAsync(prompt);
+                            var retryMeasurements = ParseAIResponse(retryResponse);
+
+                            if (retryMeasurements != null)
+                            {
+                                return ApplySafetyValidations(retryMeasurements, diary, targetWeek);
+                            }
+                        }
+                    }
+                    catch (Exception ollamaEx)
+                    {
+                        _logger.LogError(ollamaEx, "Failed to use Ollama as fallback provider");
+                    }
+                }
             }
             
-            _logger.LogWarning("Failed to parse AI response, using fallback");
             return CalculateWithFallback(diary, currentInput, lastMeasurement, targetWeek);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "AI calculation failed");
+            _logger.LogCritical(ex, "Unexpected error in AI calculation");
             return CalculateWithFallback(diary, currentInput, lastMeasurement, targetWeek);
         }
     }

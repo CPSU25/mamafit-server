@@ -110,6 +110,8 @@ jobs:
             echo "CONTENT_DELIVERY_KEY=${{ secrets.CONTENT_DELIVERY_KEY }}" >> .env
             echo "CONTENTFUL_ENTRY_ID=${{ secrets.CONTENTFUL_ENTRY_ID }}" >> .env
             echo "CONTENTFUL_SECRET_KEY=${{ secrets.CONTENTFUL_SECRET_KEY }}" >> .env
+            echo "GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}" >> .env
+            echo "Ollama_BaseUrl=http://ollama:11434" >> .env
             echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
             docker pull $IMAGE_NAME
             docker compose up -d --pull always --no-deps --force-recreate mamafit-api

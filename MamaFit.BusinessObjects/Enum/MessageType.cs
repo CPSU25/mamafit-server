@@ -5,6 +5,6 @@
         Text,
         Image,
         File,
-        JSON
+        Design_Request,
     }
 }

@@ -258,7 +258,7 @@ public class OrderItemTaskService : IOrderItemTaskService
                     SenderId = designerId,
                     ChatRoomId = chatRoom.Id,
                     Message = jsonMessage,
-                    Type = MessageType.JSON
+                    Type = MessageType.Design_Request
                 };
 
                 var sentMessage = await _chatService.CreateChatMessageAsync(welcomeMessage);

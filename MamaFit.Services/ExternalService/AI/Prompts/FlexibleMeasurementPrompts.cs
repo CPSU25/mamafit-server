@@ -17,7 +17,7 @@ You are an expert AI specializing in pregnancy body measurements and maternity c
 Your task is to calculate comprehensive body measurements for a pregnant woman.
 
 Patient Profile:
-- Age: {diary.Age ?? 25} years
+- Age: {diary.Age} years
 - Height: {diary.Height} cm
 - Pre-pregnancy weight: {diary.Weight} kg
 - Pre-pregnancy measurements:

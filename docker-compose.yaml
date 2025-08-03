@@ -46,6 +46,17 @@ services:
     networks:
       - default
 
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    networks:
+      - default
+    volumes:
+      - /data/compose/ollama:/root/.ollama
+
 networks:
   default:
     name: mamafit-network

@@ -8,12 +8,10 @@ using FluentValidation;
 using Hangfire;
 using MamaFit.Repositories.Helper;
 using MamaFit.Services.ExternalService.AI;
-using MamaFit.Services.ExternalService.AI.Interface;
 using MamaFit.Services.ExternalService.CronJob;
 using MamaFit.Services.ExternalService.Filter;
 using MamaFit.Services.Validator;
 using NLog;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace MamaFit.API
 {
@@ -28,10 +26,6 @@ namespace MamaFit.API
                 
                 builder.Logging.ClearProviders();
                 builder.Host.UseNLog();
-
-                builder.Logging.AddFilter("MamaFit.Services.ExternalService.AI", LogLevel.Debug);
-                builder.Logging.AddFilter("MamaFit.Services.Service.MeasurementService", LogLevel.Debug);
-                
                 builder.Services.AddCors(options =>
                 {
                     options.AddPolicy(name: CorsConstant.PolicyName,
@@ -69,12 +63,6 @@ namespace MamaFit.API
                         logger.Info($"AI Service Status at startup: {(isAvailable ? "Available" : "Not Available")}");
                     }
                 }
-
-// Log configuration
-                var aiConfig = app.Configuration.GetSection("AI");
-                logger.Info($"AI Configuration - Groq Enabled: {aiConfig["Providers:Groq:Enabled"]}");
-                logger.Info($"AI Configuration - Groq API Key Set: {!string.IsNullOrEmpty(aiConfig["Providers:Groq:ApiKey"])}");
-                logger.Info($"AI Configuration - Ollama Enabled: {aiConfig["Providers:Ollama:Enabled"]}");
                 // Configure the HTTP request pipeline.
                 if (app.Environment.IsDevelopment())
                 {

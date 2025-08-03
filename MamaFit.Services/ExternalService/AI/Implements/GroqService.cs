@@ -100,7 +100,6 @@ public class GroqService : ILLMProvider
             {
                 if (string.IsNullOrEmpty(_apiKey))
                 {
-                    _logger.LogWarning("Groq API key not configured");
                     return false;
                 }
 

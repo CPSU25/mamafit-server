@@ -114,7 +114,7 @@ jobs:
             echo "Ollama_BaseUrl=http://ollama:11434" >> .env
             echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
             docker pull $IMAGE_NAME
-            docker compose up -d --pull always --no-deps --force-recreate mamafit-api
+            docker compose up -d --pull always 
             docker ps -a | grep mamafit-api
 
   notify-success:

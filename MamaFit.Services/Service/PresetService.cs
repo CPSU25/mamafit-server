@@ -29,25 +29,33 @@ namespace MamaFit.Services.Service
             return _httpContextAccessor.HttpContext?.User.FindFirst("userId")?.Value ?? string.Empty;
         }
 
-        public async Task CreatePresetAsync(PresetCreateRequestDto request)
+        public async Task<string> CreatePresetAsync(PresetCreateRequestDto request)
         {
-            await _validationService.ValidateAndThrowAsync(request);
-
-            var style = await _unitOfWork.StyleRepository.GetByIdNotDeletedAsync(request.StyleId);
-            _validationService.CheckNotFound(style, $"Style with ID {request.StyleId} not found.");
-
             var user = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(GetCurrentUserId());
             _validationService.CheckNotFound(user, "User not found.");
 
-
-            var preset = _mapper.Map<Preset>(request);
-            var optionList = new List<ComponentOption>();
-            foreach (var optionId in request.ComponentOptionIds)
+            if (request.StyleId == null && request.ComponentOptionIds == null)
             {
-                var option = await _unitOfWork.ComponentOptionRepository.GetByIdNotDeletedAsync(optionId);
-                _validationService.CheckNotFound(option, $"Component option with ID {optionId} not found.");
+                var preset = _mapper.Map<Preset>(request);
+                preset.UserId = GetCurrentUserId();
 
-                preset.ComponentOptionPresets = new List<ComponentOptionPreset>
+                await _unitOfWork.PresetRepository.InsertAsync(preset);
+                await _unitOfWork.SaveChangesAsync();
+                return preset.Id;
+            }
+            else
+            {
+                var style = await _unitOfWork.StyleRepository.GetByIdNotDeletedAsync(request.StyleId);
+                _validationService.CheckNotFound(style, $"Style with ID {request.StyleId} not found.");
+
+                var preset = _mapper.Map<Preset>(request);
+                var optionList = new List<ComponentOption>();
+                foreach (var optionId in request.ComponentOptionIds)
+                {
+                    var option = await _unitOfWork.ComponentOptionRepository.GetByIdNotDeletedAsync(optionId);
+                    _validationService.CheckNotFound(option, $"Component option with ID {optionId} not found.");
+
+                    preset.ComponentOptionPresets = new List<ComponentOptionPreset>
                 {
                     new ComponentOptionPreset
                     {
@@ -57,12 +65,14 @@ namespace MamaFit.Services.Service
                         ComponentOptionsId = optionId
                     }
                 };
-            }
-            preset.UserId = GetCurrentUserId();
-            preset.Style = style;
+                }
+                preset.UserId = GetCurrentUserId();
+                preset.Style = style;
 
-            await _unitOfWork.PresetRepository.InsertAsync(preset);
-            await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.PresetRepository.InsertAsync(preset);
+                await _unitOfWork.SaveChangesAsync();
+                return preset.Id;
+            }
         }
 
         public async Task DeletePresetAsync(string id)

@@ -3,6 +3,7 @@
     public class PresetGetAllResponseDto : PresetBaseRequestDto
     {
         public string Id { get; set; } 
+        public string? Name { get; set; }
         public string? StyleId { get; set; }
         public string? StyleName { get; set; }
         public DateTime CreatedAt { get; set; }

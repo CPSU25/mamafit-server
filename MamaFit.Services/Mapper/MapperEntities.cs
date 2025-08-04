@@ -306,6 +306,7 @@ namespace MamaFit.Services.Mapper
 
             #region Preset Mapper
             CreateMap<Preset, PresetCreateRequestDto>().ReverseMap();
+            CreateMap<Preset, PresetCreateForDesignRequestDto>().ReverseMap();
             CreateMap<Preset, PresetUpdateRequestDto>().ReverseMap();
             CreateMap<Preset, PresetGetAllResponseDto>()
                 .ForMember(dest => dest.StyleName, otp => otp.MapFrom(src => src.Style!.Name))

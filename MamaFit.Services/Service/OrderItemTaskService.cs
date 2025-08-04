@@ -347,7 +347,7 @@ public class OrderItemTaskService : IOrderItemTaskService
                 // Tạo object JSON đơn giản với 3 fields theo yêu cầu
                 var messageData = new
                 {
-                    messageContent = "Xin chào bạn tôi có nhiệm hay lắm!",
+                    messageContent = "Xin chào bạn, tôi là nhân viên thiết kế đầm bầu của MamaFit, hôm nay tôi sẽ cùng bạn thiết kế chiếc đầm bầu thật đẹp nhé !!!",
                     OrderId = task.OrderItem.Order.Id,
                     DesignRequestId = task.OrderItem.DesignRequest?.Id ?? ""
                 };

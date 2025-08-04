@@ -80,13 +80,26 @@ namespace MamaFit.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] PresetCreateRequestDto requestDto)
         {
-            var presetId = await _presetService.CreatePresetAsync(requestDto);
+            await _presetService.CreatePresetAsync(requestDto);
+            return StatusCode(StatusCodes.Status201Created,
+                new ResponseModel<string>(
+                    StatusCodes.Status201Created,
+                    ApiCodes.CREATED,
+                    null,
+                    "Created preset successfully!"
+                ));
+        }
+
+        [HttpPost("design-request")]
+        public async Task<IActionResult> CreateForDesignRequest([FromBody] PresetCreateForDesignRequestDto requestDto)
+        {
+            var presetId = await _presetService.CreatePresetForDesignRequestAsync(requestDto);
             return StatusCode(StatusCodes.Status201Created,
                 new ResponseModel<string>(
                     StatusCodes.Status201Created,
                     ApiCodes.CREATED,
                     presetId,
-                    "Created preset successfully!"
+                    "Created preset for design request successfully!"
                 ));
         }
 

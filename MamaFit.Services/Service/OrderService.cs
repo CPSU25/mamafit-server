@@ -332,7 +332,6 @@ public class OrderService : IOrderService
             ItemType = ItemType.READY_TO_BUY,
             Price = d.Price,
             Quantity = request.OrderItems.First(i => i.MaternityDressDetailId == d.Id).Quantity,
-            WarrantyNumber = config.Fields.WarrantyTime,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
             CreatedBy = "System"
@@ -442,7 +441,6 @@ public class OrderService : IOrderService
                     },
                     ItemType = ItemType.DESIGN_REQUEST,
                     Price = (decimal)designFee!,
-                    WarrantyNumber = config!.Fields!.WarrantyTime,
                     Quantity = 1,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
@@ -575,7 +573,6 @@ public class OrderService : IOrderService
                 }).ToList(),
                 // Price = preset.ComponentOptionPresets.Sum(co => co.ComponentOption!.Price),
                 Price = preset.Price,
-                WarrantyNumber = config.Fields!.WarrantyTime,
                 Quantity = 1,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,

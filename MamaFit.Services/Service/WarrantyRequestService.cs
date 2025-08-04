@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MamaFit.BusinessObjects.DTO.WarrantyRequestDto;
+using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
@@ -27,10 +28,61 @@ namespace MamaFit.Services.Service
             _validationService = validationService;
         }
 
-        public Task CreateAsync(WarrantyRequestCreateDto warrantyRequestCreateDto)
+        public async Task CreateAsync(WarrantyRequestCreateDto warrantyRequestCreateDto)
         {
-            throw new NotImplementedException();
+            var oldOrderItem =
+                await _unitOfWork.OrderItemRepository.GetDetailById(warrantyRequestCreateDto.WarrantyOrderItemId);
+            _validationService.CheckNotFound(oldOrderItem, "Order item don't exist!");
+            
+            var oldOrder = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(oldOrderItem.OrderId);
+            _validationService.CheckNotFound(oldOrder, "Order don't exist!");
+            
+            var newOrder = new Order
+            {
+                UserId = oldOrder.UserId,
+                BranchId = oldOrder.BranchId,
+                Type = OrderType.WARRANTY,
+                Code = GenerateOrderCode(), 
+                Status = OrderStatus.CONFIRMED,
+                PaymentStatus = PaymentStatus.WARRANTY,
+                PaymentType = PaymentType.FULL,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                CreatedBy = "System"
+            };
+            await _unitOfWork.OrderRepository.InsertAsync(newOrder);
+            await _unitOfWork.SaveChangesAsync();
+            
+            var newOrderItem = new OrderItem
+            {
+                OrderId = newOrder.Id,
+                ParentOrderItemId = oldOrderItem.Id,
+                MaternityDressDetailId = oldOrderItem.MaternityDressDetailId,
+                PresetId = oldOrderItem.PresetId,
+                ItemType = ItemType.WARRANTY,
+                Price = oldOrderItem.Price, // hoặc = 0 nếu miễn phí bảo hành
+                Quantity = 1,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                CreatedBy = "System"
+            };
+            await _unitOfWork.OrderItemRepository.InsertAsync(newOrderItem);
+            await _unitOfWork.SaveChangesAsync();
+            
+            var warrantyRequest = new WarrantyRequest
+            {
+                WarrantyOrderItemId = oldOrderItem.Id,
+                Images = warrantyRequestCreateDto.Images,
+                Description = warrantyRequestCreateDto.Description,
+                Status = WarrantyRequestStatus.SUBMITTED,
+                WarrantyRound = (oldOrderItem.WarrantyRequests?.Count() ?? 0) + 1,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+            };
+            await _unitOfWork.WarrantyRequestRepository.InsertAsync(warrantyRequest);
+            await _unitOfWork.SaveChangesAsync();
         }
+
 
         public async Task DeleteAsync(string id)
         {
@@ -41,9 +93,11 @@ namespace MamaFit.Services.Service
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<PaginatedList<WarrantyRequestGetAllDto>> GetAllWarrantyRequestAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
+        public async Task<PaginatedList<WarrantyRequestGetAllDto>> GetAllWarrantyRequestAsync(int index, int pageSize,
+            string? search, EntitySortBy? sortBy)
         {
-            var warrantyRequests = await _unitOfWork.WarrantyRequestRepository.GetAllWarrantyRequestAsync(index, pageSize, search, sortBy);
+            var warrantyRequests =
+                await _unitOfWork.WarrantyRequestRepository.GetAllWarrantyRequestAsync(index, pageSize, search, sortBy);
 
             var result = _mapper.Map<List<WarrantyRequestGetAllDto>>(warrantyRequests.Items);
             return new PaginatedList<WarrantyRequestGetAllDto>(
@@ -69,6 +123,13 @@ namespace MamaFit.Services.Service
             _mapper.Map(warrantyRequestUpdateDto, warrantyRequest);
             await _unitOfWork.WarrantyRequestRepository.UpdateAsync(warrantyRequest);
             await _unitOfWork.SaveChangesAsync();
+        }
+        
+        private string GenerateOrderCode()
+        {
+            string prefix = "O";
+            string randomPart = new Random().Next(10000, 99999).ToString();
+            return $"{prefix}{randomPart}";
         }
     }
 }

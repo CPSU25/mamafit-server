@@ -614,6 +614,42 @@ public class OrderService : IOrderService
         return order.Id;
     }
 
+    public async Task UpdateReceivedOrderAsync(string id)
+    {
+        var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
+        _validation.CheckNotFound(order, "Order not found");
+
+        if (order.Status != OrderStatus.DELIVERING)
+        {
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                "Order is not in a state that can be received.");
+        }
+
+        order.Status = OrderStatus.COMPLETED;
+        order.ReceivedAt = DateTime.UtcNow;
+
+        await _unitOfWork.OrderRepository.UpdateAsync(order);
+        await _unitOfWork.SaveChangesAsync();
+    }
+    
+    public async Task UpdateCancelledOrderAsync(string id)
+    {
+        var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
+        _validation.CheckNotFound(order, "Order not found");
+
+        if (order.Status != OrderStatus.CREATED)
+        {
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                "Order is not in a state that can be cancelled.");
+        }
+        
+
+        order.Status = OrderStatus.CANCELLED;
+
+        await _unitOfWork.OrderRepository.UpdateAsync(order);
+        await _unitOfWork.SaveChangesAsync();
+    }
+    
     public async Task WebhookForContentfulWhenUpdateData(CmsServiceBaseDto request)
     {
         await _cacheService.SetAsync("cms:service:base", request, TimeSpan.FromDays(30));

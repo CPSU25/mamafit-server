@@ -14,15 +14,12 @@ namespace MamaFit.BusinessObjects.DTO.ChatMessageDto
         public bool IsRead { get; set; }
         public string ChatRoomId { get; set; } = string.Empty;
         public MessageType Type { get; set; } = MessageType.Text;
-        
-        /// <summary>
-        /// Automatically parse JSON message if Type is JSON. Returns parsed object with messageContent, OrderId, DesignRequestId
-        /// </summary>
+
         public object? ParsedData
         {
             get
             {
-                if (Type == MessageType.Design_Request && !string.IsNullOrEmpty(Message))
+                if ((Type == MessageType.Design_Request || Type == MessageType.Preset) && !string.IsNullOrEmpty(Message))
                 {
                     try
                     {
@@ -40,10 +37,7 @@ namespace MamaFit.BusinessObjects.DTO.ChatMessageDto
                 return null;
             }
         }
-        
-        /// <summary>
-        /// Get messageContent từ JSON parsed data
-        /// </summary>
+
         public string? MessageContent
         {
             get
@@ -55,10 +49,6 @@ namespace MamaFit.BusinessObjects.DTO.ChatMessageDto
                 return Type == MessageType.Design_Request ? null : Message;
             }
         }
-        
-        /// <summary>
-        /// Get OrderId từ JSON parsed data
-        /// </summary>
         public string? OrderId
         {
             get
@@ -70,10 +60,8 @@ namespace MamaFit.BusinessObjects.DTO.ChatMessageDto
                 return null;
             }
         }
-        
-        /// <summary>
-        /// Get DesignRequestId từ JSON parsed data
-        /// </summary>
+
+
         public string? DesignRequestId
         {
             get
@@ -85,10 +73,53 @@ namespace MamaFit.BusinessObjects.DTO.ChatMessageDto
                 return null;
             }
         }
-        
-        /// <summary>
-        /// Kiểm tra xem message có phải là JSON hợp lệ không
-        /// </summary>
-        public bool IsValidJson => Type == MessageType.Design_Request && ParsedData != null;
+
+
+        public List<string>? Images
+        {
+            get
+            {
+                if (ParsedData is JsonElement element && element.TryGetProperty("images", out var imagesElement) && imagesElement.ValueKind == JsonValueKind.Array)
+                {
+                    var imagesList = new List<string>();
+                    foreach (var imageElement in imagesElement.EnumerateArray())
+                    {
+                        var imageUrl = imageElement.GetString();
+                        if (!string.IsNullOrEmpty(imageUrl))
+                        {
+                            imagesList.Add(imageUrl);
+                        }
+                    }
+                    return imagesList;
+                }
+                return null;
+            }
+        }
+
+
+        public string? PresetId
+        {
+            get
+            {
+                // Nếu Type là PRESET và có ParsedData, lấy từ JSON
+                if (Type == MessageType.Preset)
+                {
+                    // Thử parse JSON trước
+                    if (ParsedData is JsonElement element && element.TryGetProperty("presetId", out var presetId))
+                    {
+                        return presetId.GetString();
+                    }
+                    // Nếu không phải JSON, Message chính là PresetId (fallback cho legacy)
+                    if (!string.IsNullOrEmpty(Message) && ParsedData == null)
+                    {
+                        return Message;
+                    }
+                }
+                return null;
+            }
+        }
+
+
+        public bool IsValidJson => (Type == MessageType.Design_Request || Type == MessageType.Preset) && ParsedData != null;
     }
 }

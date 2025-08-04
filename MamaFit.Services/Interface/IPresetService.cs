@@ -11,7 +11,7 @@ namespace MamaFit.Services.Interface
         public Task<PresetGetByIdResponseDto> GetDefaultPresetByStyleId(string styleId);
         public Task<List<PresetGetByIdResponseDto>> GetPresetByDesignRequestId(string designRequestId);
         public Task<List<PresetGetByIdResponseDto>> GetAllPresetByComponentOptionId(List<string> componentOptionIds);
-        Task CreatePresetAsync(PresetCreateRequestDto request);
+        Task<string> CreatePresetAsync(PresetCreateRequestDto request);
         Task UpdatePresetAsync(string id, PresetUpdateRequestDto request);
         Task DeletePresetAsync(string id);
     }

@@ -21,8 +21,9 @@ public class OrderItemService : IOrderItemService
     private readonly IValidationService _validation;
     private readonly IConfigService _configService;
     private readonly ICacheService _cacheService;
+    private readonly IOrderItemTaskService _orderItemTaskService;
 
-    public OrderItemService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation, IHttpContextAccessor httpContextAccessor, IConfigService configService, ICacheService cacheService)
+    public OrderItemService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation, IHttpContextAccessor httpContextAccessor, IConfigService configService, ICacheService cacheService, IOrderItemTaskService orderItemTaskService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -30,6 +31,7 @@ public class OrderItemService : IOrderItemService
         _httpContextAccessor = httpContextAccessor;
         _configService = configService;
         _cacheService = cacheService;
+        _orderItemTaskService = orderItemTaskService;
     }
 
     public async Task<PaginatedList<OrderItemResponseDto>> GetAllOrderItemsAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate)
@@ -214,7 +216,10 @@ public class OrderItemService : IOrderItemService
             if (orderItemTask.User == null)
                 throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, $"Order item task with order item id:{request.OrderItemId} and maternity dress task id:{task} is do not have a charger!!");
 
-            await _unitOfWork.OrderItemTaskRepository.UpdateOrderItemTaskStatusAsync(orderItemTask, request.Status);
+            await _orderItemTaskService.UpdateStatusAsync(task, request.OrderItemId, new OrderItemTaskUpdateRequestDto
+            {
+                Status = request.Status,
+            });
         }
 
         await _cacheService.RemoveByPrefixAsync(cacheKey);

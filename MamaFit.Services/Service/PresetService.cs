@@ -6,6 +6,10 @@ using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
+using MamaFit.Services.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using MamaFit.BusinessObjects.DTO.ChatMessageDto;
+using System.Text.Json;
 
 namespace MamaFit.Services.Service
 {
@@ -15,13 +19,17 @@ namespace MamaFit.Services.Service
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IValidationService _validationService;
+        private readonly IChatService _chatService;
+        private readonly IHubContext<ChatHub> _chatHubContext;
 
-        public PresetService(IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork, IMapper mapper, IValidationService validationService)
+        public PresetService(IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork, IMapper mapper, IValidationService validationService, IChatService chatService, IHubContext<ChatHub> chatHubContext)
         {
             _httpContextAccessor = httpContextAccessor;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _validationService = validationService;
+            _chatService = chatService;
+            _chatHubContext = chatHubContext;
         }
 
         private string GetCurrentUserId()
@@ -29,33 +37,24 @@ namespace MamaFit.Services.Service
             return _httpContextAccessor.HttpContext?.User.FindFirst("userId")?.Value ?? string.Empty;
         }
 
-        public async Task<string> CreatePresetAsync(PresetCreateRequestDto request)
+        public async Task CreatePresetAsync(PresetCreateRequestDto request)
         {
+            await _validationService.ValidateAndThrowAsync(request);
+            var style = await _unitOfWork.StyleRepository.GetByIdNotDeletedAsync(request.StyleId);
+            _validationService.CheckNotFound(style, $"Style with ID {request.StyleId} not found.");
+
             var user = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(GetCurrentUserId());
             _validationService.CheckNotFound(user, "User not found.");
 
-            if (request.StyleId == null && request.ComponentOptionIds == null)
+
+            var preset = _mapper.Map<Preset>(request);
+            var optionList = new List<ComponentOption>();
+            foreach (var optionId in request.ComponentOptionIds)
             {
-                var preset = _mapper.Map<Preset>(request);
-                preset.UserId = GetCurrentUserId();
+                var option = await _unitOfWork.ComponentOptionRepository.GetByIdNotDeletedAsync(optionId);
+                _validationService.CheckNotFound(option, $"Component option with ID {optionId} not found.");
 
-                await _unitOfWork.PresetRepository.InsertAsync(preset);
-                await _unitOfWork.SaveChangesAsync();
-                return preset.Id;
-            }
-            else
-            {
-                var style = await _unitOfWork.StyleRepository.GetByIdNotDeletedAsync(request.StyleId);
-                _validationService.CheckNotFound(style, $"Style with ID {request.StyleId} not found.");
-
-                var preset = _mapper.Map<Preset>(request);
-                var optionList = new List<ComponentOption>();
-                foreach (var optionId in request.ComponentOptionIds)
-                {
-                    var option = await _unitOfWork.ComponentOptionRepository.GetByIdNotDeletedAsync(optionId);
-                    _validationService.CheckNotFound(option, $"Component option with ID {optionId} not found.");
-
-                    preset.ComponentOptionPresets = new List<ComponentOptionPreset>
+                preset.ComponentOptionPresets = new List<ComponentOptionPreset>
                 {
                     new ComponentOptionPreset
                     {
@@ -65,15 +64,109 @@ namespace MamaFit.Services.Service
                         ComponentOptionsId = optionId
                     }
                 };
-                }
-                preset.UserId = GetCurrentUserId();
-                preset.Style = style;
+            }
+            preset.UserId = GetCurrentUserId();
+            preset.Style = style;
 
-                await _unitOfWork.PresetRepository.InsertAsync(preset);
-                await _unitOfWork.SaveChangesAsync();
-                return preset.Id;
+            await _unitOfWork.PresetRepository.InsertAsync(preset);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        public async Task<string> CreatePresetForDesignRequestAsync(PresetCreateForDesignRequestDto request)
+        {
+            await _validationService.ValidateAndThrowAsync(request);
+
+            var designerId = GetCurrentUserId();
+
+            var designRequest = await _unitOfWork.DesignRequestRepository.GetByIdNotDeletedAsync(request.DesignRequestId);
+            _validationService.CheckNotFound(designRequest, $"Design request with ID {request.DesignRequestId} not found.");
+
+
+
+            var user = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(designerId);
+            _validationService.CheckNotFound(user, "User not found.");
+
+            var preset = _mapper.Map<Preset>(request);
+            preset.UserId = designerId;
+            preset.DesignRequestId = request.DesignRequestId;
+            preset.DesignRequest = designRequest;
+
+            await _unitOfWork.PresetRepository.InsertAsync(preset);
+            await _unitOfWork.SaveChangesAsync();
+
+            if (designRequest != null)
+            {
+                await SendPresetToCustomer(preset, designRequest, request.OrderId);
+            }
+
+            return preset.Id;
+        }
+
+        private async Task SendPresetToCustomer(Preset preset, DesignRequest designRequest, string orderId)
+        {
+            try
+            {
+                var designerId = GetCurrentUserId();
+                var customerId = designRequest.UserId;
+
+
+                if (!string.IsNullOrEmpty(customerId) && !string.IsNullOrEmpty(designerId))
+                {
+                    var chatRoom = await _chatService.CreateChatRoomAsync(designerId, customerId);
+
+
+                    var presetData = new
+                    {
+                        presetId = preset.Id,
+                        orderId = orderId,
+                    };
+                    var jsonMessage = JsonSerializer.Serialize(presetData, new JsonSerializerOptions
+                    {
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                        WriteIndented = false
+                    });
+
+
+                    var messageDto = new ChatMessageCreateDto
+                    {
+                        SenderId = designerId,
+                        ChatRoomId = chatRoom.Id,
+                        Message = jsonMessage,
+                        Type = MessageType.Preset
+                    };
+
+                    var sentMessage = await _chatService.CreateChatMessageAsync(messageDto);
+
+                    if (sentMessage != null)
+                    {
+                        await _chatHubContext.Clients.Group(chatRoom.Id).SendAsync("ReceiveMessage", new
+                        {
+                            id = sentMessage.Id,
+                            message = sentMessage.Message,
+                            senderId = sentMessage.SenderId,
+                            senderName = sentMessage.SenderName,
+                            senderAvatar = sentMessage.SenderAvatar,
+                            chatRoomId = sentMessage.ChatRoomId,
+                            type = sentMessage.Type,
+                            messageTimestamp = sentMessage.MessageTimestamp.ToString("O")
+                        });
+                    }
+
+                    await _chatHubContext.Clients.User(customerId)
+                        .SendAsync("PresetReady", new
+                        {
+                            chatRoomId = chatRoom.Id,
+                            presetId = preset.Id,
+                            designRequestId = designRequest.Id,
+
+                        });
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending preset to customer: {ex.Message}");
             }
         }
+
 
         public async Task DeletePresetAsync(string id)
         {

@@ -20,6 +20,7 @@ namespace MamaFit.API
         public static async Task Main(string[] args)
         {
             var logger = LogManager.Setup().LoadConfigurationFromFile(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config")).GetCurrentClassLogger();
+            logger.Info($"================ APP STARTUP AT {DateTime.Now:yyyy-MM-dd HH:mm:ss} ================");
             try
             {
                 var builder = WebApplication.CreateBuilder(args);
@@ -54,15 +55,26 @@ namespace MamaFit.API
                 builder.Services.AddJwtAuthentication(builder.Configuration);
                 var app = builder.Build();
 
-                using (var scope = app.Services.CreateScope())
+                if (!app.Environment.IsDevelopment())
                 {
-                    var aiService = scope.ServiceProvider.GetService<IAIMeasurementCalculationService>();
-                    if (aiService != null)
+                    using (var scope = app.Services.CreateScope())
                     {
-                        var isAvailable = await aiService.IsAvailable();
-                        logger.Info($"AI Service Status at startup: {(isAvailable ? "Available" : "Not Available")}");
+                        var aiService = scope.ServiceProvider.GetService<IAIMeasurementCalculationService>();
+                        if (aiService != null)
+                        {
+                            try
+                            {
+                                var isAvailable = await aiService.IsAvailable();
+                                logger.Info($"AI Service Status at startup: {(isAvailable ? "Available" : "Not Available")}");
+                            }
+                            catch (Exception ex)
+                            {
+                                logger.Warn(ex, "AI Service check failed at startup");
+                            }
+                        }
                     }
                 }
+
                 // Configure the HTTP request pipeline.
                 if (app.Environment.IsDevelopment())
                 {

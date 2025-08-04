@@ -331,15 +331,17 @@ namespace MamaFit.API.DependencyInjection
 
         private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
         {
-            return HttpPolicyExtensions
-                .HandleTransientHttpError()
-                .OrResult(msg => !msg.IsSuccessStatusCode)
+            return Policy<HttpResponseMessage>
+                .Handle<HttpRequestException>()
+                .OrResult(msg =>
+                        ((int)msg.StatusCode >= 500 && (int)msg.StatusCode < 600) // chỉ retry 5xx
+                )
                 .WaitAndRetryAsync(
                     3,
                     retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                     onRetry: (outcome, timespan, retryCount, context) =>
                     {
-                        Console.WriteLine($"Retry {retryCount} after {timespan} seconds");
+                        Console.WriteLine($"Retry {retryCount} after {timespan} seconds, status={outcome.Result?.StatusCode}");
                     });
         }
 

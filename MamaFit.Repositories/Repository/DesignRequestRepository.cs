@@ -45,5 +45,12 @@ namespace MamaFit.Repositories.Repository
                 pageSize
             );
         }
+
+        public async Task<DesignRequest> GetDetailByIdAsync(string designRequestId)
+        {
+            var response = await _dbSet.Include(x => x.Presets).FirstOrDefaultAsync(x => x.Id == designRequestId);
+
+            return response;
+        }
     }
 }

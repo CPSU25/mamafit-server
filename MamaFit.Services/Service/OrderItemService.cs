@@ -71,7 +71,6 @@ public class OrderItemService : IOrderItemService
         _validation.CheckNotFound(maternityDressDetail, "Maternity dress detail is not exist!");
 
         var orderItem = _mapper.Map<OrderItem>(model);
-        orderItem.WarrantyNumber = config.Fields.WarrantyTime;
         await _unitOfWork.OrderItemRepository.InsertAsync(orderItem);
         await _unitOfWork.SaveChangesAsync();
 
@@ -176,8 +175,6 @@ public class OrderItemService : IOrderItemService
                     //{
                     //    orderItemTask.OrderItem.Order.Status = OrderStatus.IN_DESIGN;
                     //}
-
-
 
                     await _unitOfWork.OrderItemTaskRepository.UpdateAsync(orderItemTask);
                 }

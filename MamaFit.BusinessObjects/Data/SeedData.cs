@@ -2518,29 +2518,53 @@ namespace MamaFit.BusinessObjects.Data
             modelBuilder.Entity<MeasurementDiary>().HasData(
                 new MeasurementDiary
                 {
-                    Id = "107edb79f9f04079afad1a8a42141578",
+                    Id = "071b2ce694d84452a7899c9a97a863ec",
                     UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    Name = "Nhat Ky Cua Danh",
-                    Age = 23,
-                    Height = 170.0f,
-                    Weight = 85.0f,
-                    Bust = 72.3f,
-                    Waist = 85.2f,
-                    Hip = 92.6f,
-                    PregnancyStartDate = new DateTime(2025, 04, 19, 00, 00, 00, DateTimeKind.Utc),
-                    FirstDateOfLastPeriod = new DateTime(2025, 05, 03, 00, 00, 00, DateTimeKind.Utc),
+                    Name = "Nguyễn Thị Lan",
+                    Age = 27,
+                    Height = 155.0f,
+                    Weight = 50.0f,
+                    Bust = 86.0f,
+                    Waist = 74.0f,
+                    Hip = 90.0f,
+                    FirstDateOfLastPeriod = new DateTime(2025, 4, 26, 17, 0, 0, DateTimeKind.Utc),
                     AverageMenstrualCycle = 0,
-                    NumberOfPregnancy = 3,
+                    NumberOfPregnancy = 1,
                     UltrasoundDate = null,
                     WeeksFromUltrasound = 0,
+                    PregnancyStartDate = new DateTime(2025, 4, 12, 17, 0, 0, DateTimeKind.Utc),
+                    IsActive = false,
+                    CreatedBy = "User",
+                    UpdatedBy = null,
+                    CreatedAt = new DateTime(2025, 8, 3, 6, 23, 44, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 3, 6, 23, 44, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new MeasurementDiary
+                {
+                    Id = "296b60c784c64ccfb8e7eb5354b97c52",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    Name = "Vũ Thị Thu Hương",
+                    Age = 26,
+                    Height = 154.0f,
+                    Weight = 48.0f,
+                    Bust = 82.0f,
+                    Waist = 66.0f,
+                    Hip = 87.0f,
+                    FirstDateOfLastPeriod = new DateTime(2025, 6, 29, 17, 0, 0, DateTimeKind.Utc),
+                    AverageMenstrualCycle = 28,
+                    NumberOfPregnancy = 2,
+                    UltrasoundDate = new DateTime(2025, 8, 1, 17, 0, 0, DateTimeKind.Utc),
+                    WeeksFromUltrasound = 5,
+                    PregnancyStartDate = new DateTime(2025, 6, 27, 17, 0, 0, DateTimeKind.Utc),
                     IsActive = true,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
-                    IsDeleted = false,
+                    CreatedBy = "User",
+                    UpdatedBy = null,
+                    CreatedAt = new DateTime(2025, 8, 3, 6, 26, 33, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 3, 6, 26, 33, DateTimeKind.Utc),
+                    IsDeleted = false
                 }
-);
+        );
 
             modelBuilder.Entity<VoucherBatch>().HasData(
                 new VoucherBatch
@@ -2771,32 +2795,57 @@ namespace MamaFit.BusinessObjects.Data
             );
 
             modelBuilder.Entity<Measurement>().HasData(
-                new Measurement
-                {
-                    Id = "ed58656f238a4835ae62467f0dbce35c",
-                    MeasurementDiaryId = "107edb79f9f04079afad1a8a42141578",
-                    WeekOfPregnancy = 13,
-                    Weight = 85.0f,
-                    Neck = 34.0f,
-                    Coat = 78.3f,
-                    Bust = 72.3f,
-                    ChestAround = 76.3f,
-                    Stomach = 91.7f,
-                    PantsWaist = 81.7f,
-                    Thigh = 49.3f,
-                    DressLength = 112.2f,
-                    SleeveLength = 26.6f,
-                    ShoulderWidth = 39.5f,
-                    Waist = 85.2f,
-                    LegLength = 81.6f,
-                    Hip = 92.6f,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-                    IsDeleted = false,
-                }
-            );
+                    new Measurement
+                    {
+                        Id = "82e18e44f0984ad08209e575f77f3ca0",
+                        MeasurementDiaryId = "071b2ce694d84452a7899c9a97a863ec",
+                        WeekOfPregnancy = 16,
+                        Weight = 50.0f,
+                        Neck = 31.0f,
+                        Coat = 95.0f,
+                        Bust = 86.0f,
+                        ChestAround = 93.0f,
+                        Stomach = 85.0f,
+                        PantsWaist = 75.0f,
+                        Thigh = 49.5f,
+                        DressLength = 102.3f,
+                        SleeveLength = 24.2f,
+                        ShoulderWidth = 36.0f,
+                        Waist = 74.0f,
+                        LegLength = 74.4f,
+                        Hip = 90.0f,
+                        CreatedBy = "User",
+                        UpdatedBy = null,
+                        CreatedAt = new DateTime(2025, 8, 3, 6, 23, 44, DateTimeKind.Utc),
+                        UpdatedAt = new DateTime(2025, 8, 3, 6, 23, 44, DateTimeKind.Utc),
+                        IsDeleted = false
+                    },
+                    new Measurement
+                    {
+                        Id = "c49743c2e5d746239bddd1ade3d76ae9",
+                        MeasurementDiaryId = "296b60c784c64ccfb8e7eb5354b97c52",
+                        WeekOfPregnancy = 5,
+                        Weight = 48.0f,
+                        Neck = 30.8f,
+                        Coat = 87.0f,
+                        Bust = 82.0f,
+                        ChestAround = 85.0f,
+                        Stomach = 71.0f,
+                        PantsWaist = 61.0f,
+                        Thigh = 46.0f,
+                        DressLength = 101.6f,
+                        SleeveLength = 24.1f,
+                        ShoulderWidth = 35.8f,
+                        Waist = 66.0f,
+                        LegLength = 73.9f,
+                        Hip = 87.0f,
+                        CreatedBy = "User",
+                        UpdatedBy = null,
+                        CreatedAt = new DateTime(2025, 8, 3, 6, 26, 33, DateTimeKind.Utc),
+                        UpdatedAt = new DateTime(2025, 8, 3, 6, 26, 33, DateTimeKind.Utc),
+                        IsDeleted = false
+                    });
+
             modelBuilder.Entity<Branch>().HasData(
             new Branch
             {
@@ -2850,7 +2899,7 @@ namespace MamaFit.BusinessObjects.Data
                 Description = "Chi nhánh phục vụ khu vực Nam Sài Gòn, tập trung các khu đô thị mới, dân cư đông đúc.",
                 OpeningHour = new TimeOnly(09, 00, 00),
                 ClosingHour = new TimeOnly(13, 00, 00),
-                Images = ["{https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2Fdownload_1753254950766_es1xrv.jpeg?alt=media&token=c93a8c76-3112-44af-8c57-9445a41ec554}"],
+                Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2Fdownload_1753254950766_es1xrv.jpeg?alt=media&token=c93a8c76-3112-44af-8c57-9445a41ec554"],
                 MapId = "vRJ97gJfPeU95hjUgnwit3WGBWj-sb4PsqSY1vqF-sXWYIzEkrFXof6KGMRy11LlsYq9COapWetaMvjiztQlJx1IST76ef7qfUr9JXZ9vn_Z6hVoJqQmPn3itUiKfCOTf",
                 Province = "TP. Hồ Chí Minh",
                 District = "Quận 7",
@@ -2872,7 +2921,7 @@ namespace MamaFit.BusinessObjects.Data
                 Description = "Chi nhánh phục vụ khu vực phía Bắc, hỗ trợ khách hàng Hà Nội và vùng lân cận.",
                 OpeningHour = new TimeOnly(08, 30, 00),
                 ClosingHour = new TimeOnly(17, 30, 00),
-                Images = ["{https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2Fdownload_1753255046676_1dvpll.jpeg?alt=media&token=9ef2c48b-49dd-4206-b397-add539af29ba}"],
+                Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2Fdownload_1753255046676_1dvpll.jpeg?alt=media&token=9ef2c48b-49dd-4206-b397-add539af29ba"],
                 MapId = "Rka5w6k6WWv0zU42vEZ8RY-7anShuKUFf2lsQLqTpoppknNOuXqx22mpLRK4eIiPXKiTJLlCXttq7zptNu2qT8FzPJQ0",
                 Province = "Hà Nội",
                 District = "Quận Ba Đình",
@@ -2913,18 +2962,17 @@ namespace MamaFit.BusinessObjects.Data
 
             #region Seed Milestone, Task
             modelBuilder.Entity<Milestone>().HasData(
-
                 new Milestone
                 {
-                    Id = "d677453018e04408ba1d0ddec81e5ffd",
-                    Name = "Design",
-                    Description = "Design process for custom design requests",
-                    ApplyFor = [ItemType.DESIGN_REQUEST],
-                    SequenceOrder = 1,
+                    Id = "08c1f3fd1f71460e9a4afefc14fa01cb",
+                    Name = "In Warrnaty",
+                    Description = "Warranty repair or replacement",
+                    ApplyFor = [ItemType.WARRANTY],
+                    SequenceOrder = 4,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
-                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
                     IsDeleted = false
                 },
                 new Milestone
@@ -2936,47 +2984,8 @@ namespace MamaFit.BusinessObjects.Data
                     SequenceOrder = 1,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
-                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new Milestone
-                {
-                    Id = "e1235c985155490d9f701a5e35d490ed",
-                    Name = "Add On",
-                    Description = "Additional customization or services",
-                    ApplyFor = [ItemType.ADD_ON],
-                    SequenceOrder = 2,
-                    CreatedBy = "Admin",
-                    UpdatedBy = "Admin",
-                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new Milestone
-                {
-                    Id = "5110afc434844342984a1db6944536dc",
-                    Name = "Warranty Check",
-                    Description = "Initial warranty assessment for preset orders",
-                    ApplyFor = [ItemType.WARRANTY],
-                    SequenceOrder = 3,
-                    CreatedBy = "Admin",
-                    UpdatedBy = "Admin",
-                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new Milestone
-                {
-                    Id = "08c1f3fd1f71460e9a4afefc14fa01cb",
-                    Name = "In Warrnaty",
-                    Description = "Warranty repair or replacement",
-                    ApplyFor = [ItemType.WARRANTY],
-                    SequenceOrder = 4,
-                    CreatedBy = "Admin",
-                    UpdatedBy = "Admin",
-                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
                     IsDeleted = false
                 },
                 new Milestone
@@ -2988,8 +2997,47 @@ namespace MamaFit.BusinessObjects.Data
                     SequenceOrder = 5,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
-                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Milestone
+                {
+                    Id = "5110afc434844342984a1db6944536dc",
+                    Name = "Warranty Check",
+                    Description = "Initial warranty assessment for preset orders",
+                    ApplyFor = [ItemType.WARRANTY],
+                    SequenceOrder = 3,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "Admin",
+                    CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Milestone
+                {
+                    Id = "d677453018e04408ba1d0ddec81e5ffd",
+                    Name = "Design",
+                    Description = "Design process for custom design requests",
+                    ApplyFor = [ItemType.DESIGN_REQUEST],
+                    SequenceOrder = 1,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "Admin",
+                    CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Milestone
+                {
+                    Id = "e1235c985155490d9f701a5e35d490ed",
+                    Name = "Add On",
+                    Description = "Additional customization or services",
+                    ApplyFor = [ItemType.ADD_ON],
+                    SequenceOrder = 2,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "Admin",
+                    CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
                     IsDeleted = false
                 },
                 new Milestone
@@ -3001,536 +3049,554 @@ namespace MamaFit.BusinessObjects.Data
                     SequenceOrder = 5,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
-                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
                     IsDeleted = false
                 },
                 new Milestone
                 {
                     Id = "afa0cfb3844a4bf99e79b40a009b8f58",
-                    Name = "Packing & Delivery",
-                    Description = "Final packing and delivery for customer",
-                    ApplyFor = [ItemType.READY_TO_BUY, ItemType.PRESET],
+                    Name = "Packing",
+                    Description = "Final packing for customer",
+                    ApplyFor = [ItemType.PRESET, ItemType.READY_TO_BUY],
+                    SequenceOrder = 7,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "Admin",
+                    CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Milestone
+                {
+                    Id = "e2c7f3d2a1b345ef8a92c1f0b5d7e4a6",
+                    Name = "Waiting For Delivery",
+                    Description = "Awaiting delivery order creation",
+                    ApplyFor = [ItemType.PRESET, ItemType.READY_TO_BUY],
+                    SequenceOrder = 8,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "Admin",
+                    CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Milestone
+                {
+                    Id = "a82b6d4f0c194fa5b92348e7d86c4a10",
+                    Name = "Quality Check Failed",
+                    Description = "Did not meet quality standards, needs rework.",
+                    ApplyFor = [ItemType.QC_FAIL],
                     SequenceOrder = 6,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",
-                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
+                    CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
                     IsDeleted = false
-                }
-            );
+                });
+
             modelBuilder.Entity<MaternityDressTask>().HasData(
 
-                new MaternityDressTask
-                {
-                    Id = "e067e4747bdd40d4a665d79b91285bdf",
-                    MilestoneId = "130a30e16f764ec7b29c1461f932d10a",
-                    Name = "Check Order Details",
-                    Description = "Review preset order specifications and measurements",
-                    SequenceOrder = 1,
-                    CreatedBy = "Admin",
-                    UpdatedBy = "Admin",
-                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "26ab09cb782a4e8db409f39079ac24f1",
-                    MilestoneId = "130a30e16f764ec7b29c1461f932d10a",
-                    Name = "Prepare Materials",
-                    Description = "Gather required fabrics and materials for preset design",
-                    SequenceOrder = 2,
-                    CreatedBy = "Admin",
-                    UpdatedBy = "Admin",
-                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "524ae555a1644d37a8b66dd26724c792",
-                    MilestoneId = "130a30e16f764ec7b29c1461f932d10a",
-                    Name = "Cut Fabric",
-                    Description = "Cut fabric pieces according to preset pattern",
-                    SequenceOrder = 3,
-                    CreatedBy = "Admin",
-                    UpdatedBy = "Admin",
-                    CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-    new MaternityDressTask
-    {
-        Id = "b085a91ce1f9400ba1f8bfc973f2c568",
-        MilestoneId = "130a30e16f764ec7b29c1461f932d10a",
-        Name = "Sew Garment",
-        Description = "Complete main sewing process",
-        SequenceOrder = 4,
-        CreatedBy = "Admin",
-        UpdatedBy = "Admin",
-        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new MaternityDressTask
-    {
-        Id = "23de35d6fb194c398d09ce00ae01eeea",
-        MilestoneId = "130a30e16f764ec7b29c1461f932d10a",
-        Name = "Attach Details",
-        Description = "Add buttons, zippers, and finishing touches",
-        SequenceOrder = 5,
-        CreatedBy = "Admin",
-        UpdatedBy = "Admin",
-        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new MaternityDressTask
-    {
-        Id = "6bc65fa7010a4adf93cd52135cc0aa4e",
-        MilestoneId = "130a30e16f764ec7b29c1461f932d10a",
-        Name = "Initial Fitting Check",
-        Description = "Basic fitting verification",
-        SequenceOrder = 6,
-        CreatedBy = "Admin",
-        UpdatedBy = "Admin",
-        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new MaternityDressTask
-    {
-        Id = "26049f6a1a964dc5b659e4991eb475c5",
-        MilestoneId = "d677453018e04408ba1d0ddec81e5ffd",
-        Name = "Create preset with design request",
-        Description = "Create preset for customer",
-        SequenceOrder = 1,
-        CreatedBy = "System",
-        UpdatedBy = "System",
-        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new MaternityDressTask
-    {
-        Id = "4d5854acc4c34ff294d0cc8e29f558e8",
-        MilestoneId = "3bc69c7f00d44442bc3dd095637b4172",
-        Name = "Visual Inspection",
-        Description = "Check overall appearance and construction quality",
-        SequenceOrder = 1,
-        CreatedBy = "System",
-        UpdatedBy = "System",
-        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new MaternityDressTask
-    {
-        Id = "667a4387ded44595b8385f31ff3010d0",
-        MilestoneId = "3bc69c7f00d44442bc3dd095637b4172",
-        Name = "Seam Quality Check",
-        Description = "Inspect all seams for strength and finishing",
-        SequenceOrder = 2,
-        CreatedBy = "System",
-        UpdatedBy = "System",
-        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new MaternityDressTask
-    {
-        Id = "8694d2af4cef4b2a869d69b2c11ca16e",
-        MilestoneId = "3bc69c7f00d44442bc3dd095637b4172",
-        Name = "Measurement Verification",
-        Description = "Verify garment measurements against specifications",
-        SequenceOrder = 3,
-        CreatedBy = "System",
-        UpdatedBy = "System",
-        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new MaternityDressTask
-    {
-        Id = "eaf8da4628664f4083af4bf73639b2ea",
-        MilestoneId = "3bc69c7f00d44442bc3dd095637b4172",
-        Name = "Fabric Quality Check",
-        Description = "Check for fabric defects or issues",
-        SequenceOrder = 4,
-        CreatedBy = "System",
-        UpdatedBy = "System",
-        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new MaternityDressTask
-    {
-        Id = "bfef208943f5429abaf5ad7265df20c3",
-        MilestoneId = "3bc69c7f00d44442bc3dd095637b4172",
-        Name = "Functional Testing",
-        Description = "Test zippers, buttons, and other functional elements",
-        SequenceOrder = 3,
-        CreatedBy = "System",
-        UpdatedBy = "System",
-        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new MaternityDressTask
-    {
-        Id = "16a506ee77974fdaac4eeb2310f56ff0",
-        MilestoneId = "5110afc434844342984a1db6944536dc",
-        Name = "Inspect Returned Item",
-        Description = "Examine returned garment for reported issues",
-        SequenceOrder = 1,
-        CreatedBy = "System",
-        UpdatedBy = "System",
-        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new MaternityDressTask
-    {
-        Id = "efcc1a38a9cd4fd38a68bc18437f726b",
-        MilestoneId = "5110afc434844342984a1db6944536dc",
-        Name = "Assess Warranty Validity",
-        Description = "Determine if issue is covered under warranty terms",
-        SequenceOrder = 2,
-        CreatedBy = "System",
-        UpdatedBy = "System",
-        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new MaternityDressTask
-    {
-        Id = "32e620585a454e7bbe7bf9314e7577ce",
-        MilestoneId = "e1235c985155490d9f701a5e35d490ed",
-        Name = "Apply Customizations",
-        Description = "Execute additional features and embroidery",
-        SequenceOrder = 1,
-        CreatedBy = "System",
-        UpdatedBy = "System",
-        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new MaternityDressTask
-    {
-        Id = "b13f33bdf3fa48059226c45033349224",
-        MilestoneId = "08c1f3fd1f71460e9a4afefc14fa01cb",
-        Name = "Prepare Repair",
-        Description = "Set up repair workspace and materials",
-        SequenceOrder = 1,
-        CreatedBy = "System",
-        UpdatedBy = "System",
-        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new MaternityDressTask
-    {
-        Id = "cca010d95a774c578cd3910aced360e2",
-        MilestoneId = "08c1f3fd1f71460e9a4afefc14fa01cb",
-        Name = "Execute Repair",
-        Description = "Perform repair or replacement work",
-        SequenceOrder = 2,
-        CreatedBy = "System",
-        UpdatedBy = "System",
-        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new MaternityDressTask
-    {
-        Id = "6cbafb0310074107892958b2325df8d0",
-        MilestoneId = "e1d5cb20d3e5460b9067113cf4615fa7",
-        Name = "Inspect Repair Work",
-        Description = "Check quality of repaired areas",
-        SequenceOrder = 1,
-        CreatedBy = "System",
-        UpdatedBy = "System",
-        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new MaternityDressTask
-    {
-        Id = "f4f2ebc128514d3a923b82451c575967",
-        MilestoneId = "afa0cfb3844a4bf99e79b40a009b8f58",
-        Name = "Package Product",
-        Description = "Pack in branded packaging with care instructions",
-        SequenceOrder = 1,
-        CreatedBy = "System",
-        UpdatedBy = "System",
-        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new MaternityDressTask
-    {
-        Id = "13a6b12c7ae643809c13ee2863e86b10",
-        MilestoneId = "afa0cfb3844a4bf99e79b40a009b8f58",
-        Name = "Prepare Shipping",
-        Description = "Create shipping label and arrange delivery",
-        SequenceOrder = 2,
-        CreatedBy = "System",
-        UpdatedBy = "System",
-        CreatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 14, 17, 54, DateTimeKind.Utc),
-        IsDeleted = false
-    }
-);
+            new MaternityDressTask
+            {
+                Id = "13a6b12c7ae643809c13ee2863e86b10",
+                MilestoneId = "afa0cfb3844a4bf99e79b40a009b8f58",
+                Name = "Prepare Shipping",
+                Description = "Create shipping label and arrange delivery",
+                SequenceOrder = 2,
+                CreatedBy = "System",
+                UpdatedBy = "System",
+                CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false
+            },
+            new MaternityDressTask
+            {
+                Id = "16a506ee77974fdaac4eeb2310f56ff0",
+                MilestoneId = "5110afc434844342984a1db6944536dc",
+                Name = "Inspect Returned Item",
+                Description = "Examine returned garment for reported issues",
+                SequenceOrder = 1,
+                CreatedBy = "System",
+                UpdatedBy = "System",
+                CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false
+            },
+            new MaternityDressTask
+            {
+                Id = "23de35d6fb194c398d09ce00ae01eeea",
+                MilestoneId = "130a30e16f764ec7b29c1461f932d10a",
+                Name = "Attach Details",
+                Description = "Add buttons, zippers, and finishing touches",
+                SequenceOrder = 5,
+                CreatedBy = "Admin",
+                UpdatedBy = "Admin",
+                CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false
+            },
+            new MaternityDressTask
+            {
+                Id = "26049f6a1a964dc5b659e4991eb475c5",
+                MilestoneId = "d677453018e04408ba1d0ddec81e5ffd",
+                Name = "Create preset with design request",
+                Description = "Create preset for customer",
+                SequenceOrder = 1,
+                CreatedBy = "System",
+                UpdatedBy = "System",
+                CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false
+            },
+            new MaternityDressTask
+            {
+                Id = "26ab09cb782a4e8db409f39079ac24f1",
+                MilestoneId = "130a30e16f764ec7b29c1461f932d10a",
+                Name = "Prepare Materials",
+                Description = "Gather required fabrics and materials for preset design",
+                SequenceOrder = 2,
+                CreatedBy = "Admin",
+                UpdatedBy = "Admin",
+                CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false
+            },
+            new MaternityDressTask
+            {
+                Id = "32e620585a454e7bbe7bf9314e7577ce",
+                MilestoneId = "e1235c985155490d9f701a5e35d490ed",
+                Name = "Apply Customizations",
+                Description = "Execute additional features and embroidery",
+                SequenceOrder = 1,
+                CreatedBy = "System",
+                UpdatedBy = "System",
+                CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false
+            },
+            new MaternityDressTask
+            {
+                Id = "4d5854acc4c34ff294d0cc8e29f558e8",
+                MilestoneId = "3bc69c7f00d44442bc3dd095637b4172",
+                Name = "Visual Inspection",
+                Description = "Check overall appearance and construction quality",
+                SequenceOrder = 1,
+                CreatedBy = "System",
+                UpdatedBy = "System",
+                CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false
+            },
+            new MaternityDressTask
+            {
+                Id = "524ae555a1644d37a8b66dd26724c792",
+                MilestoneId = "130a30e16f764ec7b29c1461f932d10a",
+                Name = "Cut Fabric",
+                Description = "Cut fabric pieces according to preset pattern",
+                SequenceOrder = 3,
+                CreatedBy = "Admin",
+                UpdatedBy = "Admin",
+                CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false
+            },
+            new MaternityDressTask
+            {
+                Id = "667a4387ded44595b8385f31ff3010d0",
+                MilestoneId = "3bc69c7f00d44442bc3dd095637b4172",
+                Name = "Seam Quality Check",
+                Description = "Inspect all seams for strength and finishing",
+                SequenceOrder = 2,
+                CreatedBy = "System",
+                UpdatedBy = "System",
+                CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false
+            },
+            new MaternityDressTask
+            {
+                Id = "6bc65fa7010a4adf93cd52135cc0aa4e",
+                MilestoneId = "130a30e16f764ec7b29c1461f932d10a",
+                Name = "Initial Fitting Check",
+                Description = "Basic fitting verification",
+                SequenceOrder = 6,
+                CreatedBy = "Admin",
+                UpdatedBy = "Admin",
+                CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false
+            },
+            new MaternityDressTask
+            {
+                Id = "6cbafb0310074107892958b2325df8d0",
+                MilestoneId = "e1d5cb20d3e5460b9067113cf4615fa7",
+                Name = "Inspect Repair Work",
+                Description = "Check quality of repaired areas",
+                SequenceOrder = 1,
+                CreatedBy = "System",
+                UpdatedBy = "System",
+                CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false
+            },
+            new MaternityDressTask
+            {
+                Id = "8694d2af4cef4b2a869d69b2c11ca16e",
+                MilestoneId = "3bc69c7f00d44442bc3dd095637b4172",
+                Name = "Measurement Verification",
+                Description = "Verify garment measurements against specifications",
+                SequenceOrder = 3,
+                CreatedBy = "System",
+                UpdatedBy = "System",
+                CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false
+            },
+            new MaternityDressTask
+            {
+                Id = "b085a91ce1f9400ba1f8bfc973f2c568",
+                MilestoneId = "130a30e16f764ec7b29c1461f932d10a",
+                Name = "Sew Garment",
+                Description = "Complete main sewing process",
+                SequenceOrder = 4,
+                CreatedBy = "Admin",
+                UpdatedBy = "Admin",
+                CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false
+            },
+            new MaternityDressTask
+            {
+                Id = "b13f33bdf3fa48059226c45033349224",
+                MilestoneId = "08c1f3fd1f71460e9a4afefc14fa01cb",
+                Name = "Prepare Repair",
+                Description = "Set up repair workspace and materials",
+                SequenceOrder = 1,
+                CreatedBy = "System",
+                UpdatedBy = "System",
+                CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false
+            },
+            new MaternityDressTask
+            {
+                Id = "bfef208943f5429abaf5ad7265df20c3",
+                MilestoneId = "3bc69c7f00d44442bc3dd095637b4172",
+                Name = "Functional Testing",
+                Description = "Test zippers, buttons, and other functional elements",
+                SequenceOrder = 3,
+                CreatedBy = "System",
+                UpdatedBy = "System",
+                CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false
+            },
+            new MaternityDressTask
+            {
+                Id = "cca010d95a774c578cd3910aced360e2",
+                MilestoneId = "08c1f3fd1f71460e9a4afefc14fa01cb",
+                Name = "Execute Repair",
+                Description = "Perform repair or replacement work",
+                SequenceOrder = 2,
+                CreatedBy = "System",
+                UpdatedBy = "System",
+                CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false
+            },
+            new MaternityDressTask
+            {
+                Id = "e067e4747bdd40d4a665d79b91285bdf",
+                MilestoneId = "130a30e16f764ec7b29c1461f932d10a",
+                Name = "Check Order Details",
+                Description = "Review preset order specifications and measurements",
+                SequenceOrder = 1,
+                CreatedBy = "Admin",
+                UpdatedBy = "Admin",
+                CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false
+            },
+            new MaternityDressTask
+            {
+                Id = "eaf8da4628664f4083af4bf73639b2ea",
+                MilestoneId = "3bc69c7f00d44442bc3dd095637b4172",
+                Name = "Fabric Quality Check",
+                Description = "Check for fabric defects or issues",
+                SequenceOrder = 4,
+                CreatedBy = "System",
+                UpdatedBy = "System",
+                CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false
+            },
+            new MaternityDressTask
+            {
+                Id = "efcc1a38a9cd4fd38a68bc18437f726b",
+                MilestoneId = "5110afc434844342984a1db6944536dc",
+                Name = "Assess Warranty Validity",
+                Description = "Determine if issue is covered under warranty terms",
+                SequenceOrder = 2,
+                CreatedBy = "System",
+                UpdatedBy = "System",
+                CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false
+            },
+            new MaternityDressTask
+            {
+                Id = "f4f2ebc128514d3a923b82451c575967",
+                MilestoneId = "afa0cfb3844a4bf99e79b40a009b8f58",
+                Name = "Package Product",
+                Description = "Pack in branded packaging with care instructions",
+                SequenceOrder = 1,
+                CreatedBy = "System",
+                UpdatedBy = "System",
+                CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false
+            },
+            new MaternityDressTask
+            {
+                Id = "c9a4e7d8f5b342e1ad03b8c7f6a1e2d4",
+                MilestoneId = "e2c7f3d2a1b345ef8a92c1f0b5d7e4a6",
+                Name = "Create Delivery Order",
+                Description = "Initiate and submit the delivery order for processing",
+                SequenceOrder = 1,
+                CreatedBy = "Admin",
+                UpdatedBy = "Admin",
+                CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false
+            },
+            new MaternityDressTask
+            {
+                Id = "c5d12a4f339a4bc69e2e873ad67512fe",
+                MilestoneId = "a82b6d4f0c194fa5b92348e7d86c4a10",
+                Name = "Quality Review Correction",
+                Description = "Address issues identified in the quality check",
+                SequenceOrder = 1,
+                CreatedBy = "Admin",
+                UpdatedBy = "Admin",
+                CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
+                IsDeleted = false
+            });
+
             #endregion
 
             #region Seed Order, OrderItem, Add_On, DesignRequest
 
             modelBuilder.Entity<DesignRequest>().HasData(
-    new DesignRequest
-    {
-        Id = "183206a0f9c84c9db36fa9f6adbe47f1",
-        UserId = "f49aa51bbd304e77933e24bbed65b165",
-        OrderItemId = "6f186eb4a0674e0ea870fd63a5486738",
-        Description = "cho tui xin 2k nhe",
-        Images = new List<string>
-        {
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/design-requests%2F1000028470.jpg?alt=media&token=bd3c88c1-a4d5-4e96-b3cd-2bd9aca8a3ef",
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/design-requests%2F59d9afea-509e-4461-b70a-a01d8b6f97a4-1_all_13976.png?alt=media&token=27dbd078-5fb8-41db-8adf-df82ea6e876d",
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/design-requests%2F59d9afea-509e-4461-b70a-a01d8b6f97a4-1_all_13969.jpg?alt=media&token=2a831469-4e31-461a-bca2-b60e64f56bec"
-        },
-        CreatedBy = "user",
-        UpdatedBy = null,
-        CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new DesignRequest
-    {
-        Id = "aab4c867cc2d4c079890a6104d1ce6da",
-        UserId = "f49aa51bbd304e77933e24bbed65b165",
-        OrderItemId = "2522e58fc7e74bf8bdbdc1c4784e56fe",
-        Description = "xin chao mamafit",
-        Images = new List<string>
-        {
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/design-requests%2F1000029159.png?alt=media&token=e95f7d9c-de57-4d7d-b405-62a9e3df83d0",
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/design-requests%2F1000029157.png?alt=media&token=d8cf93e9-5f01-4902-a732-02ed1f16ab75",
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/design-requests%2F1000029155.png?alt=media&token=af83a874-56db-4941-80a6-b63c67e1fe3a"
-        },
-        CreatedBy = "user",
-        UpdatedBy = null,
-        CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-        IsDeleted = false
-    }
+                new DesignRequest
+                {
+                    Id = "163bdbd2e4634e63a2be9b74f7c783b5",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    OrderItemId = "6390cef2d8644fa791480f1e3b7a81e2",
+                    Description = "cho tui xin 50k nhe",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/design-requests%2F1000028470.jpg?alt=media&token=02876007-5a09-42f1-9c99-e3a4b422ed0b", "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/design-requests%2F59d9afea-509e-4461-b70a-a01d8b6f97a4-1_all_13976.png?alt=media&token=b31b67e8-badd-4bae-b028-2901f47910fa"],
+                    CreatedBy = "user",
+                    UpdatedBy = null,
+                    CreatedAt = new DateTime(2025, 8, 3, 6, 19, 30, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 3, 6, 19, 30, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new DesignRequest
+                {
+                    Id = "6f16cc921d924b38bfb1fdeba3a92a02",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    OrderItemId = "583f8d8a545a4eb19d3257433f84de2d",
+                    Description = "thiet ke cho tui 1 cai vay that dep",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/design-requests%2F1000026857.jpg?alt=media&token=698e129c-6843-48ed-83f3-759664aa5f15"],
+                    CreatedBy = "user",
+                    UpdatedBy = null,
+                    CreatedAt = new DateTime(2025, 8, 3, 6, 31, 42, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 3, 6, 31, 42, DateTimeKind.Utc),
+                    IsDeleted = false
+                }
 );
 
             modelBuilder.Entity<Order>().HasData(
-                new Order
-                {
-                    Id = "d116622e6bce489ea74fc6ae3c907479",
-                    AddressId = null,
-                    BranchId = null,
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    VoucherDiscountId = null,
-                    MeasurementId = null,
-                    IsOnline = true,
-                    Type = 0,
-                    Code = "O56897",
-                    Status = 0,
-                    TotalAmount = 3000.0m,
-                    ShippingFee = 0,
-                    ServiceAmount = null,
-                    DiscountSubtotal = null,
-                    DepositSubtotal = null,
-                    RemainingBalance = null,
-                    TotalPaid = null,
-                    PaymentStatus = 0,
-                    PaymentMethod = 0,
-                    DeliveryMethod = 0,
-                    PaymentType = PaymentType.FULL,
-                    CanceledAt = null,
-                    CanceledReason = null,
-                    SubTotalAmount = 3000.0m,
-                    WarrantyCode = null,
-                    CreatedBy = "User",
-                    UpdatedBy = null,
-                    CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new Order
-                {
-                    Id = "9af25006e3b043d9984fbc6185efe11d",
-                    AddressId = "7aa93cf1dcea43e68da114d7c991a732",
-                    BranchId = null,
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    VoucherDiscountId = null,
-                    MeasurementId = "ed58656f238a4835ae62467f0dbce35c",
-                    IsOnline = true,
-                    Type = 0,
-                    Code = "O58706",
-                    Status = 0,
-                    TotalAmount = 27150.0m,
-                    ShippingFee = 22000,
-                    ServiceAmount = 3150.0m,
-                    DiscountSubtotal = 0,
-                    DepositSubtotal = 1000.0m,
-                    RemainingBalance = 1000.0m,
-                    TotalPaid = 26150.0m,
-                    PaymentStatus = 0,
-                    PaymentMethod = PaymentMethod.ONLINE_BANKING,
-                    DeliveryMethod = DeliveryMethod.DELIVERY,
-                    PaymentType = 0,
-                    CanceledAt = null,
-                    CanceledReason = null,
-                    SubTotalAmount = 2000.0m,
-                    WarrantyCode = null,
-                    CreatedBy = "User",
-                    UpdatedBy = null,
-                    CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new Order
-                {
-                    Id = "7d72109eb0f345909c58f87be3116d04",
-                    AddressId = null,
-                    BranchId = "1ca91da6e6874aac9f8a64a90a5779b2",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    VoucherDiscountId = null,
-                    MeasurementId = "ed58656f238a4835ae62467f0dbce35c",
-                    IsOnline = true,
-                    Type = 0,
-                    Code = "O13660",
-                    Status = 0,
-                    TotalAmount = 24000.0m,
-                    ShippingFee = 22000,
-                    ServiceAmount = 0,
-                    DiscountSubtotal = 0,
-                    DepositSubtotal = null,
-                    RemainingBalance = null,
-                    TotalPaid = 24000.0m,
-                    PaymentStatus = 0,
-                    PaymentMethod = PaymentMethod.ONLINE_BANKING,
-                    DeliveryMethod = 0,
-                    PaymentType = PaymentType.FULL,
-                    CanceledAt = null,
-                    CanceledReason = null,
-                    SubTotalAmount = 2000.0m,
-                    WarrantyCode = null,
-                    CreatedBy = "User",
-                    UpdatedBy = null,
-                    CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc) ,
-                    UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new Order
-                {
-                    Id = "095925d56faa4797b3e31f7cb3f77a3b",
-                    AddressId = "f71162915b5846f8a470f05adc30e635",
-                    BranchId = null,
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    VoucherDiscountId = "0a707a6002ee409ca7d12028f7b7ccdf",
-                    MeasurementId = "ed58656f238a4835ae62467f0dbce35c",
-                    IsOnline = true,
-                    Type = 0,
-                    Code = "O71987",
-                    Status = 0,
-                    TotalAmount = 41100.0m,
-                    ShippingFee = 40000,
-                    ServiceAmount = 1100.0m,
-                    DiscountSubtotal = 2000.0m,
-                    DepositSubtotal = 0.0m,
-                    RemainingBalance = 0.0m,
-                    TotalPaid = 41100.0m,
-                    PaymentStatus = 0,
-                    PaymentMethod = PaymentMethod.ONLINE_BANKING,
-                    DeliveryMethod = DeliveryMethod.DELIVERY,
-                    PaymentType = 0,
-                    CanceledAt = null,
-                    CanceledReason = null,
-                    SubTotalAmount = 2000.0m,
-                    WarrantyCode = null,
-                    CreatedBy = "User",
-                    UpdatedBy = null,
-                    CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new Order
-                {
-                    Id = "f10c67ae8be04c3fb810878dd82c2d56",
-                    AddressId = null,
-                    BranchId = null,
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    VoucherDiscountId = null,
-                    MeasurementId = null,
-                    IsOnline = true,
-                    Type = 0,
-                    Code = "O97749",
-                    Status = 0,
-                    TotalAmount = 3000.0m,
-                    ShippingFee = 0,
-                    ServiceAmount = null,
-                    DiscountSubtotal = null,
-                    DepositSubtotal = null,
-                    RemainingBalance = null,
-                    TotalPaid = null,
-                    PaymentStatus = 0,
-                    PaymentMethod = 0,
-                    DeliveryMethod = 0,
-                    PaymentType = PaymentType.FULL,
-                    CanceledAt = null,
-                    CanceledReason = null,
-                    SubTotalAmount = 3000.0m,
-                    WarrantyCode = null,
-                    CreatedBy = "User",
-                    UpdatedBy = null,
-                    CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new Order
-                {
-                    Id = "ea64d6b0c556419bb718549e707e7a08",
-                    AddressId = null,
-                    BranchId = "896d6274c5a243758397d245dee2bbc9",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    VoucherDiscountId = null,
-                    MeasurementId = "ed58656f238a4835ae62467f0dbce35c",
-                    IsOnline = true,
-                    Type = 0,
-                    Code = "O57719",
-                    Status = 0,
-                    TotalAmount = 47650.0m,
-                    ShippingFee = 40000,
-                    ServiceAmount = 5650.0m,
-                    DiscountSubtotal = 0,
-                    DepositSubtotal = 1000.0m,
-                    RemainingBalance = 1000.0m,
-                    TotalPaid = 46650.0m,
-                    PaymentStatus = 0,
-                    PaymentMethod = PaymentMethod.ONLINE_BANKING,
-                    DeliveryMethod = 0,
-                    PaymentType = 0,
-                    CanceledAt = null,
-                    CanceledReason = null,
-                    SubTotalAmount = 2000.0m,
-                    WarrantyCode = null,
-                    CreatedBy = "User",
-                    UpdatedBy = null,
-                    CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-                    IsDeleted = false
-                }
-            );
+                    new Order
+                    {
+                        Id = "4951106889514ce2ada27665d3e41a43",
+                        AddressId = null,
+                        BranchId = null,
+                        UserId = "f49aa51bbd304e77933e24bbed65b165",
+                        VoucherDiscountId = null,
+                        MeasurementId = null,
+                        IsOnline = true,
+                        Type = 0,
+                        Code = "O75387",
+                        TrackingOrderCode = null,
+                        Status = 0,
+                        TotalAmount = 3000.0m,
+                        ShippingFee = 0,
+                        ServiceAmount = null,
+                        DiscountSubtotal = null,
+                        DepositSubtotal = null,
+                        RemainingBalance = null,
+                        TotalPaid = null,
+                        PaymentStatus = 0,
+                        PaymentMethod = 0,
+                        DeliveryMethod = 0,
+                        PaymentType = PaymentType.FULL,
+                        CanceledAt = null,
+                        CanceledReason = null,
+                        SubTotalAmount = 3000.0m,
+                        WarrantyCode = null,
+                        ReceivedAt = null,
+                        CreatedBy = "User",
+                        UpdatedBy = null,
+                        CreatedAt = new DateTime(2025, 8, 3, 6, 19, 30, DateTimeKind.Utc),
+                        UpdatedAt = new DateTime(2025, 8, 3, 6, 19, 30, DateTimeKind.Utc),
+                        IsDeleted = false
+                    },
+                    new Order
+                    {
+                        Id = "d7ba2e103448473f9949c10a59243e62",
+                        AddressId = null,
+                        BranchId = "b536f146c8f04bbc9949fc70a31fda8f",
+                        UserId = "f49aa51bbd304e77933e24bbed65b165",
+                        VoucherDiscountId = null,
+                        MeasurementId = "c49743c2e5d746239bddd1ade3d76ae9",
+                        IsOnline = true,
+                        Type = 0,
+                        Code = "O71956",
+                        TrackingOrderCode = null,
+                        Status = 0,
+                        TotalAmount = 27150.0m,
+                        ShippingFee = 22000,
+                        ServiceAmount = 3150.0m,
+                        DiscountSubtotal = 0,
+                        DepositSubtotal = null,
+                        RemainingBalance = null,
+                        TotalPaid = 27150.0m,
+                        PaymentStatus = 0,
+                        PaymentMethod = PaymentMethod.ONLINE_BANKING,
+                        DeliveryMethod = 0,
+                        PaymentType = PaymentType.FULL,
+                        CanceledAt = null,
+                        CanceledReason = null,
+                        SubTotalAmount = 2000.0m,
+                        WarrantyCode = null,
+                        ReceivedAt = null,
+                        CreatedBy = "User",
+                        UpdatedBy = null,
+                        CreatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
+                        UpdatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
+                        IsDeleted = false
+                    },
+                    new Order
+                    {
+                        Id = "fffdd078a46040e3bf27839793bb2bed",
+                        AddressId = "7aa93cf1dcea43e68da114d7c991a732",
+                        BranchId = null,
+                        UserId = "f49aa51bbd304e77933e24bbed65b165",
+                        VoucherDiscountId = null,
+                        MeasurementId = "82e18e44f0984ad08209e575f77f3ca0",
+                        IsOnline = true,
+                        Type = 0,
+                        Code = "O89007",
+                        TrackingOrderCode = null,
+                        Status = 0,
+                        TotalAmount = 25850.0m,
+                        ShippingFee = 22000,
+                        ServiceAmount = 1850.0m,
+                        DiscountSubtotal = 0,
+                        DepositSubtotal = 1000.0m,
+                        RemainingBalance = 1000.0m,
+                        TotalPaid = 24850.0m,
+                        PaymentStatus = 0,
+                        PaymentMethod = PaymentMethod.ONLINE_BANKING,
+                        DeliveryMethod = DeliveryMethod.DELIVERY,
+                        PaymentType = 0,
+                        CanceledAt = null,
+                        CanceledReason = null,
+                        SubTotalAmount = 2000.0m,
+                        WarrantyCode = null,
+                        ReceivedAt = null,
+                        CreatedBy = "User",
+                        UpdatedBy = null,
+                        CreatedAt = new DateTime(2025, 8, 3, 6, 29, 40, DateTimeKind.Utc),
+                        UpdatedAt = new DateTime(2025, 8, 3, 6, 29, 40, DateTimeKind.Utc),
+                        IsDeleted = false
+                    },
+                    new Order
+                    {
+                        Id = "b1dec711c96840a3b45c14ed8b40d6ba",
+                        AddressId = "7aa93cf1dcea43e68da114d7c991a732",
+                        BranchId = null,
+                        UserId = "f49aa51bbd304e77933e24bbed65b165",
+                        VoucherDiscountId = null,
+                        MeasurementId = "c49743c2e5d746239bddd1ade3d76ae9",
+                        IsOnline = true,
+                        Type = 0,
+                        Code = "O84288",
+                        TrackingOrderCode = null,
+                        Status = 0,
+                        TotalAmount = 24000.0m,
+                        ShippingFee = 22000,
+                        ServiceAmount = 0,
+                        DiscountSubtotal = 0,
+                        DepositSubtotal = null,
+                        RemainingBalance = null,
+                        TotalPaid = 24000.0m,
+                        PaymentStatus = 0,
+                        PaymentMethod = PaymentMethod.ONLINE_BANKING,
+                        DeliveryMethod = DeliveryMethod.DELIVERY,
+                        PaymentType = PaymentType.FULL,
+                        CanceledAt = null,
+                        CanceledReason = null,
+                        SubTotalAmount = 2000.0m,
+                        WarrantyCode = null,
+                        ReceivedAt = null,
+                        CreatedBy = "User",
+                        UpdatedBy = null,
+                        CreatedAt = new DateTime(2025, 8, 3, 6, 30, 48, DateTimeKind.Utc),
+                        UpdatedAt = new DateTime(2025, 8, 3, 6, 30, 48, DateTimeKind.Utc),
+                        IsDeleted = false
+                    },
+                    new Order
+                    {
+                        Id = "74dede079f594b58b119a7edf9c21c01",
+                        AddressId = null,
+                        BranchId = null,
+                        UserId = "f49aa51bbd304e77933e24bbed65b165",
+                        VoucherDiscountId = null,
+                        MeasurementId = null,
+                        IsOnline = true,
+                        Type = 0,
+                        Code = "O47111",
+                        TrackingOrderCode = null,
+                        Status = 0,
+                        TotalAmount = 3000.0m,
+                        ShippingFee = 0,
+                        ServiceAmount = null,
+                        DiscountSubtotal = null,
+                        DepositSubtotal = null,
+                        RemainingBalance = null,
+                        TotalPaid = null,
+                        PaymentStatus = 0,
+                        PaymentMethod = 0,
+                        DeliveryMethod = 0,
+                        PaymentType = PaymentType.FULL,
+                        CanceledAt = null,
+                        CanceledReason = null,
+                        SubTotalAmount = 3000.0m,
+                        WarrantyCode = null,
+                        ReceivedAt = null,
+                        CreatedBy = "User",
+                        UpdatedBy = null,
+                        CreatedAt = new DateTime(2025, 8, 3, 6, 31, 42, DateTimeKind.Utc),
+                        UpdatedAt = new DateTime(2025, 8, 3, 6, 31, 42, DateTimeKind.Utc),
+                        IsDeleted = false
+                    });
 
             modelBuilder.Entity<OrderItem>().HasData(
                 new OrderItem
                 {
-                    Id = "6f186eb4a0674e0ea870fd63a5486738",
-                    OrderId = "d116622e6bce489ea74fc6ae3c907479",
+                    Id = "6390cef2d8644fa791480f1e3b7a81e2",
+                    OrderId = "4951106889514ce2ada27665d3e41a43",
                     ParentOrderItemId = null,
                     MaternityDressDetailId = null,
                     PresetId = null,
@@ -3540,141 +3606,106 @@ namespace MamaFit.BusinessObjects.Data
                     WarrantyDate = null,
                     CreatedBy = "user",
                     UpdatedBy = null,
-                    CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
+                    CreatedAt = new DateTime(2025, 8, 3, 6, 19, 30, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 3, 6, 19, 30, DateTimeKind.Utc),
                     IsDeleted = false
                 },
-    new OrderItem
-    {
-        Id = "b5c1e49e540249d38793c82743ff98d6",
-        OrderId = "9af25006e3b043d9984fbc6185efe11d",
-        ParentOrderItemId = null,
-        MaternityDressDetailId = null,
-        PresetId = "6ab0daed7fe54e9fa791bfcb6bf1a043",
-        ItemType = ItemType.PRESET,
-        Price = 2000.0m,
-        Quantity = 1,
-        WarrantyDate = null,
-        CreatedBy = "user",
-        UpdatedBy = null,
-        CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new OrderItem
-    {
-        Id = "1d907aa17ebf42fb98a0e773eba8cfaa",
-        OrderId = "7d72109eb0f345909c58f87be3116d04",
-        ParentOrderItemId = null,
-        MaternityDressDetailId = null,
-        PresetId = "6fd08876dd804c01983236cb5277b406",
-        ItemType = ItemType.PRESET,
-        Price = 2000.0m,
-        Quantity = 1,
-        WarrantyDate = null,
-        CreatedBy = "user",
-        UpdatedBy = null,
-        CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new OrderItem
-    {
-        Id = "be5937c82bf64c2bb20b2579d8e5eace",
-        OrderId = "095925d56faa4797b3e31f7cb3f77a3b",
-        ParentOrderItemId = null,
-        MaternityDressDetailId = null,
-        PresetId = "68fca8f086454898ae81b1ea29890b60",
-        ItemType = ItemType.PRESET,
-        Price = 2000.0m,
-        Quantity = 1,
-        WarrantyDate = null,
-        CreatedBy = "user",
-        UpdatedBy = null,
-        CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new OrderItem
-    {
-        Id = "2522e58fc7e74bf8bdbdc1c4784e56fe",
-        OrderId = "f10c67ae8be04c3fb810878dd82c2d56",
-        ParentOrderItemId = null,
-        MaternityDressDetailId = null,
-        PresetId = null,
-        ItemType = ItemType.DESIGN_REQUEST,
-        Price = 3000.0m,
-        Quantity = 1,
-        WarrantyDate = null,
-        CreatedBy = "user",
-        UpdatedBy = null,
-        CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new OrderItem
-    {
-        Id = "9451712570b14aa7bc9fa93006d4d0db",
-        OrderId = "ea64d6b0c556419bb718549e707e7a08",
-        ParentOrderItemId = null,
-        MaternityDressDetailId = null,
-        PresetId = "fe88b53dce4c4938a7785fb9e3db1f0a",
-        ItemType = ItemType.PRESET,
-        Price = 2000.0m,
-        Quantity = 1,
-        WarrantyDate = null,
-        CreatedBy = "user",
-        UpdatedBy = null,
-        CreatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 07, 23, 12, 25, 18, DateTimeKind.Utc),
-        IsDeleted = false
-    }
-);
+                new OrderItem
+                {
+                    Id = "5c599ac9632447ff814ffcc127910e01",
+                    OrderId = "d7ba2e103448473f9949c10a59243e62",
+                    ParentOrderItemId = null,
+                    MaternityDressDetailId = null,
+                    PresetId = "68fca8f086454898ae81b1ea29890b60",
+                    ItemType = ItemType.PRESET,
+                    Price = 2000.0m,
+                    Quantity = 1,
+                    WarrantyDate = null,
+                    CreatedBy = "user",
+                    UpdatedBy = null,
+                    CreatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new OrderItem
+                {
+                    Id = "d0bca4f5b523409d9a8f6c245b2cc42f",
+                    OrderId = "fffdd078a46040e3bf27839793bb2bed",
+                    ParentOrderItemId = null,
+                    MaternityDressDetailId = null,
+                    PresetId = "33c8177630a54906b92c0b8c03c57450",
+                    ItemType = ItemType.PRESET,
+                    Price = 2000.0m,
+                    Quantity = 1,
+                    WarrantyDate = null,
+                    CreatedBy = "user",
+                    UpdatedBy = null,
+                    CreatedAt = new DateTime(2025, 8, 3, 6, 29, 40, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 3, 6, 29, 40, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new OrderItem
+                {
+                    Id = "0c70b067e66a4ac0a9cf7d61a72ec887",
+                    OrderId = "b1dec711c96840a3b45c14ed8b40d6ba",
+                    ParentOrderItemId = null,
+                    MaternityDressDetailId = null,
+                    PresetId = "fe88b53dce4c4938a7785fb9e3db1f0a",
+                    ItemType = ItemType.PRESET,
+                    Price = 2000.0m,
+                    Quantity = 1,
+                    WarrantyDate = null,
+                    CreatedBy = "user",
+                    UpdatedBy = null,
+                    CreatedAt = new DateTime(2025, 8, 3, 6, 30, 48, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 3, 6, 30, 48, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new OrderItem
+                {
+                    Id = "583f8d8a545a4eb19d3257433f84de2d",
+                    OrderId = "74dede079f594b58b119a7edf9c21c01",
+                    ParentOrderItemId = null,
+                    MaternityDressDetailId = null,
+                    PresetId = null,
+                    ItemType = ItemType.DESIGN_REQUEST,
+                    Price = 3000.0m,
+                    Quantity = 1,
+                    WarrantyDate = null,
+                    CreatedBy = "user",
+                    UpdatedBy = null,
+                    CreatedAt = new DateTime(2025, 8, 3, 6, 31, 42, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 3, 6, 31, 42, DateTimeKind.Utc),
+                    IsDeleted = false
+                });
 
             modelBuilder.Entity<OrderItemAddOnOption>().HasData(
-    new OrderItemAddOnOption
-    {
-        OrderItemId = "b5c1e49e540249d38793c82743ff98d6",
-        AddOnOptionId = "0528ef2e60164a3aa4ee078e25e982b2",
-        Value = ""
-    },
-    new OrderItemAddOnOption
-    {
-        OrderItemId = "b5c1e49e540249d38793c82743ff98d6",
-        AddOnOptionId = "71655b636da34aa391d8691180ca763b",
-        Value = "MamaFit la so 1"
-    },
-    new OrderItemAddOnOption
-    {
-        OrderItemId = "be5937c82bf64c2bb20b2579d8e5eace",
-        AddOnOptionId = "c289f97217504ea4a0a16b7079cf5f2a",
-        Value = ""
-    },
-    new OrderItemAddOnOption
-    {
-        OrderItemId = "9451712570b14aa7bc9fa93006d4d0db",
-        AddOnOptionId = "0528ef2e60164a3aa4ee078e25e982b2",
-        Value = ""
-    },
-    new OrderItemAddOnOption
-    {
-        OrderItemId = "9451712570b14aa7bc9fa93006d4d0db",
-        AddOnOptionId = "3c7f15f87fc34c3f9448d52a2e98f3ed",
-        Value = "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/add-ons%2F1000029159.png?alt=media&token=ec0ac956-57e1-4973-be31-c47785db7e75"
-    },
-    new OrderItemAddOnOption
-    {
-        OrderItemId = "9451712570b14aa7bc9fa93006d4d0db",
-        AddOnOptionId = "71655b636da34aa391d8691180ca763b",
-        Value = "Dai Hoc FPT"
-    },
-    new OrderItemAddOnOption
-    {
-        OrderItemId = "9451712570b14aa7bc9fa93006d4d0db",
-        AddOnOptionId = "df081a39cfb246f8ae4be96cbb633893",
-        Value = ""
-    }
-);
+                new OrderItemAddOnOption
+                {
+                    OrderItemId = "5c599ac9632447ff814ffcc127910e01",
+                    AddOnOptionId = "0528ef2e60164a3aa4ee078e25e982b2",
+                    Value = ""
+                },
+                new OrderItemAddOnOption
+                {
+                    OrderItemId = "5c599ac9632447ff814ffcc127910e01",
+                    AddOnOptionId = "811a8841037a43e0adf5b0bfd7630bad",
+                    Value = "MamaFit la so 1"
+                },
+                new OrderItemAddOnOption
+                {
+                    OrderItemId = "d0bca4f5b523409d9a8f6c245b2cc42f",
+                    AddOnOptionId = "3c7f15f87fc34c3f9448d52a2e98f3ed",
+                    Value = "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/add-ons%2F1000029294.png?alt=media&token=b97c8980-cfa7-4988-a335-30c4b5512c29"
+                },
+                new OrderItemAddOnOption
+                {
+                    OrderItemId = "d0bca4f5b523409d9a8f6c245b2cc42f",
+                    AddOnOptionId = "71655b636da34aa391d8691180ca763b",
+                    Value = "Xin chao MamaFit"
+                }
+        );
+
             #endregion
         }
     }

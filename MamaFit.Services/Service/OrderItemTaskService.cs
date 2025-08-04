@@ -122,9 +122,9 @@ public class OrderItemTaskService : IOrderItemTaskService
         var order = task.OrderItem!.Order;
 
         //Update thông tin Task
-        task.Note = request.Note;
+        task.Note = request.Note ?? task.Note;
         task.Status = request.Status;
-        task.Image = request.Image;
+        task.Image = request.Image ?? task.Image;
 
         await _repo.UpdateAsync(task);
         await _cacheService.RemoveByPrefixAsync(cacheKey);

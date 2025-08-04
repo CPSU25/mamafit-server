@@ -31,7 +31,7 @@ namespace MamaFit.Repositories.Repository
 
         public async Task<OrderItem> GetDetailById(string orderItemId)
         {
-            var result = await _dbSet.AsNoTracking()
+            var result = await _dbSet
                 .Include(x => x.DesignRequest)
                 .Include(x => x.MaternityDressDetail)
                 .Include(x => x.Preset)

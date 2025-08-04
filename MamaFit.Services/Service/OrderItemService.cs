@@ -168,14 +168,6 @@ public class OrderItemService : IOrderItemService
                     orderItemTask.UserId = personInCharge!.Id;
                     orderItemTask.UpdatedBy = user?.UserName ?? "System";
                     orderItemTask.UpdatedAt = DateTime.UtcNow;
-
-                    //orderItemTask.OrderItem!.Order!.Status = OrderStatus.IN_PRODUCTION;
-
-                    //if (orderItemTask.MaternityDressTask!.Milestone!.ApplyFor!.Contains(ItemType.DESIGN_REQUEST))
-                    //{
-                    //    orderItemTask.OrderItem.Order.Status = OrderStatus.IN_DESIGN;
-                    //}
-
                     await _unitOfWork.OrderItemTaskRepository.UpdateAsync(orderItemTask);
                 }
             }

@@ -199,6 +199,30 @@ public class OrderController : ControllerBase
         ));
     }
 
+    [HttpPut("{id}/received")]
+    public async Task<IActionResult> UpdateReceivedOrder([FromRoute] string id)
+    {
+        await _service.UpdateReceivedOrderAsync(id);
+        return Ok(new ResponseModel<string>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            null,
+            "Update order to received successfully!"
+        ));
+    }
+
+    [HttpPut("{id}/cancelled")]
+    public async Task<IActionResult> UpdateCancelledOrder([FromRoute] string id)
+    {
+        await _service.UpdateCancelledOrderAsync(id);
+        return Ok(new ResponseModel<string>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            null,
+            "Update order to cancelled successfully!"
+        ));
+    }
+    
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteOrder([FromRoute] string id)
     {

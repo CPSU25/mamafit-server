@@ -34,12 +34,12 @@ public class OllamaService : ILLMProvider
         {
             try
             {
-                var request = new Model.OllamaRequest
+                var request = new OllamaRequest
                 {
                     Model = _model,
                     Prompt = $"You are a medical AI assistant. Respond ONLY with valid JSON, no other text.\n\n{prompt}",
                     Stream = false,
-                    Options = new Model.OllamaOptions
+                    Options = new OllamaOptions
                     {
                         Temperature = 0.3f,
                         NumPredict = 600
@@ -56,7 +56,7 @@ public class OllamaService : ILLMProvider
                 if (response.IsSuccessStatusCode)
                 {
                     var responseContent = await response.Content.ReadAsStringAsync();
-                    var ollamaResponse = JsonConvert.DeserializeObject<Model.OllamaResponse>(responseContent);
+                    var ollamaResponse = JsonConvert.DeserializeObject<OllamaResponse>(responseContent);
                     
                     var result = ollamaResponse?.Response ?? "";
                     _logger.LogDebug($"Ollama response: {result}");

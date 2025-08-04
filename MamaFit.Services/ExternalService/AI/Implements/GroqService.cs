@@ -39,17 +39,17 @@ public class GroqService : ILLMProvider
         {
             try
             {
-                var request = new Model.LLMRequest
+                var request = new LLMRequest
                 {
                     Model = _model,
-                    Messages = new List<Model.LLMMessage>
+                    Messages = new List<LLMMessage>
                     {
-                        new Model.LLMMessage 
+                        new LLMMessage 
                         { 
                             Role = "system", 
                             Content = "You are a medical AI assistant specializing in pregnancy measurements. Always respond with valid JSON only, no additional text."
                         },
-                        new Model.LLMMessage 
+                        new LLMMessage 
                         { 
                             Role = "user", 
                             Content = prompt 
@@ -73,7 +73,7 @@ public class GroqService : ILLMProvider
                 if (response.IsSuccessStatusCode)
                 {
                     var responseContent = await response.Content.ReadAsStringAsync();
-                    var groqResponse = JsonConvert.DeserializeObject<Model.GroqResponse>(responseContent);
+                    var groqResponse = JsonConvert.DeserializeObject<GroqResponse>(responseContent);
                     
                     var result = groqResponse?.Choices?.FirstOrDefault()?.Message.Content ?? "";
                     _logger.LogDebug($"Groq response: {result}");

@@ -6,5 +6,6 @@
         Image,
         File,
         Design_Request,
+        Preset,
     }
 }

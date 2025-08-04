@@ -27,6 +27,8 @@ services:
       - Contentful__ContentDeliveryKey=${CONTENT_DELIVERY_KEY}
       - Contentful__EntryId=${CONTENTFUL_ENTRY_ID}
       - Contentful__SecretKey=${CONTENTFUL_SECRET_KEY}
+      - AI__Providers__Ollama__BaseUrl=http://ollama:11434
+      - AI__Providers__Groq__ApiKey=${GROQ_API_KEY}
     networks:
       - default
 
@@ -43,6 +45,17 @@ services:
       - /data/compose/4/letsencrypt:/etc/letsencrypt
     networks:
       - default
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    networks:
+      - default
+    volumes:
+      - /data/compose/ollama:/root/.ollama
 
 networks:
   default:

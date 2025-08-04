@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using FluentValidation;
 using Hangfire;
 using MamaFit.Repositories.Helper;
+using MamaFit.Services.ExternalService.AI;
 using MamaFit.Services.ExternalService.CronJob;
 using MamaFit.Services.ExternalService.Filter;
 using MamaFit.Services.Validator;
@@ -16,7 +17,7 @@ namespace MamaFit.API
 {
     public static class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var logger = LogManager.Setup().LoadConfigurationFromFile(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config")).GetCurrentClassLogger();
             try
@@ -25,7 +26,6 @@ namespace MamaFit.API
                 
                 builder.Logging.ClearProviders();
                 builder.Host.UseNLog();
-
                 builder.Services.AddCors(options =>
                 {
                     options.AddPolicy(name: CorsConstant.PolicyName,
@@ -48,11 +48,21 @@ namespace MamaFit.API
                 builder.Services.AddDatabase(builder.Configuration);
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddApplicationServices(builder.Configuration);
+                builder.Services.AddAIServices(builder.Configuration);
                 builder.Services.AddHttpClientServices();
                 builder.Services.AddConfigSwagger();
                 builder.Services.AddJwtAuthentication(builder.Configuration);
                 var app = builder.Build();
 
+                using (var scope = app.Services.CreateScope())
+                {
+                    var aiService = scope.ServiceProvider.GetService<IAIMeasurementCalculationService>();
+                    if (aiService != null)
+                    {
+                        var isAvailable = await aiService.IsAvailable();
+                        logger.Info($"AI Service Status at startup: {(isAvailable ? "Available" : "Not Available")}");
+                    }
+                }
                 // Configure the HTTP request pipeline.
                 if (app.Environment.IsDevelopment())
                 {

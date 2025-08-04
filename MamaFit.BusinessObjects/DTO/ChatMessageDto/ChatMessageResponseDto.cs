@@ -22,7 +22,7 @@ namespace MamaFit.BusinessObjects.DTO.ChatMessageDto
         {
             get
             {
-                if (Type == MessageType.JSON && !string.IsNullOrEmpty(Message))
+                if (Type == MessageType.Design_Request && !string.IsNullOrEmpty(Message))
                 {
                     try
                     {
@@ -52,7 +52,7 @@ namespace MamaFit.BusinessObjects.DTO.ChatMessageDto
                 {
                     return content.GetString();
                 }
-                return Type == MessageType.JSON ? null : Message;
+                return Type == MessageType.Design_Request ? null : Message;
             }
         }
         
@@ -89,6 +89,6 @@ namespace MamaFit.BusinessObjects.DTO.ChatMessageDto
         /// <summary>
         /// Kiểm tra xem message có phải là JSON hợp lệ không
         /// </summary>
-        public bool IsValidJson => Type == MessageType.JSON && ParsedData != null;
+        public bool IsValidJson => Type == MessageType.Design_Request && ParsedData != null;
     }
 }

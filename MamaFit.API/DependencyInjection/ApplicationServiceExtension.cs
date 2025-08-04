@@ -7,6 +7,9 @@ using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using MamaFit.Repositories.Repository;
+using MamaFit.Services.ExternalService.AI;
+using MamaFit.Services.ExternalService.AI.Implements;
+using MamaFit.Services.ExternalService.AI.Interface;
 using MamaFit.Services.ExternalService.CloudinaryService;
 using MamaFit.Services.ExternalService.CronJob;
 using MamaFit.Services.ExternalService.ExpoNotification;
@@ -24,6 +27,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Polly;
+using Polly.Extensions.Http;
 using StackExchange.Redis;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -304,6 +309,38 @@ namespace MamaFit.API.DependencyInjection
                 });
 
             return services;
+        }
+        
+        public static IServiceCollection AddAIServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddMemoryCache();
+            services.AddScoped<IAIMeasurementCalculationService, FlexibleAIMeasurementService>();
+            services.AddHttpClient<GroqService>(client =>
+                {
+                    client.Timeout = TimeSpan.FromSeconds(30);
+                })
+                .AddPolicyHandler(GetRetryPolicy());
+            services.AddHttpClient<OllamaService>(client =>
+            {
+                var baseUrl = configuration["AI:Providers:Ollama:BaseUrl"] ?? "http://localhost:11434";
+                client.BaseAddress = new Uri(baseUrl);
+                client.Timeout = TimeSpan.FromSeconds(60);
+            });
+            return services;
+        }
+
+        private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+        {
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .OrResult(msg => !msg.IsSuccessStatusCode)
+                .WaitAndRetryAsync(
+                    3,
+                    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                    onRetry: (outcome, timespan, retryCount, context) =>
+                    {
+                        Console.WriteLine($"Retry {retryCount} after {timespan} seconds");
+                    });
         }
 
         public static void AddApplicationServices(this IServiceCollection services, IConfiguration configuration)

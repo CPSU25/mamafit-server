@@ -4,6 +4,7 @@ using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
+using MamaFit.Services.ExternalService.AI;
 using MamaFit.Services.Interface;
 using MamaFit.Services.Service.Caculator;
 using Microsoft.AspNetCore.Http;
@@ -17,18 +18,21 @@ public class MeasurementService : IMeasurementService
     private readonly IBodyGrowthCalculator _calculator;
     private readonly IValidationService _validation;
     private readonly INotificationService _notificationService;
+    private readonly IAIMeasurementCalculationService _aiCalculationService;
 
     public MeasurementService(IMapper mapper,
         IUnitOfWork unitOfWork,
         IBodyGrowthCalculator calculator,
         IValidationService validation,
-        INotificationService notificationService)
+        INotificationService notificationService,
+        IAIMeasurementCalculationService aiCalculationService)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
         _calculator = calculator;
         _validation = validation;
         _notificationService = notificationService;
+        _aiCalculationService = aiCalculationService;
     }
 
     public async Task GenerateMissingMeasurementsAsync()
@@ -38,55 +42,7 @@ public class MeasurementService : IMeasurementService
         foreach (var diary in diaries)
         {
             if (diary.PregnancyStartDate == null) continue;
-
-            var currentWeek = CalculateWeeksPregnant(diary.PregnancyStartDate);
-            var last = await _unitOfWork.MeasurementRepository
-                .GetLatestMeasurementByDiaryIdAsync(diary.Id);
-
-            int baseWeek = last.WeekOfPregnancy;
-
-            for (int week = baseWeek + 2; week <= currentWeek; week += 2)
-            {
-                bool exists = await _unitOfWork.MeasurementRepository
-                    .ValidateMeasurementExistenceAsync(diary.Id, week);
-                if (exists) continue;
-
-                float baseBust = last?.Bust ?? diary.Bust;
-                float baseWaist = last?.Waist ?? diary.Waist;
-                float baseHip = last?.Hip ?? diary.Hip;
-                float baseWeight = last?.Weight ?? diary.Weight;
-                float height = diary.Height;
-
-                float bust = _calculator.CalculateBust(baseBust, baseWeek, week);
-                float waist = _calculator.CalculateWaist(baseWaist, baseWeek, week);
-                float hip = _calculator.CalculateHip(baseHip, baseWeek, week);
-                float weight = _calculator.CalculateWeight(baseWeight, baseWeek, week);
-
-                var entity = new Measurement
-                {
-                    MeasurementDiaryId = diary.Id,
-                    WeekOfPregnancy = week,
-                    Bust = bust,
-                    Waist = waist,
-                    Hip = hip,
-                    Weight = weight,
-                    Stomach = waist + 5f,
-                    PantsWaist = waist - 5f,
-                    Coat = bust + 5f,
-                    ChestAround = bust + 3f,
-                    Thigh = (hip + 5f) / 2f,
-                    Neck = height / 5f,
-                    ShoulderWidth = height / 4.3f,
-                    SleeveLength = height / 6.4f,
-                    DressLength = height * 0.66f,
-                    LegLength = height * 0.48f,
-                    CreatedAt = DateTime.UtcNow,
-                    CreatedBy = "SystemAuto"
-                };
-
-                await _unitOfWork.MeasurementRepository.InsertAsync(entity);
-            }
-
+            await GenerateMissingMeasurementsForDiary(diary);
             await _unitOfWork.SaveChangesAsync();
         }
     }
@@ -115,21 +71,7 @@ public class MeasurementService : IMeasurementService
         var diaries = await _unitOfWork.MeasurementDiaryRepository.GetAllAsync();
         foreach (var diary in diaries)
         {
-            var currentWeek = CalculateWeeksPregnant(diary.PregnancyStartDate);
-            bool hasMeasurement = await _unitOfWork.MeasurementRepository
-                .ValidateMeasurementExistenceAsync(diary.Id, currentWeek);
-
-            if (!hasMeasurement)
-            {
-                var model = new NotificationRequestDto
-                {
-                    ReceiverId = diary.UserId,
-                    NotificationTitle = "Measurement Reminder",
-                    NotificationContent =
-                        $"You have not recorded your measurements for week {currentWeek} of pregnancy. Please update your measurements.",
-                };
-                await _notificationService.SendAndSaveNotificationAsync(model);
-            }
+            await CheckAndSendReminderForDiary(diary);
         }
     }
 
@@ -140,10 +82,7 @@ public class MeasurementService : IMeasurementService
 
         var response = _mapper.Map<MeasurementResponseDto>(measurement);
 
-        if (measurement.Orders.Any())
-        {
-            response.IsLocked = true;
-        }
+        response.IsLocked = measurement.Orders.Any();
         return response;
     }
 
@@ -152,11 +91,7 @@ public class MeasurementService : IMeasurementService
         var measurement = await _unitOfWork.MeasurementRepository.GetLatestMeasurementByDiaryIdAsync(diaryId);
 
         var response = _mapper.Map<MeasurementResponseDto>(measurement);
-
-        if (measurement.Orders.Any())
-        {
-            response.IsLocked = true;
-        }
+        response.IsLocked = measurement.Orders.Any();
 
         return response;
     }
@@ -167,61 +102,16 @@ public class MeasurementService : IMeasurementService
         var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdNotDeletedAsync(dto.MeasurementId);
         _validation.CheckNotFound(diary, "Measurement diary not found");
         var weeksPregnant = CalculateWeeksPregnant(diary.PregnancyStartDate);
+        
+        await ValidateNoExistingMeasurement(dto.MeasurementId, weeksPregnant);
+        
+        var diaryDto = _mapper.Map<MeasurementDiaryDto>(diary);
+        
+        // Get last measurement if exists
+        var lastMeasurement = await _unitOfWork.MeasurementRepository
+            .GetLatestMeasurementByDiaryIdAsync(diary.Id);
 
-        if (await _unitOfWork.MeasurementRepository.ValidateMeasurementExistenceAsync(dto.MeasurementId,
-                weeksPregnant))
-            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.NOT_FOUND,
-                "Measurement for this week already exists");
-
-        bool hasManualInput = dto.Weight > 0 && dto.Bust > 0 && dto.Waist > 0 && dto.Hip > 0;
-
-        float weight, bust, waist, hip;
-
-        if (hasManualInput)
-        {
-            weight = dto.Weight;
-            bust = dto.Bust;
-            waist = dto.Waist;
-            hip = dto.Hip;
-        }
-        else
-        {
-            var last = await _unitOfWork.MeasurementRepository.GetLatestMeasurementByDiaryIdAsync(diary.Id);
-
-            float baseBust = last?.Bust ?? diary.Bust;
-            float baseWaist = last?.Waist ?? diary.Waist;
-            float baseHip = last?.Hip ?? diary.Hip;
-            float baseWeight = last?.Weight ?? diary.Weight;
-
-            int baseWeek = last!.WeekOfPregnancy;
-
-            bust = _calculator.CalculateBust(baseBust, baseWeek, weeksPregnant);
-            waist = _calculator.CalculateWaist(baseWaist, baseWeek, weeksPregnant);
-            hip = _calculator.CalculateHip(baseHip, baseWeek, weeksPregnant);
-            weight = _calculator.CalculateWeight(baseWeight, baseWeek, weeksPregnant);
-        }
-
-        float height = diary.Height;
-
-        return new MeasurementDto
-        {
-            WeekOfPregnancy = weeksPregnant,
-            Weight = weight,
-            Waist = waist,
-            Bust = bust,
-            Hip = hip,
-            Stomach = waist + 5f,
-            PantsWaist = waist - 5f,
-            Coat = bust + 5f,
-            ChestAround = bust + 3f,
-            Thigh = (hip + 5f) / 2f,
-
-            Neck = height / 5f,
-            ShoulderWidth = height / 4.3f,
-            SleeveLength = height / 6.4f,
-            DressLength = height * 0.66f,
-            LegLength = height * 0.48f
-        };
+        return await CalculateMeasurementsWithAI(diaryDto, dto, lastMeasurement, weeksPregnant);
     }
 
     public async Task<MeasurementDto> CreateMeasurementAsync(CreateMeasurementDto dto)
@@ -232,10 +122,7 @@ public class MeasurementService : IMeasurementService
         var pregnancyStartDate = diary.PregnancyStartDate;
         var weeksPregnant = CalculateWeeksPregnant(pregnancyStartDate);
 
-        if (await _unitOfWork.MeasurementRepository.ValidateMeasurementExistenceAsync(dto.MeasurementId,
-                weeksPregnant))
-            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
-                "Measurement for this week already exists");
+        await ValidateNoExistingMeasurement(dto.MeasurementId, weeksPregnant);
 
         var measurementEntity = _mapper.Map<Measurement>(dto);
         measurementEntity.MeasurementDiaryId = diary.Id;
@@ -254,39 +141,20 @@ public class MeasurementService : IMeasurementService
         {
             var user = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(dto.UserId);
             _validation.CheckNotFound(user, "User not found");
-            ;
         }
 
         var pregnancyStartDate = CalculatePregnancyStartDate(dto);
         var currentWeek = CalculateWeeksPregnant(pregnancyStartDate);
 
-        float baseBust = dto.Bust;
-        float baseWaist = dto.Waist;
-        float baseHip = dto.Hip;
-        float height = dto.Height;
-
-        float bust = _calculator.CalculateBust(baseBust, 0, currentWeek);
-        float waist = _calculator.CalculateWaist(baseWaist, 0, currentWeek);
-        float hip = _calculator.CalculateHip(baseHip, 0, currentWeek);
-
-        return new MeasurementDto
+        var createDto = new MeasurementCreateDto
         {
-            WeekOfPregnancy = currentWeek,
             Weight = dto.Weight,
             Bust = dto.Bust,
             Waist = dto.Waist,
-            Hip = dto.Hip,
-            Stomach = waist + 5f,
-            PantsWaist = waist - 5f,
-            Coat = bust + 5f,
-            ChestAround = bust + 3f,
-            Thigh = (hip + 5f) / 2f,
-            Neck = height / 5f,
-            ShoulderWidth = height / 4.3f,
-            SleeveLength = height / 6.4f,
-            DressLength = height * 0.66f,
-            LegLength = height * 0.48f
+            Hip = dto.Hip
         };
+
+        return await CalculateMeasurementsWithAI(dto, createDto, null, currentWeek);
     }
 
     public async Task<string> CreateDiaryWithMeasurementAsync(MeasurementDiaryCreateRequest request)
@@ -348,6 +216,174 @@ public class MeasurementService : IMeasurementService
         await _unitOfWork.MeasurementRepository.SoftDeleteAsync(id);
         await _unitOfWork.SaveChangesAsync();
         return true;
+    }
+
+    private async Task GenerateMissingMeasurementsForDiary(MeasurementDiary diary)
+    {
+        var currentWeek = CalculateWeeksPregnant(diary.PregnancyStartDate);
+        var lastMeasurement = await _unitOfWork.MeasurementRepository
+            .GetLatestMeasurementByDiaryIdAsync(diary.Id);
+
+        int baseWeek = lastMeasurement?.WeekOfPregnancy ?? 0;
+
+        for (int week = baseWeek + 2; week <= currentWeek; week += 2)
+        {
+            bool exists = await _unitOfWork.MeasurementRepository
+                .ValidateMeasurementExistenceAsync(diary.Id, week);
+            if (exists) continue;
+
+            var measurement = CreateMissingMeasurement(diary, lastMeasurement, week);
+            await _unitOfWork.MeasurementRepository.InsertAsync(measurement);
+        }
+    }
+
+    private Measurement CreateMissingMeasurement(MeasurementDiary diary, Measurement? lastMeasurement, int week)
+    {
+        float baseBust = lastMeasurement?.Bust ?? diary.Bust;
+        float baseWaist = lastMeasurement?.Waist ?? diary.Waist;
+        float baseHip = lastMeasurement?.Hip ?? diary.Hip;
+        float baseWeight = lastMeasurement?.Weight ?? diary.Weight;
+        int baseWeek = lastMeasurement?.WeekOfPregnancy ?? 0;
+
+        float bust = _calculator.CalculateBust(baseBust, baseWeek, week);
+        float waist = _calculator.CalculateWaist(baseWaist, baseWeek, week);
+        float hip = _calculator.CalculateHip(baseHip, baseWeek, week);
+        float weight = _calculator.CalculateWeight(baseWeight, baseWeek, week);
+
+        return new Measurement
+        {
+            MeasurementDiaryId = diary.Id,
+            WeekOfPregnancy = week,
+            Bust = bust,
+            Waist = waist,
+            Hip = hip,
+            Weight = weight,
+            Stomach = waist + 5f,
+            PantsWaist = waist - 5f,
+            Coat = bust + 5f,
+            ChestAround = bust + 3f,
+            Thigh = (hip + 5f) / 2f,
+            Neck = diary.Height / 5f,
+            ShoulderWidth = diary.Height / 4.3f,
+            SleeveLength = diary.Height / 6.4f,
+            DressLength = diary.Height * 0.66f,
+            LegLength = diary.Height * 0.48f,
+            CreatedAt = DateTime.UtcNow,
+            CreatedBy = "SystemAuto"
+        };
+    }
+
+    private async Task CheckAndSendReminderForDiary(MeasurementDiary diary)
+    {
+        var currentWeek = CalculateWeeksPregnant(diary.PregnancyStartDate);
+        bool hasMeasurement = await _unitOfWork.MeasurementRepository
+            .ValidateMeasurementExistenceAsync(diary.Id, currentWeek);
+
+        if (!hasMeasurement)
+        {
+            var notification = new NotificationRequestDto
+            {
+                ReceiverId = diary.UserId,
+                NotificationTitle = "Measurement Reminder",
+                NotificationContent =
+                    $"You have not recorded your measurements for week {currentWeek} of pregnancy. Please update your measurements.",
+            };
+            await _notificationService.SendAndSaveNotificationAsync(notification);
+        }
+    }
+
+    private async Task<MeasurementDiary> GetValidatedDiary(string diaryId)
+    {
+        var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdNotDeletedAsync(diaryId);
+        _validation.CheckNotFound(diary, "Measurement diary not found");
+        return diary;
+    }
+
+    private async Task ValidateNoExistingMeasurement(string diaryId, int week)
+    {
+        if (await _unitOfWork.MeasurementRepository.ValidateMeasurementExistenceAsync(diaryId, week))
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                "Measurement for this week already exists");
+    }
+
+    private async Task<MeasurementDto> CalculateMeasurementsWithAI(
+        MeasurementDiaryDto diaryDto,
+        MeasurementCreateDto? dto,
+        Measurement? lastMeasurement,
+        int weeksPregnant)
+    {
+        try
+        {
+            if (await _aiCalculationService.IsAvailable())
+            {
+                return await _aiCalculationService.CalculateMeasurementsAsync(
+                    diaryDto, dto, lastMeasurement, weeksPregnant);
+            }
+        }
+        catch (Exception)
+        {
+            throw new ErrorException(StatusCodes.Status500InternalServerError, ApiCodes.EXTERNAL_SERVICE_ERROR,
+                "AI measurement calculation failed. Please try again later.");
+        }
+
+        return GenerateWithOriginalCalculator(dto, diaryDto, lastMeasurement, weeksPregnant);
+    }
+
+    private MeasurementDto GenerateWithOriginalCalculator(
+        MeasurementCreateDto? dto,
+        MeasurementDiaryDto diary,
+        Measurement? lastMeasurement,
+        int weeksPregnant)
+    {
+        bool hasManualInput = dto != null && dto.Weight > 0 && dto.Bust > 0 && dto.Waist > 0 && dto.Hip > 0;
+
+        float weight, bust, waist, hip;
+
+        if (hasManualInput)
+        {
+            weight = dto.Weight;
+            bust = dto.Bust;
+            waist = dto.Waist;
+            hip = dto.Hip;
+        }
+        else
+        {
+            float baseBust = lastMeasurement?.Bust ?? diary.Bust;
+            float baseWaist = lastMeasurement?.Waist ?? diary.Waist;
+            float baseHip = lastMeasurement?.Hip ?? diary.Hip;
+            float baseWeight = lastMeasurement?.Weight ?? diary.Weight;
+            int baseWeek = lastMeasurement?.WeekOfPregnancy ?? 0;
+
+            bust = _calculator.CalculateBust(baseBust, baseWeek, weeksPregnant);
+            waist = _calculator.CalculateWaist(baseWaist, baseWeek, weeksPregnant);
+            hip = _calculator.CalculateHip(baseHip, baseWeek, weeksPregnant);
+            weight = _calculator.CalculateWeight(baseWeight, baseWeek, weeksPregnant);
+        }
+
+        return CreateMeasurementDto(weight, bust, waist, hip, diary.Height, weeksPregnant);
+    }
+
+    private MeasurementDto CreateMeasurementDto(float weight, float bust, float waist, float hip, float height,
+        int week)
+    {
+        return new MeasurementDto
+        {
+            WeekOfPregnancy = week,
+            Weight = weight,
+            Waist = waist,
+            Bust = bust,
+            Hip = hip,
+            Stomach = waist + 5f,
+            PantsWaist = waist - 5f,
+            Coat = bust + 5f,
+            ChestAround = bust + 3f,
+            Thigh = (hip + 5f) / 2f,
+            Neck = height / 5f,
+            ShoulderWidth = height / 4.3f,
+            SleeveLength = height / 6.4f,
+            DressLength = height * 0.66f,
+            LegLength = height * 0.48f
+        };
     }
 
     private DateTime? CalculatePregnancyStartDate(MeasurementDiaryDto dto)

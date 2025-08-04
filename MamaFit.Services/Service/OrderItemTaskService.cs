@@ -163,14 +163,19 @@ public class OrderItemTaskService : IOrderItemTaskService
                         if (hasAddOn.Any(x => x.Progress == 100 && x.IsDone))
                         {
                             var packageProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).Skip(1).FirstOrDefault();
+                            var keywordList = new[] { "quality check", "qc" };
+                            var qcProgress = progress.Where(x => keywordList.Any(k => x.Milestone!.Name!.ToLower().Contains(k)));
                             if (packageProgress.Progress == 100 && packageProgress.IsDone)
                             {
                                 order.Status = OrderStatus.AWAITING_DELIVERY;
                                 var deliveringProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).FirstOrDefault();
                                 if (deliveringProgress.Progress == 100 && packageProgress.IsDone)
                                     order.Status = OrderStatus.DELIVERING;
+                                
                             }
-                            else
+                            else if (qcProgress.Any(x => x.Progress == 100 && x.IsDone))
+                                order.Status = OrderStatus.PACKAGING;
+                            else 
                                 order.Status = OrderStatus.IN_QC;
                         }
                     }
@@ -253,7 +258,7 @@ public class OrderItemTaskService : IOrderItemTaskService
                     SenderId = designerId,
                     ChatRoomId = chatRoom.Id,
                     Message = jsonMessage,
-                    Type = MessageType.JSON
+                    Type = MessageType.Design_Request
                 };
 
                 var sentMessage = await _chatService.CreateChatMessageAsync(welcomeMessage);

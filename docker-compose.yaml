@@ -29,6 +29,8 @@ services:
       - Contentful__SecretKey=${CONTENTFUL_SECRET_KEY}
       - AI__Providers__Ollama__BaseUrl=http://ollama:11434
       - AI__Providers__Groq__ApiKey=${GROQ_API_KEY}
+    volumes:
+      - /data/compose/app-logs:/data/compose/app-logs
     networks:
       - default
 
@@ -56,6 +58,34 @@ services:
       - default
     volumes:
       - /data/compose/ollama:/root/.ollama
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - /data/compose/elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - default
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.4
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    networks:
+      - default
 
 networks:
   default:

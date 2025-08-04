@@ -7,5 +7,6 @@
         DESIGN_REQUEST,// Tạo mới tất cả
         WARRANTY, // Bảo hành
         ADD_ON, // Thêm vào đơn hàng
+        QC_FAIL
     }
 }

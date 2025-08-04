@@ -86,9 +86,33 @@ namespace MamaFit.Services.Service
                 var totalTaskCount = milestone.MaternityDressTasks.Count;
                 var doneTaskCount = milestone.MaternityDressTasks
                     .Count(x => x.OrderItemTasks.Any(t =>
-                        t.OrderItemId == orderItemId && (t.Status == OrderItemTaskStatus.DONE || t.Status == OrderItemTaskStatus.PASS )));
+                        t.OrderItemId == orderItemId &&
+                        (t.Status == OrderItemTaskStatus.DONE || t.Status == OrderItemTaskStatus.PASS)));
 
-                float progress = totalTaskCount == 0 ? 0 : (float)doneTaskCount / totalTaskCount * 100;
+                bool isQcMilestone = milestone.Name != null &&
+                                     ((milestone.Name.Contains("qc", StringComparison.OrdinalIgnoreCase)
+                                     || milestone.Name.Contains("quality check", StringComparison.OrdinalIgnoreCase))
+                                     && !milestone.ApplyFor.Contains(ItemType.QC_FAIL));
+
+                var qcTaskCount = milestone.MaternityDressTasks
+                    .Count(x => x.OrderItemTasks.Any(t =>
+                        t.OrderItemId == orderItemId &&
+                        (t.Status == OrderItemTaskStatus.FAIL || t.Status == OrderItemTaskStatus.PASS)));
+
+                bool hasFailTask = milestone.MaternityDressTasks
+                    .Any(x => x.OrderItemTasks.Any(t =>
+                        t.OrderItemId == orderItemId &&
+                        t.Status == OrderItemTaskStatus.FAIL));
+
+                float progress;
+                if (isQcMilestone)
+                {
+                    progress = (qcTaskCount == totalTaskCount && totalTaskCount > 0) ? 100 : 0;
+                }
+                else
+                {
+                    progress = totalTaskCount == 0 ? 0 : (float)doneTaskCount / totalTaskCount * 100;
+                }
 
                 var currentTask = milestone.MaternityDressTasks
                     .Where(m => m.OrderItemTasks.Any(o =>
@@ -97,11 +121,17 @@ namespace MamaFit.Services.Service
                     .OrderBy(m => m.SequenceOrder)
                     .FirstOrDefault();
 
+                bool isDone = progress >= 100;
+                if (isQcMilestone && hasFailTask)
+                {
+                    isDone = false;
+                }
+
                 var achiveOrderItem = new MilestoneAchiveOrderItemResponseDto
                 {
                     Milestone = _mapper.Map<MilestoneResponseDto>(milestone),
                     Progress = progress,
-                    IsDone = progress >= 100,
+                    IsDone = isDone,
                     CurrentTask = currentTask != null
                         ? new MaternityDressTaskForMilestoneAchiveResponseDto
                         {

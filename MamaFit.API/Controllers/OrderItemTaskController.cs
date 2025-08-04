@@ -49,14 +49,15 @@ public class OrderItemTaskController : ControllerBase
     public async Task<IActionResult> UpdateStatusAsync(
         [FromRoute] string dressTaskId,
         [FromRoute] string orderItemId,
-        [FromBody] OrderItemTaskUpdateRequestDto request)
+        [FromBody] OrderItemTaskUpdateRequestDto request,
+        bool? severity)
     {
-        await _orderItemTaskService.UpdateStatusAsync(dressTaskId, orderItemId, request);
+        await _orderItemTaskService.UpdateStatusAsync(dressTaskId, orderItemId, request, severity);
         return Ok(new ResponseModel(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
             "Update order item task status successfully!"
         ));
     }
-    
+
 }

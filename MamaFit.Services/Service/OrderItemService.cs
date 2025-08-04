@@ -9,7 +9,6 @@ using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
-using System.ComponentModel.Design;
 
 namespace MamaFit.Services.Service;
 
@@ -219,7 +218,7 @@ public class OrderItemService : IOrderItemService
             await _orderItemTaskService.UpdateStatusAsync(task, request.OrderItemId, new OrderItemTaskUpdateRequestDto
             {
                 Status = request.Status,
-            });
+            },request.Severity);
         }
 
         await _cacheService.RemoveByPrefixAsync(cacheKey);

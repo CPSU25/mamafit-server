@@ -50,7 +50,6 @@ public class OrderService : IOrderService
         _cacheService = cacheService;
         _configService = configService;
     }
-
     
     public async Task<List<OrderResponseDto>> GetOrdersForAssignedStaffAsync()
     {
@@ -678,5 +677,14 @@ public class OrderService : IOrderService
         }
 
         return myOrderStatusCounts;
+    }
+
+    public async Task OrderReceivedAtUpdateAsync(string orderId)
+    {
+        var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(orderId);
+        order.ReceivedAt = DateTime.UtcNow;
+
+        await _unitOfWork.OrderRepository.UpdateAsync(order);
+        await _unitOfWork.SaveChangesAsync();
     }
 }

@@ -31,18 +31,17 @@ namespace MamaFit.Repositories.Repository
 
         public async Task<OrderItem> GetDetailById(string orderItemId)
         {
-            var result = await _dbSet
+            var result = await _dbSet.AsNoTracking()
                 .Include(x => x.DesignRequest)
                 .Include(x => x.MaternityDressDetail)
                 .Include(x => x.Preset)
-                .Include(x => x.OrderItemTasks)
+                .Include(x => x.OrderItemTasks)!
                     .ThenInclude(x => x.User)
                         .ThenInclude(x => x.Role)
                 .Include(x => x.OrderItemTasks)
                     .ThenInclude(x => x.MaternityDressTask)
                         .ThenInclude(x => x!.Milestone)
                 .FirstOrDefaultAsync(x => x.Id == orderItemId && !x.IsDeleted);
-
             return result!;
         }
 
@@ -52,7 +51,7 @@ namespace MamaFit.Repositories.Repository
                 .Include(x => x.DesignRequest)
                 .Include(x => x.MaternityDressDetail)
                 .Include(x => x.Preset)
-                .Include(x => x.OrderItemTasks)
+                .Include(x => x.OrderItemTasks)!
                     .ThenInclude(x => x.User)
                         .ThenInclude(x => x.Role)
                 .Include(x => x.OrderItemTasks)

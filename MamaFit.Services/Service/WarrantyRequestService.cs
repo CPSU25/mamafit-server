@@ -31,15 +31,19 @@ namespace MamaFit.Services.Service
         public async Task CreateAsync(WarrantyRequestCreateDto warrantyRequestCreateDto)
         {
             var oldOrderItem =
-                await _unitOfWork.OrderItemRepository.GetDetailById(warrantyRequestCreateDto.WarrantyOrderItemId);
+                await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(warrantyRequestCreateDto.WarrantyOrderItemId!);
             _validationService.CheckNotFound(oldOrderItem, "Order item don't exist!");
             
             var oldOrder = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(oldOrderItem.OrderId);
             _validationService.CheckNotFound(oldOrder, "Order don't exist!");
             
+            var warrantyRequestCount =
+                await _unitOfWork.WarrantyRequestRepository.CountWarrantyForOrderItemAsync(oldOrderItem.Id);
             var newOrder = new Order
             {
                 UserId = oldOrder.UserId,
+                AddressId = oldOrder.AddressId,
+                MeasurementId = oldOrder.MeasurementId,
                 BranchId = oldOrder.BranchId,
                 Type = OrderType.WARRANTY,
                 Code = GenerateOrderCode(), 
@@ -51,7 +55,6 @@ namespace MamaFit.Services.Service
                 CreatedBy = "System"
             };
             await _unitOfWork.OrderRepository.InsertAsync(newOrder);
-            await _unitOfWork.SaveChangesAsync();
             
             var newOrderItem = new OrderItem
             {
@@ -67,7 +70,6 @@ namespace MamaFit.Services.Service
                 CreatedBy = "System"
             };
             await _unitOfWork.OrderItemRepository.InsertAsync(newOrderItem);
-            await _unitOfWork.SaveChangesAsync();
             
             var warrantyRequest = new WarrantyRequest
             {
@@ -75,7 +77,7 @@ namespace MamaFit.Services.Service
                 Images = warrantyRequestCreateDto.Images,
                 Description = warrantyRequestCreateDto.Description,
                 Status = WarrantyRequestStatus.SUBMITTED,
-                WarrantyRound = (oldOrderItem.WarrantyRequests?.Count() ?? 0) + 1,
+                WarrantyRound = warrantyRequestCount + 1,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
             };

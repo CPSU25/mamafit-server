@@ -21,8 +21,9 @@ namespace MamaFit.Services.Service
         private readonly IValidationService _validationService;
         private readonly IChatService _chatService;
         private readonly IHubContext<ChatHub> _chatHubContext;
+        private readonly IConfigService _configService;
 
-        public PresetService(IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork, IMapper mapper, IValidationService validationService, IChatService chatService, IHubContext<ChatHub> chatHubContext)
+        public PresetService(IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork, IMapper mapper, IValidationService validationService, IChatService chatService, IHubContext<ChatHub> chatHubContext, IConfigService configService)
         {
             _httpContextAccessor = httpContextAccessor;
             _unitOfWork = unitOfWork;
@@ -30,6 +31,7 @@ namespace MamaFit.Services.Service
             _validationService = validationService;
             _chatService = chatService;
             _chatHubContext = chatHubContext;
+            _configService = configService;
         }
 
         private string GetCurrentUserId()
@@ -77,10 +79,14 @@ namespace MamaFit.Services.Service
 
             var designerId = GetCurrentUserId();
 
-            var designRequest = await _unitOfWork.DesignRequestRepository.GetByIdNotDeletedAsync(request.DesignRequestId);
+            var designRequest = await _unitOfWork.DesignRequestRepository.GetDetailByIdAsync(request.DesignRequestId);
             _validationService.CheckNotFound(designRequest, $"Design request with ID {request.DesignRequestId} not found.");
 
+            var config = await _configService.GetConfig();
 
+            bool isOutOfTime = designRequest.Presets.Count() >= config.Fields.PresetVersions;
+            if (isOutOfTime)
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, $"Design with id: {request.DesignRequestId} is out of time create preset");
 
             var user = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(designerId);
             _validationService.CheckNotFound(user, "User not found.");

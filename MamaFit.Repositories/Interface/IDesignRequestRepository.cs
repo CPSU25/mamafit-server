@@ -9,5 +9,6 @@ namespace MamaFit.Repositories.Interface
     public interface IDesignRequestRepository : IGenericRepository<DesignRequest>
     {
         Task<PaginatedList<DesignRequest>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy);
+        Task<DesignRequest> GetDetailByIdAsync(string designRequestId);
     }
 }

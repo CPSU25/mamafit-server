@@ -6,6 +6,7 @@
         PAID_FULL, // thanh toán 100%% thành công
         PAID_DEPOSIT, // thanh toán cọc thành công
         PAID_DEPOSIT_COMPLETED,  //thanh toán phần còn lại thành công
+        WARRANTY,
         FAILED,
         CANCELED,
         EXPIRED

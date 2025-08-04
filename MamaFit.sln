@@ -7,10 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MamaFit.API", "MamaFit.API\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. API", "1. API", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 	ProjectSection(SolutionItems) = preProject
-		Dockerfile = Dockerfile
-		docker-compose.yaml = docker-compose.yaml
-		docker-compose.build.yaml = docker-compose.build.yaml
 		.gitignore = .gitignore
+		docker-compose.build.yaml = docker-compose.build.yaml
+		docker-compose.yaml = docker-compose.yaml
+		Dockerfile = Dockerfile
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Services", "2. Services", "{C5787510-60EC-4024-BFAC-69B0D9BE9767}"

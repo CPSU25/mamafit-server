@@ -262,19 +262,19 @@ public class SepayService : ISepayService
 
     private async Task AssignTasksForOrder(Order order)
     {
-        var milestoneList = await _unitOfWork.MilestoneRepository.GetAllAsync();
+        var milestoneList = await _unitOfWork.MilestoneRepository.GetAllWithInclude();
 
         var assignRequests = order.OrderItems.Select(orderItem =>
         {
             var matchingMilestones = milestoneList
-                .Where(m => m.ApplyFor!.Contains((ItemType)orderItem.ItemType!))
+                .Where(m => m.ApplyFor.Contains((ItemType)orderItem.ItemType!))
                 .Select(m => m.Id)
                 .ToList();
 
             if (orderItem.OrderItemAddOnOptions != null && orderItem.OrderItemAddOnOptions.Any())
             {
                 var addOnMilestones = milestoneList
-                    .Where(m => m.ApplyFor!.Contains(ItemType.ADD_ON))
+                    .Where(m => m.ApplyFor.Contains(ItemType.ADD_ON))
                     .Select(m => m.Id);
                 matchingMilestones.AddRange(addOnMilestones);
             }

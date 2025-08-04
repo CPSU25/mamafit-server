@@ -7,5 +7,6 @@ namespace MamaFit.BusinessObjects.DTO.OrderItemDto
         public List<string> MaternityDressTaskIds { get; set; }
         public string OrderItemId { get; set; }
         public OrderItemTaskStatus Status { get; set; }
+        public bool? Severity { get; set; }
     }
 }

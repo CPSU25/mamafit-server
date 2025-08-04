@@ -39,6 +39,17 @@ namespace MamaFit.Repositories.Repository
             return responseList;
         }
 
+        public async Task<List<Milestone>> GetAllWithInclude()
+        {
+            var milestones = await _dbSet
+                .Include(x => x.MaternityDressTasks)
+                .ThenInclude(x => x.OrderItemTasks)
+                .ThenInclude(x => x.OrderItem)
+                .ToListAsync();
+
+            return milestones;
+        }
+
         public async Task<Milestone> GetByIdDetailAsync(string id)
         {
             var milestone = await _dbSet

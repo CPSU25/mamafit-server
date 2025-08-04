@@ -108,12 +108,20 @@ public class OrderItemTaskService : IOrderItemTaskService
         return response;
     }
 
-    public async Task UpdateStatusAsync(string dressTaskId, string orderItemId, OrderItemTaskUpdateRequestDto request)
+    public async Task UpdateStatusAsync(string dressTaskId, string orderItemId, OrderItemTaskUpdateRequestDto request, bool? severity)
     {
         var cacheKey = "MilestoneAchiveOrderItemResponseDto";
+
+        //Lấy Task & Validate
         var task = await _repo.GetByIdAsync(dressTaskId, orderItemId);
         _validation.CheckNotFound(task, "Order item task not found");
 
+        var orderItem = await _unitOfWork.OrderItemRepository.GetDetailById(orderItemId);
+        _validation.CheckNotFound(orderItem, $"OrderItem with id: {orderItemId} not found");
+
+        var order = task.OrderItem!.Order;
+
+        //Update thông tin Task
         task.Note = request.Note;
         task.Status = request.Status;
         task.Image = request.Image;
@@ -121,103 +129,202 @@ public class OrderItemTaskService : IOrderItemTaskService
         await _repo.UpdateAsync(task);
         await _cacheService.RemoveByPrefixAsync(cacheKey);
 
-        var orderItem = await _unitOfWork.OrderItemRepository.GetDetailById(orderItemId);
-        _validation.CheckNotFound(orderItem, $"OrderItem with id: {orderItemId} not found");
-
-        var order = task.OrderItem!.Order;
+        //Lấy progress & milestones để xử lý status
         var progress = await _milestoneService.GetMilestoneByOrderItemId(orderItemId);
+        var milestones = await _unitOfWork.MilestoneRepository.GetAllWithInclude();
 
-        if (request.Status == OrderItemTaskStatus.IN_PROGRESS)
+        //Điều hướng theo Status
+        switch (request.Status)
         {
-            if (orderItem.ItemType == ItemType.DESIGN_REQUEST)
-            {
-                task.OrderItem.Order.Status = OrderStatus.IN_DESIGN;
-                await SendMessageAndNoti(task);
-            }
+            case OrderItemTaskStatus.IN_PROGRESS:
+                await HandleInProgressAsync(task, orderItem, order);
+                break;
 
-            if (orderItem.ItemType == ItemType.PRESET)
-            {
-                order.Status = OrderStatus.IN_PRODUCTION;
-            }
+            case OrderItemTaskStatus.DONE:
+                await HandleDoneAsync(orderItem, order, progress);
+                break;
 
-            await _unitOfWork.OrderRepository.UpdateAsync(order);
-            await _unitOfWork.SaveChangesAsync();
-            return;
+            case OrderItemTaskStatus.PASS:
+                await HandlePassAsync(order, progress);
+                break;
+
+            case OrderItemTaskStatus.FAIL:
+                await HandleFailAsync(orderItem, order, milestones, progress, severity, task);
+                break;
+        }
+    }
+
+    private async Task HandleInProgressAsync(OrderItemTask task, OrderItem orderItem, Order order)
+    {
+        if (orderItem.ItemType == ItemType.DESIGN_REQUEST)
+        {
+            order.Status = OrderStatus.IN_DESIGN;
+            await SendMessageAndNoti(task);
+        }
+        else if (orderItem.ItemType == ItemType.PRESET)
+        {
+            order.Status = OrderStatus.IN_PRODUCTION;
         }
 
-        if (request.Status == OrderItemTaskStatus.DONE)
+        await _unitOfWork.OrderRepository.UpdateAsync(order);
+        await _unitOfWork.SaveChangesAsync();
+    }
+    private async Task HandleDoneAsync(OrderItem orderItem, Order order, List<MilestoneAchiveOrderItemResponseDto> progress)
+    {
+        if (orderItem.ItemType == ItemType.DESIGN_REQUEST)
         {
-            if (orderItem.ItemType == ItemType.DESIGN_REQUEST)
-            {
-                order.Status = OrderStatus.COMPLETED;
-            }
-
-            if (orderItem.ItemType == ItemType.PRESET)
-            {
-                var presetProgress = progress.Where(x => x.Milestone.ApplyFor.Contains(ItemType.PRESET));
-                if (presetProgress.Any(x => x.Progress == 100 && x.IsDone))
-                {
-                    var hasAddOn = progress.Where(x => x.Milestone.ApplyFor.Contains(ItemType.ADD_ON));
-                    if (hasAddOn.Any())
-                    {
-                        if (hasAddOn.Any(x => x.Progress == 100 && x.IsDone))
-                        {
-                            var packageProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).Skip(1).FirstOrDefault();
-                            var keywordList = new[] { "quality check", "qc" };
-                            var qcProgress = progress.Where(x => keywordList.Any(k => x.Milestone!.Name!.ToLower().Contains(k)));
-                            if (packageProgress.Progress == 100 && packageProgress.IsDone)
-                            {
-                                order.Status = OrderStatus.AWAITING_DELIVERY;
-                                var deliveringProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).FirstOrDefault();
-                                if (deliveringProgress.Progress == 100 && packageProgress.IsDone)
-                                    order.Status = OrderStatus.DELIVERING;
-                                
-                            }
-                            else if (qcProgress.Any(x => x.Progress == 100 && x.IsDone))
-                                order.Status = OrderStatus.PACKAGING;
-                            else 
-                                order.Status = OrderStatus.IN_QC;
-                        }
-                    }
-                    else
-                    {
-                        var packageProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).Skip(1).FirstOrDefault();
-                        if (packageProgress.Progress == 100 && packageProgress.IsDone)
-                        {
-                            order.Status = OrderStatus.AWAITING_DELIVERY;
-                            var deliveringProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).FirstOrDefault();   
-                            if (deliveringProgress.Progress == 100 && packageProgress.IsDone)
-                                order.Status = OrderStatus.DELIVERING;
-                        }
-                        else
-                            order.Status = OrderStatus.IN_QC;
-                    }
-                }
-                await _unitOfWork.OrderRepository.UpdateAsync(order);
-                await _unitOfWork.SaveChangesAsync();
-                return;
-            }
+            order.Status = OrderStatus.COMPLETED;
         }
-
-        if (request.Status == OrderItemTaskStatus.PASS || request.Status == OrderItemTaskStatus.FAIL)
+        else if (orderItem.ItemType == ItemType.PRESET)
         {
-            var keywordList = new[] { "quality check", "qc" };
-            var qcProgress = progress.Where(x => keywordList.Any(k => x.Milestone!.Name!.ToLower().Contains(k)));
-            if (qcProgress.Any(x => x.Progress == 100 && x.IsDone))
+            await UpdateStatusForPresetDoneAsync(order, progress);
+            var qcFailProgress = progress.Where(x => x.Milestone.ApplyFor.Contains(ItemType.QC_FAIL));
+            if(qcFailProgress.Any(x => x.Progress == 100 && x.IsDone))
             {
                 if (order.PaymentType == PaymentType.FULL && order.PaymentStatus == PaymentStatus.PAID_FULL)
                 {
                     order.Status = OrderStatus.PACKAGING;
                 }
-                if (order.PaymentType == PaymentType.DEPOSIT && order.PaymentStatus == PaymentStatus.PAID_DEPOSIT)
+                else if (order.PaymentType == PaymentType.DEPOSIT && order.PaymentStatus == PaymentStatus.PAID_DEPOSIT)
                 {
                     order.Status = OrderStatus.AWAITING_PAID_REST;
                 }
             }
-
-            await _unitOfWork.OrderRepository.UpdateAsync(order);
-            await _unitOfWork.SaveChangesAsync();
         }
+
+        await _unitOfWork.OrderRepository.UpdateAsync(order);
+        await _unitOfWork.SaveChangesAsync();
+    }
+    private async Task UpdateStatusForPresetDoneAsync(Order order, List<MilestoneAchiveOrderItemResponseDto> progress)
+    {
+        var presetProgress = progress.Where(x => x.Milestone.ApplyFor.Contains(ItemType.PRESET));
+        if (!presetProgress.Any(x => x.Progress == 100 && x.IsDone)) return;
+
+        var hasAddOn = progress.Where(x => x.Milestone.ApplyFor.Contains(ItemType.ADD_ON));
+        if (hasAddOn.Any())
+        {
+            // Nếu có Add-on
+            if (hasAddOn.Any(x => x.Progress == 100 && x.IsDone))
+            {
+                await UpdateStatusWithQCAsync(order, progress);
+            }
+        }
+        else
+        {
+            // Không có Add-on
+            await UpdateStatusWithoutAddOnAsync(order, progress);
+        }
+    }
+    private async Task UpdateStatusWithQCAsync(Order order, List<MilestoneAchiveOrderItemResponseDto> progress)
+    {
+        var packageProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).Skip(1).FirstOrDefault();
+        var keywordList = new[] { "quality check", "qc" };
+        var qcProgress = progress.Where(x => keywordList.Any(k => x.Milestone!.Name!.ToLower().Contains(k)));
+
+        if (packageProgress?.Progress == 100 && packageProgress.IsDone)
+        {
+            order.Status = OrderStatus.AWAITING_DELIVERY;
+            var deliveringProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).FirstOrDefault();
+            if (deliveringProgress?.Progress == 100 && packageProgress.IsDone)
+                order.Status = OrderStatus.DELIVERING;
+        }
+        else if (qcProgress.Any(x => x.Progress == 100 && x.IsDone))
+            order.Status = OrderStatus.PACKAGING;
+        else
+            order.Status = OrderStatus.IN_QC;
+    }
+    private async Task UpdateStatusWithoutAddOnAsync(Order order, List<MilestoneAchiveOrderItemResponseDto> progress)
+    {
+        var packageProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).Skip(1).FirstOrDefault();
+        if (packageProgress?.Progress == 100 && packageProgress.IsDone)
+        {
+            order.Status = OrderStatus.AWAITING_DELIVERY;
+            var deliveringProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).FirstOrDefault();
+            if (deliveringProgress?.Progress == 100 && packageProgress.IsDone)
+                order.Status = OrderStatus.DELIVERING;
+        }
+        else
+            order.Status = OrderStatus.IN_QC;
+    }
+    private async Task HandlePassAsync(Order order, List<MilestoneAchiveOrderItemResponseDto> progress)
+    {
+        var keywordList = new[] { "quality check", "qc" };
+        var qcProgress = progress.Where(x => keywordList.Any(k => x.Milestone!.Name!.ToLower().Contains(k)));
+
+        if (qcProgress.Any(x => x.Progress == 100 && x.IsDone))
+        {
+            if (order.PaymentType == PaymentType.FULL && order.PaymentStatus == PaymentStatus.PAID_FULL)
+            {
+                order.Status = OrderStatus.PACKAGING;
+            }
+            else if (order.PaymentType == PaymentType.DEPOSIT && order.PaymentStatus == PaymentStatus.PAID_DEPOSIT)
+            {
+                order.Status = OrderStatus.AWAITING_PAID_REST;
+            }
+        }
+
+        await _unitOfWork.OrderRepository.UpdateAsync(order);
+        await _unitOfWork.SaveChangesAsync();
+    }
+    private async Task HandleFailAsync(
+    OrderItem orderItem,
+    Order order,
+    IEnumerable<Milestone> milestones,
+    List<MilestoneAchiveOrderItemResponseDto> progress,
+    bool? severity,
+    OrderItemTask task)
+    {
+        var keywordList = new[] { "fail" };
+        var qcProgress = progress.Where(x => keywordList.Any(k => x.Milestone!.Name!.ToLower().Contains(k)));
+
+        if (severity == true) // Task nặng -> reset progress
+        {
+            foreach (var t in orderItem.OrderItemTasks)
+                t.Status = OrderItemTaskStatus.PENDING;
+
+            order.Status = OrderStatus.IN_PRODUCTION;
+        }
+        if (severity == false) // Task nhẹ -> assign task mới
+        {
+            var qcFailTasks = milestones.SelectMany(x => x.MaternityDressTasks).Where(x => keywordList.Any(k => x.Milestone.ApplyFor!.Contains(ItemType.QC_FAIL)));
+            foreach (var failTask in qcFailTasks)
+            {
+                // Kiểm tra xem đã tồn tại OrderItemTask cho MaternityDressTask này chưa
+                var existingTask = orderItem.OrderItemTasks
+                    .FirstOrDefault(t => t.MaternityDressTaskId == failTask.Id);
+
+                if (existingTask != null)
+                {
+                    // Nếu đã có Note thì nối thêm chuỗi, nếu chưa thì gán mới
+                    if (string.IsNullOrEmpty(existingTask.Note))
+                        existingTask.Note = task.MaternityDressTask.Name;
+                    else
+                        existingTask.Note += "|" + task.MaternityDressTask.Name;
+
+                    existingTask.UpdatedAt = DateTime.UtcNow;
+                    existingTask.Status = OrderItemTaskStatus.PENDING;
+                }
+                else
+                {
+                    // Nếu chưa có task thì tạo mới
+                    orderItem.OrderItemTasks.Add(new OrderItemTask
+                    {
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow,
+                        MaternityDressTask = failTask,
+                        MaternityDressTaskId = failTask.Id,
+                        CreatedBy = "System",
+                        Note = task.MaternityDressTask.Name,
+                        OrderItem = orderItem,
+                        OrderItemId = orderItem.Id,
+                        Status = OrderItemTaskStatus.PENDING,
+                    });
+                }
+            }
+        }
+
+        await _unitOfWork.OrderRepository.UpdateAsync(order);
+        await _unitOfWork.SaveChangesAsync();
     }
 
     private string GetCurrentUserId()
@@ -307,5 +414,5 @@ public class OrderItemTaskService : IOrderItemTaskService
             }
         }
     }
-    
+
 }

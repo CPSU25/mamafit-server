@@ -79,7 +79,15 @@ public class OrderItemTaskService : IOrderItemTaskService
                             ApplyFor = milestoneRep.ApplyFor,
                             SequenceOrder = milestoneRep.SequenceOrder,
                             MaternityDressTasks = milestoneGroup
-                                .Select(x => _mapper.Map<MaternityDressTaskOrderTaskResponseDto>(x.MaternityDressTask))
+                                .Select(orderItemTask => 
+                                {
+                                    var taskDto = _mapper.Map<MaternityDressTaskOrderTaskResponseDto>(orderItemTask.MaternityDressTask);
+                                    taskDto.Status = orderItemTask.Status;
+                                    taskDto.Note = orderItemTask.Note;
+                                    taskDto.Image = orderItemTask.Image;
+                                    taskDto.UpdatedAt = orderItemTask.UpdatedAt;
+                                    return taskDto;
+                                })
                                 .ToList()
                         };
                     })

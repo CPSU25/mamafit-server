@@ -13,7 +13,6 @@ namespace MamaFit.BusinessObjects.Entity
         public decimal Price { get; set; }
         public int Quantity { get; set; }
         public DateTime? WarrantyDate { get; set; }
-        public int WarrantyNumber { get; set; } = 3;
 
         //Navigation property
         public Order? Order { get; set; }

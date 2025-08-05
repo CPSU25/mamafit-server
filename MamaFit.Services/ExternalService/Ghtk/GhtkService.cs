@@ -85,9 +85,26 @@ public class GhtkService : IGhtkService
 
         if (order.User == null)
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT, "Order is missing user info");
-
-        if (order.Address == null)
-            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT, "Order is missing address info");
+        
+        string address, province, district, ward;
+        if (order.BranchId != null && order.Branch != null)
+        {
+            address = order.Branch.Street ?? "";
+            province = order.Branch.Province ?? "";
+            district = order.Branch.District ?? "";
+            ward = order.Branch.Ward ?? "";
+        }
+        else if (order.AddressId != null && order.Address != null)
+        {
+            address = order.Address.Street ?? "";
+            province = order.Address.Province ?? "";
+            district = order.Address.District ?? "";
+            ward = order.Address.Ward ?? "";
+        }
+        else
+        {
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT, "Order must have either branch or address for delivery");
+        }
 
         var ghtkProducts = order.OrderItems.Select(item =>
         {
@@ -157,10 +174,10 @@ public class GhtkService : IGhtkService
             PickTel = _ghtkSettings.PickTel,
             Tel = order.User.PhoneNumber ?? "",
             Name = order.User.FullName ?? "Khách hàng",
-            Address = order.Address!.Street ?? "",
-            Province = order.Address.Province ?? "",
-            District = order.Address.District ?? "",
-            Ward = order.Address.Ward ?? "",
+            Address = address,
+            Province = province,
+            District = district,
+            Ward = ward,
             Value = value!
         };
 

@@ -37,7 +37,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .Where(b => b.BranchManagerId == managerId)
             .Select(b => b.Id)
             .ToListAsync();
-        
+
         return await _context.Orders
             .Where(o => branchIds.Contains(o.BranchId!))
             .Include(o => o.OrderItems)

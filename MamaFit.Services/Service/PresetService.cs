@@ -38,7 +38,6 @@ namespace MamaFit.Services.Service
         {
             return _httpContextAccessor.HttpContext?.User.FindFirst("userId")?.Value ?? string.Empty;
         }
-
         public async Task CreatePresetAsync(PresetCreateRequestDto request)
         {
             await _validationService.ValidateAndThrowAsync(request);
@@ -106,7 +105,6 @@ namespace MamaFit.Services.Service
 
             return preset.Id;
         }
-
         private async Task SendPresetToCustomer(Preset preset, DesignRequest designRequest, string orderId)
         {
             try
@@ -172,8 +170,6 @@ namespace MamaFit.Services.Service
                 Console.WriteLine($"Error sending preset to customer: {ex.Message}");
             }
         }
-
-
         public async Task DeletePresetAsync(string id)
         {
             var preset = _unitOfWork.PresetRepository.GetByIdNotDeletedAsync(id);
@@ -182,7 +178,6 @@ namespace MamaFit.Services.Service
             await _unitOfWork.PresetRepository.SoftDeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
         }
-
         public async Task<PaginatedList<PresetGetAllResponseDto>> GetAll(int index, int pageSize, string? search, EntitySortBy? sortBy)
         {
             var presets = await _unitOfWork.PresetRepository.GetAll(index, pageSize, search, sortBy);
@@ -193,14 +188,12 @@ namespace MamaFit.Services.Service
 
             return new PaginatedList<PresetGetAllResponseDto>(responseItems, presets.TotalCount, presets.PageNumber, pageSize);
         }
-
         public async Task<PresetGetByIdResponseDto> GetById(string id)
         {
             var preset = await _unitOfWork.PresetRepository.GetDetailById(id);
             _validationService.CheckNotFound(preset, $"Preset with ID {id} not found.");
             return _mapper.Map<PresetGetByIdResponseDto>(preset);
         }
-
         public async Task UpdatePresetAsync(string id, PresetUpdateRequestDto request)
         {
             await _validationService.ValidateAndThrowAsync(request);
@@ -213,7 +206,6 @@ namespace MamaFit.Services.Service
             await _unitOfWork.PresetRepository.UpdateAsync(preset);
             await _unitOfWork.SaveChangesAsync();
         }
-
         public async Task<PresetGetByIdResponseDto> GetDefaultPresetByStyleId(string styleId)
         {
             var style = await _unitOfWork.StyleRepository.GetByIdNotDeletedAsync(styleId);
@@ -223,7 +215,6 @@ namespace MamaFit.Services.Service
             _validationService.CheckNotFound(preset, $"Default preset for style with ID {styleId} not found.");
             return _mapper.Map<PresetGetByIdResponseDto>(preset);
         }
-
         public async Task<List<PresetGetByIdResponseDto>> GetAllPresetByComponentOptionId(List<string> componentOptionIds)
         {
 
@@ -237,7 +228,6 @@ namespace MamaFit.Services.Service
             _validationService.CheckNotFound(presets, $"No presets found for component option with ID {componentOptionIds}.");
             return presets.Select(preset => _mapper.Map<PresetGetByIdResponseDto>(preset)).ToList();
         }
-
         public async Task<List<PresetGetByIdResponseDto>> GetPresetByDesignRequestId(string designRequestId)
         {
             var presets = await _unitOfWork.PresetRepository.GetPresetByDesignRequestId(designRequestId);
@@ -246,6 +236,13 @@ namespace MamaFit.Services.Service
             var result = presets.Select(preset => _mapper.Map<PresetGetByIdResponseDto>(preset)).ToList();
 
             return result;
+        }
+        public async Task<PaginatedList<PresetGetAllResponseDto>> GetMostSelledPreset(int index, int pageSize, DateTime? startDate, DateTime? endDate, OrderStatus? filterBy)
+        {
+            var presets = await _unitOfWork.PresetRepository.GetMostSelledPreset(index, pageSize, startDate, endDate, filterBy);
+            var responseItems = presets.Items.Select(x => _mapper.Map<PresetGetAllResponseDto>(x)).ToList();
+
+            return new PaginatedList<PresetGetAllResponseDto>(responseItems, presets.TotalCount,presets.PageNumber,pageSize);
         }
     }
 }

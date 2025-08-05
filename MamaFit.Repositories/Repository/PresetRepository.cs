@@ -58,7 +58,7 @@ namespace MamaFit.Repositories.Repository
         {
             var preset = await _dbSet
                 .Include(x => x.ComponentOptionPresets)
-                .ThenInclude( cop => cop.ComponentOption)
+                .ThenInclude(cop => cop.ComponentOption)
                 .ThenInclude(co => co.Component)
                 .Include(x => x.Style)
                 .FirstOrDefaultAsync(x => x.StyleId == styleId && x.IsDefault && !x.IsDeleted && x.IsDefault);
@@ -90,6 +90,28 @@ namespace MamaFit.Repositories.Repository
                 .ToListAsync();
 
             return presets;
+        }
+
+        public async Task<PaginatedList<Preset>> GetMostSelledPreset(int index, int pageSize, DateTime? startDate, DateTime? endDate, OrderStatus? filterBy)
+        {
+            var query = _dbSet.AsNoTracking()
+                .Include(x => x.OrderItems).ThenInclude(x => x.Order)
+                .OrderByDescending(x => x.OrderItems.Count()).Where(x => !x.IsDeleted);
+            if (startDate.HasValue)
+            {
+                query = query.Where(x => x.CreatedAt >= startDate.Value);
+            }
+
+            if (endDate.HasValue)
+            {
+                query = query.Where(x => x.CreatedAt <= endDate.Value);
+            }
+            if (filterBy != null)
+            {
+                query.OrderByDescending(x => x.OrderItems.Any(x => x.Order.Status == filterBy));
+            }
+
+            return await query.GetPaginatedList(index, pageSize);
         }
     }
 }

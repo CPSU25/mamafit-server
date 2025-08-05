@@ -47,7 +47,7 @@ namespace MamaFit.API.Controllers
         {
             var result = await _presetService.GetMostSelledPreset(index, pageSize, startDate, endDate, sortBy);
 
-            return Ok(new ResponseModel<PaginatedList<PresetGetAllResponseDto>>(
+            return Ok(new ResponseModel<PaginatedList<PresetRatedResponseDto>>(
                 StatusCodes.Status200OK,
                 ApiCodes.SUCCESS,
                 result,

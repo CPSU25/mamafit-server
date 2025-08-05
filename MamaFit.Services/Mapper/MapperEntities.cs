@@ -318,6 +318,15 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.ComponentOptions,
                     otp => otp.MapFrom(src => src.ComponentOptionPresets.Select(x => x.ComponentOption)))
                 .ReverseMap();
+            CreateMap<Preset, PresetRatedResponseDto>()
+                .ForMember(dest => dest.FeedbackCount, otp => otp.MapFrom(x => x.OrderItems.Sum(x => x.Feedbacks.Count())))
+                .ForMember(dest => dest.AverageRate,
+                            otp => otp.MapFrom(src => src.OrderItems
+                            .SelectMany(oi => oi.Feedbacks)
+                            .Any() ? src.OrderItems
+                            .SelectMany(oi => oi.Feedbacks)
+                            .Average(fb => fb.Rated) : 0))
+                .ReverseMap();
             #endregion
 
             #region WarrantyRequest Mapper

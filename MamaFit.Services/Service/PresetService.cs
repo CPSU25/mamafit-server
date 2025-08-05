@@ -237,12 +237,12 @@ namespace MamaFit.Services.Service
 
             return result;
         }
-        public async Task<PaginatedList<PresetGetAllResponseDto>> GetMostSelledPreset(int index, int pageSize, DateTime? startDate, DateTime? endDate, OrderStatus? filterBy)
+        public async Task<PaginatedList<PresetRatedResponseDto>> GetMostSelledPreset(int index, int pageSize, DateTime? startDate, DateTime? endDate, OrderStatus? filterBy)
         {
             var presets = await _unitOfWork.PresetRepository.GetMostSelledPreset(index, pageSize, startDate, endDate, filterBy);
-            var responseItems = presets.Items.Select(x => _mapper.Map<PresetGetAllResponseDto>(x)).ToList();
+            var responseItems = presets.Items.Select(x => _mapper.Map<PresetRatedResponseDto>(x)).ToList();
 
-            return new PaginatedList<PresetGetAllResponseDto>(responseItems, presets.TotalCount,presets.PageNumber,pageSize);
+            return new PaginatedList<PresetRatedResponseDto>(responseItems, presets.TotalCount,presets.PageNumber,pageSize);
         }
     }
 }

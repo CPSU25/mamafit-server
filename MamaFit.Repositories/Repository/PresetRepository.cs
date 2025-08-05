@@ -96,6 +96,7 @@ namespace MamaFit.Repositories.Repository
         {
             var query = _dbSet.AsNoTracking()
                 .Include(x => x.OrderItems).ThenInclude(x => x.Order)
+                .Include(x => x.OrderItems).ThenInclude(x => x.Feedbacks)
                 .OrderByDescending(x => x.OrderItems.Count()).Where(x => !x.IsDeleted);
             if (startDate.HasValue)
             {

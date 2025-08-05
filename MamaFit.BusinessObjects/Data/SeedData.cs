@@ -255,19 +255,38 @@ namespace MamaFit.BusinessObjects.Data
             );
 
             // ===== STYLES =====
-            var styles = new List<Style> {
-    new Style {
-        Id = "037b41302a4c453f8cef135afceb3956",
-        Name = "Maxi",
-        Description = "Đầm dài maxi, thích hợp đi biển hoặc dạo phố.",
-        Images = new List<string> { "https://example.com/images/maxi.jpg" },
-        IsCustom = false,
-        CategoryId = "a7a75e41c1a64b4498a81f4b76029a5a",
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
-    }
-};
-            modelBuilder.Entity<Style>().HasData(styles);
-
+            modelBuilder.Entity<Style>().HasData(
+                new Style
+                {
+                    Id = "037b41302a4c453f8cef135afceb3956",
+                    CategoryId = "a7a75e41c1a64b4498a81f4b76029a5a",
+                    Name = "Maxi",
+                    IsCustom = false,
+                    Description = "Đầm dài maxi, thích hợp đi biển hoặc dạo phố.",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fmaxi-sketch.png?alt=media&token=b595c2a0-da30-45a4-afbd-31ec1b5dfc28"],
+                    GlobalStatus = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Style
+                {
+                    Id = "a9d4e572c3b24f8e9d2f671b5e1a8c07",
+                    CategoryId = "a7a75e41c1a64b4498a81f4b76029a5a",
+                    Name = "Kaftan",
+                    IsCustom = false,
+                    Description = "Đầm kaftan rộng rãi, nhẹ, thoáng mát, phù hợp đi biển và mùa hè.",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fkaftan-sketch.png?alt=media&token=6ba8fcf7-ea28-4576-b4ca-8bf0da0e80ef"],
+                    GlobalStatus = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                }
+            );
             // ===== COMPONENTS =====
             var components = new List<Component> {
     new Component {

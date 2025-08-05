@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MamaFit.API.Controllers;
 
 [ApiController]
+[Route("api")]
 public class GhtkController : ControllerBase
 {
     private readonly IGhtkService _ghtkService;

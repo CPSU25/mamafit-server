@@ -186,59 +186,107 @@ namespace MamaFit.BusinessObjects.Data
             var createdBy = "System";
 
             // ===== CATEGORIES =====
-            var categorys = new List<Category> {
-    new Category {
-        Id = "04a3b452cfd841919b4aed099c28d709",
-        Name = "Work/Office",
-        Description = "Thiết kế trang nhã dành cho công sở.",
-        Images = new List<string> { "https://example.com/images/work.jpg" },
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
-    },
-    new Category {
-        Id = "1946de6edbc24354bdd82b7c2c2c4cb2",
-        Name = "Party/Special",
-        Description = "Dành cho buổi tiệc hoặc dịp đặc biệt.",
-        Images = new List<string> { "https://example.com/images/party.jpg" },
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
-    },
-    new Category {
-        Id = "4f8c9fd3fb4548af8ca11c6521aa3b33",
-        Name = "Casual/Everyday",
-        Description = "Phong cách thường ngày, thoải mái.",
-        Images = new List<string> { "https://example.com/images/casual.jpg" },
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
-    },
-    new Category {
-        Id = "a7a75e41c1a64b4498a81f4b76029a5a",
-        Name = "Beach/Resort",
-        Description = "Trang phục phù hợp khi đi biển hoặc nghỉ dưỡng.",
-        Images = new List<string> { "https://example.com/images/beach.jpg" },
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
-    },
-    new Category {
-        Id = "c6a7e90156d44da1ab26f259313e4a0b",
-        Name = "Formal/Event",
-        Description = "Phù hợp với các sự kiện trang trọng.",
-        Images = new List<string> { "https://example.com/images/formal.jpg" },
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
-    }
-};
-            modelBuilder.Entity<Category>().HasData(categorys);
+            modelBuilder.Entity<Category>().HasData(
+                new Category
+                {
+                    Id = "04a3b452cfd841919b4aed099c28d709",
+                    Name = "Work/Office",
+                    Description = "Thiết kế trang nhã dành cho công sở.",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fwork-office.png?alt=media&token=8e85150b-0d2d-4855-ac2c-93a6e78c5fe8"],
+                    Status = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Category
+                {
+                    Id = "1946de6edbc24354bdd82b7c2c2c4cb2",
+                    Name = "Party/Special",
+                    Description = "Dành cho buổi tiệc hoặc dịp đặc biệt.",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fparty-special.png?alt=media&token=f4b44822-d3a5-4b54-879b-927fa841090e"],
+                    Status = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Category
+                {
+                    Id = "4f8c9fd3fb4548af8ca11c6521aa3b33",
+                    Name = "Casual/Everyday",
+                    Description = "Phong cách thường ngày, thoải mái.",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fcasual-everyday.png?alt=media&token=8a0ad31a-7de5-4cb0-843a-d1c0cb60227b"],
+                    Status = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Category
+                {
+                    Id = "a7a75e41c1a64b4498a81f4b76029a5a",
+                    Name = "Beach/Resort",
+                    Description = "Trang phục phù hợp khi đi biển hoặc nghỉ dưỡng.",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fbeach-resort.png?alt=media&token=72ffcbc5-2092-4e82-8603-afcad8a080c5"],
+                    Status = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Category
+                {
+                    Id = "c6a7e90156d44da1ab26f259313e4a0b",
+                    Name = "Formal/Event",
+                    Description = "Phù hợp với các sự kiện trang trọng.",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fformal-event.png?alt=media&token=4faa26e0-3d1e-402f-8bbe-e59360a1bc76"],
+                    Status = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                }
+            );
 
             // ===== STYLES =====
-            var styles = new List<Style> {
-    new Style {
-        Id = "037b41302a4c453f8cef135afceb3956",
-        Name = "Maxi",
-        Description = "Đầm dài maxi, thích hợp đi biển hoặc dạo phố.",
-        Images = new List<string> { "https://example.com/images/maxi.jpg" },
-        IsCustom = false,
-        CategoryId = "a7a75e41c1a64b4498a81f4b76029a5a",
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
-    }
-};
-            modelBuilder.Entity<Style>().HasData(styles);
-
+            modelBuilder.Entity<Style>().HasData(
+                new Style
+                {
+                    Id = "037b41302a4c453f8cef135afceb3956",
+                    CategoryId = "a7a75e41c1a64b4498a81f4b76029a5a",
+                    Name = "Maxi",
+                    IsCustom = false,
+                    Description = "Đầm dài maxi, thích hợp đi biển hoặc dạo phố.",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fmaxi-sketch.png?alt=media&token=b595c2a0-da30-45a4-afbd-31ec1b5dfc28"],
+                    GlobalStatus = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Style
+                {
+                    Id = "a9d4e572c3b24f8e9d2f671b5e1a8c07",
+                    CategoryId = "a7a75e41c1a64b4498a81f4b76029a5a",
+                    Name = "Kaftan",
+                    IsCustom = false,
+                    Description = "Đầm kaftan rộng rãi, nhẹ, thoáng mát, phù hợp đi biển và mùa hè.",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fkaftan-sketch.png?alt=media&token=6ba8fcf7-ea28-4576-b4ca-8bf0da0e80ef"],
+                    GlobalStatus = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                }
+            );
             // ===== COMPONENTS =====
             var components = new List<Component> {
     new Component {
@@ -287,149 +335,219 @@ namespace MamaFit.BusinessObjects.Data
             modelBuilder.Entity<Component>().HasData(components);
 
             // ===== COMPONENT OPTIONS =====
-            var componentoptions = new List<ComponentOption> {
-    new ComponentOption {
-        Id = "06e6899bd6544dd3b9020a50789d9421",
-        Name = "Normal Waist",
-        ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
-        Price = 18000,
-        Description = "Thiết kế eo trung bình truyền thống.",
-        Images = new List<string> { "https://example.com/images/normalwaist.jpg" },
+            modelBuilder.Entity<ComponentOption>().HasData(
 
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
-    },
-    new ComponentOption {
+                new ComponentOption
+                {
+                    Id = "66645e2f8fa94d228d87450cc4a74706",
+                    ComponentId = "0ec808c3046b4d368962c65eb771dea0",
+                    Name = "Green",
+                    Price = 10000.0m,
+                    Description = "Xanh ngọc quý phái, nổi bật.",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Femerald-green.png?alt=media&token=d63ad4cc-0037-4ca5-b71b-4d8eb394b6ba"],
+                    GlobalStatus = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+    new ComponentOption
+    {
         Id = "31c853d3dde94e68ab57903cf8a80798",
-        Name = "Cotton",
         ComponentId = "c615996abfe24d3885ccea361a199dba",
-        Price = 9000,
+        Name = "Cotton",
+        Price = 9000.0m,
         Description = "Vải cotton thoáng mát, thấm hút tốt.",
-        Images = new List<string> { "https://example.com/images/cotton.jpg" },
-
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fcotton.png?alt=media&token=bdd471d7-c695-4c05-8770-ffb8eeb0f03e"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        IsDeleted = false
     },
-    new ComponentOption {
+    new ComponentOption
+    {
         Id = "4ed7cdc105ab44de81d333d63db0a222",
+        ComponentId = "3b83e5e47b444880aa9495b58b38a2fd",
         Name = "No Sleeves",
-        ComponentId = "3b83e5e47b444880aa9495b58b38a2fd",
-        Price = 10000,
+        Price = 10000.0m,
         Description = "Không tay, thoáng mát.",
-        Images = new List<string> { "https://example.com/images/nosleeves.jpg" },
-
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fno-sleeves.png?alt=media&token=222c148c-22b0-407d-acf9-03b91a793123"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        IsDeleted = false
     },
-    new ComponentOption {
-        Id = "66645e2f8fa94d228d87450cc4a74706",
-        Name = "Emerald Green",
-        ComponentId = "0ec808c3046b4d368962c65eb771dea0",
-        Price = 10000,
-        Description = "Xanh ngọc quý phái, nổi bật.",
-        Images = new List<string> { "https://example.com/images/emerald.jpg" },
-
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
-    },
-    new ComponentOption {
-        Id = "70b69ec5ea074c0f8bf904b20b9c7884",
-        Name = "High-Low Hem",
-        ComponentId = "f00fcaf79a86427c995daa1fd0915d8e",
-        Price = 16000,
-        Description = "Trước ngắn sau dài tạo nét lạ mắt.",
-        Images = new List<string> { "https://example.com/images/highlow.jpg" },
-
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
-    },
-    new ComponentOption {
-        Id = "78b78938aefe4bc6b927ed3722bc5859",
-        Name = "Spaghetti Strap",
-        ComponentId = "3b83e5e47b444880aa9495b58b38a2fd",
-        Price = 12000,
-        Description = "Dây mảnh, nữ tính.",
-        Images = new List<string> { "https://example.com/images/spaghetti.jpg" },
-
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
-    },
-    new ComponentOption {
-        Id = "8158b8e5ef0340bdaf830fa8eb2e650d",
-        Name = "Empire Waist",
-        ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
-        Price = 20000,
-        Description = "Eo cao, phù hợp cho phong cách nữ tính.",
-        Images = new List<string> { "https://example.com/images/empirewaist.jpg" },
-
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
-    },
-    new ComponentOption {
-        Id = "818f875df04a49eebe9c474bba4247b9",
-        Name = "V Neck",
-        ComponentId = "b66ab857cd93410599bd14b79ae37147",
-        Price = 25000,
-        Description = "Cổ chữ V tạo cảm giác cổ dài hơn.",
-        Images = new List<string> { "https://example.com/images/vneck.jpg" },
-
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
-    },
-    new ComponentOption {
-        Id = "81acc249e2664c72908014a28e1e72ef",
-        Name = "Bow Tie Waist",
-        ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
-        Price = 22000,
-        Description = "Nơ thắt eo tạo điểm nhấn đáng yêu.",
-        Images = new List<string> { "https://example.com/images/bowtie.jpg" },
-
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
-    },
-    new ComponentOption {
-        Id = "8cff38afa8464ae191ba152b93438266",
-        Name = "Single Layer Hem",
-        ComponentId = "f00fcaf79a86427c995daa1fd0915d8e",
-        Price = 12000,
-        Description = "Gấu váy đơn giản, thanh lịch.",
-        Images = new List<string> { "https://example.com/images/singlelayer.jpg" },
-
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
-    },
-    new ComponentOption {
+    new ComponentOption
+    {
         Id = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
-        Name = "Round Neck",
         ComponentId = "b66ab857cd93410599bd14b79ae37147",
-        Price = 20000,
+        Name = "Round",
+        Price = 20000.0m,
         Description = "Cổ tròn cơ bản, thanh lịch.",
-        Images = new List<string> { "https://example.com/images/roundneck.jpg" },
-
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fround-neck.png?alt=media&token=1f8e06b6-1aa5-49fc-a05a-e88e29593710"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        IsDeleted = false
     },
-    new ComponentOption {
-        Id = "c454b97a93f341e78b127d5425acc464",
-        Name = "Red",
-        ComponentId = "0ec808c3046b4d368962c65eb771dea0",
-        Price = 10000,
-        Description = "Màu đỏ nổi bật, quyến rũ.",
-        Images = new List<string> { "https://example.com/images/red.jpg" },
-
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
-    },
-    new ComponentOption {
+    new ComponentOption
+    {
         Id = "e2c03da33b12458694a1b01c3ec66474",
-        Name = "Navy Blue",
         ComponentId = "0ec808c3046b4d368962c65eb771dea0",
-        Price = 10000,
+        Name = "Navy",
+        Price = 10000.0m,
         Description = "Xanh navy lịch sự, thanh nhã.",
-        Images = new List<string> { "https://example.com/images/navyblue.jpg" },
-
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fnavy-blue.png?alt=media&token=94e2c88c-a38c-4294-8b35-027b255e26ca"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        IsDeleted = false
     },
-    new ComponentOption {
+    new ComponentOption
+    {
+        Id = "8158b8e5ef0340bdaf830fa8eb2e650d",
+        ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
+        Name = "Empire Waist",
+        Price = 20000.0m,
+        Description = "Eo cao, phù hợp cho phong cách nữ tính.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fempire-waist.png?alt=media&token=292233b5-38d3-4b46-b543-6747d187a702"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        IsDeleted = false
+    },
+    new ComponentOption
+    {
+        Id = "818f875df04a49eebe9c474bba4247b9",
+        ComponentId = "b66ab857cd93410599bd14b79ae37147",
+        Name = "V Neck",
+        Price = 25000.0m,
+        Description = "Cổ chữ V tạo cảm giác cổ dài hơn.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fv-neck.png?alt=media&token=5418fe58-896e-4559-86ae-e2809c519963"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        IsDeleted = false
+    },
+    new ComponentOption
+    {
+        Id = "81acc249e2664c72908014a28e1e72ef",
+        ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
+        Name = "Bow Tie",
+        Price = 22000.0m,
+        Description = "Nơ thắt eo tạo điểm nhấn đáng yêu.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fbow-tie-waist.png?alt=media&token=43522a3e-848a-49d1-8e5a-a6610e619c21"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        IsDeleted = false
+    },
+    new ComponentOption
+    {
         Id = "fecd26fe3b6b4e88ba97ebb406fa6df2",
-        Name = "Flattered Short Sleeves",
         ComponentId = "3b83e5e47b444880aa9495b58b38a2fd",
-        Price = 15000,
+        Name = "Flattered",
+        Price = 15000.0m,
         Description = "Tay ngắn bay bổng, thoải mái.",
-        Images = new List<string> { "https://example.com/images/shortsleeves.jpg" },
-
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fflattered-sleeves.png?alt=media&token=93a07830-1514-4a65-80ca-599c67cd7334"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        IsDeleted = false
+    },
+    new ComponentOption
+    {
+        Id = "c454b97a93f341e78b127d5425acc464",
+        ComponentId = "0ec808c3046b4d368962c65eb771dea0",
+        Name = "Red",
+        Price = 10000.0m,
+        Description = "Màu đỏ nổi bật, quyến rũ.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fred.png?alt=media&token=b520d1e1-69b9-48bd-aa84-d3824897c0b8"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        IsDeleted = false
+    },
+    new ComponentOption
+    {
+        Id = "06e6899bd6544dd3b9020a50789d9421",
+        ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
+        Name = "Normal",
+        Price = 18000.0m,
+        Description = "Thiết kế eo trung bình truyền thống.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fnormal-waist.png?alt=media&token=6b608665-6975-4993-abd7-c57106c913f8"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        IsDeleted = false
+    },
+    new ComponentOption
+    {
+        Id = "70b69ec5ea074c0f8bf904b20b9c7884",
+        ComponentId = "f00fcaf79a86427c995daa1fd0915d8e",
+        Name = "High-Low",
+        Price = 16000.0m,
+        Description = "Trước ngắn sau dài tạo nét lạ mắt.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fhigh-low-hem.png?alt=media&token=258a7314-654c-4a9a-8af7-90a5b23597e3"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        IsDeleted = false
+    },
+    new ComponentOption
+    {
+        Id = "78b78938aefe4bc6b927ed3722bc5859",
+        ComponentId = "3b83e5e47b444880aa9495b58b38a2fd",
+        Name = "Strap",
+        Price = 12000.0m,
+        Description = "Dây mảnh, nữ tính.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fspaghetti-strap.png?alt=media&token=db6fb73c-11e8-4b72-8a64-3f87c82eb34c"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        IsDeleted = false
+    },
+    new ComponentOption
+    {
+        Id = "8cff38afa8464ae191ba152b93438266",
+        ComponentId = "f00fcaf79a86427c995daa1fd0915d8e",
+        Name = "Single Layer",
+        Price = 12000.0m,
+        Description = "Gấu váy đơn giản, thanh lịch.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fsingle-layer-hem.png?alt=media&token=bfd6b737-ca41-4a9d-9257-b35320fd63b4"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+        IsDeleted = false
     }
-};
-            modelBuilder.Entity<ComponentOption>().HasData(componentoptions);
+);
 
             // ===== PRESETS =====
             var presets = new List<Preset> {

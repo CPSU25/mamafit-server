@@ -7,38 +7,38 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="14.0.0"/>
-        <PackageReference Include="Bogus" Version="35.6.3"/>
-        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.15"/>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.15"/>
+        <PackageReference Include="AutoMapper" Version="14.0.0" />
+        <PackageReference Include="Bogus" Version="35.6.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.15" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.15" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.15">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.15"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.15" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.15">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0"/>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11"/>
-        <PackageReference Include="RestSharp" Version="112.1.1-alpha.0.4"/>
-        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.6.2"/>
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.9.0"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
+        <PackageReference Include="RestSharp" Version="112.1.1-alpha.0.4" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.6.2" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.9.0" />
         <!-- ML.NET packages -->
-        <PackageReference Include="Microsoft.ML" Version="3.0.1"/>
-        <PackageReference Include="Microsoft.ML.FastTree" Version="3.0.1"/>
-        <PackageReference Include="Microsoft.ML.Recommender" Version="0.21.1"/>
+        <PackageReference Include="Microsoft.ML" Version="3.0.1" />
+        <PackageReference Include="Microsoft.ML.FastTree" Version="3.0.1" />
+        <PackageReference Include="Microsoft.ML.Recommender" Version="0.21.1" />
 
         <!-- For data visualization -->
-        <PackageReference Include="OxyPlot.Core" Version="2.1.2"/>
+        <PackageReference Include="OxyPlot.Core" Version="2.1.2" />
 
         <!-- Logging -->
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
     </ItemGroup>
 
 </Project>

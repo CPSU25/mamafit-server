@@ -10,4 +10,5 @@ public interface INotificationRepository : IGenericRepository<Notification>
     Task<PaginatedList<Notification>> GetAllAsync(int index, int pageSize, string? search, NotificationType? type,
         EntitySortBy? sortBy);
     Task<PaginatedList<Notification>> GetAllByTokenAsync(string receiverId, int index, int pageSize, string? search, NotificationType? type, EntitySortBy? sortBy);
+    Task<List<Notification>> GetAllByUserId(string userId);
 }

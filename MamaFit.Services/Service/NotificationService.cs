@@ -23,10 +23,11 @@ public class NotificationService : INotificationService
     private readonly IExpoNotificationService _expoNotificationService;
     private readonly IHubContext<NotificationHub> _notificationHubContext;
     private readonly IUserConnectionManager _userConnectionManager;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public NotificationService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation,
         IExpoNotificationService expoNotificationService, IHubContext<NotificationHub> notificationHubContext,
-        IUserConnectionManager userConnectionManager)
+        IUserConnectionManager userConnectionManager, IHttpContextAccessor httpContextAccessor)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -34,6 +35,7 @@ public class NotificationService : INotificationService
         _expoNotificationService = expoNotificationService;
         _notificationHubContext = notificationHubContext;
         _userConnectionManager = userConnectionManager;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<PaginatedList<NotificationResponseDto>> GetNotificationsByAccessTokenAsync(string accessToken,
@@ -73,6 +75,21 @@ public class NotificationService : INotificationService
         var notification = await _unitOfWork.NotificationRepository.GetByIdNotDeletedAsync(id);
         _validation.CheckNotFound(notification, "Notification not found");
         return _mapper.Map<NotificationResponseDto>(notification);
+    }
+
+    public async Task MarkNotificationIsRead()
+    {
+        var currentUserId = GetCurrentUserId();
+        _validation.CheckNotFound(currentUserId, "Please sign in");
+
+        var notificationList = await _unitOfWork.NotificationRepository.GetAllByUserId(currentUserId);
+        foreach(var notification in notificationList)
+        {
+            notification.IsRead = true;
+            await _unitOfWork.NotificationRepository.UpdateAsync(notification);
+        }
+
+        await _unitOfWork.SaveChangesAsync();
     }
 
     public async Task SendAndSaveNotificationAsync(NotificationRequestDto model)
@@ -116,5 +133,10 @@ public class NotificationService : INotificationService
                 }
             }
         }
+    }
+
+    private string GetCurrentUserId()
+    {
+        return _httpContextAccessor?.HttpContext?.User?.FindFirst("userId")?.Value;
     }
 }

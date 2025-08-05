@@ -12,4 +12,5 @@ public interface INotificationService
         string? search, NotificationType? type, EntitySortBy? sortBy);
     Task<NotificationResponseDto> GetNotificationByIdAsync(string id);
     Task SendAndSaveNotificationAsync(NotificationRequestDto model);
+    Task MarkNotificationIsRead();
 }

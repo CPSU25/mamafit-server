@@ -296,7 +296,10 @@ namespace MamaFit.Services.Mapper
 
             #region Feedback Mapper
             CreateMap<Feedback, FeedbackRequestDto>().ReverseMap();
-            CreateMap<Feedback, FeedbackResponseDto>().ReverseMap();
+            CreateMap<Feedback, FeedbackResponseDto>()
+                .ForMember(dest => dest.OrderId, otp => otp.MapFrom(src => src.OrderItem!.OrderId))
+                .ForMember(dest => dest.OrderCode, otp => otp.MapFrom(src => src.OrderItem!.Order!.Code))
+                .ReverseMap();
             #endregion
 
             #region CartItem Mapper
@@ -314,6 +317,15 @@ namespace MamaFit.Services.Mapper
             CreateMap<Preset, PresetGetByIdResponseDto>()
                 .ForMember(dest => dest.ComponentOptions,
                     otp => otp.MapFrom(src => src.ComponentOptionPresets.Select(x => x.ComponentOption)))
+                .ReverseMap();
+            CreateMap<Preset, PresetRatedResponseDto>()
+                .ForMember(dest => dest.FeedbackCount, otp => otp.MapFrom(x => x.OrderItems.Sum(x => x.Feedbacks.Count())))
+                .ForMember(dest => dest.AverageRate,
+                            otp => otp.MapFrom(src => src.OrderItems
+                            .SelectMany(oi => oi.Feedbacks)
+                            .Any() ? src.OrderItems
+                            .SelectMany(oi => oi.Feedbacks)
+                            .Average(fb => fb.Rated) : 0))
                 .ReverseMap();
             #endregion
 

@@ -1,4 +1,5 @@
 ﻿using MamaFit.BusinessObjects.DTO.PresetDto;
+using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
@@ -38,6 +39,19 @@ namespace MamaFit.API.Controllers
                 ApiCodes.SUCCESS,
                 preset,
                 "Get preset successfully!"
+            ));
+        }
+
+        [HttpGet("most-selled")]
+        public async Task<IActionResult> GetMostSelled(int index = 1, int pageSize = 10, DateTime? startDate = null, DateTime? endDate = null, OrderStatus? sortBy = null)
+        {
+            var result = await _presetService.GetMostSelledPreset(index, pageSize, startDate, endDate, sortBy);
+
+            return Ok(new ResponseModel<PaginatedList<PresetRatedResponseDto>>(
+                StatusCodes.Status200OK,
+                ApiCodes.SUCCESS,
+                result,
+                "Get all most selled presets successfully!"
             ));
         }
 

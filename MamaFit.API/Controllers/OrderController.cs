@@ -212,9 +212,10 @@ public class OrderController : ControllerBase
     }
 
     [HttpPut("{id}/cancelled")]
-    public async Task<IActionResult> UpdateCancelledOrder([FromRoute] string id)
+    public async Task<IActionResult> UpdateCancelledOrder([FromRoute] string id,
+        [FromQuery] string? cancelReason = null)
     {
-        await _service.UpdateCancelledOrderAsync(id);
+        await _service.UpdateCancelledOrderAsync(id, cancelReason);
         return Ok(new ResponseModel<string>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,

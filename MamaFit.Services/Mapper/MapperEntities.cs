@@ -296,7 +296,10 @@ namespace MamaFit.Services.Mapper
 
             #region Feedback Mapper
             CreateMap<Feedback, FeedbackRequestDto>().ReverseMap();
-            CreateMap<Feedback, FeedbackResponseDto>().ReverseMap();
+            CreateMap<Feedback, FeedbackResponseDto>()
+                .ForMember(dest => dest.OrderId, otp => otp.MapFrom(src => src.OrderItem!.OrderId))
+                .ForMember(dest => dest.OrderCode, otp => otp.MapFrom(src => src.OrderItem!.Order!.Code))
+                .ReverseMap();
             #endregion
 
             #region CartItem Mapper

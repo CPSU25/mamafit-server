@@ -186,44 +186,73 @@ namespace MamaFit.BusinessObjects.Data
             var createdBy = "System";
 
             // ===== CATEGORIES =====
-            var categorys = new List<Category> {
-    new Category {
-        Id = "04a3b452cfd841919b4aed099c28d709",
-        Name = "Work/Office",
-        Description = "Thiết kế trang nhã dành cho công sở.",
-        Images = new List<string> { "https://example.com/images/work.jpg" },
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
-    },
-    new Category {
-        Id = "1946de6edbc24354bdd82b7c2c2c4cb2",
-        Name = "Party/Special",
-        Description = "Dành cho buổi tiệc hoặc dịp đặc biệt.",
-        Images = new List<string> { "https://example.com/images/party.jpg" },
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
-    },
-    new Category {
-        Id = "4f8c9fd3fb4548af8ca11c6521aa3b33",
-        Name = "Casual/Everyday",
-        Description = "Phong cách thường ngày, thoải mái.",
-        Images = new List<string> { "https://example.com/images/casual.jpg" },
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
-    },
-    new Category {
-        Id = "a7a75e41c1a64b4498a81f4b76029a5a",
-        Name = "Beach/Resort",
-        Description = "Trang phục phù hợp khi đi biển hoặc nghỉ dưỡng.",
-        Images = new List<string> { "https://example.com/images/beach.jpg" },
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
-    },
-    new Category {
-        Id = "c6a7e90156d44da1ab26f259313e4a0b",
-        Name = "Formal/Event",
-        Description = "Phù hợp với các sự kiện trang trọng.",
-        Images = new List<string> { "https://example.com/images/formal.jpg" },
-        CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
-    }
-};
-            modelBuilder.Entity<Category>().HasData(categorys);
+            modelBuilder.Entity<Category>().HasData(
+                new Category
+                {
+                    Id = "04a3b452cfd841919b4aed099c28d709",
+                    Name = "Work/Office",
+                    Description = "Thiết kế trang nhã dành cho công sở.",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fwork-office.png?alt=media&token=8e85150b-0d2d-4855-ac2c-93a6e78c5fe8"],
+                    Status = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Category
+                {
+                    Id = "1946de6edbc24354bdd82b7c2c2c4cb2",
+                    Name = "Party/Special",
+                    Description = "Dành cho buổi tiệc hoặc dịp đặc biệt.",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fparty-special.png?alt=media&token=f4b44822-d3a5-4b54-879b-927fa841090e"],
+                    Status = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Category
+                {
+                    Id = "4f8c9fd3fb4548af8ca11c6521aa3b33",
+                    Name = "Casual/Everyday",
+                    Description = "Phong cách thường ngày, thoải mái.",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fcasual-everyday.png?alt=media&token=8a0ad31a-7de5-4cb0-843a-d1c0cb60227b"],
+                    Status = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Category
+                {
+                    Id = "a7a75e41c1a64b4498a81f4b76029a5a",
+                    Name = "Beach/Resort",
+                    Description = "Trang phục phù hợp khi đi biển hoặc nghỉ dưỡng.",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fbeach-resort.png?alt=media&token=72ffcbc5-2092-4e82-8603-afcad8a080c5"],
+                    Status = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Category
+                {
+                    Id = "c6a7e90156d44da1ab26f259313e4a0b",
+                    Name = "Formal/Event",
+                    Description = "Phù hợp với các sự kiện trang trọng.",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fformal-event.png?alt=media&token=4faa26e0-3d1e-402f-8bbe-e59360a1bc76"],
+                    Status = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                }
+            );
 
             // ===== STYLES =====
             var styles = new List<Style> {

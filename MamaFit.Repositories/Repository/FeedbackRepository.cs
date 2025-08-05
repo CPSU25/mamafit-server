@@ -4,6 +4,7 @@ using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace MamaFit.Repositories.Repository;
 
@@ -25,5 +26,14 @@ public class FeedbackRepository : GenericRepository<Feedback>, IFeedbackReposito
             query = query.Where(x => x.CreatedAt <= endDate.Value);
         }
         return await PaginatedList<Feedback>.CreateAsync(query, index, pageSize);
+    }
+
+    public async Task<List<Feedback>> GetAllByUserId(string userId)
+    {
+        var query = await _dbSet
+            .Include(x => x.OrderItem)
+            .ThenInclude(x => x.Order)
+            .Where(x => !x.IsDeleted && x.UserId == userId).ToListAsync();
+        return query;
     }
 }

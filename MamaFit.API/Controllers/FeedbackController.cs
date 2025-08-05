@@ -30,6 +30,18 @@ public class FeedbackController : ControllerBase
             "Get all feedbacks successfully!"
         ));
     }
+
+    [HttpGet("my-feedbacks")]
+    public async Task<IActionResult> GetAllMyFeedbacks()
+    {
+        var result = await _feedbackService.GetAllByUserId();
+        return Ok(new ResponseModel<List<FeedbackResponseDto>>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            result,
+            "Get feedback successfully!"
+        ));
+    }
     
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById([FromRoute] string id)

@@ -10,5 +10,6 @@ namespace MamaFit.BusinessObjects.DTO.WarrantyRequestDto
     {
         public bool? IsFactoryError { get; set; } = null;
         public string? RejectedReason { get; set; }
+        public float? Fee { get; set; }
     }
 }

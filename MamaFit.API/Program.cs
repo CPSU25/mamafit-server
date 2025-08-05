@@ -44,6 +44,8 @@ namespace MamaFit.API
                 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
                 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
                 builder.Services.Configure<GhtkSettings>(builder.Configuration.GetSection("GhtkSettings"));
+                builder.Services.Configure<ContentfulSettings>(builder.Configuration.GetSection("Contentful"));
+                builder.Services.AddHttpClient("ContentfulClient");
                 builder.Services.AddGhtkClient(builder.Configuration);
                 builder.Services.AddValidatorsFromAssemblyContaining<ValidatorAssemblyReference>();
                 builder.Services.AddDatabase(builder.Configuration);

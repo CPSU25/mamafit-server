@@ -1,47 +1,46 @@
 ﻿using Contentful.Core;
-using Contentful.Core.Models;
 using MamaFit.BusinessObjects.DTO.CMSDto;
+using MamaFit.Repositories.Helper;
 using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.Interface;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace MamaFit.Services.Service
 {
     public class ConfigService : IConfigService
     {
         private readonly ICacheService _cacheService;
-        private readonly HttpClient _httpClient;
         private readonly ContentfulClient _contentfulClient;
-        private readonly IConfigurationSection _contentfulSettings;
-        private readonly IConfiguration _configuration;
+        private readonly ContentfulSettings _contentfulSettings;
 
-        public ConfigService(ICacheService cacheService, HttpClient httpClient, IConfiguration configuration)
+        public ConfigService(
+            ICacheService cacheService, 
+            IHttpClientFactory httpClientFactory, 
+            IOptions<ContentfulSettings> contentfulOptions)
         {
             _cacheService = cacheService;
-
-            _httpClient = httpClient;
-            _configuration = configuration;
-            _contentfulSettings = configuration.GetSection("Contentful");
-            var spaceId = _contentfulSettings!.GetSection("SpaceId").Value;
-            var contentKey = _contentfulSettings!.GetSection("ContentDeliveryKey").Value;
-            var entryId = _contentfulSettings!.GetSection("EntryId").Value;
-            _contentfulClient = new ContentfulClient(httpClient, contentKey, null, spaceId, false);
+            _contentfulSettings = contentfulOptions.Value;
+            var httpClient = httpClientFactory.CreateClient("ContentfulClient");
+            _contentfulClient = new ContentfulClient(
+                httpClient,
+                _contentfulSettings.ContentDeliveryKey,
+                null,
+                _contentfulSettings.SpaceId,
+                false
+            );
         }
 
         public async Task<CmsServiceBaseDto> GetConfig()
         {
             var response = await _cacheService.GetAsync<CmsServiceBaseDto>("cms:service:base");
-
             if (response?.Fields == null)
             {
-                var entryId = _contentfulSettings!.GetSection("EntryId").Value;
-                var contentfulResponse = await _contentfulClient.GetEntry<CmsFieldDto>(entryId);
+                var contentfulResponse = await _contentfulClient.GetEntry<CmsFieldDto>(_contentfulSettings.EntryId);
                 var config = new CmsServiceBaseDto
                 {
                     Fields = contentfulResponse
                 };
-                await _cacheService.SetAsync("cms:service:base", config,TimeSpan.FromDays(30));
-
+                await _cacheService.SetAsync("cms:service:base", config, TimeSpan.FromDays(30));
                 response = config;
             }
             return response;

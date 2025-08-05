@@ -21,8 +21,9 @@ public class OrderItemService : IOrderItemService
     private readonly IConfigService _configService;
     private readonly ICacheService _cacheService;
     private readonly IOrderItemTaskService _orderItemTaskService;
+    private readonly IMilestoneService _milestoneService;
 
-    public OrderItemService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation, IHttpContextAccessor httpContextAccessor, IConfigService configService, ICacheService cacheService, IOrderItemTaskService orderItemTaskService)
+    public OrderItemService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation, IHttpContextAccessor httpContextAccessor, IConfigService configService, ICacheService cacheService, IOrderItemTaskService orderItemTaskService, IMilestoneService milestoneService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -31,6 +32,7 @@ public class OrderItemService : IOrderItemService
         _configService = configService;
         _cacheService = cacheService;
         _orderItemTaskService = orderItemTaskService;
+        _milestoneService = milestoneService;
     }
 
     public async Task<PaginatedList<OrderItemResponseDto>> GetAllOrderItemsAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate)
@@ -239,5 +241,20 @@ public class OrderItemService : IOrderItemService
         };
 
         return response;
+    }
+
+    public async Task<int> GetCurrentOrderItemTaskSequence(string orderItemId)
+    {
+        var progressList = await _milestoneService.GetMilestoneByOrderItemId(orderItemId);
+        foreach(var progress in progressList)
+        {
+            if(progress.Progress >= 100 )
+                continue;
+            else
+            {
+                return progress!.Milestone!.SequenceOrder;
+            }
+        }
+        return 0;
     }
 }

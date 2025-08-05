@@ -17,7 +17,6 @@ using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace MamaFit.Services.Service;
 

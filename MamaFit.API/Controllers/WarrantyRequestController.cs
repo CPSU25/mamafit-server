@@ -50,13 +50,13 @@ namespace MamaFit.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] WarrantyRequestCreateDto warrantyRequestCreateDto)
         {
-            await _warrantyRequestService.CreateAsync(warrantyRequestCreateDto);
+            var id = await _warrantyRequestService.CreateAsync(warrantyRequestCreateDto);
 
             return Ok(
                 new ResponseModel<string>(
                     StatusCodes.Status201Created,
                     ApiCodes.SUCCESS,
-                    null,
+                    id,
                     "Warranty request created successfully"
                 ));
         }

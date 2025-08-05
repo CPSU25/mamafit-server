@@ -10,7 +10,6 @@
         public int AppointmentSlotInterval { get; set; }
         public int MaxAppointmentPerDay { get; set; }
         public int MaxAppointmentPerUser { get; set; }
-        //public CmsPickAddress? GhtkPickAddress { get; set; }
         public int WarrantyPeriod { get; set; }
     }
 }

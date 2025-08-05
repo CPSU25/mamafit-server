@@ -45,9 +45,9 @@ namespace MamaFit.Repositories.Repository
             return result!;
         }
 
-        public Task<List<OrderItem>> GetOrderItemByUserId(string userId)
+        public async Task<List<OrderItem>> GetOrderItemByUserId(string userId)
         {
-            var result = _dbSet
+            var result = await _dbSet
                 .Include(x => x.DesignRequest)
                 .Include(x => x.MaternityDressDetail)
                 .Include(x => x.Preset)

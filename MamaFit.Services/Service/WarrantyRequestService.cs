@@ -12,74 +12,68 @@ namespace MamaFit.Services.Service
     public class WarrantyRequestService : IWarrantyRequestService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
         private readonly IValidationService _validationService;
 
         public WarrantyRequestService(
             IUnitOfWork unitOfWork,
-            IHttpContextAccessor httpContextAccessor,
             IMapper mapper,
             IValidationService validationService)
         {
             _unitOfWork = unitOfWork;
-            _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
             _validationService = validationService;
         }
 
         public async Task CreateAsync(WarrantyRequestCreateDto warrantyRequestCreateDto)
         {
-            var oldOrderItem =
-                await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(warrantyRequestCreateDto.WarrantyOrderItemId!);
-            _validationService.CheckNotFound(oldOrderItem, "Order item don't exist!");
-            
-            var oldOrder = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(oldOrderItem.OrderId);
-            _validationService.CheckNotFound(oldOrder, "Order don't exist!");
-            
+            var rootOrderItem = await GetRootOrderItemAsync(warrantyRequestCreateDto.WarrantyOrderItemId!);
+            _validationService.CheckNotFound(rootOrderItem, "Root order item don't exist!");
+
+            var rootOrder = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(rootOrderItem.OrderId);
+            _validationService.CheckNotFound(rootOrder, "Order don't exist!");
+
+            if (rootOrder.PaymentStatus != PaymentStatus.PAID_FULL &&
+                rootOrder.PaymentStatus != PaymentStatus.PAID_DEPOSIT_COMPLETED)
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                    "Order must be paid before requesting warranty!");
+
             var warrantyRequestCount =
-                await _unitOfWork.WarrantyRequestRepository.CountWarrantyForOrderItemAsync(oldOrderItem.Id);
+                await _unitOfWork.WarrantyRequestRepository.CountWarrantyForOrderItemAsync(rootOrderItem.Id);
+
             var newOrder = new Order
             {
-                UserId = oldOrder.UserId,
-                AddressId = oldOrder.AddressId,
-                MeasurementId = oldOrder.MeasurementId,
-                BranchId = oldOrder.BranchId,
+                UserId = rootOrder.UserId,
+                AddressId = rootOrder.AddressId,
+                MeasurementId = rootOrder.MeasurementId,
+                BranchId = rootOrder.BranchId,
                 Type = OrderType.WARRANTY,
-                Code = GenerateOrderCode(), 
+                Code = GenerateOrderCode(),
                 Status = OrderStatus.CONFIRMED,
                 PaymentStatus = PaymentStatus.WARRANTY,
                 PaymentType = PaymentType.FULL,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
-                CreatedBy = "System"
             };
             await _unitOfWork.OrderRepository.InsertAsync(newOrder);
-            
+
             var newOrderItem = new OrderItem
             {
                 OrderId = newOrder.Id,
-                ParentOrderItemId = oldOrderItem.Id,
-                MaternityDressDetailId = oldOrderItem.MaternityDressDetailId,
-                PresetId = oldOrderItem.PresetId,
+                ParentOrderItemId = rootOrderItem.Id, 
+                MaternityDressDetailId = rootOrderItem.MaternityDressDetailId,
+                PresetId = rootOrderItem.PresetId,
                 ItemType = ItemType.WARRANTY,
-                Price = oldOrderItem.Price, // hoặc = 0 nếu miễn phí bảo hành
+                Price = rootOrderItem.Price, // hoặc = 0 nếu miễn phí bảo hành
                 Quantity = 1,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
-                CreatedBy = "System"
             };
             await _unitOfWork.OrderItemRepository.InsertAsync(newOrderItem);
-            
+
             var warrantyRequest = new WarrantyRequest
             {
-                WarrantyOrderItemId = oldOrderItem.Id,
+                WarrantyOrderItemId = rootOrderItem.Id,
                 Images = warrantyRequestCreateDto.Images,
                 Description = warrantyRequestCreateDto.Description,
                 Status = WarrantyRequestStatus.SUBMITTED,
                 WarrantyRound = warrantyRequestCount + 1,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
             };
             await _unitOfWork.WarrantyRequestRepository.InsertAsync(warrantyRequest);
             await _unitOfWork.SaveChangesAsync();
@@ -126,12 +120,23 @@ namespace MamaFit.Services.Service
             await _unitOfWork.WarrantyRequestRepository.UpdateAsync(warrantyRequest);
             await _unitOfWork.SaveChangesAsync();
         }
-        
+
         private string GenerateOrderCode()
         {
             string prefix = "O";
             string randomPart = new Random().Next(10000, 99999).ToString();
             return $"{prefix}{randomPart}";
+        }
+
+        private async Task<OrderItem> GetRootOrderItemAsync(string itemId)
+        {
+            var item = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(itemId);
+            while (!string.IsNullOrEmpty(item.ParentOrderItemId))
+            {
+                item = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(item.ParentOrderItemId);
+            }
+
+            return item;
         }
     }
 }

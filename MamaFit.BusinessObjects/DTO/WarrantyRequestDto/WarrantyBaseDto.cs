@@ -6,6 +6,5 @@ namespace MamaFit.BusinessObjects.DTO.WarrantyRequestDto
     {
         public List<string>? Images { get; set; } = [];
         public string? Description { get; set; }
-        public float? Fee { get; set; }
     }
 }

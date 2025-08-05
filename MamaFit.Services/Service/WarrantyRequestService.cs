@@ -72,6 +72,8 @@ namespace MamaFit.Services.Service
                 Status = OrderStatus.CONFIRMED,
                 PaymentStatus = PaymentStatus.WARRANTY,
                 PaymentType = PaymentType.FULL,
+                PaymentMethod = rootOrder.PaymentMethod,
+                DeliveryMethod = rootOrder.DeliveryMethod,
             };
             await _unitOfWork.OrderRepository.InsertAsync(newOrder);
 
@@ -112,6 +114,14 @@ namespace MamaFit.Services.Service
                 }
             });
             return newOrder.Id;
+        }
+        
+        public async Task<GetDetailDto> GetWarrantyRequestByOrderItemIdAsync(string orderItemId)
+        {
+            var warrantyRequest = await _unitOfWork.WarrantyRequestRepository.GetWarrantyRequestByOrderItemIdAsync(orderItemId);
+            _validationService.CheckNotFound(warrantyRequest, $"Warranty request for order item {orderItemId} not found");
+
+            return _mapper.Map<GetDetailDto>(warrantyRequest);
         }
         
         public async Task DeleteAsync(string id)

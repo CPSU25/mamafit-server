@@ -32,7 +32,7 @@ namespace MamaFit.Services.Service
             _configService = configService;
         }
 
-        public async Task CreateAsync(WarrantyRequestCreateDto warrantyRequestCreateDto)
+        public async Task<string> CreateAsync(WarrantyRequestCreateDto warrantyRequestCreateDto)
         {
             var rootOrderItem = await GetRootOrderItemAsync(warrantyRequestCreateDto.WarrantyOrderItemId!);
             _validationService.CheckNotFound(rootOrderItem, "Root order item don't exist!");
@@ -111,6 +111,7 @@ namespace MamaFit.Services.Service
                     { "orderId", newOrder.Id }
                 }
             });
+            return newOrder.Id;
         }
         
         public async Task DeleteAsync(string id)

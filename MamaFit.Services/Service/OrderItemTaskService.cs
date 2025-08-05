@@ -58,19 +58,40 @@ public class OrderItemTaskService : IOrderItemTaskService
         var orderItemTasks = await _repo.GetTasksByAssignedStaffAsync(userId);
         _validation.CheckNotFound(orderItemTasks, "No tasks found for the assigned staff");
 
-        var groupedByOrderItem = orderItemTasks
+        var result = orderItemTasks
             .Where(x => x.OrderItem != null)
             .GroupBy(x => x.OrderItem.Id)
             .Select(orderGroup =>
             {
                 var representative = orderGroup.First();
+                var orderItemId = representative.OrderItem.Id;
 
                 var milestoneGroups = orderGroup
-                    .Where(x => x.MaternityDressTask != null && x.MaternityDressTask.Milestone != null)
+                    .Where(x => x.MaternityDressTask?.Milestone != null)
                     .GroupBy(x => x.MaternityDressTask.Milestone.Id)
                     .Select(milestoneGroup =>
                     {
                         var milestoneRep = milestoneGroup.First().MaternityDressTask.Milestone;
+
+                        var totalTaskCount = milestoneRep.MaternityDressTasks.Count;
+                        var doneTaskCount = milestoneRep.MaternityDressTasks
+                            .Count(t => t.OrderItemTasks.Any(o =>
+                                o.OrderItemId == orderItemId &&
+                                (o.Status == OrderItemTaskStatus.DONE || o.Status == OrderItemTaskStatus.PASS)));
+
+                        bool isQcMilestone = milestoneRep.Name != null &&
+                                             ((milestoneRep.Name.Contains("qc", StringComparison.OrdinalIgnoreCase)
+                                             || milestoneRep.Name.Contains("quality check", StringComparison.OrdinalIgnoreCase))
+                                             && !milestoneRep.ApplyFor.Contains(ItemType.QC_FAIL));
+
+                        var qcTaskCount = milestoneRep.MaternityDressTasks
+                            .Count(t => t.OrderItemTasks.Any(o =>
+                                o.OrderItemId == orderItemId &&
+                                (o.Status == OrderItemTaskStatus.FAIL || o.Status == OrderItemTaskStatus.PASS)));
+
+                        float progress = isQcMilestone
+                            ? (qcTaskCount == totalTaskCount && totalTaskCount > 0 ? 100 : 0)
+                            : (totalTaskCount == 0 ? 0 : (float)doneTaskCount / totalTaskCount * 100);
 
                         return new MilestoneGetByIdOrderTaskResponseDto
                         {
@@ -78,6 +99,7 @@ public class OrderItemTaskService : IOrderItemTaskService
                             Description = milestoneRep.Description,
                             ApplyFor = milestoneRep.ApplyFor,
                             SequenceOrder = milestoneRep.SequenceOrder,
+                            Progress = progress,
                             MaternityDressTasks = milestoneGroup
                                 .Select(orderItemTask =>
                                 {
@@ -91,6 +113,7 @@ public class OrderItemTaskService : IOrderItemTaskService
                                 .ToList()
                         };
                     })
+                    .OrderBy(m => m.SequenceOrder)
                     .ToList();
 
                 return new OrderItemTaskGetByTokenResponse
@@ -104,7 +127,7 @@ public class OrderItemTaskService : IOrderItemTaskService
             })
             .ToList();
 
-        return groupedByOrderItem;
+        return result;
     }
 
     public async Task<List<OrderItemTaskGetByTokenResponse>> GetTasksByOrderItemIdAsync(string orderItemId)
@@ -113,6 +136,7 @@ public class OrderItemTaskService : IOrderItemTaskService
 
         var response = listOrderItemTask.Where(x => x.OrderItem.Id == orderItemId).ToList();
         _validation.CheckNotFound(response, $"OrderItemTask with OrderItemId: {orderItemId} is not found");
+
         return response;
     }
 

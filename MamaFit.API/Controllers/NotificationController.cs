@@ -52,6 +52,19 @@ public class NotificationController : ControllerBase
             "Get notifications by access token successfully!"
         ));
     }
+
+    [Authorize]
+    [HttpPut("marks-all-as-read")]
+    public async Task<IActionResult> MarkNotificationAsRead()
+    {
+        await _notificationService.MarkNotificationIsRead();
+        return Ok(new ResponseModel<string>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            null,
+            "Mark all notifications as read successfully!"
+        ));
+    }
     
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById([FromRoute] string id)

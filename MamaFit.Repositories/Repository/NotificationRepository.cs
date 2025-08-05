@@ -67,4 +67,10 @@ public class NotificationRepository : GenericRepository<Notification>, INotifica
 
         return await query.GetPaginatedList(index, pageSize);
     }
+
+    public async Task<List<Notification>> GetAllByUserId(string userId)
+    {
+        var result = await _dbSet.Where(x => x.ReceiverId == userId && !x.IsDeleted).ToListAsync();
+        return result;
+    }
 }

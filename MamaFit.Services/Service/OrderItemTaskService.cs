@@ -79,7 +79,7 @@ public class OrderItemTaskService : IOrderItemTaskService
                             ApplyFor = milestoneRep.ApplyFor,
                             SequenceOrder = milestoneRep.SequenceOrder,
                             MaternityDressTasks = milestoneGroup
-                                .Select(orderItemTask => 
+                                .Select(orderItemTask =>
                                 {
                                     var taskDto = _mapper.Map<MaternityDressTaskOrderTaskResponseDto>(orderItemTask.MaternityDressTask);
                                     taskDto.Status = orderItemTask.Status;
@@ -187,7 +187,7 @@ public class OrderItemTaskService : IOrderItemTaskService
         {
             await UpdateStatusForPresetDoneAsync(order, progress);
             var qcFailProgress = progress.Where(x => x.Milestone.ApplyFor.Contains(ItemType.QC_FAIL));
-            if(qcFailProgress.Any(x => x.Progress == 100 && x.IsDone))
+            if (qcFailProgress.Any(x => x.Progress == 100 && x.IsDone))
             {
                 if (order.PaymentType == PaymentType.FULL && order.PaymentStatus == PaymentStatus.PAID_FULL)
                 {
@@ -236,7 +236,7 @@ public class OrderItemTaskService : IOrderItemTaskService
             if (deliveringProgress?.Progress == 100 && packageProgress.IsDone)
                 order.Status = OrderStatus.DELIVERING;
         }
-        else if (qcProgress.Any(x => x.Progress == 100 && x.IsDone))
+        else if (qcProgress.Any(x => x.Progress == 100))
             order.Status = OrderStatus.PACKAGING;
         else
             order.Status = OrderStatus.IN_QC;
@@ -259,15 +259,33 @@ public class OrderItemTaskService : IOrderItemTaskService
         var keywordList = new[] { "quality check", "qc" };
         var qcProgress = progress.Where(x => keywordList.Any(k => x.Milestone!.Name!.ToLower().Contains(k)));
 
-        if (qcProgress.Any(x => x.Progress == 100 && x.IsDone))
+        if (qcProgress.Any(x => x.Progress == 100))
         {
-            if (order.PaymentType == PaymentType.FULL && order.PaymentStatus == PaymentStatus.PAID_FULL)
+            var keyword = new[] { "fail" };
+            var qcFailProgress = progress.Where(x => keyword.Any(k => x.Milestone!.Name!.ToLower().Contains(k)));
+
+            if (qcFailProgress.Any(x => x.Progress == 100 && x.IsDone))
             {
-                order.Status = OrderStatus.PACKAGING;
+                if (order.PaymentType == PaymentType.FULL && order.PaymentStatus == PaymentStatus.PAID_FULL)
+                {
+                    order.Status = OrderStatus.PACKAGING;
+                }
+                else if (order.PaymentType == PaymentType.DEPOSIT && order.PaymentStatus == PaymentStatus.PAID_DEPOSIT)
+                {
+                    order.Status = OrderStatus.AWAITING_PAID_REST;
+                }
             }
-            else if (order.PaymentType == PaymentType.DEPOSIT && order.PaymentStatus == PaymentStatus.PAID_DEPOSIT)
+
+            if (!qcFailProgress.Any())
             {
-                order.Status = OrderStatus.AWAITING_PAID_REST;
+                if (order.PaymentType == PaymentType.FULL && order.PaymentStatus == PaymentStatus.PAID_FULL)
+                {
+                    order.Status = OrderStatus.PACKAGING;
+                }
+                else if (order.PaymentType == PaymentType.DEPOSIT && order.PaymentStatus == PaymentStatus.PAID_DEPOSIT)
+                {
+                    order.Status = OrderStatus.AWAITING_PAID_REST;
+                }
             }
         }
 

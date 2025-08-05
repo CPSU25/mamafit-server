@@ -629,7 +629,7 @@ public class OrderService : IOrderService
         await _unitOfWork.SaveChangesAsync();
     }
     
-    public async Task UpdateCancelledOrderAsync(string id)
+    public async Task UpdateCancelledOrderAsync(string id, string? cancelReason = null)
     {
         var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
         _validation.CheckNotFound(order, "Order not found");
@@ -640,7 +640,7 @@ public class OrderService : IOrderService
                 "Order is not in a state that can be cancelled.");
         }
         
-
+        order.CanceledReason = cancelReason;
         order.Status = OrderStatus.CANCELLED;
 
         await _unitOfWork.OrderRepository.UpdateAsync(order);

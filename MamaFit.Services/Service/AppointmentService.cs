@@ -95,7 +95,7 @@ namespace MamaFit.Services.Service
             await _unitOfWork.AppointmentRepository.InsertAsync(newAppointment);
             await _unitOfWork.SaveChangesAsync();
 
-            await _cacheService.RemoveByPrefixAsync($"appointments");
+            await _cacheService.RemoveByPrefixAsync($"appointment");
 
             return newAppointment.Id;
         }
@@ -107,6 +107,7 @@ namespace MamaFit.Services.Service
 
             await _unitOfWork.AppointmentRepository.SoftDeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
+            await _cacheService.RemoveByPrefixAsync($"appointment");
         }
 
         public async Task<PaginatedList<AppointmentResponseDto>> GetAllAsync(int index, int pageSize, DateTime? StartDate, DateTime? EndDate, AppointmentOrderBy? sortBy)
@@ -132,7 +133,7 @@ namespace MamaFit.Services.Service
                     appointmentList.PageSize
                 );
 
-                await _cacheService.SetAsync($"appointments_{index}_{pageSize}_{StartDate}_{EndDate}_{sortBy}", paginatedResponse);
+                await _cacheService.SetAsync($"appointment_{index}_{pageSize}_{StartDate}_{EndDate}_{sortBy}", paginatedResponse);
                 return paginatedResponse;
             }
 
@@ -161,7 +162,7 @@ namespace MamaFit.Services.Service
             await _unitOfWork.SaveChangesAsync();
 
             var dateOnly = DateOnly.FromDateTime(requestDto.BookingTime);
-            await _cacheService.RemoveByPrefixAsync($"appointment_slots_{requestDto.BranchId}");
+            await _cacheService.RemoveByPrefixAsync($"appointment");
         }
 
         public async Task CheckInAsync(string id)
@@ -177,6 +178,7 @@ namespace MamaFit.Services.Service
 
                 await _unitOfWork.AppointmentRepository.UpdateAsync(oldAppointment);
                 await _unitOfWork.SaveChangesAsync();
+                await _cacheService.RemoveByPrefixAsync($"appointment");
             }
             else
             {
@@ -199,6 +201,7 @@ namespace MamaFit.Services.Service
 
                 await _unitOfWork.AppointmentRepository.UpdateAsync(oldAppointment);
                 await _unitOfWork.SaveChangesAsync();
+                await _cacheService.RemoveByPrefixAsync($"appointment");
             }
             else
             {
@@ -219,6 +222,7 @@ namespace MamaFit.Services.Service
 
                 await _unitOfWork.AppointmentRepository.UpdateAsync(oldAppointment);
                 await _unitOfWork.SaveChangesAsync();
+                await _cacheService.RemoveByPrefixAsync($"appointment");
             }
             else
             {

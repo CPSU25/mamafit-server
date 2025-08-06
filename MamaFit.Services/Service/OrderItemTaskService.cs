@@ -291,7 +291,7 @@ public class OrderItemTaskService : IOrderItemTaskService
             }
             else
             {
-                var warrantyKey = new[] { "warranty check" };
+                var warrantyKey = new[] { "validation" };
                 var warrantyProgess = progress.Where(x => warrantyKey.Any(k => x.Milestone!.Name!.ToLower().Contains(k)));
 
                 if (warrantyProgess.Any(x => x.Progress == 100))
@@ -347,7 +347,7 @@ public class OrderItemTaskService : IOrderItemTaskService
     {
         var keywordList = new[] { "fail" };
         var qcProgress = progress.Where(x => keywordList.Any(k => x.Milestone!.Name!.ToLower().Contains(k)));
-        if (task.MaternityDressTask.Milestone.Name.ToLower().Contains("valiadation"))
+        if (task.MaternityDressTask.Milestone.Name.ToLower().Contains("validation"))
         {
             order.Status = OrderStatus.RETURNED;
             //  xóa task trong orderitem trừ warranty check
@@ -500,5 +500,6 @@ public class OrderItemTaskService : IOrderItemTaskService
             }
         }
     }
+
 
 }

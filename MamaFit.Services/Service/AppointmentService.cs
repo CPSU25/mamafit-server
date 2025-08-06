@@ -36,7 +36,7 @@ namespace MamaFit.Services.Service
 
         public async Task<string> CreateAsync(AppointmentRequestDto requestDto)
         {
-                var userName = GetCurrentUserName();
+            var userName = GetCurrentUserName();
 
             var branch = await _unitOfWork.BranchRepository.GetByIdAsync(requestDto.BranchId);
             _validationService.CheckNotFound(branch, $"Branch not found with id {requestDto.BranchId}");
@@ -95,7 +95,7 @@ namespace MamaFit.Services.Service
             await _unitOfWork.AppointmentRepository.InsertAsync(newAppointment);
             await _unitOfWork.SaveChangesAsync();
 
-            await _cacheService.RemoveByPrefixAsync($"appointment_slots_{requestDto.BranchId}");
+            await _cacheService.RemoveByPrefixAsync($"appointments");
 
             return newAppointment.Id;
         }

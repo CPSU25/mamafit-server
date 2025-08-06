@@ -113,7 +113,7 @@ public class GhtkService : IGhtkService
                 return new GhtkProductDto
                 {
                     Name = item.MaternityDressDetail?.Name ?? "Đầm bầu",
-                    Weight = item.MaternityDressDetail?.Weight ?? 0,
+                    Weight = item.MaternityDressDetail?.Weight ?? 200,
                     Quantity = item.Quantity
                 };
             }
@@ -122,7 +122,7 @@ public class GhtkService : IGhtkService
                 return new GhtkProductDto
                 {
                     Name = item.Preset?.Name ?? "Preset thiết kế",
-                    Weight = item.Preset?.Weight ?? 0,
+                    Weight = item.Preset?.Weight ?? 200,
                     Quantity = item.Quantity
                 };
             }
@@ -138,7 +138,7 @@ public class GhtkService : IGhtkService
                 return new OrderProductDto
                 {
                     Name = oi.MaternityDressDetail?.Name ?? "Đầm bầu",
-                    Weight = oi.MaternityDressDetail?.Weight ?? 0,
+                    Weight = oi.MaternityDressDetail?.Weight ?? 200,
                     Quantity = oi.Quantity,
                     Price = oi.MaternityDressDetail?.Price ?? 0
                 };
@@ -148,7 +148,7 @@ public class GhtkService : IGhtkService
                 return new OrderProductDto
                 {
                     Name = oi.Preset?.Name ?? "Preset thiết kế",
-                    Weight = oi.Preset?.Weight ?? 0,
+                    Weight = oi.Preset?.Weight ?? 200,
                     Quantity = oi.Quantity,
                     Price = oi.Preset?.Price ?? 0
                 };
@@ -197,8 +197,8 @@ public class GhtkService : IGhtkService
         if (baseResp!.Success)
         {
             var successResp = JsonConvert.DeserializeObject<GhtkOrderSubmitSuccessResponse>(responseBody);
-            var label = successResp?.Order?.Label;
-            order.TrackingOrderCode = label;
+            var trackingId = successResp?.Order?.TrackingId;
+            order.TrackingOrderCode = trackingId.ToString();
             await _unitOfWork.OrderRepository.UpdateAsync(order);
             await _unitOfWork.SaveChangesAsync();
             if (successResp?.Order != null)

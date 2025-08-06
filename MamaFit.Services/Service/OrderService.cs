@@ -50,7 +50,7 @@ public class OrderService : IOrderService
         _cacheService = cacheService;
         _configService = configService;
     }
-    
+
     public async Task<List<OrderResponseDto>> GetOrdersForAssignedStaffAsync()
     {
         var userId = GetCurrentUserId();
@@ -63,7 +63,7 @@ public class OrderService : IOrderService
             return orderDto;
         }).ToList();
     }
-    
+
     public async Task<List<OrderResponseDto>> GetOrdersForBranchManagerAsync()
     {
         var userId = GetCurrentUserId();
@@ -110,19 +110,19 @@ public class OrderService : IOrderService
     {
         var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
         _validation.CheckNotFound(order, "Order not found");
-        
-        if (order.Status == OrderStatus.COMPLETED && 
+
+        if (order.Status == OrderStatus.COMPLETED &&
              (order.PaymentStatus == PaymentStatus.PAID_FULL || order.PaymentStatus == PaymentStatus.PAID_DEPOSIT_COMPLETED))
         {
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Order already completed and paid.");
         }
-        
+
         order.Status = orderStatus;
         order.PaymentStatus = paymentStatus;
-        
+
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
-        
+
         string notificationContent = paymentStatus switch
         {
             PaymentStatus.PAID_DEPOSIT =>
@@ -456,16 +456,12 @@ public class OrderService : IOrderService
 
     public async Task<string> CreatePresetOrderAsync(OrderPresetCreateRequestDto request)
     {
-        var preset = await _unitOfWork.PresetRepository.GetDetailById(request.PresetId!);
-        _validation.CheckNotFound(preset, $"Preset with id: {request.PresetId} not found");
-
         var userId = GetCurrentUserId();
         var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
         _validation.CheckNotFound(user, $"User with id: {userId} not found");
 
         VoucherDiscount? voucher = null;
         Measurement? measurement = null;
-        List<OrderItemAddOnOption>? addOnOptions = new List<OrderItemAddOnOption>();
 
         if (request.VoucherDiscountId != null)
         {
@@ -481,25 +477,54 @@ public class OrderService : IOrderService
                 $"Measurement diary with id: {request.MeasurementId} not found");
         }
 
-        if (request.Options is not null)
+        var orderItems = new List<OrderItem>();
+        decimal addOnListTotalPrice = 0;
+        decimal subTotalAmount = 0;
+
+        // Tạo OrderItem theo preset và add-on tương ứng
+        foreach (var presetReq in request.Presets)
         {
-            foreach (var option in request.Options)
+            var preset = await _unitOfWork.PresetRepository.GetDetailById(presetReq.Id);
+            _validation.CheckNotFound(preset, $"Preset with id: {presetReq.Id} not found");
+
+            var orderItemAddOns = new List<OrderItemAddOnOption>();
+
+            if (presetReq.Options is not null)
             {
-                var addOn = await _unitOfWork.AddOnOptionRepository.GetByIdAsync(option.AddOnOptionId!);
-                _validation.CheckNotFound(addOn, $"Add-on option with id: {option.AddOnOptionId} not found");
-                addOnOptions.Add(new OrderItemAddOnOption
+                foreach (var option in presetReq.Options)
                 {
-                    AddOnOptionId = addOn.Id,
-                    AddOnOption = addOn,
-                    Value = option.Value
-                });
+                    var addOn = await _unitOfWork.AddOnOptionRepository.GetByIdAsync(option.AddOnOptionId!);
+                    _validation.CheckNotFound(addOn, $"Add-on option with id: {option.AddOnOptionId} not found");
+
+                    orderItemAddOns.Add(new OrderItemAddOnOption
+                    {
+                        AddOnOptionId = addOn.Id,
+                        AddOnOption = addOn,
+                        Value = option.Value
+                    });
+
+                    addOnListTotalPrice += addOn.Price;
+                }
             }
+
+            orderItems.Add(new OrderItem
+            {
+                Preset = preset,
+                PresetId = preset.Id,
+                ItemType = ItemType.PRESET,
+                Price = preset.Price,
+                Quantity = 1,
+                OrderItemAddOnOptions = orderItemAddOns,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                CreatedBy = user!.UserName
+            });
+
+            subTotalAmount += preset.Price;
         }
 
-        var addOnListTotalPrice = addOnOptions.Sum(x => x.AddOnOption!.Price);
-        var subTotalAmount = preset!.Price;
+        // Tính discount nếu có voucher
         decimal? discountValue = 0;
-
         if (voucher != null && voucher.VoucherBatch != null)
         {
             if (voucher.VoucherBatch.DiscountType == DiscountType.PERCENTAGE)
@@ -515,18 +540,18 @@ public class OrderService : IOrderService
             {
                 discountValue = subTotalAmount;
             }
-            
+
             voucher.Status = VoucherStatus.USED;
             await _unitOfWork.VoucherDiscountRepository.UpdateAsync(voucher);
         }
 
-        // Tính merchandise subtotal sau khi trừ discount
         var merchandiseAfterDiscount = subTotalAmount - discountValue;
         var totalAmount = merchandiseAfterDiscount + request.ShippingFee + addOnListTotalPrice;
         var depositSubtotal = merchandiseAfterDiscount / 2;
 
         var config = await _configService.GetConfig();
 
+        // Map sang Order entity
         var order = _mapper.Map<Order>(request);
         order.User = user!;
         order.VoucherDiscount = voucher;
@@ -541,13 +566,12 @@ public class OrderService : IOrderService
         order.TotalAmount = totalAmount;
         order.PaymentStatus = PaymentStatus.PENDING;
         order.ServiceAmount = addOnListTotalPrice;
+        order.OrderItems = orderItems;
 
-        // Tính toán deposit fields nếu payment type là DEPOSIT
         if (request.PaymentType == PaymentType.DEPOSIT)
         {
             order.PaymentType = PaymentType.DEPOSIT;
-            // Chia đôi số tiền merchandise sau khi đã trừ discount
-            order.DepositSubtotal = depositSubtotal; // 50% của merchandise sau discount
+            order.DepositSubtotal = depositSubtotal;
             order.RemainingBalance = merchandiseAfterDiscount - order.DepositSubtotal;
             order.TotalPaid = depositSubtotal + addOnListTotalPrice + request.ShippingFee;
         }
@@ -559,27 +583,7 @@ public class OrderService : IOrderService
             order.TotalPaid = totalAmount;
         }
 
-        order.OrderItems = new List<OrderItem>()
-        {
-            new OrderItem
-            {
-                Preset = preset,
-                ItemType = ItemType.PRESET,
-                OrderItemAddOnOptions = addOnOptions.Select(x => new OrderItemAddOnOption
-                {
-                    AddOnOptionId = x.AddOnOptionId,
-                    AddOnOption = x.AddOnOption,
-                    Value = x.Value,
-                }).ToList(),
-                // Price = preset.ComponentOptionPresets.Sum(co => co.ComponentOption!.Price),
-                Price = preset.Price,
-                Quantity = 1,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
-                CreatedBy = user!.UserName
-            }
-        };
-
+        // Xử lý địa chỉ giao hàng hoặc chi nhánh pick-up
         if (request.DeliveryMethod == DeliveryMethod.DELIVERY)
         {
             if (request.AddressId == null)
@@ -588,14 +592,9 @@ public class OrderService : IOrderService
 
             var address = await _unitOfWork.AddressRepository.GetByIdAsync(request.AddressId);
             _validation.CheckNotFound(address, $"Address with id: {request.AddressId} not found");
-
             order.Address = address;
-            await _unitOfWork.OrderRepository.InsertAsync(order);
-            await _unitOfWork.SaveChangesAsync();
-            return order.Id;
         }
-
-        if (request.DeliveryMethod == DeliveryMethod.PICK_UP)
+        else if (request.DeliveryMethod == DeliveryMethod.PICK_UP)
         {
             if (request.BranchId == null)
                 throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
@@ -628,7 +627,7 @@ public class OrderService : IOrderService
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
     }
-    
+
     public async Task UpdateCancelledOrderAsync(string id, string? cancelReason = null)
     {
         var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
@@ -639,14 +638,14 @@ public class OrderService : IOrderService
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                 "Order is not in a state that can be cancelled.");
         }
-        
+
         order.CanceledReason = cancelReason;
         order.Status = OrderStatus.CANCELLED;
 
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
     }
-    
+
     public async Task WebhookForContentfulWhenUpdateData(CmsServiceBaseDto request)
     {
         await _cacheService.SetAsync("cms:service:base", request, TimeSpan.FromDays(30));

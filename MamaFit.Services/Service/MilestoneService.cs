@@ -44,7 +44,7 @@ namespace MamaFit.Services.Service
         }
 
         public async Task<PaginatedList<MilestoneResponseDto>> GetAllAsync(int index, int pageSize, string? search,
-            EntitySortBy? sortBy)
+        EntitySortBy? sortBy)
         {
             var milestoneList = await _unitOfWork.MilestoneRepository.GetAllAsync(index, pageSize, search, sortBy);
 

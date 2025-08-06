@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CloudinaryDotNet.Core;
 using MamaFit.BusinessObjects.DTO.ChatMessageDto;
 using MamaFit.BusinessObjects.DTO.MaternityDressTaskDto;
 using MamaFit.BusinessObjects.DTO.MeasurementDto;
@@ -16,7 +17,6 @@ using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace MamaFit.Services.Service;
 
@@ -207,7 +207,7 @@ public class OrderItemTaskService : IOrderItemTaskService
         {
             order.Status = OrderStatus.COMPLETED;
         }
-        else if (orderItem.ItemType == ItemType.PRESET)
+        else if (orderItem.ItemType == ItemType.PRESET || orderItem.ItemType == ItemType.WARRANTY)
         {
             await UpdateStatusForPresetDoneAsync(order, progress);
             var qcFailProgress = progress.Where(x => x.Milestone.ApplyFor.Contains(ItemType.QC_FAIL));
@@ -280,6 +280,27 @@ public class OrderItemTaskService : IOrderItemTaskService
     }
     private async Task HandlePassAsync(Order order, List<MilestoneAchiveOrderItemResponseDto> progress)
     {
+        if (order.Type == OrderType.WARRANTY)
+        {
+            var in_warrantyKey = new[] { "in warranty" };
+            var in_warrantyProgess = progress.Where(x => in_warrantyKey.Any(k => x.Milestone!.Name!.ToLower().Contains(k)));
+
+            if (in_warrantyProgess.Any(x => x.Progress == 100))
+            {
+                order.Status = OrderStatus.IN_QC;
+            }
+            else
+            {
+                var warrantyKey = new[] { "validation" };
+                var warrantyProgess = progress.Where(x => warrantyKey.Any(k => x.Milestone!.Name!.ToLower().Contains(k)));
+
+                if (warrantyProgess.Any(x => x.Progress == 100))
+                {
+                    order.Status = OrderStatus.IN_WARRANTY;
+                }
+            }
+        }
+
         var keywordList = new[] { "quality check", "qc" };
         var qcProgress = progress.Where(x => keywordList.Any(k => x.Milestone!.Name!.ToLower().Contains(k)));
 
@@ -302,7 +323,7 @@ public class OrderItemTaskService : IOrderItemTaskService
 
             if (!qcFailProgress.Any())
             {
-                if (order.PaymentType == PaymentType.FULL && order.PaymentStatus == PaymentStatus.PAID_FULL)
+                if (order.PaymentType == PaymentType.FULL && (order.PaymentStatus == PaymentStatus.PAID_FULL || order.PaymentStatus == PaymentStatus.WARRANTY))
                 {
                     order.Status = OrderStatus.PACKAGING;
                 }
@@ -326,13 +347,28 @@ public class OrderItemTaskService : IOrderItemTaskService
     {
         var keywordList = new[] { "fail" };
         var qcProgress = progress.Where(x => keywordList.Any(k => x.Milestone!.Name!.ToLower().Contains(k)));
+        if (task.MaternityDressTask.Milestone.Name.ToLower().Contains("validation"))
+        {
+            order.Status = OrderStatus.RETURNED;
+            //  xóa task trong orderitem trừ warranty check
+            await _unitOfWork.OrderRepository.UpdateAsync(order);
+            await _unitOfWork.SaveChangesAsync();
+            return;
+        }
 
         if (severity == true) // Task nặng -> reset progress
         {
+            if (milestones.Any(x => x.ApplyFor.Contains(ItemType.WARRANTY) && x.Name.ToLower().Contains("quality check warranty")))
+            {
+                order.Status = OrderStatus.IN_WARRANTY;
+            }
+            else
+            {
+                order.Status = OrderStatus.IN_PRODUCTION;
+            }
+
             foreach (var t in orderItem.OrderItemTasks)
                 t.Status = OrderItemTaskStatus.PENDING;
-
-            order.Status = OrderStatus.IN_PRODUCTION;
         }
         if (severity == false) // Task nhẹ -> assign task mới
         {
@@ -464,5 +500,6 @@ public class OrderItemTaskService : IOrderItemTaskService
             }
         }
     }
+
 
 }

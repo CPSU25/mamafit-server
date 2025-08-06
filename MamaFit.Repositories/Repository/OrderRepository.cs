@@ -126,6 +126,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
     public async Task<Order?> GetWithItemsAndDressDetails(string id)
     {
         return await _dbSet.AsNoTracking()
+            .Include(x => x.Branch)
             .Include(x => x.Address)
             .Include(x => x.User)
             .Include(x => x.OrderItems.Where(oi => !oi.IsDeleted))

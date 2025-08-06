@@ -322,9 +322,9 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.FeedbackCount, otp => otp.MapFrom(x => x.OrderItems.Sum(x => x.Feedbacks.Count())))
                 .ForMember(dest => dest.AverageRate,
                             otp => otp.MapFrom(src => src.OrderItems
-                            .SelectMany(oi => oi.Feedbacks)
+                            .SelectMany(oi => oi.Feedbacks!)
                             .Any() ? src.OrderItems
-                            .SelectMany(oi => oi.Feedbacks)
+                            .SelectMany(oi => oi.Feedbacks!)
                             .Average(fb => fb.Rated) : 0))
                 .ReverseMap();
             #endregion
@@ -334,6 +334,9 @@ namespace MamaFit.Services.Mapper
             CreateMap<WarrantyRequest, WarrantyRequestUpdateDto>().ReverseMap();
             CreateMap<WarrantyRequest, WarrantyRequestGetAllDto>().ReverseMap();
             CreateMap<WarrantyRequest, WarrantyRequestGetByIdDto>().ReverseMap();
+            CreateMap<WarrantyRequest, GetDetailDto>()
+                .ForMember(dest => dest.OrderId, w => w.MapFrom(src => src.WarrantyOrderItem!.OrderId))
+                .ForMember(dest => dest.OrderCode, w => w.MapFrom(src => src.WarrantyOrderItem!.Order!.Code));
             #endregion
 
             #region AddOn Mapper

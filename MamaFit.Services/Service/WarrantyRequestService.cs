@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
+using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.DTO.WarrantyRequestDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
@@ -17,19 +18,22 @@ namespace MamaFit.Services.Service
         private readonly IValidationService _validationService;
         private readonly INotificationService _notificationService;
         private readonly IConfigService _configService;
+        private readonly IOrderItemService _orderItemService;
 
         public WarrantyRequestService(
             IUnitOfWork unitOfWork,
             IMapper mapper,
             IValidationService validationService,
             INotificationService notificationService,
-            IConfigService configService)
+            IConfigService configService,
+            IOrderItemService orderItemService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _validationService = validationService;
             _notificationService = notificationService;
             _configService = configService;
+            _orderItemService = orderItemService;
         }
 
         public async Task<string> CreateAsync(WarrantyRequestCreateDto warrantyRequestCreateDto)
@@ -72,6 +76,8 @@ namespace MamaFit.Services.Service
                 Status = OrderStatus.CONFIRMED,
                 PaymentStatus = PaymentStatus.WARRANTY,
                 PaymentType = PaymentType.FULL,
+                PaymentMethod = rootOrder.PaymentMethod,
+                DeliveryMethod = rootOrder.DeliveryMethod,
             };
             await _unitOfWork.OrderRepository.InsertAsync(newOrder);
 
@@ -95,8 +101,16 @@ namespace MamaFit.Services.Service
                 Status = WarrantyRequestStatus.SUBMITTED,
                 WarrantyRound = warrantyRequestCount + 1,
             };
+
+            var milestones = await _unitOfWork.MilestoneRepository.GetAllWithInclude();
+            var warrantyMilestone = milestones.Where(x => x.ApplyFor.Contains(ItemType.WARRANTY)).ToList();
             await _unitOfWork.WarrantyRequestRepository.InsertAsync(warrantyRequest);
             await _unitOfWork.SaveChangesAsync();
+            await _orderItemService.AssignTaskToOrderItemAsync(new AssignTaskToOrderItemRequestDto
+            {
+                OrderItemId = newOrderItem.Id,
+                MilestoneIds = warrantyMilestone.Select(x => x.Id).ToList()
+            });
             await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
             {
                 ReceiverId = rootOrder.UserId,
@@ -112,6 +126,14 @@ namespace MamaFit.Services.Service
                 }
             });
             return newOrder.Id;
+        }
+        
+        public async Task<GetDetailDto> GetWarrantyRequestByOrderItemIdAsync(string orderItemId)
+        {
+            var warrantyRequest = await _unitOfWork.WarrantyRequestRepository.GetWarrantyRequestByOrderItemIdAsync(orderItemId);
+            _validationService.CheckNotFound(warrantyRequest, $"Warranty request for order item {orderItemId} not found");
+
+            return _mapper.Map<GetDetailDto>(warrantyRequest);
         }
         
         public async Task DeleteAsync(string id)

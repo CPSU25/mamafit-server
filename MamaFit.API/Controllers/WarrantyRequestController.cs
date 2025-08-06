@@ -47,6 +47,18 @@ namespace MamaFit.API.Controllers
             ));
         }
 
+        [HttpGet("order-item/{orderItemId}")]
+        public async Task<IActionResult> GetByOrderItemId(string orderItemId)
+        {
+            var result = await _warrantyRequestService.GetWarrantyRequestByOrderItemIdAsync(orderItemId);
+            return Ok(new ResponseModel<GetDetailDto>(
+                StatusCodes.Status200OK,
+                ApiCodes.SUCCESS,
+                result,
+                "Get warranty request by order item id successful"
+            ));
+        }
+        
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] WarrantyRequestCreateDto warrantyRequestCreateDto)
         {

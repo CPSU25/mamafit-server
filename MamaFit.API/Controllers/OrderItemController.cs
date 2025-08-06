@@ -44,6 +44,18 @@ public class OrderItemController : ControllerBase
         ));
     }
 
+    [HttpGet("current-sequence/{orderItemId}")]
+    public async Task<IActionResult> GetCurrentSequenceOrder(string orderItemId)
+    {
+        var result = await _service.GetCurrentOrderItemTaskSequence(orderItemId);
+        return Ok(new ResponseModel<int>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            result,
+            "Get order item task sequence successfully!"
+        ));
+    }
+
     [HttpGet("designer-info/{orderItemId}")]
     public async Task<IActionResult> GetDesignerInfoByOrderItemId([FromRoute] string orderItemId)
     {

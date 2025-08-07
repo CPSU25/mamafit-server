@@ -9,6 +9,7 @@ namespace MamaFit.BusinessObjects.Entity
         public string? UserId { get; set; }
         public string? DesignRequestId { get; set; }
         public string? StyleId { get; set; }
+        public string? SKU { get; set; }
         public List<string>? Images { get; set; }
         public bool IsDefault { get; set; } = false;
         public int? Weight { get; set; }

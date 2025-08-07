@@ -1,13 +1,18 @@
-﻿namespace MamaFit.BusinessObjects.DTO.WarrantyRequestDto
+using MamaFit.BusinessObjects.Enum;
+
+namespace MamaFit.BusinessObjects.DTO.WarrantyRequestDto;
+
+public class WarrantyRequestGetAllDto
 {
-    public class WarrantyRequestGetAllDto : WarrantyBaseDto
-    {
-        public string? Id { get; set; }
-        public int WarrantyRound { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public string? CreatedBy { get; set; }
-        public DateTime? UpdatedAt { get; set; }
-        public string? UpdatedBy { get; set; }
-        public float? Fee { get; set; }
-    }
+    public string Id { get; set; }
+    public string? SKU { get; set; }
+    public string? NoteInternal { get; set; } = null;
+    public string? RejectedReason { get; set; }
+    public decimal? TotalFee { get; set; }
+    public WarrantyRequestStatus? Status { get; set; }
+    public string? CreatedBy { get; set; }
+    public string? UpdatedBy { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+    public bool IsDeleted { get; set; }
 }

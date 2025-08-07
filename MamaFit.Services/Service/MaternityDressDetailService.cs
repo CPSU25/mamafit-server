@@ -2,6 +2,7 @@
 using MamaFit.BusinessObjects.DTO.MaternityDressDetailDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
+using MamaFit.Repositories.Helper;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
@@ -36,7 +37,7 @@ namespace MamaFit.Services.Service
             entity.MaternityDress = dress;
             entity.CreatedAt = DateTime.UtcNow;
             entity.CreatedBy = GetCurrentUserName();
-
+            entity.SKU = CodeHelper.GenerateCode('M');
             await _unitOfWork.MaternityDressDetailRepository.InsertAsync(entity);
             await _unitOfWork.SaveChangesAsync();
         }

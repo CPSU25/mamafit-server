@@ -1,8 +1,8 @@
-﻿
-namespace MamaFit.BusinessObjects.DTO.WarrantyRequestDto
+using MamaFit.BusinessObjects.DTO.WarrantyRequestItemDto;
+
+namespace MamaFit.BusinessObjects.DTO.WarrantyRequestDto;
+
+public class WarrantyRequestCreateDto
 {
-    public class WarrantyRequestCreateDto : WarrantyBaseDto
-    {
-        public string? WarrantyOrderItemId { get; set; }
-    }
+    public List<WarrantyRequestItemCreateDto> Items { get; set; } = new();
 }

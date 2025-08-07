@@ -23,7 +23,7 @@ namespace MamaFit.Repositories.Repository
 
             if (!string.IsNullOrWhiteSpace(search))
             {
-                query = query.Where(x => x.WarrantyOrderItem.MaternityDressDetail.Name.Contains(search));
+                query = query.Where(x => x.SKU.Contains(search));
             }
 
             query = sortBy switch
@@ -40,27 +40,27 @@ namespace MamaFit.Repositories.Repository
             return new PaginatedList<WarrantyRequest>(list, paged.TotalCount, paged.PageNumber, pageSize);
         }
 
-        public async Task<WarrantyRequest> GetWarrantyRequestByOrderItemIdAsync(string orderItemId)
-        {
-            return await _dbSet
-                .Include(w => w.WarrantyOrderItem)
-                .ThenInclude(wo => wo.Order)
-                .FirstOrDefaultAsync(x => x.WarrantyOrderItemId == orderItemId && !x.IsDeleted);
-        }
-        
-        public async Task<int> CountWarrantyForOrderItemAsync(string orderItemId)
-        {
-            return await _dbSet.CountAsync(x => x.WarrantyOrderItemId == orderItemId && !x.IsDeleted);
-        }
-
-        public async Task<WarrantyRequest> GetWarrantyRequestByIdAsync(string id)
-        {
-            var result = await _dbSet
-                .Include(w => w.WarrantyOrderItem)
-                .ThenInclude(wo => wo.Order)
-                .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
-
-            return result;
-        }
+        // public async Task<WarrantyRequest> GetWarrantyRequestByOrderItemIdAsync(string orderItemId)
+        // {
+        //     return await _dbSet
+        //         .Include(w => w.WarrantyOrderItem)
+        //         .ThenInclude(wo => wo.Order)
+        //         .FirstOrDefaultAsync(x => x.WarrantyOrderItemId == orderItemId && !x.IsDeleted);
+        // }
+        //
+        // public async Task<int> CountWarrantyForOrderItemAsync(string orderItemId)
+        // {
+        //     return await _dbSet.CountAsync(x => x.WarrantyOrderItemId == orderItemId && !x.IsDeleted);
+        // }
+        //
+        // public async Task<WarrantyRequest> GetWarrantyRequestByIdAsync(string id)
+        // {
+        //     var result = await _dbSet
+        //         .Include(w => w.WarrantyOrderItem)
+        //         .ThenInclude(wo => wo.Order)
+        //         .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
+        //
+        //     return result;
+        // }
     }
 }

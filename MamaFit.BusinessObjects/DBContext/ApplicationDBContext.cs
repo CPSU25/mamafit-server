@@ -3,6 +3,7 @@ using MamaFit.BusinessObjects.DTO.CartItemDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Entity.ChatEntity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Abstractions;
 
 namespace MamaFit.BusinessObjects.DBContext
 {
@@ -54,6 +55,7 @@ namespace MamaFit.BusinessObjects.DBContext
         public DbSet<Preset> Presets { get; set; }
         public DbSet<Position> Positions { get; set; }
         public DbSet<Size> Sizes { get; set; }
+        public DbSet<WarrantyRequestItem> WarrantyRequestItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -98,6 +100,7 @@ namespace MamaFit.BusinessObjects.DBContext
             modelBuilder.Entity<Preset>().ToTable("Preset");
             modelBuilder.Entity<Position>().ToTable("Position");
             modelBuilder.Entity<Size>().ToTable("Size");
+            modelBuilder.Entity<WarrantyRequestItem>().ToTable("WarrantyRequestItem");
             #endregion
 
             #region Configure Fluent Api
@@ -340,6 +343,12 @@ namespace MamaFit.BusinessObjects.DBContext
                 options.HasKey(cop => new { cop.PresetsId, cop.ComponentOptionsId });
             });
             SeedData.Seed(modelBuilder);
+
+            modelBuilder.Entity<WarrantyRequestItem>(options =>
+            {
+                options.HasKey(wri => new { wri.WarrantyRequestId, wri.OrderItemId });
+                
+            });
 
             #endregion
         }

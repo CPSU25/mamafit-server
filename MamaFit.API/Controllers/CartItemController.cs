@@ -53,7 +53,7 @@ public class CartItemController : ControllerBase
         ));
     }
     
-    [HttpDelete("{id}")]
+    [HttpDelete("{itemId}")]
     public async Task<IActionResult> Delete([FromRoute] string itemId)
     {
         await _cartItemService.DeleteAsync(itemId);

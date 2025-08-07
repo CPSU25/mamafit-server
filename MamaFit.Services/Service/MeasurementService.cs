@@ -119,8 +119,7 @@ public class MeasurementService : IMeasurementService
         await _validation.ValidateAndThrowAsync(dto);
         var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdNotDeletedAsync(dto.MeasurementId);
         _validation.CheckNotFound(diary, "Measurement diary not found");
-        var pregnancyStartDate = diary.PregnancyStartDate;
-        var weeksPregnant = CalculateWeeksPregnant(pregnancyStartDate);
+        var weeksPregnant = CalculateWeeksPregnant(diary.PregnancyStartDate);
 
         await ValidateNoExistingMeasurement(dto.MeasurementId, weeksPregnant);
 

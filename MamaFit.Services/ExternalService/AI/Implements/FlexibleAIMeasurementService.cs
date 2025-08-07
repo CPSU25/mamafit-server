@@ -234,6 +234,7 @@ public class FlexibleAIMeasurementService : IAIMeasurementCalculationService
         }
 
         // Ensure all values are positive and reasonable
+        measurements.WeekOfPregnancy = Math.Max(measurements.WeekOfPregnancy, 0);
         measurements.Weight = Math.Max(measurements.Weight, 30f);
         measurements.Bust = Math.Max(measurements.Bust, 60f);
         measurements.Waist = Math.Max(measurements.Waist, 50f);

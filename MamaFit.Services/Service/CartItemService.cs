@@ -56,7 +56,7 @@ public class CartItemService : ICartItemService
 
         var cacheKey = $"cart:user:{userId}";
         var itemKey = $"item:{model.ItemId}";
-
+        CartItem cartItem = null;
         // Kiểm tra item đã có trong cart chưa
         var existingItem = await _cacheService.GetHashAsync<CartItem>(cacheKey, itemKey);
 
@@ -70,20 +70,27 @@ public class CartItemService : ICartItemService
 
                 if (item.Quantity < model.Quantity)
                     throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Quantity must be not over than in storage!");
+
+                cartItem = new CartItem
+                {
+                    ItemId = model.ItemId,
+                    Quantity = model.Quantity,
+                    Type = model.Type,
+                    MaternityDressDetail = _mapper.Map<MaternityDressDetailResponseDto>(item)
+                };
             }
             else if (model.Type == ItemType.PRESET)
             {
                 var item = await _unitOfWork.PresetRepository.GetByIdAsync(model.ItemId);
                 _validation.CheckNotFound(item, $"Preset with id: {model.ItemId} not found");
+                cartItem = new CartItem
+                {
+                    ItemId = model.ItemId,
+                    Quantity = model.Quantity,
+                    Type = model.Type,
+                    Preset = _mapper.Map<PresetGetAllResponseDto>(item)
+                };
             }
-
-            // Tạo cart item mới
-            var cartItem = new CartItem
-            {
-                ItemId = model.ItemId,
-                Quantity = model.Quantity,
-                Type = model.Type
-            };
 
             // Lưu cart item mới
             await _cacheService.SetHashAsync(cacheKey, itemKey, cartItem, TimeSpan.FromDays(7));

@@ -34,30 +34,30 @@ namespace MamaFit.API.Controllers
             ));
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(string id)
-        {
-            var result = await _warrantyRequestService.GetWarrantyRequestByIdAsync(id);
+        // [HttpGet("{id}")]
+        // public async Task<IActionResult> GetById(string id)
+        // {
+        //     var result = await _warrantyRequestService.GetWarrantyRequestByIdAsync(id);
+        //
+        //     return Ok(new ResponseModel<WarrantyRequestGetByIdDto>(
+        //         StatusCodes.Status200OK,
+        //         ApiCodes.SUCCESS,
+        //         result,
+        //         "Get warranty request by id successful"
+        //     ));
+        // }
 
-            return Ok(new ResponseModel<WarrantyRequestGetByIdDto>(
-                StatusCodes.Status200OK,
-                ApiCodes.SUCCESS,
-                result,
-                "Get warranty request by id successful"
-            ));
-        }
-
-        [HttpGet("order-item/{orderItemId}")]
-        public async Task<IActionResult> GetByOrderItemId(string orderItemId)
-        {
-            var result = await _warrantyRequestService.GetWarrantyRequestByOrderItemIdAsync(orderItemId);
-            return Ok(new ResponseModel<GetDetailDto>(
-                StatusCodes.Status200OK,
-                ApiCodes.SUCCESS,
-                result,
-                "Get warranty request by order item id successful"
-            ));
-        }
+        // [HttpGet("order-item/{orderItemId}")]
+        // public async Task<IActionResult> GetByOrderItemId(string orderItemId)
+        // {
+        //     var result = await _warrantyRequestService.GetWarrantyRequestByOrderItemIdAsync(orderItemId);
+        //     return Ok(new ResponseModel<GetDetailDto>(
+        //         StatusCodes.Status200OK,
+        //         ApiCodes.SUCCESS,
+        //         result,
+        //         "Get warranty request by order item id successful"
+        //     ));
+        // }
         
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] WarrantyRequestCreateDto warrantyRequestCreateDto)
@@ -73,19 +73,19 @@ namespace MamaFit.API.Controllers
                 ));
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update(string id, [FromBody] WarrantyRequestUpdateDto warrantyRequestUpdateDto)
-        {
-            await _warrantyRequestService.UpdateAsync(id, warrantyRequestUpdateDto);
-
-            return Ok(
-                new ResponseModel<string>(
-                    StatusCodes.Status200OK,
-                    ApiCodes.SUCCESS,
-                    null,
-                    "Warranty request updated successfully"
-                ));
-        }
+        // [HttpPut]
+        // public async Task<IActionResult> Update(string id, [FromBody] WarrantyRequestUpdateDto warrantyRequestUpdateDto)
+        // {
+        //     await _warrantyRequestService.UpdateAsync(id, warrantyRequestUpdateDto);
+        //
+        //     return Ok(
+        //         new ResponseModel<string>(
+        //             StatusCodes.Status200OK,
+        //             ApiCodes.SUCCESS,
+        //             null,
+        //             "Warranty request updated successfully"
+        //         ));
+        // }
 
         [HttpDelete]
         public async Task<IActionResult> Delete(string id)

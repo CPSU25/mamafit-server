@@ -331,14 +331,16 @@ namespace MamaFit.Services.Mapper
 
             #region WarrantyRequest Mapper
             CreateMap<WarrantyRequest, WarrantyRequestCreateDto>().ReverseMap();
-            CreateMap<WarrantyRequest, WarrantyRequestUpdateDto>().ReverseMap();
             CreateMap<WarrantyRequest, WarrantyRequestGetAllDto>().ReverseMap();
-            CreateMap<WarrantyRequest, WarrantyRequestGetByIdDto>().ReverseMap();
-            CreateMap<WarrantyRequest, GetDetailDto>()
-                .ForMember(dest => dest.OrderId, w => w.MapFrom(src => src.WarrantyOrderItem!.OrderId))
-                .ForMember(dest => dest.OrderCode, w => w.MapFrom(src => src.WarrantyOrderItem!.Order!.Code));
+            // CreateMap<WarrantyRequest, WarrantyRequestGetByIdDto>().ReverseMap();
+            // CreateMap<WarrantyRequest, GetDetailDto>()
+            //     .ForMember(dest => dest.OrderId, w => w.MapFrom(src => src.WarrantyOrderItem!.OrderId))
+            //     .ForMember(dest => dest.OrderCode, w => w.MapFrom(src => src.WarrantyOrderItem!.Order!.Code));
             #endregion
 
+            #region WarrantyRequestItem Mapper
+            CreateMap<WarrantyRequestItem, WarrantyRequestCreateDto>().ReverseMap();
+            #endregion
             #region AddOn Mapper
             CreateMap<AddOn, AddOnDto>().ReverseMap();
             CreateMap<AddOn, AddOnRequestDto>().ReverseMap();

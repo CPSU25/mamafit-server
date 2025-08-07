@@ -17,4 +17,10 @@ public interface ICacheService
     Task RemoveKeyAsync(string key);
     Task<List<string>> ScanKeysByPatternAsync(string pattern);
     Task RemoveByPrefixAsync(string prefix);
+    #region Hash redis
+    Task SetHashAsync<T>(string key, string field, T value, TimeSpan? expiry = null);
+    Task<T?> GetHashAsync<T>(string key, string field);
+    Task<Dictionary<string, T?>> GetAllHashAsync<T>(string key);
+    Task<bool> DeleteHashFieldAsync(string key, string field);
+    #endregion
 }

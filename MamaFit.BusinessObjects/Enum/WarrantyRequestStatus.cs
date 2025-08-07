@@ -2,9 +2,11 @@
 {
     public enum WarrantyRequestStatus
     {
-        SUBMITTED,
-        REVIEW,
-        APPROVED,
-        REJECTED
+        PENDING,
+        IN_TRANSIT,
+        REPAIRING,
+        COMPLETED,
+        PARTIALLY_REJECTED,
+        FULLY_REJECTED
     }
 }

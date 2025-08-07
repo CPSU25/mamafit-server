@@ -78,7 +78,7 @@ namespace MamaFit.Services.Service
 
         public async Task<BranchResponseDto> GetByIdAsync(string id)
         {
-            var branch = await _unitOfWork.BranchRepository.GetByIdAsync(id);
+            var branch = await _unitOfWork.BranchRepository.GetDetailById(id);
             if (branch == null || branch.IsDeleted)
                 throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Branch not found!");
 
@@ -87,7 +87,7 @@ namespace MamaFit.Services.Service
 
         public async Task UpdateAsync(string id, BranchCreateDto requestDto)
         {
-            var oldBranch = await _unitOfWork.BranchRepository.GetByIdAsync(id);
+            var oldBranch = await _unitOfWork.BranchRepository.GetDetailById(id);
             if (oldBranch == null || oldBranch.IsDeleted)
                 throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Branch not found!");
 

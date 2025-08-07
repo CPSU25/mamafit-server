@@ -17,7 +17,11 @@ namespace MamaFit.Repositories.Repository
 
         public async Task<PaginatedList<Branch>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
         {
-            var query = _dbSet.Where(c => !c.IsDeleted);
+            var query = _dbSet
+                .Include(b => b.BranchManager)
+                .Include(b => b.Appointments)
+                .Include(b => b.BranchMaternityDressDetail)
+                .Where(c => !c.IsDeleted);
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -26,8 +30,6 @@ namespace MamaFit.Repositories.Repository
 
             query = sortBy switch
             {
-                
-                
                 EntitySortBy.CREATED_AT_ASC => query.OrderBy(u => u.CreatedAt),
                 EntitySortBy.CREATED_AT_DESC => query.OrderByDescending(u => u.CreatedAt),
                 _ => query.OrderByDescending(u => u.CreatedAt)

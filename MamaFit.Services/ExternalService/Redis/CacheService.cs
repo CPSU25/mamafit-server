@@ -62,8 +62,6 @@ public class CacheService : ICacheService
         return JsonConvert.DeserializeObject<T>(data!);
     }
 
-
-
     // public async Task SetAsync<T>(string key, T value, TimeSpan? expiry = null)
     // {
     //     var options = new DistributedCacheEntryOptions
@@ -81,7 +79,6 @@ public class CacheService : ICacheService
         sw.Stop();
         Console.WriteLine($"[REDIS DIRECT SET] Key: {key}, Time: {sw.ElapsedMilliseconds}ms");
     }
-
     
     public async Task RemoveAsync(string key)
     {
@@ -154,4 +151,44 @@ public class CacheService : ICacheService
             await _db.KeyDeleteAsync(redisKeys);
         }
     }
+
+    public async Task<bool> DeleteHashFieldAsync(string key, string field)
+    {
+        return await _db.HashDeleteAsync(key, field);
+    }
+
+    #region Hash Redis
+    public async Task SetHashAsync<T>(string key, string field, T value, TimeSpan? expiry = null)
+    {
+        var json = JsonConvert.SerializeObject(value);
+        await _db.HashSetAsync(key, field, json);
+
+        if (expiry.HasValue)
+            await _db.KeyExpireAsync(key, expiry.Value);
+    }
+
+    public async Task<T?> GetHashAsync<T>(string key, string field)
+    {
+        var data = await _db.HashGetAsync(key, field);
+        if (data.IsNullOrEmpty)
+            return default;
+        return JsonConvert.DeserializeObject<T>(data!);
+    }
+
+    public async Task<Dictionary<string, T?>> GetAllHashAsync<T>(string key)
+    {
+        var hashEntries = await _db.HashGetAllAsync(key);
+        var result = new Dictionary<string, T?>();
+
+        foreach (var entry in hashEntries)
+        {
+            if (!entry.Value.IsNullOrEmpty)
+                result[entry.Name!] = JsonConvert.DeserializeObject<T>(entry.Value!);
+            else
+                result[entry.Name!] = default;
+        }
+
+        return result;
+    }
+    #endregion
 }

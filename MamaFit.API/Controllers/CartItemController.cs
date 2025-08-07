@@ -17,28 +17,14 @@ public class CartItemController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetAll(
-        [FromQuery] int index = 1,
-        [FromQuery] int pageSize = 10)
+    public async Task<IActionResult> GetAll()
     {
-        var cartItems = await _cartItemService.GetAllAsync(index, pageSize);
-        return Ok(new ResponseModel<PaginatedList<CartItemResponseDto>>(
+        var cartItems = await _cartItemService.GetAllAsync();
+        return Ok(new ResponseModel<List<CartItemResponseDto>>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
             cartItems,
             "Get all cart item successfully!"
-        ));
-    }
-    
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById([FromRoute] int id)
-    {
-        var cartItem = await _cartItemService.GetByIdAsync(id);
-        return Ok(new ResponseModel<CartItemResponseDto>(
-            StatusCodes.Status200OK,
-            ApiCodes.SUCCESS,
-            cartItem,
-            "Get cart item successfully!"
         ));
     }
     
@@ -47,7 +33,7 @@ public class CartItemController : ControllerBase
     {
         var createdCartItem = await _cartItemService.CreateAsync(requestDto);
         return StatusCode(StatusCodes.Status201Created,
-            new ResponseModel<CartItemResponseDto>(
+            new ResponseModel<List<CartItemResponseDto>>(
                 StatusCodes.Status201Created,
                 ApiCodes.CREATED,
                 createdCartItem,
@@ -55,11 +41,11 @@ public class CartItemController : ControllerBase
             ));
     }
     
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CartItemRequestDto requestDto)
+    [HttpPut]
+    public async Task<IActionResult> Update([FromBody] CartItemRequestDto requestDto)
     {
-        var updatedCartItem = await _cartItemService.UpdateAsync(id, requestDto);
-        return Ok(new ResponseModel<CartItemResponseDto>(
+        var updatedCartItem = await _cartItemService.UpdateAsync(requestDto);
+        return Ok(new ResponseModel<List<CartItemResponseDto>>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
             updatedCartItem,
@@ -68,14 +54,26 @@ public class CartItemController : ControllerBase
     }
     
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete([FromRoute] int id)
+    public async Task<IActionResult> Delete([FromRoute] string itemId)
     {
-        await _cartItemService.DeleteAsync(id);
+        await _cartItemService.DeleteAsync(itemId);
         return Ok(new ResponseModel<string>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
             null,
             "Deleted cart item successfully!"
+        ));
+    }
+
+    [HttpDelete("all-item")]
+    public async Task<IActionResult> DeleteAllItemCurrentUser()
+    {
+        await _cartItemService.ClearCartAsync();
+        return Ok(new ResponseModel<string>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            null,
+            "Deleted all cart item successfully!"
         ));
     }
 }

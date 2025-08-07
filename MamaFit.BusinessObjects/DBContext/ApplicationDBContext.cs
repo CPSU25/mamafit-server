@@ -1,4 +1,5 @@
 ﻿using MamaFit.BusinessObjects.Data;
+using MamaFit.BusinessObjects.DTO.CartItemDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Entity.ChatEntity;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +25,6 @@ namespace MamaFit.BusinessObjects.DBContext
         public DbSet<ApplicationUserToken> UserTokens { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<Branch> Branches { get; set; }
-        public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Component> Components { get; set; }
         public DbSet<ComponentOption> ComponentOptions { get; set; }
@@ -69,7 +69,6 @@ namespace MamaFit.BusinessObjects.DBContext
             modelBuilder.Entity<ApplicationUserToken>().ToTable("UserToken");
             modelBuilder.Entity<Appointment>().ToTable("Appointment");
             modelBuilder.Entity<Branch>().ToTable("Branch");
-            modelBuilder.Entity<CartItem>().ToTable("CartItem");
             modelBuilder.Entity<Category>().ToTable("Category");
             modelBuilder.Entity<Component>().ToTable("Component");
             modelBuilder.Entity<ComponentOption>().ToTable("ComponentOption");
@@ -141,11 +140,6 @@ namespace MamaFit.BusinessObjects.DBContext
                     .OnDelete(DeleteBehavior.NoAction);
 
                 options.HasMany(u => u.Addresses)
-                    .WithOne(l => l.User)
-                    .HasForeignKey(l => l.UserId)
-                    .OnDelete(DeleteBehavior.NoAction);
-
-                options.HasMany(u => u.CartItems)
                     .WithOne(l => l.User)
                     .HasForeignKey(l => l.UserId)
                     .OnDelete(DeleteBehavior.NoAction);

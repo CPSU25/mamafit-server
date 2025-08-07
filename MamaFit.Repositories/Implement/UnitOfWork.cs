@@ -35,7 +35,6 @@ namespace MamaFit.Repositories.Implement
         public IWarrantyRequestRepository WarrantyRequestRepository { get; }
         public ITransactionRepository TransactionRepository { get; }
         public IFeedbackRepository FeedbackRepository { get; }
-        public ICartItemRepository CartItemRepository { get; }
         public IPresetRepository PresetRepository { get; }
         public IAddOnRepository AddOnRepository { get; }
         public IOrderItemTaskRepository OrderItemTaskRepository { get; }
@@ -71,7 +70,6 @@ namespace MamaFit.Repositories.Implement
             IWarrantyHistoryRepository warrantyHistoryRepository,
             ITransactionRepository transactionRepository,
             IFeedbackRepository feedbackRepository,
-            ICartItemRepository cartItemRepository,
             IPresetRepository presetRepository,
             IWarrantyRequestRepository warrantyRequestRepository,
             IAddOnRepository addOnRepository,
@@ -108,7 +106,6 @@ namespace MamaFit.Repositories.Implement
             WarrantyHistoryRepository = warrantyHistoryRepository;
             TransactionRepository = transactionRepository;
             FeedbackRepository = feedbackRepository;
-            CartItemRepository = cartItemRepository;
             PresetRepository = presetRepository;
             WarrantyRequestRepository = warrantyRequestRepository;
             AddOnRepository = addOnRepository;

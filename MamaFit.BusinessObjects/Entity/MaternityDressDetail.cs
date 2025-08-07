@@ -1,4 +1,5 @@
 ﻿using MamaFit.BusinessObjects.Base;
+using MamaFit.BusinessObjects.DTO.CartItemDto;
 
 namespace MamaFit.BusinessObjects.Entity
 {
@@ -17,7 +18,6 @@ namespace MamaFit.BusinessObjects.Entity
         // Navigation properties
         public MaternityDress? MaternityDress { get; set; }
         public virtual ICollection<OrderItem>? OrderItems { get; set; } = new List<OrderItem>();
-        public virtual ICollection<CartItem>? CartItems { get; set; } = new List<CartItem>();
         public virtual ICollection<BranchMaternityDressDetail>? BranchMaternityDressDetails { get; set; } = [];
     }
 }

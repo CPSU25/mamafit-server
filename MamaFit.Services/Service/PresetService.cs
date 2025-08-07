@@ -10,6 +10,7 @@ using MamaFit.Services.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using MamaFit.BusinessObjects.DTO.ChatMessageDto;
 using System.Text.Json;
+using MamaFit.Repositories.Helper;
 
 namespace MamaFit.Services.Service
 {
@@ -68,6 +69,7 @@ namespace MamaFit.Services.Service
             }
             preset.UserId = GetCurrentUserId();
             preset.Style = style;
+            preset.SKU = CodeHelper.GenerateCode('P');
 
             await _unitOfWork.PresetRepository.InsertAsync(preset);
             await _unitOfWork.SaveChangesAsync();

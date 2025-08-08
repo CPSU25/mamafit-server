@@ -15,6 +15,7 @@ public interface IOrderService
         string? search = null, OrderStatus? status = null);
     Task<PaginatedList<OrderResponseDto>> GetAllAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate);
     Task<OrderGetByIdResponseDto> GetOrderByIdAsync(string id);
+    Task<List<OrderGetByIdResponseDto>> GetForWarranty(bool isWarrantyValid);
     Task<List<MyOrderStatusCount>> GetMyOrderStatusCounts();
     Task<OrderResponseDto> CreateOrderAsync(OrderRequestDto model);
     Task OrderReceivedAtUpdateAsync(string orderId);

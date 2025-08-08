@@ -7,6 +7,7 @@ public class WarrantyRequestGetAllDto
     public string Id { get; set; }
     public string? SKU { get; set; }
     public string? NoteInternal { get; set; } = null;
+    public RequestType RequestType { get; set; }
     public string? RejectedReason { get; set; }
     public decimal? TotalFee { get; set; }
     public WarrantyRequestStatus? Status { get; set; }

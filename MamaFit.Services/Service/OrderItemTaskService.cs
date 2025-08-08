@@ -7,7 +7,6 @@ using MamaFit.BusinessObjects.DTO.MilestoneDto;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.DTO.OrderItemTaskDto;
-using MamaFit.BusinessObjects.DTO.RealtimeDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
@@ -33,13 +32,12 @@ public class OrderItemTaskService : IOrderItemTaskService
     private readonly IChatService _chatService;
     private readonly INotificationService _notificationService;
     private readonly IHubContext<ChatHub> _chatHubContext;
-    private readonly IRealtimeEventService _realtimeEventService;
 
     public OrderItemTaskService(IOrderItemTaskRepository repo, IMapper mapper, IValidationService validation,
         IHttpContextAccessor contextAccessor, IUnitOfWork unitOfWork, IMilestoneService milestoneService,
         IChatService chatService, INotificationService notificationService,
         IHubContext<ChatHub> chatHubContext,
-        ICacheService cacheService, IRealtimeEventService realtimeEventService)
+        ICacheService cacheService)
 
     {
         _repo = repo;
@@ -52,7 +50,6 @@ public class OrderItemTaskService : IOrderItemTaskService
         _notificationService = notificationService;
         _chatHubContext = chatHubContext;
         _cacheService = cacheService;
-        _realtimeEventService = realtimeEventService;
     }
 
     public async Task<List<OrderItemTaskGetByTokenResponse>> GetTasksByAssignedStaffAsync()
@@ -155,7 +152,6 @@ public class OrderItemTaskService : IOrderItemTaskService
         _validation.CheckNotFound(orderItem, $"OrderItem with id: {orderItemId} not found");
 
         var order = task.OrderItem!.Order;
-        var oldStatus = task.Status;
 
         //Update thông tin Task
         task.Note = request.Note ?? task.Note;
@@ -188,42 +184,6 @@ public class OrderItemTaskService : IOrderItemTaskService
                 await HandleFailAsync(orderItem, order, milestones, progress, severity, task);
                 break;
         }
-
-        // Publish realtime event for task status change
-        await _realtimeEventService.PublishTaskStatusChangedAsync(new TaskStatusChangedEventDto
-        {
-            EventType = RealtimeEventTypes.TASK_STATUS_CHANGED,
-            EntityId = $"{task.OrderItemId}_{task.MaternityDressTaskId}",
-            EntityType = RealtimeEntityTypes.ORDER_ITEM_TASK,
-            Data = new
-            {
-                OrderItemTaskId = $"{dressTaskId}_{orderItemId}",
-                OrderItemId = orderItemId,
-                OrderId = order.Id,
-                OrderCode = order.Code,
-                TaskName = task.MaternityDressTask?.Name,
-                OldStatus = oldStatus.ToString(),
-                NewStatus = request.Status.ToString(),
-                Note = task.Note,
-                AssignedStaffId = GetCurrentUserId(),
-                CustomerId = order.UserId
-            },
-            TargetUserId = order.UserId, // Notify customer
-            TargetUserIds = new List<string> { order.UserId, GetCurrentUserId() }, // Customer and staff
-            OrderItemTaskId = $"{dressTaskId}_{orderItemId}",
-            OrderItemId = orderItemId,
-            OldStatus = oldStatus,
-            NewStatus = request.Status,
-            TaskName = task.MaternityDressTask?.Name,
-            OrderCode = order.Code,
-            Metadata = new Dictionary<string, object>
-            {
-                { "orderId", order.Id },
-                { "orderCode", order.Code },
-                { "customerId", order.UserId },
-                { "assignedStaffId", GetCurrentUserId() }
-            }
-        });
     }
 
     private async Task HandleInProgressAsync(OrderItemTask task, OrderItem orderItem, Order order)

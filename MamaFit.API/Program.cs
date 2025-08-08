@@ -30,11 +30,7 @@ namespace MamaFit.API
                 builder.Services.AddCors(options =>
                 {
                     options.AddPolicy(name: CorsConstant.PolicyName,
-                        policy => { 
-                            policy.AllowAnyOrigin()
-                                  .AllowAnyHeader()
-                                  .AllowAnyMethod();
-                        });
+                        policy => { policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod(); });
                 });
 
                 builder.Services.AddControllers().AddJsonOptions(x =>
@@ -114,9 +110,7 @@ namespace MamaFit.API
                 app.MapControllers();
 
                 app.MapHub<ChatHub>("/chatHub");
-                // Map NotificationHub to UnifiedHub for backward compatibility
-                app.MapHub<UnifiedHub>("/notificationHub"); // Redirect old endpoint to UnifiedHub
-                app.MapHub<UnifiedHub>("/unifiedHub");
+                app.MapHub<NotificationHub>("/notificationHub");
 
                 app.UseHangfireDashboard("/hangfire", new DashboardOptions
                 {

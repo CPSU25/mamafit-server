@@ -131,7 +131,6 @@ namespace MamaFit.API.DependencyInjection
             // SignalR User ID Provider for Clients.User() calls
             services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
             services.AddScoped<IConfigService, ConfigService>();
-            services.AddScoped<IRealtimeEventService, RealtimeEventService>();
         }
 
         public static IServiceCollection AddGhtkClient(this IServiceCollection services, IConfiguration configuration)
@@ -265,10 +264,8 @@ namespace MamaFit.API.DependencyInjection
                             var accessToken = context.Request.Query["access_token"];
                             // If the request is for our hub...
                             var path = context.HttpContext.Request.Path;
-                            if (!string.IsNullOrEmpty(accessToken) && 
-                                (path.StartsWithSegments("/chatHub") ||
-                                 path.StartsWithSegments("/notificationHub") || 
-                                 path.StartsWithSegments("/unifiedHub")))
+                            if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/chatHub")) ||
+                                path.StartsWithSegments("/notificationHub"))
                             {
                                 context.Token = accessToken;
                             }
@@ -353,15 +350,9 @@ namespace MamaFit.API.DependencyInjection
             services.AddAutoMapper();
             services.AddRepositories();
             services.AddServices();
-            services.AddSignalR(options =>
-                {
-                    options.EnableDetailedErrors = true;
-                    options.ClientTimeoutInterval = TimeSpan.FromSeconds(60);
-                    options.KeepAliveInterval = TimeSpan.FromSeconds(30);
-                    options.HandshakeTimeout = TimeSpan.FromSeconds(15);
-                })
+            services.AddSignalR()
                 .AddHubOptions<ChatHub>(options => { options.EnableDetailedErrors = true; })
-                .AddHubOptions<UnifiedHub>(options => { options.EnableDetailedErrors = true; });
+                .AddHubOptions<NotificationHub>(options => { options.EnableDetailedErrors = true; });
         }
 
         private static void AddAutoMapper(this IServiceCollection services)

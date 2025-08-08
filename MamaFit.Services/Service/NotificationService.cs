@@ -1,6 +1,5 @@
 using AutoMapper;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
-using MamaFit.BusinessObjects.DTO.RealtimeDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Helper;
@@ -22,15 +21,13 @@ public class NotificationService : INotificationService
     private readonly IMapper _mapper;
     private readonly IValidationService _validation;
     private readonly IExpoNotificationService _expoNotificationService;
-    private readonly IHubContext<UnifiedHub> _notificationHubContext; // Changed to UnifiedHub
+    private readonly IHubContext<NotificationHub> _notificationHubContext;
     private readonly IUserConnectionManager _userConnectionManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IRealtimeEventService _realtimeEventService;
 
     public NotificationService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation,
-        IExpoNotificationService expoNotificationService, IHubContext<UnifiedHub> notificationHubContext, // Changed to UnifiedHub
-        IUserConnectionManager userConnectionManager, IHttpContextAccessor httpContextAccessor,
-        IRealtimeEventService realtimeEventService)
+        IExpoNotificationService expoNotificationService, IHubContext<NotificationHub> notificationHubContext,
+        IUserConnectionManager userConnectionManager, IHttpContextAccessor httpContextAccessor)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -39,7 +36,6 @@ public class NotificationService : INotificationService
         _notificationHubContext = notificationHubContext;
         _userConnectionManager = userConnectionManager;
         _httpContextAccessor = httpContextAccessor;
-        _realtimeEventService = realtimeEventService;
     }
 
     public async Task<PaginatedList<NotificationResponseDto>> GetNotificationsByAccessTokenAsync(string accessToken,
@@ -110,40 +106,13 @@ public class NotificationService : INotificationService
 
         var connections = await _userConnectionManager.GetUserConnectionsAsync(model.ReceiverId);
         var notificationDto = _mapper.Map<NotificationResponseDto>(notification);
-        
-        // Publish realtime notification event
-        await _realtimeEventService.PublishNotificationCreatedAsync(new NotificationEventDto
-        {
-            EventType = RealtimeEventTypes.NOTIFICATION_CREATED,
-            EntityId = notification.Id,
-            EntityType = RealtimeEntityTypes.NOTIFICATION,
-            Data = notificationDto,
-            TargetUserId = model.ReceiverId,
-            NotificationId = notification.Id,
-            Title = model.NotificationTitle,
-            Content = model.NotificationContent,
-            NotificationType = model.Type ?? NotificationType.ORDER_PROGRESS,
-            ActionUrl = model.ActionUrl,
-            Metadata = model.Metadata?.ToDictionary(x => x.Key, x => (object)x.Value) ?? new Dictionary<string, object>()
-        });
-        
         if (connections != null && connections.Count > 0)
         {
-            // Send to individual user connections
             foreach (var connId in connections)
             {
                 await _notificationHubContext.Clients.Client(connId)
                     .SendAsync("ReceiveNotification", notificationDto);
             }
-            
-            // Also send to notifications_all group for backward compatibility
-            await _notificationHubContext.Clients.Group("notifications_all")
-                .SendAsync("ReceiveNotification", notificationDto);
-                
-            // Send to user's personal group
-            var userGroup = $"user_{model.ReceiverId}";
-            await _notificationHubContext.Clients.Group(userGroup)
-                .SendAsync("ReceiveNotification", notificationDto);
         }
         else
         {

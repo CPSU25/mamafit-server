@@ -190,12 +190,12 @@ public class OrderItemTaskService : IOrderItemTaskService
     {
         if (orderItem.ItemType == ItemType.DESIGN_REQUEST)
         {
-            order.Status = OrderStatus.IN_DESIGN;
+            order.Status = OrderStatus.IN_PROGRESS;
             await SendMessageAndNoti(task);
         }
         else if (orderItem.ItemType == ItemType.PRESET)
         {
-            order.Status = OrderStatus.IN_PRODUCTION;
+            order.Status = OrderStatus.IN_PROGRESS;
         }
 
         await _unitOfWork.OrderRepository.UpdateAsync(order);
@@ -255,7 +255,7 @@ public class OrderItemTaskService : IOrderItemTaskService
 
         if (packageProgress?.Progress == 100 && packageProgress.IsDone)
         {
-            order.Status = OrderStatus.AWAITING_DELIVERY;
+            order.Status = OrderStatus.PACKAGING;
             var deliveringProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).FirstOrDefault();
             if (deliveringProgress?.Progress == 100 && packageProgress.IsDone)
                 order.Status = OrderStatus.DELIVERING;
@@ -263,20 +263,20 @@ public class OrderItemTaskService : IOrderItemTaskService
         else if (qcProgress.Any(x => x.Progress == 100))
             order.Status = OrderStatus.PACKAGING;
         else
-            order.Status = OrderStatus.IN_QC;
+            order.Status = OrderStatus.IN_PROGRESS;
     }
     private async Task UpdateStatusWithoutAddOnAsync(Order order, List<MilestoneAchiveOrderItemResponseDto> progress)
     {
         var packageProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).Skip(1).FirstOrDefault();
         if (packageProgress?.Progress == 100 && packageProgress.IsDone)
         {
-            order.Status = OrderStatus.AWAITING_DELIVERY;
+            order.Status = OrderStatus.PACKAGING;
             var deliveringProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).FirstOrDefault();
             if (deliveringProgress?.Progress == 100 && packageProgress.IsDone)
                 order.Status = OrderStatus.DELIVERING;
         }
         else
-            order.Status = OrderStatus.IN_QC;
+            order.Status = OrderStatus.IN_PROGRESS;
     }
     private async Task HandlePassAsync(Order order, List<MilestoneAchiveOrderItemResponseDto> progress)
     {
@@ -287,7 +287,7 @@ public class OrderItemTaskService : IOrderItemTaskService
 
             if (in_warrantyProgess.Any(x => x.Progress == 100))
             {
-                order.Status = OrderStatus.IN_QC;
+                order.Status = OrderStatus.IN_PROGRESS;
             }
             else
             {
@@ -296,7 +296,7 @@ public class OrderItemTaskService : IOrderItemTaskService
 
                 if (warrantyProgess.Any(x => x.Progress == 100))
                 {
-                    order.Status = OrderStatus.IN_WARRANTY;
+                    order.Status = OrderStatus.IN_PROGRESS;
                 }
             }
         }
@@ -360,11 +360,11 @@ public class OrderItemTaskService : IOrderItemTaskService
         {
             if (milestones.Any(x => x.ApplyFor.Contains(ItemType.WARRANTY) && x.Name.ToLower().Contains("quality check warranty")))
             {
-                order.Status = OrderStatus.IN_WARRANTY;
+                order.Status = OrderStatus.IN_PROGRESS;
             }
             else
             {
-                order.Status = OrderStatus.IN_PRODUCTION;
+                order.Status = OrderStatus.IN_PROGRESS;
             }
 
             foreach (var t in orderItem.OrderItemTasks)

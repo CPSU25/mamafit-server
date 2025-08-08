@@ -11,7 +11,6 @@ using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
 namespace MamaFit.Services.Service
 {
@@ -49,6 +48,7 @@ namespace MamaFit.Services.Service
             var config = await _configService.GetConfig();
             var validOrderItems = new List<OrderItem>();
             var orderItemSKUs = new List<string>();
+            var warrantyRounds = new Dictionary<string, int>();
 
             RequestType requestType = RequestType.FREE;
             foreach (var itemDto in dto.Items)
@@ -67,21 +67,22 @@ namespace MamaFit.Services.Service
                         $"Order {order.Code} must be received before requesting warranty!");
 
                 var daysSinceReceived = (DateTime.UtcNow - order.ReceivedAt!.Value).TotalDays;
-                var warrantyCount = await _warrantyRequestItemRepository.CountWarrantyRequestItemsAsync(itemDto.OrderItemId);
+                var warrantyCount =
+                    await _warrantyRequestItemRepository.CountWarrantyRequestItemsAsync(itemDto.OrderItemId);
+
                 if (daysSinceReceived > config.Fields?.WarrantyPeriod || warrantyCount >= config.Fields?.WarrantyTime)
                     requestType = RequestType.FEE;
 
-                string? sku = null;
-                if (orderItem.Preset != null)
-                    sku = orderItem.Preset.SKU;
-                else if (orderItem.MaternityDressDetail != null)
-                    sku = orderItem.MaternityDressDetail.SKU;
+                string? skuOk = orderItem.Preset?.SKU ?? orderItem.MaternityDressDetail?.SKU;
+                if (!string.IsNullOrEmpty(skuOk))
+                    orderItemSKUs.Add(skuOk);
 
-                if (!string.IsNullOrEmpty(sku))
-                    orderItemSKUs.Add(sku);
-
+                if (!string.IsNullOrEmpty(skuOk))
+                    orderItemSKUs.Add(skuOk);
+                
                 validOrderItems.Add(orderItem);
                 orderItem.WarrantyDate = DateTime.UtcNow;
+                warrantyRounds[orderItem.Id] = warrantyCount + 1;
                 await _unitOfWork.OrderItemRepository.UpdateAsync(orderItem);
             }
 
@@ -152,7 +153,8 @@ namespace MamaFit.Services.Service
             {
                 ReceiverId = userId,
                 NotificationTitle = "Yêu cầu bảo hành mới",
-                NotificationContent = $"Bạn đã tạo thành công bảo hành cho các sản phẩm với SKU: {string.Join(", ", orderItemSKUs)}.",
+                NotificationContent =
+                    $"Bạn đã tạo thành công bảo hành cho các sản phẩm với SKU: {string.Join(", ", orderItemSKUs)}.",
                 ActionUrl = $"/warranty-requests/{warrantyRequest.Id}",
                 Metadata = new Dictionary<string, string>
                 {

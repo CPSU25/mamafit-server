@@ -4,7 +4,6 @@ namespace MamaFit.BusinessObjects.DTO.OrderDto;
 
 public class OrderBaseDto
 {
-    public string? ParentOrderId { get; set; }
     public string? BranchId { get; set; }
     public string? UserId { get; set; }
     public string? AddressId { get; set; }

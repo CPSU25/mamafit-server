@@ -114,8 +114,7 @@ namespace MamaFit.API
                 app.MapControllers();
 
                 app.MapHub<ChatHub>("/chatHub");
-                // Map NotificationHub to UnifiedHub for backward compatibility
-                app.MapHub<UnifiedHub>("/notificationHub"); // Redirect old endpoint to UnifiedHub
+                app.MapHub<NotificationHub>("/notificationHub");
                 app.MapHub<UnifiedHub>("/unifiedHub");
 
                 app.UseHangfireDashboard("/hangfire", new DashboardOptions

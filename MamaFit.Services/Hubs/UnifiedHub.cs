@@ -87,63 +87,6 @@ public class UnifiedHub : Hub
         await base.OnDisconnectedAsync(exception);
     }
 
-    // ===== NOTIFICATION HUB METHODS (For Backward Compatibility) =====
-    // These methods maintain compatibility with existing NotificationHub clients
-    
-    /// <summary>
-    /// Subscribe to general notifications (backward compatibility)
-    /// </summary>
-    public async Task SubscribeToNotifications()
-    {
-        var userId = GetCurrentUserId();
-        if (string.IsNullOrEmpty(userId))
-        {
-            await Clients.Caller.SendAsync("Error", "Unauthorized: Invalid user");
-            return;
-        }
-
-        try
-        {
-            var userGroup = RealtimeGroups.GetUserGroup(userId);
-            await Groups.AddToGroupAsync(Context.ConnectionId, userGroup);
-            await Groups.AddToGroupAsync(Context.ConnectionId, "notifications_all");
-            await Clients.Caller.SendAsync("SubscribedToNotifications", "success");
-            
-            _logger.LogDebug("User {UserId} subscribed to notifications", userId);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to subscribe user {UserId} to notifications", userId);
-            await Clients.Caller.SendAsync("Error", "Failed to subscribe to notifications");
-        }
-    }
-
-    /// <summary>
-    /// Unsubscribe from notifications (backward compatibility)
-    /// </summary>
-    public async Task UnsubscribeFromNotifications()
-    {
-        var userId = GetCurrentUserId();
-        if (string.IsNullOrEmpty(userId))
-        {
-            await Clients.Caller.SendAsync("Error", "Unauthorized: Invalid user");
-            return;
-        }
-
-        try
-        {
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, "notifications_all");
-            await Clients.Caller.SendAsync("UnsubscribedFromNotifications", "success");
-            
-            _logger.LogDebug("User {UserId} unsubscribed from notifications", userId);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to unsubscribe user {UserId} from notifications", userId);
-            await Clients.Caller.SendAsync("Error", "Failed to unsubscribe from notifications");
-        }
-    }
-
     // ===== UNIFIED HUB METHODS =====
     
     // Hub methods that clients can call
@@ -287,10 +230,6 @@ public class UnifiedHub : Hub
                 await Groups.AddToGroupAsync(Context.ConnectionId, branchGroup);
                 _logger.LogDebug("Added user {UserId} to branch group {BranchGroup}", userId, branchGroup);
             }
-
-            // Auto-subscribe to notifications for backward compatibility
-            await Groups.AddToGroupAsync(Context.ConnectionId, "notifications_all");
-            _logger.LogDebug("Added user {UserId} to notifications group", userId);
         }
         catch (Exception ex)
         {

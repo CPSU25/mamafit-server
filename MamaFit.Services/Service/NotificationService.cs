@@ -22,13 +22,13 @@ public class NotificationService : INotificationService
     private readonly IMapper _mapper;
     private readonly IValidationService _validation;
     private readonly IExpoNotificationService _expoNotificationService;
-    private readonly IHubContext<UnifiedHub> _notificationHubContext; // Changed to UnifiedHub
+    private readonly IHubContext<NotificationHub> _notificationHubContext; // Changed to NotificationHub
     private readonly IUserConnectionManager _userConnectionManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IRealtimeEventService _realtimeEventService;
 
     public NotificationService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation,
-        IExpoNotificationService expoNotificationService, IHubContext<UnifiedHub> notificationHubContext, // Changed to UnifiedHub
+        IExpoNotificationService expoNotificationService, IHubContext<NotificationHub> notificationHubContext, // Changed to NotificationHub
         IUserConnectionManager userConnectionManager, IHttpContextAccessor httpContextAccessor,
         IRealtimeEventService realtimeEventService)
     {
@@ -136,13 +136,13 @@ public class NotificationService : INotificationService
                     .SendAsync("ReceiveNotification", notificationDto);
             }
             
-            // Also send to notifications_all group for backward compatibility
-            await _notificationHubContext.Clients.Group("notifications_all")
+            // Send to user's personal notification group
+            var userGroup = $"notifications_user_{model.ReceiverId}";
+            await _notificationHubContext.Clients.Group(userGroup)
                 .SendAsync("ReceiveNotification", notificationDto);
                 
-            // Send to user's personal group
-            var userGroup = $"user_{model.ReceiverId}";
-            await _notificationHubContext.Clients.Group(userGroup)
+            // Also send to notifications_all group
+            await _notificationHubContext.Clients.Group("notifications_all")
                 .SendAsync("ReceiveNotification", notificationDto);
         }
         else

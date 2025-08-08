@@ -361,6 +361,7 @@ namespace MamaFit.API.DependencyInjection
                     options.HandshakeTimeout = TimeSpan.FromSeconds(15);
                 })
                 .AddHubOptions<ChatHub>(options => { options.EnableDetailedErrors = true; })
+                .AddHubOptions<NotificationHub>(options => { options.EnableDetailedErrors = true; })
                 .AddHubOptions<UnifiedHub>(options => { options.EnableDetailedErrors = true; });
         }
 

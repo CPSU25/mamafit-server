@@ -2,6 +2,7 @@
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MamaFit.API.Controllers
@@ -34,35 +35,25 @@ namespace MamaFit.API.Controllers
             ));
         }
 
-        // [HttpGet("{id}")]
-        // public async Task<IActionResult> GetById(string id)
-        // {
-        //     var result = await _warrantyRequestService.GetWarrantyRequestByIdAsync(id);
-        //
-        //     return Ok(new ResponseModel<WarrantyRequestGetByIdDto>(
-        //         StatusCodes.Status200OK,
-        //         ApiCodes.SUCCESS,
-        //         result,
-        //         "Get warranty request by id successful"
-        //     ));
-        // }
-
-        // [HttpGet("order-item/{orderItemId}")]
-        // public async Task<IActionResult> GetByOrderItemId(string orderItemId)
-        // {
-        //     var result = await _warrantyRequestService.GetWarrantyRequestByOrderItemIdAsync(orderItemId);
-        //     return Ok(new ResponseModel<GetDetailDto>(
-        //         StatusCodes.Status200OK,
-        //         ApiCodes.SUCCESS,
-        //         result,
-        //         "Get warranty request by order item id successful"
-        //     ));
-        // }
-        
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] WarrantyRequestCreateDto warrantyRequestCreateDto)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(string id)
         {
-            var id = await _warrantyRequestService.CreateAsync(warrantyRequestCreateDto);
+            var result = await _warrantyRequestService.GetWarrantyRequestByIdAsync(id);
+        
+            return Ok(new ResponseModel<WarrantyRequestGetAllDto>(
+                StatusCodes.Status200OK,
+                ApiCodes.SUCCESS,
+                result,
+                "Get warranty request by id successful"
+            ));
+        }
+        
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] WarrantyRequestCreateDto warrantyRequestCreateDto,
+            [FromHeader(Name = "Authorization")] string accessToken)
+        {
+            var id = await _warrantyRequestService.CreateAsync(warrantyRequestCreateDto, accessToken);
 
             return Ok(
                 new ResponseModel<string>(

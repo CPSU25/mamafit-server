@@ -119,8 +119,7 @@ public class MeasurementService : IMeasurementService
         await _validation.ValidateAndThrowAsync(dto);
         var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdNotDeletedAsync(dto.MeasurementId);
         _validation.CheckNotFound(diary, "Measurement diary not found");
-        var pregnancyStartDate = diary.PregnancyStartDate;
-        var weeksPregnant = CalculateWeeksPregnant(pregnancyStartDate);
+        var weeksPregnant = CalculateWeeksPregnant(diary.PregnancyStartDate);
 
         await ValidateNoExistingMeasurement(dto.MeasurementId, weeksPregnant);
 
@@ -312,19 +311,19 @@ public class MeasurementService : IMeasurementService
         Measurement? lastMeasurement,
         int weeksPregnant)
     {
-        try
-        {
-            if (await _aiCalculationService.IsAvailable())
-            {
-                return await _aiCalculationService.CalculateMeasurementsAsync(
-                    diaryDto, dto, lastMeasurement, weeksPregnant);
-            }
-        }
-        catch (Exception)
-        {
-            throw new ErrorException(StatusCodes.Status500InternalServerError, ApiCodes.EXTERNAL_SERVICE_ERROR,
-                "AI measurement calculation failed. Please try again later.");
-        }
+        // try
+        // {
+        //     if (await _aiCalculationService.IsAvailable())
+        //     {
+        //         return await _aiCalculationService.CalculateMeasurementsAsync(
+        //             diaryDto, dto, lastMeasurement, weeksPregnant);
+        //     }
+        // }
+        // catch (Exception)
+        // {
+        //     throw new ErrorException(StatusCodes.Status500InternalServerError, ApiCodes.EXTERNAL_SERVICE_ERROR,
+        //         "AI measurement calculation failed. Please try again later.");
+        // }
 
         return GenerateWithOriginalCalculator(dto, diaryDto, lastMeasurement, weeksPregnant);
     }

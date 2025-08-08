@@ -152,7 +152,6 @@ public class CartItemService : ICartItemService
 
         // Lưu lại
         await _cacheService.SetHashAsync(cacheKey, itemKey, existingItem, TimeSpan.FromDays(7));
-        await _cacheService.SetHashAsync(cacheKey, "updated_at", DateTime.UtcNow.ToString("O"), TimeSpan.FromDays(7));
 
         // Lấy tất cả cart items từ Hash
         var cartItemsHash = await _cacheService.GetAllHashAsync<CartItem>(cacheKey);

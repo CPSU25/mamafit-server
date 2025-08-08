@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Contentful.Core;
+using MamaFit.BusinessObjects.DTO.CartItemDto;
 using MamaFit.BusinessObjects.DTO.CMSDto;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
@@ -460,6 +461,12 @@ public class OrderService : IOrderService
         var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
         _validation.CheckNotFound(user, $"User with id: {userId} not found");
 
+        var cacheKey = $"cart:user:{userId}";
+        var isCartExist = await _cacheService.KeyExistsAsync(cacheKey);
+
+        if (!isCartExist)
+            throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, $"User with id: {userId} has no cart item");
+
         VoucherDiscount? voucher = null;
         Measurement? measurement = null;
 
@@ -484,8 +491,11 @@ public class OrderService : IOrderService
         // Tạo OrderItem theo preset và add-on tương ứng
         foreach (var presetReq in request.Presets)
         {
-            var preset = await _unitOfWork.PresetRepository.GetDetailById(presetReq.Id);
-            _validation.CheckNotFound(preset, $"Preset with id: {presetReq.Id} not found");
+            var itemKey = $"item:{presetReq.Id}";
+            var cartItem = await _cacheService.GetHashAsync<CartItem>(cacheKey, itemKey);
+            _validation.CheckNotFound(cartItem, $"Preset with id: {presetReq.Id} not found in cart");
+            var preset = await _unitOfWork.PresetRepository.GetDetailById(cartItem.Preset.Id);
+            _validation.CheckNotFound(preset, $"Preset with id: {cartItem.Preset.Id} not found in database");
 
             var orderItemAddOns = new List<OrderItemAddOnOption>();
 
@@ -503,7 +513,7 @@ public class OrderService : IOrderService
                         Value = option.Value
                     });
 
-                    addOnListTotalPrice += addOn.Price;
+                    addOnListTotalPrice += addOn.Price * presetReq.Quantity;
                 }
             }
 
@@ -513,14 +523,15 @@ public class OrderService : IOrderService
                 PresetId = preset.Id,
                 ItemType = ItemType.PRESET,
                 Price = preset.Price,
-                Quantity = 1,
+                Quantity = presetReq.Quantity,
                 OrderItemAddOnOptions = orderItemAddOns,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
                 CreatedBy = user!.UserName
             });
 
-            subTotalAmount += preset.Price;
+            subTotalAmount += preset.Price * presetReq.Quantity;
+            await _cacheService.DeleteHashFieldAsync(cacheKey, itemKey);
         }
 
         // Tính discount nếu có voucher

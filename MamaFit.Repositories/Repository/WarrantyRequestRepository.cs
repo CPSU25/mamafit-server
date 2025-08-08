@@ -39,5 +39,21 @@ namespace MamaFit.Repositories.Repository
 
             return new PaginatedList<WarrantyRequest>(list, paged.TotalCount, paged.PageNumber, pageSize);
         }
+
+        public async Task<List<WarrantyRequest>> GetAllWarrantyRequestByOrderId(string orderId)
+        {
+            var result = _dbSet
+                .Include(x => x.WarrantyRequestItems)
+                .ThenInclude(x => x.OrderItem)
+                .ThenInclude(x => x.Order)
+                .Include(x => x.WarrantyRequestItems)
+                .ThenInclude(x => x.OrderItem)
+                .ThenInclude(x => x.ParentOrderItem)
+                .Where(x => !x.IsDeleted )
+                .Include(x => x.WarrantyRequestItems)
+                .ThenInclude(x => x.OrderItem)
+                .ThenInclude(x => x.Preset);
+            return await result.ToListAsync();// nhận orderId, mảng orderItem và orderCode gốc của orderId 
+        }
     }
 }

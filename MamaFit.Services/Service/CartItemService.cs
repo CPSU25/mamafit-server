@@ -81,7 +81,7 @@ public class CartItemService : ICartItemService
             }
             else if (model.Type == ItemType.PRESET)
             {
-                var item = await _unitOfWork.PresetRepository.GetByIdAsync(model.ItemId);
+                var item = await _unitOfWork.PresetRepository.GetDetailById(model.ItemId);
                 _validation.CheckNotFound(item, $"Preset with id: {model.ItemId} not found");
                 cartItem = new CartItem
                 {
@@ -106,7 +106,7 @@ public class CartItemService : ICartItemService
             }
             else if (model.Type == ItemType.PRESET)
             {
-                var item = await _unitOfWork.PresetRepository.GetByIdAsync(model.ItemId);
+                var item = await _unitOfWork.PresetRepository.GetDetailById(model.ItemId);
                 _validation.CheckNotFound(item, $"Preset with id: {model.ItemId} not found");
             }
             existingItem.Quantity += model.Quantity;
@@ -117,7 +117,7 @@ public class CartItemService : ICartItemService
 
         var cartItemsHash = await _cacheService.GetAllHashAsync<CartItem>(cacheKey);
 
-        // Chỉ lấy các field là cart items (bỏ qua metadata như created_at, updated_at)
+        // Chỉ lấy các field là cart items
         var cartItems = cartItemsHash
             .Where(x => x.Key.StartsWith("item:") && x.Value != null)
             .Select(x => x.Value!)

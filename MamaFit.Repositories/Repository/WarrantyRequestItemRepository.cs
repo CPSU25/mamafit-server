@@ -46,4 +46,9 @@ public class WarrantyRequestItemRepository : IWarrantyRequestItemRepository
         _dbSet.Add(entity);
         await _context.SaveChangesAsync();
     }
+    
+    public async Task<int> CountWarrantyRequestItemsAsync(string requestId)
+    {
+        return await _dbSet.CountAsync(x => x.WarrantyRequestId == requestId);
+    }
 }

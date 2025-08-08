@@ -81,7 +81,7 @@ public class CartItemService : ICartItemService
             }
             else if (model.Type == ItemType.PRESET)
             {
-                var item = await _unitOfWork.PresetRepository.GetByIdAsync(model.ItemId);
+                var item = await _unitOfWork.PresetRepository.GetDetailById(model.ItemId);
                 _validation.CheckNotFound(item, $"Preset with id: {model.ItemId} not found");
                 cartItem = new CartItem
                 {

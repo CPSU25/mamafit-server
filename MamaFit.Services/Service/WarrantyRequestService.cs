@@ -47,7 +47,6 @@ namespace MamaFit.Services.Service
             var config = await _configService.GetConfig();
             var validOrderItems = new List<OrderItem>();
             var orderItemSKUs = new List<string>();
-            var notReceivedItems = new List<string>();
             foreach (var itemDto in dto.Items)
             {
                 var orderItem = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(itemDto.OrderItemId);
@@ -55,23 +54,20 @@ namespace MamaFit.Services.Service
 
                 var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(orderItem.OrderId!);
                 _validationService.CheckNotFound(order, $"Order of item {orderItem.Id} not found!");
-
-                // Check thanh toán đủ hoặc đặt cọc đủ
+                
                 if (order.PaymentStatus != PaymentStatus.PAID_FULL && order.PaymentStatus != PaymentStatus.PAID_DEPOSIT_COMPLETED)
                     throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                         $"Order {order.Code} must be paid before requesting warranty!");
-
-                // Check đã nhận hàng
+                
                 if (order.ReceivedAt == null)
-                    notReceivedItems.Add(order.Code);
-
-                // Check hết hạn bảo hành
+                    throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                        $"Order {order.Code} must be received before requesting warranty!");
+                
                 var daysSinceReceived = (DateTime.UtcNow - order.ReceivedAt!.Value).TotalDays;
                 if (daysSinceReceived > config.Fields?.WarrantyPeriod)
                     throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                         $"Order item {orderItem.Id} is out of warranty (more than {config.Fields.WarrantyPeriod} days since received)!");
-
-                // Check số lượt bảo hành đã dùng cho item này
+                
                 var warrantyCount = await _warrantyRequestItemRepository.CountWarrantyRequestItemsAsync(orderItem.Id);
                 if (warrantyCount >= config.Fields?.WarrantyTime)
                     throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
@@ -89,15 +85,12 @@ namespace MamaFit.Services.Service
                 validOrderItems.Add(orderItem);
             }
             
-            if (notReceivedItems.Count > 0)
-                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
-                    $"Order(s) {string.Join(", ", notReceivedItems)} must be received before requesting warranty!");
             //Tao đơn hàng bảo hành
             var warrantyOrder = new Order
             {
                 UserId = userId,
-                AddressId = dto.AddressId,
-                BranchId = dto.BranchId,
+                AddressId = !string.IsNullOrEmpty(dto.AddressId) ? dto.AddressId : null,
+                BranchId = !string.IsNullOrEmpty(dto.BranchId) ? dto.BranchId : null,
                 Type = OrderType.WARRANTY,
                 Code = GenerateOrderCode(),
                 Status = OrderStatus.CONFIRMED,

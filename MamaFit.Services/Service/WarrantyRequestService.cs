@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
+using MamaFit.BusinessObjects.DTO.OrderDto;
+using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.DTO.WarrantyRequestDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
@@ -60,7 +62,6 @@ namespace MamaFit.Services.Service
                 if (order.PaymentStatus == PaymentStatus.PENDING || order.PaymentStatus == PaymentStatus.PAID_DEPOSIT)
                     throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                         $"Order {order.Code} must be paid before requesting warranty!");
-
                 if (order.ReceivedAt == null)
                     throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                         $"Order {order.Code} must be received before requesting warranty!");
@@ -78,7 +79,7 @@ namespace MamaFit.Services.Service
 
                 if (!string.IsNullOrEmpty(skuOk))
                     orderItemSKUs.Add(skuOk);
-
+                
                 validOrderItems.Add(orderItem);
                 orderItem.WarrantyDate = DateTime.UtcNow;
                 warrantyRounds[orderItem.Id] = warrantyCount + 1;
@@ -173,6 +174,48 @@ namespace MamaFit.Services.Service
             await _unitOfWork.WarrantyRequestRepository.SoftDeleteAsync(warrantyRequest);
             await _unitOfWork.SaveChangesAsync();
         }
+
+        public async Task<List<WarrantyDetailResponseDto>> DetailsByIdAsync(string orderId)
+        {
+            var result = new List<WarrantyDetailResponseDto>();
+
+            var order = await _unitOfWork.OrderRepository.GetWithItemsAndDressDetails(orderId);
+            _validationService.CheckNotFound(order, $"Order with id {orderId} not found");
+
+            // Chỉ lấy những OrderItem có ParentOrderItem
+            var itemsWithParent = order.OrderItems
+                .Where(x => x.ParentOrderItemId != null && x.ParentOrderItem != null && x.ParentOrderItem.Order != null)
+                .ToList();
+
+            // Nhóm theo đơn hàng gốc (ParentOrderItem.Order)
+            var groupedByOriginalOrder = itemsWithParent
+                .GroupBy(item => item.ParentOrderItem.Order)
+                .ToList();
+
+            foreach (var group in groupedByOriginalOrder)
+            {
+                var originalOrder = group.Key;
+
+                var warrantyDto = new WarrantyDetailResponseDto
+                {
+                    OriginalOrder = new OrderWarrantyOnlyCode
+                    {
+                        Id = originalOrder.Id,
+                        Code = originalOrder.Code,
+                        ReceivedAt = (DateTime)originalOrder.ReceivedAt,
+                        OrderItems = group
+                        .Select(x => _mapper.Map<OrderItemGetByIdResponseDto>(x))
+                        .ToList()
+                    }
+
+                };
+
+                result.Add(warrantyDto);
+            }
+
+            return result;
+        }
+
 
         public async Task<PaginatedList<WarrantyRequestGetAllDto>> GetAllWarrantyRequestAsync(int index, int pageSize,
             string? search, EntitySortBy? sortBy)

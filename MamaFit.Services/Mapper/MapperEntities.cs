@@ -226,6 +226,9 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.OrderItems))
                 .ForMember(dest => dest.MeasurementDiary, otp => otp.MapFrom(src => src.Measurement!.MeasurementDiary))
                 .ReverseMap();
+            CreateMap<Order, OrderWarrantyOnlyCode>()
+                .ForMember(dest => dest.OrderItems, otp => otp.MapFrom(x => x.OrderItems))
+                .ReverseMap();
             #endregion
 
             #region OrderItem Mapper

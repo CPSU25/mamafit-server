@@ -10,6 +10,9 @@ public interface IUserConnectionManager
     // Online users (toàn hệ thống)
     Task<List<string>> GetOnlineUsersAsync();
     Task<bool> IsUserOnlineAsync(string userId);
+    
+    // Heartbeat
+    Task HeartbeatUserConnectionAsync(string userId);
 
     // Room
     Task AddUserToRoomAsync(string roomId, string userId);

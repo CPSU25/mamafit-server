@@ -145,10 +145,11 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
 
     public async Task<Order?> GetWithItemsAndDressDetails(string id)
     {
-        return await _dbSet.AsNoTracking()
+        return await _dbSet
             .Include(x => x.Branch)
             .Include(x => x.Address)
             .Include(x => x.User)
+            .Include(x => x.OrderItems).ThenInclude(x => x.ParentOrderItem).ThenInclude(x => x.Order)
             .Include(x => x.OrderItems.Where(oi => !oi.IsDeleted))
             .ThenInclude(oi => oi.MaternityDressDetail)
             .Include(x => x.OrderItems.Where(oi => !oi.IsDeleted))

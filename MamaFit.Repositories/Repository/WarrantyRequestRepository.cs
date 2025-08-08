@@ -19,6 +19,7 @@ namespace MamaFit.Repositories.Repository
         {
             var query = _dbSet
                 .Include(w => w.WarrantyHistories)
+                .Include(x => x.WarrantyRequestItems).ThenInclude(x => x.OrderItem).ThenInclude(x => x.Order).ThenInclude(x => x.User).ThenInclude(x => x.Role)
                 .Where(x => !x.IsDeleted);
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -49,11 +50,22 @@ namespace MamaFit.Repositories.Repository
                 .Include(x => x.WarrantyRequestItems)
                 .ThenInclude(x => x.OrderItem)
                 .ThenInclude(x => x.ParentOrderItem)
-                .Where(x => !x.IsDeleted )
+                .Where(x => !x.IsDeleted)
                 .Include(x => x.WarrantyRequestItems)
                 .ThenInclude(x => x.OrderItem)
                 .ThenInclude(x => x.Preset);
             return await result.ToListAsync();// nhận orderId, mảng orderItem và orderCode gốc của orderId 
+        }
+
+        public async Task<WarrantyRequest> GetDetailById(string warrantyId)
+        {
+            var result = await _dbSet
+                .Include(x => x.WarrantyRequestItems).ThenInclude(x => x.OrderItem).ThenInclude(x => x.Order)
+                .Include(x => x.WarrantyRequestItems).ThenInclude(x => x.OrderItem).ThenInclude(x => x.Preset).ThenInclude(x => x.Style)
+                .Include(x => x.WarrantyHistories)
+                .FirstOrDefaultAsync(x => !x.IsDeleted);
+
+            return result;
         }
     }
 }

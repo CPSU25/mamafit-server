@@ -739,13 +739,13 @@ public class OrderService : IOrderService
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<List<OrderGetByIdResponseDto>> GetForWarranty(bool isWarrantyValid)
+    public async Task<List<OrderGetByIdResponseDto>> GetForWarranty()
     {
         var userId = GetCurrentUserId();
         var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
         _validation.CheckNotFound(user, " Please sign in");
         var config = await _configService.GetConfig();
-        var result = await _unitOfWork.OrderRepository.GetOrderForRequest(isWarrantyValid, config.Fields.WarrantyPeriod,userId);
+        var result = await _unitOfWork.OrderRepository.GetOrderForRequest(userId);
 
         return _mapper.Map<List<OrderGetByIdResponseDto>>(result);
     }

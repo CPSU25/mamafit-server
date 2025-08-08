@@ -3,6 +3,7 @@ using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.DTO.WarrantyRequestDto;
+using MamaFit.BusinessObjects.DTO.WarrantyRequestItemDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Helper;
@@ -214,7 +215,6 @@ namespace MamaFit.Services.Service
             return result;
         }
 
-
         public async Task<PaginatedList<WarrantyRequestGetAllDto>> GetAllWarrantyRequestAsync(int index, int pageSize,
             string? search, EntitySortBy? sortBy)
         {
@@ -229,12 +229,12 @@ namespace MamaFit.Services.Service
                 pageSize);
         }
 
-        public async Task<WarrantyRequestGetAllDto> GetWarrantyRequestByIdAsync(string id)
+        public async Task<WarrantyGetByIdResponseDto> GetWarrantyRequestByIdAsync(string id)
         {
-            var result = await _unitOfWork.WarrantyRequestRepository.GetByIdNotDeletedAsync(id);
+            var result = await _unitOfWork.WarrantyRequestRepository.GetDetailById(id);
             _validationService.CheckNotFound(result, $"Warranty request with id:{id} not found");
 
-            return _mapper.Map<WarrantyRequestGetAllDto>(result);
+            return _mapper.Map<WarrantyGetByIdResponseDto>(result);
         }
 
         // public async Task UpdateAsync(string id, WarrantyRequestUpdateDto warrantyRequestUpdateDto)

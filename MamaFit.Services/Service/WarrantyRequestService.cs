@@ -50,6 +50,16 @@ namespace MamaFit.Services.Service
             var orderItemSKUs = new List<string>();
             var warrantyRounds = new Dictionary<string, int>();
 
+            if (!string.IsNullOrEmpty(dto.AddressId))
+            {
+                var address = await _unitOfWork.AddressRepository.GetByIdNotDeletedAsync(dto.AddressId);
+                _validationService.CheckNotFound(address, $"Address with id {dto.AddressId} not found!");
+            }
+            if (!string.IsNullOrEmpty(dto.BranchId))
+            {
+                var branch = await _unitOfWork.BranchRepository.GetByIdNotDeletedAsync(dto.BranchId);
+                _validationService.CheckNotFound(branch, $"Branch with id {dto.BranchId} not found!");
+            }
             RequestType requestType = RequestType.FREE;
             foreach (var itemDto in dto.Items)
             {
@@ -58,7 +68,7 @@ namespace MamaFit.Services.Service
 
                 var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(orderItem.OrderId!);
                 _validationService.CheckNotFound(order, $"Order of item {orderItem.Id} not found!");
-
+                
                 if (order.PaymentStatus == PaymentStatus.PENDING || order.PaymentStatus == PaymentStatus.PAID_DEPOSIT)
                     throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                         $"Order {order.Code} must be paid before requesting warranty!");
@@ -139,6 +149,7 @@ namespace MamaFit.Services.Service
                     OrderItemId = warrantyOrderItemIdMap[itemDto.OrderItemId],
                     Description = itemDto.Description,
                     Images = itemDto.Images ?? new List<string>(),
+                    WarrantyRound = warrantyRounds[itemDto.OrderItemId] 
                 };
                 await _warrantyRequestItemRepository.InsertAsync(requestItem);
             }

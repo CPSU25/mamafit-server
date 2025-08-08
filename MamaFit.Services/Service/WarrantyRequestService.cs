@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
-using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.DTO.WarrantyRequestDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
@@ -47,6 +46,7 @@ namespace MamaFit.Services.Service
             var config = await _configService.GetConfig();
             var validOrderItems = new List<OrderItem>();
             var orderItemSKUs = new List<string>();
+            var warrantyRounds = new Dictionary<string, int>();
 
             RequestType requestType = RequestType.FREE;
             foreach (var itemDto in dto.Items)
@@ -56,34 +56,35 @@ namespace MamaFit.Services.Service
 
                 var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(orderItem.OrderId!);
                 _validationService.CheckNotFound(order, $"Order of item {orderItem.Id} not found!");
-                
+
                 if (order.PaymentStatus == PaymentStatus.PENDING || order.PaymentStatus == PaymentStatus.PAID_DEPOSIT)
                     throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                         $"Order {order.Code} must be paid before requesting warranty!");
-                
+
                 if (order.ReceivedAt == null)
                     throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                         $"Order {order.Code} must be received before requesting warranty!");
 
                 var daysSinceReceived = (DateTime.UtcNow - order.ReceivedAt!.Value).TotalDays;
-                var warrantyCount = await _warrantyRequestItemRepository.CountWarrantyRequestItemsAsync(itemDto.OrderItemId);
-                    if (daysSinceReceived > config.Fields?.WarrantyPeriod || warrantyCount >= config.Fields?.WarrantyTime)
+                var warrantyCount =
+                    await _warrantyRequestItemRepository.CountWarrantyRequestItemsAsync(itemDto.OrderItemId);
+
+                if (daysSinceReceived > config.Fields?.WarrantyPeriod || warrantyCount >= config.Fields?.WarrantyTime)
                     requestType = RequestType.FEE;
 
-                string? sku = null;
-                if (orderItem.Preset != null)
-                    sku = orderItem.Preset.SKU;
-                else if (orderItem.MaternityDressDetail != null)
-                    sku = orderItem.MaternityDressDetail.SKU;
+                string? skuOk = orderItem.Preset?.SKU ?? orderItem.MaternityDressDetail?.SKU;
+                if (!string.IsNullOrEmpty(skuOk))
+                    orderItemSKUs.Add(skuOk);
 
-                if (!string.IsNullOrEmpty(sku))
-                    orderItemSKUs.Add(sku);
-                
+                if (!string.IsNullOrEmpty(skuOk))
+                    orderItemSKUs.Add(skuOk);
+
                 validOrderItems.Add(orderItem);
                 orderItem.WarrantyDate = DateTime.UtcNow;
+                warrantyRounds[orderItem.Id] = warrantyCount + 1;
                 await _unitOfWork.OrderItemRepository.UpdateAsync(orderItem);
             }
-            
+
             //Tao đơn hàng bảo hành
             var warrantyOrder = new Order
             {
@@ -99,7 +100,7 @@ namespace MamaFit.Services.Service
                 DeliveryMethod = dto.DeliveryMethod,
             };
             await _unitOfWork.OrderRepository.InsertAsync(warrantyOrder);
-            
+
             //Tạo các OrderItem bảo hành tương ứng với các OrderItem đã chọn
             var warrantyOrderItemIdMap = new Dictionary<string, string>();
             foreach (var orderItem in validOrderItems)
@@ -117,7 +118,7 @@ namespace MamaFit.Services.Service
                 await _unitOfWork.OrderItemRepository.InsertAsync(warrantyOrderItem);
                 warrantyOrderItemIdMap[orderItem.Id] = warrantyOrderItem.Id;
             }
-            
+
             //Tạo WarrantyRequest tổng
             var warrantyRequest = new WarrantyRequest
             {
@@ -127,7 +128,7 @@ namespace MamaFit.Services.Service
             };
 
             await _unitOfWork.WarrantyRequestRepository.InsertAsync(warrantyRequest);
-            
+
             // Tạo các WarrantyRequestItem
             foreach (var itemDto in dto.Items)
             {
@@ -146,12 +147,13 @@ namespace MamaFit.Services.Service
             // Update tổng phí
             // warrantyRequest.TotalFee = totalFee;
             //await _unitOfWork.WarrantyRequestRepository.UpdateAsync(warrantyRequest);
-            
+
             await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
             {
                 ReceiverId = userId,
                 NotificationTitle = "Yêu cầu bảo hành mới",
-                NotificationContent = $"Bạn đã tạo thành công bảo hành cho các sản phẩm với SKU: {string.Join(", ", orderItemSKUs)}.",
+                NotificationContent =
+                    $"Bạn đã tạo thành công bảo hành cho các sản phẩm với SKU: {string.Join(", ", orderItemSKUs)}.",
                 ActionUrl = $"/warranty-requests/{warrantyRequest.Id}",
                 Metadata = new Dictionary<string, string>
                 {
@@ -162,7 +164,6 @@ namespace MamaFit.Services.Service
             });
             return warrantyOrder.Id;
         }
-        
 
         public async Task DeleteAsync(string id)
         {
@@ -191,7 +192,7 @@ namespace MamaFit.Services.Service
         {
             var result = await _unitOfWork.WarrantyRequestRepository.GetByIdNotDeletedAsync(id);
             _validationService.CheckNotFound(result, $"Warranty request with id:{id} not found");
-        
+
             return _mapper.Map<WarrantyRequestGetAllDto>(result);
         }
 

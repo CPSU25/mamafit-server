@@ -42,9 +42,9 @@ public class OrderController : ControllerBase
         ));
     }
     [HttpGet("for-warranty")]
-    public async Task<IActionResult> GetOrderForRequest([FromQuery] bool isWarrantyValid)
+    public async Task<IActionResult> GetOrderForRequest()
     {
-        var result = await _service.GetForWarranty(isWarrantyValid);
+        var result = await _service.GetForWarranty();
         return Ok(new ResponseModel<List<OrderGetByIdResponseDto>>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,

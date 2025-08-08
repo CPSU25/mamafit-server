@@ -1,6 +1,6 @@
 namespace MamaFit.BusinessObjects.DTO.WarrantyHistoryDto;
 
-public class WarrantyHistoryResponseDto
+public class WarrantyHistoryResponseDto : WarrantyHistoryBaseDto
 {
     public string Id { get; set; }
     public string? CreatedBy { get; set; }

@@ -32,21 +32,13 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .ToListAsync();
     }
 
-    public async Task<List<Order>> GetOrderForRequest(bool isWarrantyValid, int? configDate, string userId)
+    public async Task<List<Order>> GetOrderForRequest(string userId)
     {
         var response = _dbSet.Include(x => x.OrderItems).ThenInclude(x => x.Preset)
             .Where(x => !x.IsDeleted
             && x.Status == OrderStatus.COMPLETED
             && x.UserId == userId
             && x.OrderItems.Any(x => (x.ItemType == ItemType.PRESET || x.ItemType == ItemType.WARRANTY) && x.WarrantyDate == null));
-        if (isWarrantyValid)
-        {
-            response = response.Where(x => (DateTime.UtcNow - x.ReceivedAt!.Value).TotalDays <= configDate);
-        }
-        else
-        {
-            response = response.Where(x => (DateTime.UtcNow - x.ReceivedAt!.Value).TotalDays > configDate);
-        }
 
         return await response.ToListAsync();
     }

@@ -1,6 +1,6 @@
 namespace MamaFit.BusinessObjects.DTO.WarrantyHistoryDto;
 
-public class WarrantyHistoryRequestDto
+public class WarrantyHistoryRequestDto : WarrantyHistoryBaseDto
 {
     
 }

@@ -1,4 +1,5 @@
 ﻿using MamaFit.BusinessObjects.DTO.WarrantyRequestDto;
+using MamaFit.BusinessObjects.DTO.WarrantyRequestItemDto;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
@@ -52,7 +53,7 @@ namespace MamaFit.API.Controllers
         {
             var result = await _warrantyRequestService.GetWarrantyRequestByIdAsync(id);
         
-            return Ok(new ResponseModel<WarrantyRequestGetAllDto>(
+            return Ok(new ResponseModel<WarrantyGetByIdResponseDto>(
                 StatusCodes.Status200OK,
                 ApiCodes.SUCCESS,
                 result,

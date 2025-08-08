@@ -247,7 +247,7 @@ namespace MamaFit.Services.Mapper
                 .ReverseMap();
             CreateMap<OrderItem, WarrantyOrderWithOrderItemDto>()
                 .ForMember(dest => dest.Order, opt => opt.MapFrom(src => src.Order));
-          
+
             #endregion
 
             #region OrderItemTask Mapper
@@ -338,11 +338,48 @@ namespace MamaFit.Services.Mapper
 
             #region WarrantyRequest Mapper
             CreateMap<WarrantyRequest, WarrantyRequestCreateDto>().ReverseMap();
-            CreateMap<WarrantyRequest, WarrantyRequestGetAllDto>().ReverseMap();
-            // CreateMap<WarrantyRequest, WarrantyRequestGetByIdDto>().ReverseMap();
-            // CreateMap<WarrantyRequest, GetDetailDto>()
-            //     .ForMember(dest => dest.OrderId, w => w.MapFrom(src => src.WarrantyOrderItem!.OrderId))
-            //     .ForMember(dest => dest.OrderCode, w => w.MapFrom(src => src.WarrantyOrderItem!.Order!.Code));
+            CreateMap<WarrantyRequest, WarrantyRequestGetAllDto>()
+                .ForMember(dest => dest.Customer, otp => otp.MapFrom(src => src.WarrantyRequestItems.FirstOrDefault().OrderItem.Order.User))
+                .ForMember(dest => dest.CountItem, otp => otp.MapFrom(src => src.WarrantyRequestItems.Count()))
+                .ReverseMap();
+            CreateMap<WarrantyRequest, WarrantyGetByIdResponseDto>()
+                .ForMember(dest => dest.Items, otp => otp.MapFrom(x => x.WarrantyRequestItems))
+                .ReverseMap();
+
+            CreateMap<WarrantyRequestItem, WarrantyRequestItemDetailResponseDto>()
+                .ForMember(dest => dest.OrderItemId, opt => opt.MapFrom(src => src.OrderItemId))
+                .ForMember(dest => dest.DestinationBranchId, opt => opt.MapFrom(src => src.DestinationBranchId))
+                .ForMember(dest => dest.TrackingCode, opt => opt.MapFrom(src => src.TrackingCode))
+                .ForMember(dest => dest.Fee, opt => opt.MapFrom(src => src.Fee))
+                .ForMember(dest => dest.RejectedReason, opt => opt.MapFrom(src => src.RejectedReason))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+                .ForMember(dest => dest.EstimateTime, opt => opt.MapFrom(src => src.EstimateTime))
+                .ForMember(dest => dest.DestinationType, opt => opt.MapFrom(src => src.DestinationType))
+                .ForMember(dest => dest.WarrantyRound, opt => opt.MapFrom(src => src.WarrantyRound))
+                .ForMember(dest => dest.Histories, opt => opt.MapFrom(src => src.WarrantyRequest.WarrantyHistories))
+                .ForMember(dest => dest.Orders, opt => opt.MapFrom((src, dest, destMember, context) =>
+                {
+                    if (src.OrderItem?.Order == null)
+                        return new List<OrderWarrantyOnlyCode>();
+
+                    var order = src.OrderItem.Order;
+
+                    return new List<OrderWarrantyOnlyCode>
+    {
+        new OrderWarrantyOnlyCode
+        {
+            Id = order.Id,
+            Code = order.Code,
+            ReceivedAt = order.ReceivedAt ?? DateTime.MinValue,
+            OrderItems = new List<OrderItemGetByIdResponseDto>
+            {
+                context.Mapper.Map<OrderItemGetByIdResponseDto>(src.OrderItem)
+            }
+        }
+                };
+                })).ReverseMap();
             #endregion
 
             #region WarrantyRequestItem Mapper
@@ -351,7 +388,7 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.OrderWithItems, opt => opt.MapFrom(src => src.OrderItem));
 
             #endregion
-            
+
             #region AddOn Mapper
             CreateMap<AddOn, AddOnDto>().ReverseMap();
             CreateMap<AddOn, AddOnRequestDto>().ReverseMap();

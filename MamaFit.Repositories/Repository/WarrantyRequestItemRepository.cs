@@ -30,9 +30,13 @@ public class WarrantyRequestItemRepository : IWarrantyRequestItemRepository
 
     public async Task<PaginatedList<WarrantyRequestItem>> GetAllAsync(int index, int pageSize, string? search)
     {
-        var query = _dbSet.AsNoTracking()
-            .Include(x => x.WarrantyRequest)
+        var query = _dbSet
             .Include(x => x.OrderItem)
+            .ThenInclude(x => x.Order)
+            .Include(x => x.DestinationBranch)
+            .Include(x => x.WarrantyRequest)
+            .Include(x => x.OrderItem.Preset)
+            .Include(x => x.OrderItem.MaternityDressDetail)
             .AsQueryable();
         
         if (!string.IsNullOrEmpty(search))

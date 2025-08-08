@@ -131,6 +131,7 @@ namespace MamaFit.API.DependencyInjection
             // SignalR User ID Provider for Clients.User() calls
             services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
             services.AddScoped<IConfigService, ConfigService>();
+            services.AddScoped<IWarrantyRequestItemService, WarrantyRequestItemService>();
         }
 
         public static IServiceCollection AddGhtkClient(this IServiceCollection services, IConfiguration configuration)

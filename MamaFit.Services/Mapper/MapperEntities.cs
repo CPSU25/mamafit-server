@@ -34,6 +34,7 @@ using MamaFit.BusinessObjects.DTO.VoucherBatchDto;
 using MamaFit.BusinessObjects.DTO.VoucherDiscountDto;
 using MamaFit.BusinessObjects.DTO.WarrantyHistoryDto;
 using MamaFit.BusinessObjects.DTO.WarrantyRequestDto;
+using MamaFit.BusinessObjects.DTO.WarrantyRequestItemDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Entity.ChatEntity;
 using MamaFit.BusinessObjects.Enum;
@@ -241,6 +242,9 @@ namespace MamaFit.Services.Mapper
                     .Distinct()
                     .ToList()))
                 .ReverseMap();
+            CreateMap<OrderItem, WarrantyOrderWithOrderItemDto>()
+                .ForMember(dest => dest.Order, opt => opt.MapFrom(src => src.Order));
+          
             #endregion
 
             #region OrderItemTask Mapper
@@ -340,7 +344,11 @@ namespace MamaFit.Services.Mapper
 
             #region WarrantyRequestItem Mapper
             CreateMap<WarrantyRequestItem, WarrantyRequestCreateDto>().ReverseMap();
+            CreateMap<WarrantyRequestItem, WarrantyRequestItemGetAllDto>()
+                .ForMember(dest => dest.OrderWithItems, opt => opt.MapFrom(src => src.OrderItem));
+
             #endregion
+            
             #region AddOn Mapper
             CreateMap<AddOn, AddOnDto>().ReverseMap();
             CreateMap<AddOn, AddOnRequestDto>().ReverseMap();

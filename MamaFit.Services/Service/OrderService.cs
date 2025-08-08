@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Contentful.Core;
+using Contentful.Core.Models.Management;
 using MamaFit.BusinessObjects.DTO.CartItemDto;
 using MamaFit.BusinessObjects.DTO.CMSDto;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
@@ -227,10 +228,37 @@ public class OrderService : IOrderService
     public async Task<string> CreateReadyToBuyOrderAsync(OrderReadyToBuyRequestDto request)
     {
         await _validation.ValidateAndThrowAsync(request);
+        var currentUserId = GetCurrentUserId();
+        var currentUser = await _unitOfWork.UserRepository.GetByIdAsync(currentUserId);
 
-        var user = await _unitOfWork.UserRepository.GetByIdAsync(request.UserId!);
-        _validation.CheckNotFound(user, $"User with id: {request.UserId} not found");
+        string? cacheKey = null;
+        string? itemKey = null;
+        bool isCartExist = false;
 
+        ApplicationUser? user = null;
+
+        if (currentUser.Role.RoleName == "User")
+        {
+            cacheKey = $"cart:user:{currentUserId}";
+            isCartExist = await _cacheService.KeyExistsAsync(cacheKey);
+            if (!isCartExist)
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, $"User with id: {currentUserId} has no cart item");
+
+            user = currentUser;
+        }
+        else
+        {
+            var requestUser = await _unitOfWork.UserRepository.GetByIdAsync(request.UserId!);
+            _validation.CheckNotFound(requestUser, $"User with id: {request.UserId} not found");
+
+            cacheKey = $"cart:user:{request.UserId}";
+            isCartExist = await _cacheService.KeyExistsAsync(cacheKey);
+
+            if (!isCartExist)
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, $"User with id: {request.UserId} has no cart item");
+
+            user = requestUser;
+        }
         VoucherDiscount? voucher = null;
         Measurement? measurement = null;
 
@@ -251,11 +279,19 @@ public class OrderService : IOrderService
 
         foreach (var item in request.OrderItems)
         {
-            var dress = await _unitOfWork.MaternityDressDetailRepository.GetByIdAsync(item.MaternityDressDetailId!);
-            if (dress == null)
+
+            MaternityDressDetail? dress = null;
+            if (user.Role.RoleName == "User")
             {
-                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND,
-                    $"Dress with id:{item.MaternityDressDetailId} not found!");
+                itemKey = $"item:{item.MaternityDressDetailId}";
+                var cartItemDress = await _cacheService.GetHashAsync<CartItem>(cacheKey, itemKey);
+                _validation.CheckNotFound(cartItemDress, $"Maternity dress with id: {item.MaternityDressDetailId} not found");
+                dress = await _unitOfWork.MaternityDressDetailRepository.GetByIdAsync(cartItemDress!.MaternityDressDetail!.Id!);
+            }
+            else
+            {
+                dress = await _unitOfWork.MaternityDressDetailRepository.GetByIdAsync(item.MaternityDressDetailId!);
+                _validation.CheckNotFound(dress, $"Maternity dress with id: {item.MaternityDressDetailId} not found");
             }
 
             if (dress.Quantity < item.Quantity)
@@ -366,6 +402,14 @@ public class OrderService : IOrderService
 
         await _unitOfWork.OrderRepository.InsertAsync(order);
         await _unitOfWork.SaveChangesAsync();
+        if (user.Role!.RoleName == "User")
+        {
+            foreach (var item in request.OrderItems)
+            {
+                var itemRemoveKey = $"item:{item.MaternityDressDetailId}";
+                await _cacheService.DeleteHashFieldAsync(cacheKey, itemRemoveKey);
+            }
+        }
         return order.Id;
     }
 

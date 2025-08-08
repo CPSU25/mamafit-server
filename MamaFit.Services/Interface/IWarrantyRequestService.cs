@@ -7,9 +7,8 @@ namespace MamaFit.Services.Interface
     public interface IWarrantyRequestService
     {
         Task<PaginatedList<WarrantyRequestGetAllDto>> GetAllWarrantyRequestAsync(int index, int pageSize, string? search, EntitySortBy? sortBy);
-        // Task<WarrantyRequestGetByIdDto> GetWarrantyRequestByIdAsync(string id);
-        // Task<GetDetailDto> GetWarrantyRequestByOrderItemIdAsync(string orderItemId);
-        Task<string> CreateAsync(WarrantyRequestCreateDto warrantyRequestCreateDto);
+        Task<WarrantyRequestGetAllDto> GetWarrantyRequestByIdAsync(string id);
+        Task<string> CreateAsync(WarrantyRequestCreateDto warrantyRequestCreateDto, string userId);
         // Task UpdateAsync(string id, WarrantyRequestUpdateDto warrantyRequestUpdateDto);
         Task DeleteAsync(string id);
     }

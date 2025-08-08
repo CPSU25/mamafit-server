@@ -41,8 +41,9 @@ namespace MamaFit.Services.Service
             _warrantyRequestItemRepository = warrantyRequestItemRepository;
         }
 
-        public async Task<string> CreateAsync(WarrantyRequestCreateDto dto)
+        public async Task<string> CreateAsync(WarrantyRequestCreateDto dto, string accessToken)
         {
+            var userId = JwtTokenHelper.ExtractUserId(accessToken);
             var config = await _configService.GetConfig();
             var validOrderItems = new List<OrderItem>();
             var orderItemSKUs = new List<string>();
@@ -94,9 +95,8 @@ namespace MamaFit.Services.Service
             //Tao đơn hàng bảo hành
             var warrantyOrder = new Order
             {
-                UserId = dto.UserId,
+                UserId = userId,
                 AddressId = dto.AddressId,
-                MeasurementId = dto.MeasurementId,
                 BranchId = dto.BranchId,
                 Type = OrderType.WARRANTY,
                 Code = GenerateOrderCode(),
@@ -156,7 +156,7 @@ namespace MamaFit.Services.Service
             
             await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
             {
-                ReceiverId = dto.UserId,
+                ReceiverId = userId,
                 NotificationTitle = "Yêu cầu bảo hành mới",
                 NotificationContent = $"Bạn đã tạo thành công bảo hành cho các sản phẩm với SKU: {string.Join(", ", orderItemSKUs)}.",
                 ActionUrl = $"/warranty-requests/{warrantyRequest.Id}",
@@ -169,14 +169,7 @@ namespace MamaFit.Services.Service
             });
             return warrantyRequest.Id;
         }
-
-        // public async Task<GetDetailDto> GetWarrantyRequestByOrderItemIdAsync(string orderItemId)
-        // {
-        //     var warrantyRequest = await _unitOfWork.WarrantyRequestRepository.GetWarrantyRequestByOrderItemIdAsync(orderItemId);
-        //     _validationService.CheckNotFound(warrantyRequest, $"Warranty request for order item {orderItemId} not found");
-        //
-        //     return _mapper.Map<GetDetailDto>(warrantyRequest);
-        // }
+        
 
         public async Task DeleteAsync(string id)
         {
@@ -201,13 +194,13 @@ namespace MamaFit.Services.Service
                 pageSize);
         }
 
-        // public async Task<WarrantyRequestGetByIdDto> GetWarrantyRequestByIdAsync(string id)
-        // {
-        //     var result = await _unitOfWork.WarrantyRequestRepository.GetWarrantyRequestByIdAsync(id);
-        //     _validationService.CheckNotFound(result, $"Warranty request with id:{id} not found");
-        //
-        //     return _mapper.Map<WarrantyRequestGetByIdDto>(result);
-        // }
+        public async Task<WarrantyRequestGetAllDto> GetWarrantyRequestByIdAsync(string id)
+        {
+            var result = await _unitOfWork.WarrantyRequestRepository.GetByIdNotDeletedAsync(id);
+            _validationService.CheckNotFound(result, $"Warranty request with id:{id} not found");
+        
+            return _mapper.Map<WarrantyRequestGetAllDto>(result);
+        }
 
         // public async Task UpdateAsync(string id, WarrantyRequestUpdateDto warrantyRequestUpdateDto)
         // {

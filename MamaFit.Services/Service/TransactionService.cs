@@ -1,7 +1,6 @@
 using AutoMapper;
 using MamaFit.BusinessObjects.DTO.SepayDto;
 using MamaFit.BusinessObjects.DTO.TransactionDto;
-using MamaFit.BusinessObjects.DTO.RealtimeDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
@@ -17,15 +16,13 @@ public class TransactionService : ITransactionService
     private readonly IMapper _mapper;
     private readonly IValidationService _validation;
     private readonly ICacheService _cache;
-    private readonly IRealtimeEventService _realtimeEventService;
     
-    public TransactionService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation, ICacheService cache, IRealtimeEventService realtimeEventService)
+    public TransactionService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation, ICacheService cache)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _validation = validation;
         _cache = cache;
-        _realtimeEventService = realtimeEventService;
     }
     
     public async Task<PaginatedList<TransactionResponseDto>> GetTransactionsAsync(int index, int pageSize, DateTime? startDate = null, DateTime? endDate = null)
@@ -82,42 +79,5 @@ public class TransactionService : ITransactionService
 
         await _unitOfWork.TransactionRepository.InsertAsync(transaction);
         await _unitOfWork.SaveChangesAsync();
-        
-        // Get order details for user notification
-        var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(orderId);
-        if (order != null)
-        {
-            // Publish realtime event for payment received
-            await _realtimeEventService.PublishPaymentStatusChangedAsync(new PaymentStatusChangedEventDto
-            {
-                EventType = RealtimeEventTypes.PAYMENT_RECEIVED,
-                EntityId = transaction.Id,
-                EntityType = RealtimeEntityTypes.TRANSACTION,
-                Data = new
-                {
-                    TransactionId = transaction.Id,
-                    OrderId = orderId,
-                    OrderCode = orderCode,
-                    Amount = payload.transferAmount,
-                    Gateway = payload.gateway,
-                    PaymentDate = transactionDateUtc,
-                    UserId = order.UserId
-                },
-                TargetUserId = order.UserId,
-                TransactionId = transaction.Id,
-                OrderId = orderId,
-                Amount = (decimal)payload.transferAmount,
-                PaymentStatus = order.PaymentStatus,
-                Gateway = payload.gateway,
-                OrderCode = orderCode,
-                Metadata = new Dictionary<string, object>
-                {
-                    { "orderId", orderId },
-                    { "orderCode", orderCode },
-                    { "userId", order.UserId },
-                    { "amount", payload.transferAmount }
-                }
-            });
-        }
     }
 }

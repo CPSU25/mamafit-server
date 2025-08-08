@@ -4,7 +4,6 @@ using MamaFit.BusinessObjects.DTO.CMSDto;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
-using MamaFit.BusinessObjects.DTO.RealtimeDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Helper;
@@ -30,12 +29,10 @@ public class OrderService : IOrderService
     private readonly IConfiguration _configuration;
     private readonly ICacheService _cacheService;
     private readonly IConfigService _configService;
-    private readonly IRealtimeEventService _realtimeEventService;
 
     public OrderService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation,
         INotificationService notificationService, IHttpContextAccessor contextAccessor, HttpClient httpClient,
-        IConfiguration configuration, ICacheService cacheService, IConfigService configService,
-        IRealtimeEventService realtimeEventService)
+        IConfiguration configuration, ICacheService cacheService, IConfigService configService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -52,7 +49,6 @@ public class OrderService : IOrderService
         _contentfulClient = new ContentfulClient(httpClient, contentKey, null, spaceId, false);
         _cacheService = cacheService;
         _configService = configService;
-        _realtimeEventService = realtimeEventService;
     }
 
     public async Task<List<OrderResponseDto>> GetOrdersForAssignedStaffAsync()
@@ -121,9 +117,6 @@ public class OrderService : IOrderService
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Order already completed and paid.");
         }
 
-        var oldStatus = order.Status;
-        var oldPaymentStatus = order.PaymentStatus;
-        
         order.Status = orderStatus;
         order.PaymentStatus = paymentStatus;
 
@@ -154,36 +147,6 @@ public class OrderService : IOrderService
                 { "orderId", order.Id },
                 { "paymentStatus", paymentStatus.ToString() },
                 { "orderStatus", orderStatus.ToString() }
-            }
-        });
-
-        // Publish realtime event for order status change
-        await _realtimeEventService.PublishOrderStatusChangedAsync(new OrderStatusChangedEventDto
-        {
-            EventType = RealtimeEventTypes.ORDER_STATUS_CHANGED,
-            EntityId = order.Id,
-            EntityType = RealtimeEntityTypes.ORDER,
-            Data = new 
-            {
-                OrderId = order.Id,
-                OrderCode = order.Code,
-                OldStatus = oldStatus.ToString(),
-                NewStatus = orderStatus.ToString(),
-                OldPaymentStatus = oldPaymentStatus.ToString(),
-                NewPaymentStatus = paymentStatus.ToString(),
-                UserId = order.UserId
-            },
-            TargetUserId = order.UserId,
-            OrderId = order.Id,
-            OldStatus = oldStatus ?? OrderStatus.CREATED,
-            NewStatus = orderStatus,
-            PaymentStatus = paymentStatus,
-            OrderCode = order.Code,
-            Metadata = new Dictionary<string, object>
-            {
-                { "orderId", order.Id },
-                { "userId", order.UserId },
-                { "orderCode", order.Code }
             }
         });
     }

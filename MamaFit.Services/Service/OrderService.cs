@@ -738,4 +738,15 @@ public class OrderService : IOrderService
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
     }
+
+    public async Task<List<OrderGetByIdResponseDto>> GetForWarranty(bool isWarrantyValid)
+    {
+        var userId = GetCurrentUserId();
+        var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+        _validation.CheckNotFound(user, " Please sign in");
+        var config = await _configService.GetConfig();
+        var result = await _unitOfWork.OrderRepository.GetOrderForRequest(isWarrantyValid, config.Fields.WarrantyPeriod,userId);
+
+        return _mapper.Map<List<OrderGetByIdResponseDto>>(result);
+    }
 }

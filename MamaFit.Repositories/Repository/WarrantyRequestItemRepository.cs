@@ -9,14 +9,16 @@ namespace MamaFit.Repositories.Repository;
 public class WarrantyRequestItemRepository : IWarrantyRequestItemRepository
 {
     private readonly ApplicationDbContext _context;
+    private readonly IOrderItemRepository _orderItemRepository;
     private readonly DbSet<WarrantyRequestItem> _dbSet;
     public WarrantyRequestItemRepository(
-        ApplicationDbContext context)
+        ApplicationDbContext context, IOrderItemRepository orderItemRepository)
     {
         _context = context;
         _dbSet = _context.Set<WarrantyRequestItem>();
+        _orderItemRepository = orderItemRepository;
     }
-   
+
     public async Task<WarrantyRequestItem?> GetByIdAsync(string itemId, string requestId)
     {
         if (string.IsNullOrEmpty(itemId) || string.IsNullOrEmpty(requestId))
@@ -53,6 +55,14 @@ public class WarrantyRequestItemRepository : IWarrantyRequestItemRepository
     
     public async Task<int> CountWarrantyRequestItemsAsync(string requestId)
     {
-        return await _dbSet.CountAsync(x => x.WarrantyRequestId == requestId);
+        var orderItem = await _orderItemRepository.GetByIdAsync(requestId);
+        if (orderItem.ParentOrderItemId == null)
+            return 1;
+        else
+        {
+            var orderItemList = await _orderItemRepository.GetAllAsync();
+            var result = orderItemList.Count( x => x.ParentOrderItemId == orderItem.ParentOrderItemId);
+            return result;
+        }
     }
 }

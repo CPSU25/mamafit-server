@@ -41,7 +41,17 @@ public class OrderController : ControllerBase
             "Get orders by access token successfully!"
         ));
     }
-    
+    [HttpGet("for-warranty")]
+    public async Task<IActionResult> GetOrderForRequest([FromQuery] bool isWarrantyValid)
+    {
+        var result = await _service.GetForWarranty(isWarrantyValid);
+        return Ok(new ResponseModel<List<OrderGetByIdResponseDto>>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            result,
+            "Get orders by access token successfully!"
+        ));
+    }
 
     [Authorize]
     [HttpGet("branch-manager-orders")]

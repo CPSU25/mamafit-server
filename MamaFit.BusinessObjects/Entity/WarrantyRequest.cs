@@ -8,6 +8,7 @@ namespace MamaFit.BusinessObjects.Entity
         public string? SKU { get; set; }
         public string? NoteInternal { get; set; } = null;
         public string? RejectedReason { get; set; }
+        public RequestType RequestType { get; set; }
         public decimal? TotalFee { get; set; }
         public WarrantyRequestStatus? Status { get; set; }
         

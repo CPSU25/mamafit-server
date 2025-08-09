@@ -64,7 +64,6 @@ namespace MamaFit.Repositories.Repository
                 .Include(x => x.WarrantyRequestItems).ThenInclude(x => x.OrderItem).ThenInclude(x => x.Preset).ThenInclude(x => x.Style)
                 .Include(x => x.WarrantyHistories)
                 .FirstOrDefaultAsync(x => !x.IsDeleted);
-
             return result;
         }
     }

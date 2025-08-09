@@ -1,5 +1,6 @@
 using MamaFit.BusinessObjects.DBContext;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
@@ -53,18 +54,18 @@ public class WarrantyRequestItemRepository : IWarrantyRequestItemRepository
         await _context.SaveChangesAsync();
     }
     
-    public async Task<int> CountWarrantyRequestItemsAsync(string requestId)
+    public async Task<int> CountWarrantyRequestItemsAsync(string orderItemId)
     {
-        var orderItem = await _orderItemRepository.GetByIdAsync(requestId);
-        if (orderItem.ParentOrderItemId == null)
-            return 1;
-        else
-        {
-            var orderItemList = await _orderItemRepository.GetAllAsync();
-            var result = orderItemList.Count( x => x.ParentOrderItemId == orderItem.ParentOrderItemId);
-            return result;
-        }
+        var orderItem = await _orderItemRepository.GetByIdAsync(orderItemId);
+        if (orderItem == null) return 0;
+
+        var rootId = orderItem.ParentOrderItemId ?? orderItem.Id;
+        var all = await _orderItemRepository.GetAllAsync(); 
+        
+        var count = all.Count(oi => oi.ParentOrderItemId == rootId && oi.ItemType == ItemType.WARRANTY);
+        return count;
     }
+
 
     public async Task<WarrantyRequestItem> GetByOrderItemIdAsync(string orderItemId)
     {
@@ -75,5 +76,11 @@ public class WarrantyRequestItemRepository : IWarrantyRequestItemRepository
                 .ThenInclude(poi => poi.Order)
          .Include(wri => wri.OrderItem).ThenInclude(x => x.Preset).ThenInclude(x => x.Style)
         .FirstOrDefaultAsync(wri => wri.OrderItemId == orderItemId);
+    }
+    
+    public async Task UpdateAsync(WarrantyRequestItem entity)
+    {
+        _dbSet.Update(entity);
+        await _context.SaveChangesAsync();
     }
 }

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using MamaFit.BusinessObjects.DTO.GhtkDto.SubmitOrder;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
-using MamaFit.BusinessObjects.DTO.UserDto;
 using MamaFit.BusinessObjects.DTO.WarrantyRequestDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
@@ -56,11 +56,13 @@ namespace MamaFit.Services.Service
                 var address = await _unitOfWork.AddressRepository.GetByIdNotDeletedAsync(dto.AddressId);
                 _validationService.CheckNotFound(address, $"Address with id {dto.AddressId} not found!");
             }
+
             if (!string.IsNullOrEmpty(dto.BranchId))
             {
                 var branch = await _unitOfWork.BranchRepository.GetByIdNotDeletedAsync(dto.BranchId);
                 _validationService.CheckNotFound(branch, $"Branch with id {dto.BranchId} not found!");
             }
+
             RequestType requestType = RequestType.FREE;
             foreach (var itemDto in dto.Items)
             {
@@ -69,7 +71,7 @@ namespace MamaFit.Services.Service
 
                 var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(orderItem.OrderId!);
                 _validationService.CheckNotFound(order, $"Order of item {orderItem.Id} not found!");
-                
+
                 if (order.PaymentStatus == PaymentStatus.PENDING || order.PaymentStatus == PaymentStatus.PAID_DEPOSIT)
                     throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                         $"Order {order.Code} must be paid before requesting warranty!");
@@ -80,7 +82,7 @@ namespace MamaFit.Services.Service
                 var daysSinceReceived = (DateTime.UtcNow - order.ReceivedAt!.Value).TotalDays;
                 var warrantyCount =
                     await _warrantyRequestItemRepository.CountWarrantyRequestItemsAsync(itemDto.OrderItemId);
-
+                warrantyRounds[orderItem.Id] = warrantyCount + 1;
                 if (daysSinceReceived > config.Fields?.WarrantyPeriod || warrantyCount >= config.Fields?.WarrantyTime)
                     requestType = RequestType.FEE;
 
@@ -88,12 +90,8 @@ namespace MamaFit.Services.Service
                 if (!string.IsNullOrEmpty(skuOk))
                     orderItemSKUs.Add(skuOk);
 
-                if (!string.IsNullOrEmpty(skuOk))
-                    orderItemSKUs.Add(skuOk);
-                
                 validOrderItems.Add(orderItem);
                 orderItem.WarrantyDate = DateTime.UtcNow;
-                warrantyRounds[orderItem.Id] = warrantyCount + 1;
                 await _unitOfWork.OrderItemRepository.UpdateAsync(orderItem);
             }
 
@@ -151,7 +149,7 @@ namespace MamaFit.Services.Service
                     OrderItemId = warrantyOrderItemIdMap[itemDto.OrderItemId],
                     Description = itemDto.Description,
                     Images = itemDto.Images ?? new List<string>(),
-                    WarrantyRound = warrantyRounds[itemDto.OrderItemId] 
+                    WarrantyRound = warrantyRounds[itemDto.OrderItemId]
                 };
                 await _warrantyRequestItemRepository.InsertAsync(requestItem);
             }
@@ -269,5 +267,222 @@ namespace MamaFit.Services.Service
         //
         //     return item;
         // }
+
+        // public async Task<WarrantyDecisionResponseDto> DecideAsync(string warrantyRequestId,
+        //     WarrantyDecisionRequestDto dto)
+        // {
+        //     var wr = await _unitOfWork.WarrantyRequestRepository.GetDetailById(warrantyRequestId);
+        //     _validationService.CheckNotFound(wr, $"Warranty request {warrantyRequestId} not found");
+        //
+        //     if (!string.IsNullOrWhiteSpace(dto.NoteInternal))
+        //     {
+        //         wr.NoteInternal = dto.NoteInternal;
+        //         await _unitOfWork.WarrantyRequestRepository.UpdateAsync(wr);
+        //     }
+        //
+        //     var decisions = dto.Items.ToDictionary(x => x.OrderItemId);
+        //     var approveGroups = new Dictionary<string, List<WarrantyRequestItem>>();
+        //     var anyApprove = false;
+        //     var anyReject = false;
+        //
+        //     // 1) Cập nhật từng item
+        //     foreach (var wri in wr.WarrantyRequestItems)
+        //     {
+        //         if (!decisions.TryGetValue(wri.OrderItemId, out var d)) continue;
+        //
+        //         if (d.Status == WarrantyRequestItemStatus.REJECTED)
+        //         {
+        //             anyReject = true;
+        //             wri.Status = WarrantyRequestItemStatus.REJECTED;
+        //             wri.RejectedReason = d.RejectReason;
+        //             wri.DestinationType = d.DestinationType;
+        //             wri.DestinationBranchId =
+        //                 d.DestinationType == DestinationType.BRANCH ? d.DestinationBranchId : null;
+        //             wri.Fee = d.Fee;
+        //             wri.EstimateTime = d.EstimateTime;
+        //             await _unitOfWork.WarrantyRequestItemRepository.UpdateAsync(wri);
+        //             continue;
+        //         }
+        //
+        //         // APPROVED
+        //         anyApprove = true;
+        //         if (d.DestinationType == DestinationType.BRANCH && string.IsNullOrEmpty(d.DestinationBranchId))
+        //             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
+        //                 "DestinationBranchId is required for BRANCH");
+        //
+        //         wri.Status = WarrantyRequestItemStatus.APPROVED; // tạm, sẽ set IN_TRANSIT sau khi tạo đơn
+        //         wri.DestinationType = d.DestinationType;
+        //         wri.DestinationBranchId = d.DestinationType == DestinationType.BRANCH ? d.DestinationBranchId : null;
+        //         wri.Fee = d.Fee;
+        //         wri.EstimateTime = d.EstimateTime;
+        //         await _unitOfWork.WarrantyRequestItemRepository.UpdateAsync(wri);
+        //
+        //         var key = d.DestinationType == DestinationType.FACTORY
+        //             ? "FACTORY"
+        //             : $"BRANCH:{wri.DestinationBranchId}";
+        //         if (!approveGroups.TryGetValue(key, out var list))
+        //             approveGroups[key] = list = new();
+        //         list.Add(wri);
+        //     }
+        //
+        //     await _unitOfWork.SaveChangesAsync();
+        //
+        //     // 2) Lên đơn theo nhóm APPROVE
+        //     var responseItems = new List<WarrantyDecisionResponseItemDto>();
+        //
+        //     foreach (var (key, group) in approveGroups)
+        //     {
+        //         // 2.1 Build products từ các OrderItem bảo hành
+        //         var products = new List<GhtkProductDto>();
+        //         foreach (var wri in group)
+        //         {
+        //             var oi = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(wri.OrderItemId);
+        //             _validationService.CheckNotFound(oi, $"OrderItem {wri.OrderItemId} not found");
+        //
+        //             products.Add(MapToGhtkProduct(oi)); // cùng kiểu map như SubmitOrderExpressAsync
+        //         }
+        //
+        //         // 2.2 Lấy order gốc (để lấy địa chỉ KH làm Sender)
+        //         var sampleOi = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(group.First().OrderItemId);
+        //         var rootOi = sampleOi;
+        //         if (!string.IsNullOrEmpty(sampleOi.ParentOrderItemId))
+        //             rootOi = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(sampleOi.ParentOrderItemId);
+        //         var originalOrder = await _unitOfWork.OrderRepository.GetWithItemsAndDressDetails(rootOi.OrderId!);
+        //         _validationService.CheckNotFound(originalOrder, "Original order not found");
+        //
+        //         // Sender = KH: address từ Order.Address hoặc Order.Branch (giống luồng GHTK hiện tại)
+        //         var (senderAddr, senderProvince, senderDistrict, senderWard) = ResolveAddress(originalOrder);
+        //         var senderName = originalOrder.User?.FullName ?? "Khách hàng";
+        //         var senderTel = originalOrder.User?.PhoneNumber ?? "";
+        //
+        //         // Receiver
+        //         string recvName, recvTel, recvAddress, recvProvince, recvDistrict, recvWard;
+        //         if (group.First().DestinationType == DestinationType.FACTORY)
+        //         {
+        //             // dùng cấu hình shop từ appsettings (pick*)
+        //             // Lưu ý: các giá trị này có sẵn trong GhtkService qua _ghtkSettings
+        //             // -> truyền trực tiếp vào orderInfo (Receiver)
+        //             recvName = _configService.GetConfig().Result.Shipping?.PickName ?? "Shop";
+        //             recvTel = _configService.GetConfig().Result.Shipping?.PickTel ?? "";
+        //             recvAddress = _configService.GetConfig().Result.Shipping?.PickAddress ?? "";
+        //             recvProvince = _configService.GetConfig().Result.Shipping?.PickProvince ?? "";
+        //             recvDistrict = _configService.GetConfig().Result.Shipping?.PickDistrict ?? "";
+        //             recvWard = _configService.GetConfig().Result.Shipping?.PickWard ?? "";
+        //         }
+        //         else
+        //         {
+        //             var branchId = group.First().DestinationBranchId!;
+        //             var branch = await _unitOfWork.BranchRepository.GetByIdNotDeletedAsync(branchId);
+        //             _validationService.CheckNotFound(branch, $"Branch {branchId} not found");
+        //             recvName = branch.Name ?? "Chi nhánh";
+        //             recvTel = branch.PhoneNumber ?? "";
+        //             recvAddress = branch.Street ?? "";
+        //             recvProvince = branch.Province ?? "";
+        //             recvDistrict = branch.District ?? "";
+        //             recvWard = branch.Ward ?? "";
+        //         }
+        //
+        //         var value = await SumValueAsync(group); // tổng định giá
+        //
+        //         var orderInfo = new GhtkOrderExpressInfo
+        //         {
+        //             Id = $"W-{wr.SKU}-{Guid.NewGuid().ToString()[..8]}",
+        //
+        //             // Pick = Sender (KH)
+        //             PickAddressId = null,
+        //             PickName = senderName,
+        //             PickAddress = senderAddr,
+        //             PickProvince = senderProvince,
+        //             PickDistrict = senderDistrict,
+        //             PickTel = senderTel,
+        //
+        //             // Receiver
+        //             Name = recvName,
+        //             Tel = recvTel,
+        //             Address = recvAddress,
+        //             Province = recvProvince,
+        //             District = recvDistrict,
+        //             Ward = recvWard,
+        //
+        //             Value = value
+        //         };
+        //
+        //         var ghtkResp = await _ghtkService.SubmitExpressForWarrantyAsync(products, orderInfo);
+        //         string? tracking = null;
+        //         if (ghtkResp is GhtkOrderSubmitSuccessResponse ok && ok.Order != null)
+        //             tracking = ok.Order.Label ?? ok.Order.TrackingId?.ToString();
+        //
+        //         foreach (var wri in group)
+        //         {
+        //             wri.TrackingCode = tracking;
+        //             wri.Status = WarrantyRequestItemStatus.IN_TRANSIT;
+        //             await _warrantyRequestItemRepository.UpdateAsync(wri);
+        //
+        //             responseItems.Add(new WarrantyDecisionResponseItemDto
+        //             {
+        //                 OrderItemId = wri.OrderItemId,
+        //                 Status = WarrantyRequestItemStatus.IN_TRANSIT,
+        //                 TrackingCode = tracking
+        //             });
+        //         }
+        //
+        //         await _unitOfWork.SaveChangesAsync();
+        //     }
+        //
+        //     // 3) Trạng thái tổng của WR
+        //     if (anyApprove && anyReject) wr.Status = WarrantyRequestStatus.PARTIALLY_REJECTED;
+        //     else if (anyApprove) wr.Status = WarrantyRequestStatus.IN_TRANSIT;
+        //     else wr.Status = WarrantyRequestStatus.REJECTED;
+        //
+        //     await _unitOfWork.WarrantyRequestRepository.UpdateAsync(wr);
+        //     await _unitOfWork.SaveChangesAsync();
+        //
+        //     return new WarrantyDecisionResponseDto
+        //     {
+        //         RequestStatus = wr.Status ?? WarrantyRequestStatus.PENDING,
+        //         Items = responseItems
+        //     };
+        // }
+
+
+        private static GhtkProductDto MapToGhtkProduct(OrderItem oi)
+        {
+            if (oi.MaternityDressDetailId != null)
+                return new GhtkProductDto
+                {
+                    Name = oi.MaternityDressDetail?.Name ?? "Đầm bầu", Weight = oi.MaternityDressDetail?.Weight ?? 200,
+                    Quantity = 1
+                };
+            if (oi.PresetId != null)
+                return new GhtkProductDto
+                    { Name = oi.Preset?.Name ?? "Preset thiết kế", Weight = oi.Preset?.Weight ?? 200, Quantity = 1 };
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
+                "Order item must have either MaternityDressDetail or Preset");
+        }
+
+        private static (string addr, string province, string district, string ward) ResolveAddress(Order order)
+        {
+            if (order.AddressId != null && order.Address != null)
+                return (order.Address.Street ?? "", order.Address.Province ?? "", order.Address.District ?? "",
+                    order.Address.Ward ?? "");
+            if (order.BranchId != null && order.Branch != null)
+                return (order.Branch.Street ?? "", order.Branch.Province ?? "", order.Branch.District ?? "",
+                    order.Branch.Ward ?? "");
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
+                "Order must have either branch or address for delivery");
+        }
+
+        private async Task<decimal> SumValueAsync(List<WarrantyRequestItem> items)
+        {
+            decimal sum = 0;
+            foreach (var wri in items)
+            {
+                var oi = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(wri.OrderItemId);
+                var price = (oi.MaternityDressDetail?.Price) ?? (oi.Preset?.Price) ?? 0;
+                sum += price;
+            }
+
+            return sum;
+        }
     }
 }

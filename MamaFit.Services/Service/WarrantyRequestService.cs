@@ -155,6 +155,7 @@ namespace MamaFit.Services.Service
                 {
                     WarrantyRequestId = warrantyRequest.Id,
                     OrderItemId = warrantyOrderItemIdMap[itemDto.OrderItemId],
+                    Status = WarrantyRequestItemStatus.PENDING,
                     Description = itemDto.Description,
                     Images = itemDto.Images ?? new List<string>(),
                     WarrantyRound = warrantyRounds[itemDto.OrderItemId]

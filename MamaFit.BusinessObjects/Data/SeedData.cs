@@ -4207,8 +4207,8 @@ namespace MamaFit.BusinessObjects.Data
                     ReceivedAt = null,
                     CreatedBy = "User",
                     UpdatedBy = "User",
-                    CreatedAt = new DateTime(2025, 8, 9, 10, 3, 21, 665369, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 9, 10, 4, 19, 224667, DateTimeKind.Utc),
+                    CreatedAt = new DateTime(2025, 8, 9, 10, 3, 21, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 9, 10, 4, 19, DateTimeKind.Utc),
                     IsDeleted = false
                 }
             );

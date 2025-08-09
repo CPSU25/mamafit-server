@@ -67,6 +67,7 @@ namespace MamaFit.Repositories.Repository
                 .Include(x => x.WarrantyRequestItems)
                 .ThenInclude(wri => wri.OrderItem)
                 .ThenInclude(oi => oi.Order)
+                .ThenInclude(o => o.User)
                 .Include(x => x.WarrantyRequestItems)
                 .ThenInclude(wri => wri.OrderItem)
                 .ThenInclude(oi => oi.ParentOrderItem)

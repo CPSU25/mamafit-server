@@ -12,7 +12,7 @@ public class WarrantyRequestItem
     public string? RejectedReason { get; set; }
     public string? Description { get; set; }
     public List<string>? Images { get; set; } = [];
-    public string? Status { get; set; }
+    public WarrantyRequestItemStatus? Status { get; set; }
     public DateTime? EstimateTime { get; set; }
     public DestinationType DestinationType { get; set; }
     public int WarrantyRound { get; set; }

@@ -11,15 +11,18 @@ namespace MamaFit.Repositories.Repository
 {
     public class WarrantyRequestRepository : GenericRepository<WarrantyRequest>, IWarrantyRequestRepository
     {
-        public WarrantyRequestRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+        public WarrantyRequestRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(
+            context, httpContextAccessor)
         {
         }
 
-        public async Task<PaginatedList<WarrantyRequest>> GetAllWarrantyRequestAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
+        public async Task<PaginatedList<WarrantyRequest>> GetAllWarrantyRequestAsync(int index, int pageSize,
+            string? search, EntitySortBy? sortBy)
         {
             var query = _dbSet
                 .Include(w => w.WarrantyHistories)
-                .Include(x => x.WarrantyRequestItems).ThenInclude(x => x.OrderItem).ThenInclude(x => x.Order).ThenInclude(x => x.User).ThenInclude(x => x.Role)
+                .Include(x => x.WarrantyRequestItems).ThenInclude(x => x.OrderItem).ThenInclude(x => x.Order)
+                .ThenInclude(x => x.User).ThenInclude(x => x.Role)
                 .Where(x => !x.IsDeleted);
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -54,16 +57,26 @@ namespace MamaFit.Repositories.Repository
                 .Include(x => x.WarrantyRequestItems)
                 .ThenInclude(x => x.OrderItem)
                 .ThenInclude(x => x.Preset);
-            return await result.ToListAsync();// nhận orderId, mảng orderItem và orderCode gốc của orderId 
+            return await result.ToListAsync(); // nhận orderId, mảng orderItem và orderCode gốc của orderId 
         }
 
         public async Task<WarrantyRequest> GetDetailById(string warrantyId)
         {
             var result = await _dbSet
-                .Include(x => x.WarrantyRequestItems).ThenInclude(x => x.OrderItem).ThenInclude(x => x.Order)
-                .Include(x => x.WarrantyRequestItems).ThenInclude(x => x.OrderItem).ThenInclude(x => x.Preset).ThenInclude(x => x.Style)
+                .AsNoTracking()
+                .Include(x => x.WarrantyRequestItems)
+                .ThenInclude(wri => wri.OrderItem)
+                .ThenInclude(oi => oi.Order)
+                .Include(x => x.WarrantyRequestItems)
+                .ThenInclude(wri => wri.OrderItem)
+                .ThenInclude(oi => oi.ParentOrderItem)
+                .ThenInclude(poi => poi.Order)
+                .Include(x => x.WarrantyRequestItems)
+                .ThenInclude(wri => wri.OrderItem)
+                .ThenInclude(oi => oi.Preset)
+                .ThenInclude(p => p.Style)
                 .Include(x => x.WarrantyHistories)
-                .FirstOrDefaultAsync(x => !x.IsDeleted);
+                .SingleOrDefaultAsync(x => !x.IsDeleted && x.Id == warrantyId);
             return result;
         }
     }

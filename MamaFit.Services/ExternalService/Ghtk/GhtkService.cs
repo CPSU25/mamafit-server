@@ -78,6 +78,31 @@ public class GhtkService : IGhtkService
         };
     }
 
+    public async Task<GhtkBaseResponse?> SubmitExpressForWarrantyAsync(
+        List<GhtkProductDto> products,
+        GhtkOrderExpressInfo orderInfo)
+    {
+        var httpClient = _httpClientFactory.CreateClient("GhtkClient");
+        var request = new GhtkOrderExpressRequest
+        {
+            Products = products,
+            Order = orderInfo
+        };
+        var json = JsonConvert.SerializeObject(request);
+        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+        var resp = await httpClient.PostAsync("/services/shipment/order", content);
+        var body = await resp.Content.ReadAsStringAsync();
+
+        var baseResp = JsonConvert.DeserializeObject<GhtkBaseResponse>(body);
+        if (baseResp!.Success)
+        {
+            var ok = JsonConvert.DeserializeObject<GhtkOrderSubmitSuccessResponse>(body);
+            // KHÔNG cập nhật Order DB vì đây là đơn ad-hoc theo nhóm WR-Item
+            return ok;
+        }
+        return JsonConvert.DeserializeObject<GhtkOrderSubmitFailResponse>(body);
+    }
+    
     public async Task<GhtkBaseResponse?> SubmitOrderExpressAsync(string orderId)
     {
         var order = await _unitOfWork.OrderRepository.GetWithItemsAndDressDetails(orderId);

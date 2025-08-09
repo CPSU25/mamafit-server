@@ -1,4 +1,4 @@
-using MamaFit.BusinessObjects.DBContext;
+﻿using MamaFit.BusinessObjects.DBContext;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
@@ -34,13 +34,56 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
 
     public async Task<List<Order>> GetOrderForRequest(string userId)
     {
-        var response = _dbSet.Include(x => x.OrderItems).ThenInclude(x => x.Preset)
-            .Where(x => !x.IsDeleted
-            && x.Status == OrderStatus.COMPLETED
-            && x.UserId == userId
-            && x.OrderItems.Any(x => (x.ItemType == ItemType.PRESET || x.ItemType == ItemType.WARRANTY) && x.WarrantyDate == null));
+        var response = await _dbSet
+            .Where(o => !o.IsDeleted
+                && o.Status == OrderStatus.COMPLETED
+                && o.UserId == userId
+                && o.OrderItems.Any(oi =>
+                    (oi.ItemType == ItemType.PRESET || oi.ItemType == ItemType.WARRANTY)
+                    && oi.WarrantyDate == null))
+            .Select(o => new Order
+            {
+                Id = o.Id,
+                Code = o.Code,
+                Status = o.Status,
+                UserId = o.UserId,
+                CreatedAt = o.CreatedAt,
+                Address = o.Address,
+                AddressId = o.AddressId,
+                Branch = o.Branch,
+                BranchId = o.BranchId,
+                CanceledAt = o.CanceledAt,
+                CanceledReason = o.CanceledReason,
+                CreatedBy = o.CreatedBy,
+                DeliveryMethod = o.DeliveryMethod,
+                DepositSubtotal = o.DepositSubtotal,
+                DiscountSubtotal = o.DiscountSubtotal,
+                IsDeleted = o.IsDeleted,
+                IsOnline = o.IsOnline,
+                Measurement = o.Measurement,MeasurementId = o.MeasurementId,
+                PaymentMethod = o.PaymentMethod,
+                PaymentStatus = o.PaymentStatus,
+                PaymentType = o.PaymentType,
+                ReceivedAt = o.ReceivedAt,
+                RemainingBalance = o.RemainingBalance,
+                ServiceAmount = o.ServiceAmount,ShippingFee = o.ShippingFee,SubTotalAmount = o.SubTotalAmount,
+                TotalAmount = o.TotalAmount,
+                TotalPaid = o.TotalPaid,
+                TrackingOrderCode = o.TrackingOrderCode,Transactions = o.Transactions,Type = o.Type,UpdatedAt = o.UpdatedAt,
+                UpdatedBy = o.UpdatedBy,
+                User = o.User,
+                VoucherDiscount = o.VoucherDiscount,
+                VoucherDiscountId = o.VoucherDiscountId,
+                WarrantyCode = o.WarrantyCode,
+                OrderItems = o.OrderItems
+                    .Where(oi =>
+                        (oi.ItemType == ItemType.PRESET || oi.ItemType == ItemType.WARRANTY)
+                        && oi.WarrantyDate == null)
+                    .ToList()
+            })
+            .ToListAsync();
 
-        return await response.ToListAsync();
+        return response;
     }
 
     public async Task<List<Order>> GetOrdersByBranchManagerAsync(string managerId)

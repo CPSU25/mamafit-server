@@ -12,6 +12,9 @@ public interface IGhtkService
     Task<GhtkCreateAndCancelResult> CreateAndCancelOrderAsync(string orderId);
     Task<GhtkBaseResponse?> AuthenticateGhtkAsync();
     Task<GhtkBaseResponse?> SubmitOrderExpressAsync(string orderId);
+    Task<GhtkBaseResponse?> SubmitExpressForWarrantyAsync(
+        List<GhtkProductDto> products,
+        GhtkOrderExpressInfo orderInfo);
     Task<GhtkTrackOrderResponse?> GetOrderStatusAsync(string trackingOrderCode);
     Task<GhtkBaseResponse?> CancelOrderAsync(string trackingOrderCode);
     Task<GhtkAddressLevel4Response?> GetAddressLevel4Async(string province, string district, string wardStreet,

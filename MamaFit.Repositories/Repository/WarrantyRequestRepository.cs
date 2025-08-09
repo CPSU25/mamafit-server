@@ -63,7 +63,6 @@ namespace MamaFit.Repositories.Repository
         public async Task<WarrantyRequest> GetDetailById(string warrantyId)
         {
             var result = await _dbSet
-                .AsNoTracking()
                 .Include(x => x.WarrantyRequestItems)
                 .ThenInclude(wri => wri.OrderItem)
                 .ThenInclude(oi => oi.Order)

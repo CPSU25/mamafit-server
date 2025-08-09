@@ -13,5 +13,8 @@ namespace MamaFit.Services.Interface
         // Task UpdateAsync(string id, WarrantyRequestUpdateDto warrantyRequestUpdateDto);
         Task DeleteAsync(string id);
         Task<WarrantyDetailResponseDto> DetailsByIdAsync(string orderId);
+
+        Task<WarrantyDecisionResponseDto> DecideAsync(string warrantyRequestId,
+            WarrantyDecisionRequestDto dto);
     }
 }

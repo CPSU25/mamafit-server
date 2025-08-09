@@ -27,7 +27,21 @@ namespace MamaFit.API.Controllers
             ApiCodes.SUCCESS,
             config,
             "Get config successfully!"
-        ));
+            ));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateConfig([FromBody] CmsFieldDto dto)
+        {
+            await _configService.UpdateConfigAsync(dto);
+
+            return Ok(new ResponseModel<CmsServiceBaseDto>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            null,
+            "Update config successfully!"
+            ));
+        }
+
     }
 }

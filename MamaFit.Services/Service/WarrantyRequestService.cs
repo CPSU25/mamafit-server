@@ -476,9 +476,10 @@ namespace MamaFit.Services.Service
                 var warrantyOrder = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(sampleOi.OrderId!);
                 _validationService.CheckNotFound(warrantyOrder, "Warranty order not found");
 
+                var shipmentCode = BuildShipmentCode(warrantyOrder.Code, group.First());
                 var orderInfo = new GhtkOrderExpressInfo
                 {
-                    Id = warrantyOrder.Code,
+                    Id = shipmentCode,
 
                     // Pick = Sender (KH)
                     PickAddressId = null,
@@ -574,6 +575,13 @@ namespace MamaFit.Services.Service
             }
 
             return sum;
+        }
+        private static string BuildShipmentCode(string baseCode, WarrantyRequestItem first)
+        {
+            if (first.DestinationType == DestinationType.FACTORY)
+                return $"{baseCode}-F";                      // ví dụ WR123-F
+            // BRANCH
+            return $"{baseCode}-BR-{first.DestinationBranchId}"; // ví dụ WR123-BR-CHINHANH01
         }
     }
 }

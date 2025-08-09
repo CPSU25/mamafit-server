@@ -9,4 +9,5 @@ public interface IWarrantyRequestItemRepository
     Task<WarrantyRequestItem?> GetByIdAsync(string itemId, string requestId);
     Task<PaginatedList<WarrantyRequestItem>> GetAllAsync(int index, int pageSize, string? search);
     Task<int> CountWarrantyRequestItemsAsync(string requestId);
+    Task<WarrantyRequestItem> GetByOrderItemIdAsync(string orderItemId);
 }

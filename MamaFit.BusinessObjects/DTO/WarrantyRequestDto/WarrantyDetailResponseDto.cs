@@ -2,8 +2,9 @@
 
 namespace MamaFit.BusinessObjects.DTO.WarrantyRequestDto
 {
-    public class WarrantyDetailResponseDto : WarrantyRequestGetAllDto
+    public class WarrantyDetailResponseDto
     {
-        public OrderWarrantyOnlyCode? OriginalOrder { get; set; }
+        public WarrantyRequestGetAllDto? WarrantyRequest { get; set; }
+        public List<OrderWarrantyOnlyCode>? OriginalOrders { get; set; }
     }
 }

@@ -65,4 +65,15 @@ public class WarrantyRequestItemRepository : IWarrantyRequestItemRepository
             return result;
         }
     }
+
+    public async Task<WarrantyRequestItem> GetByOrderItemIdAsync(string orderItemId)
+    {
+        return await _dbSet.AsNoTracking()
+        .Include(wri => wri.WarrantyRequest)
+        .Include(wri => wri.OrderItem)
+            .ThenInclude(oi => oi.ParentOrderItem)
+                .ThenInclude(poi => poi.Order)
+         .Include(wri => wri.OrderItem).ThenInclude(x => x.Preset).ThenInclude(x => x.Style)
+        .FirstOrDefaultAsync(wri => wri.OrderItemId == orderItemId);
+    }
 }

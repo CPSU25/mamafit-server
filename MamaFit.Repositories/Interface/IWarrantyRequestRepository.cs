@@ -7,7 +7,7 @@ namespace MamaFit.Repositories.Interface
 {
     public interface IWarrantyRequestRepository : IGenericRepository<WarrantyRequest>
     {
-        Task<List<WarrantyRequest>> GetAllWarrantyRequestByOrderId(string orderId);
+        Task<List<WarrantyRequest>> GetAllWarrantyRequest();
         Task<PaginatedList<WarrantyRequest>> GetAllWarrantyRequestAsync(int index, int pageSize, string? search, EntitySortBy? sortBy);
         Task<WarrantyRequest> GetDetailById(string warrantyId);
     }

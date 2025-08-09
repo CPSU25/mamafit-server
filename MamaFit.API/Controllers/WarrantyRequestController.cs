@@ -40,7 +40,7 @@ namespace MamaFit.API.Controllers
         public async Task<IActionResult> GetOriginalOrders(string orderId)
         {
             var result = await _warrantyRequestService.DetailsByIdAsync(orderId);
-            return Ok(new ResponseModel<List<WarrantyDetailResponseDto>>(
+            return Ok(new ResponseModel<WarrantyDetailResponseDto>(
                 StatusCodes.Status200OK,
                 ApiCodes.SUCCESS,
                 result,

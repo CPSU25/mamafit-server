@@ -1,4 +1,6 @@
 using AutoMapper;
+using MamaFit.BusinessObjects.DTO.OrderDto;
+using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.DTO.WarrantyRequestItemDto;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
@@ -35,5 +37,19 @@ public class WarrantyRequestItemService : IWarrantyRequestItemService
             items.PageNumber,
             pageSize
         );
+    }
+
+    public async Task<WarrantyRequestItemDetailDto> GetDetailsByOrderItemIdAsync(string orderItemId)
+    {
+        var item = await _repository.GetByOrderItemIdAsync(orderItemId);
+        _validation.CheckNotFound(item, $"No WarrantyRequestItem found with OrderItemId: {orderItemId}");
+
+        return new WarrantyRequestItemDetailDto
+        {
+            WarrantyRequestItems = _mapper.Map<WarrantyRequestItemGetAllDto>(item),
+            ParentOrder = item.OrderItem.ParentOrderItem?.Order != null
+                ? _mapper.Map<OrderGetByIdResponseDto>(item.OrderItem.ParentOrderItem.Order)
+                : null
+        };
     }
 }

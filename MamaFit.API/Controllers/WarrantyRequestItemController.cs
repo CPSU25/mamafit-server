@@ -1,4 +1,5 @@
 using MamaFit.BusinessObjects.DTO.WarrantyRequestItemDto;
+using MamaFit.BusinessObjects.Entity;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ namespace MamaFit.API.Controllers;
 public class WarrantyRequestItemController : ControllerBase
 {
     private readonly IWarrantyRequestItemService _warrantyRequestItemService;
-    
+
     public WarrantyRequestItemController(IWarrantyRequestItemService warrantyRequestItemService)
     {
         _warrantyRequestItemService = warrantyRequestItemService;
@@ -27,6 +28,18 @@ public class WarrantyRequestItemController : ControllerBase
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
             warrantyRequestItems,
+            "Get all warranty request items successfully!")
+        );
+    }
+
+    [HttpGet("order-item/{orderItemId}")]
+    public async Task<IActionResult> GetByOrderItemId(string orderItemId)
+    {
+        var result = await _warrantyRequestItemService.GetDetailsByOrderItemIdAsync(orderItemId);
+        return Ok(new ResponseModel<WarrantyRequestItemDetailDto>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            result,
             "Get all warranty request items successfully!")
         );
     }

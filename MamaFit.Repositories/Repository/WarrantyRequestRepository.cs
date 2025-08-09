@@ -41,7 +41,7 @@ namespace MamaFit.Repositories.Repository
             return new PaginatedList<WarrantyRequest>(list, paged.TotalCount, paged.PageNumber, pageSize);
         }
 
-        public async Task<List<WarrantyRequest>> GetAllWarrantyRequestByOrderId(string orderId)
+        public async Task<List<WarrantyRequest>> GetAllWarrantyRequest()
         {
             var result = _dbSet
                 .Include(x => x.WarrantyRequestItems)

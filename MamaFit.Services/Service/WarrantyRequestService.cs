@@ -2,6 +2,7 @@
 using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
+using MamaFit.BusinessObjects.DTO.UserDto;
 using MamaFit.BusinessObjects.DTO.WarrantyRequestDto;
 using MamaFit.BusinessObjects.DTO.WarrantyRequestItemDto;
 using MamaFit.BusinessObjects.Entity;
@@ -112,6 +113,7 @@ namespace MamaFit.Services.Service
                     OrderId = warrantyOrder.Id,
                     ParentOrderItemId = orderItem.ParentOrderItemId ?? orderItem.Id,
                     MaternityDressDetailId = orderItem.MaternityDressDetailId,
+                    Preset = orderItem.Preset,
                     PresetId = orderItem.PresetId,
                     ItemType = ItemType.WARRANTY,
                     Price = orderItem.Price,
@@ -176,45 +178,36 @@ namespace MamaFit.Services.Service
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<List<WarrantyDetailResponseDto>> DetailsByIdAsync(string orderId)
+        public async Task<WarrantyDetailResponseDto> DetailsByIdAsync(string orderId)
         {
-            var result = new List<WarrantyDetailResponseDto>();
-
             var order = await _unitOfWork.OrderRepository.GetWithItemsAndDressDetails(orderId);
             _validationService.CheckNotFound(order, $"Order with id {orderId} not found");
 
-            // Chỉ lấy những OrderItem có ParentOrderItem
-            var itemsWithParent = order.OrderItems
-                .Where(x => x.ParentOrderItemId != null && x.ParentOrderItem != null && x.ParentOrderItem.Order != null)
-                .ToList();
+            // Lấy WarrantyRequest từ order hiện tại
+            var warrantyRequest = order.OrderItems
+                .SelectMany(oi => oi.WarrantyRequestItems ?? Enumerable.Empty<WarrantyRequestItem>())
+                .Select(wri => wri.WarrantyRequest)
+                .FirstOrDefault(wr => wr != null);
 
-            // Nhóm theo đơn hàng gốc (ParentOrderItem.Order)
-            var groupedByOriginalOrder = itemsWithParent
-                .GroupBy(item => item.ParentOrderItem.Order)
-                .ToList();
-
-            foreach (var group in groupedByOriginalOrder)
-            {
-                var originalOrder = group.Key;
-
-                var warrantyDto = new WarrantyDetailResponseDto
+            var originalOrders = order.OrderItems
+                .Where(x => x.ParentOrderItemId != null && x.ParentOrderItem?.Order != null)
+                .GroupBy(x => x.ParentOrderItem.Order)
+                .Select(group => new OrderWarrantyOnlyCode
                 {
-                    OriginalOrder = new OrderWarrantyOnlyCode
-                    {
-                        Id = originalOrder.Id,
-                        Code = originalOrder.Code,
-                        ReceivedAt = (DateTime)originalOrder.ReceivedAt,
-                        OrderItems = group
-                        .Select(x => _mapper.Map<OrderItemGetByIdResponseDto>(x))
-                        .ToList()
-                    }
+                    Id = group.Key.Id,
+                    Code = group.Key.Code,
+                    ReceivedAt = group.Key.ReceivedAt ?? DateTime.MinValue,
+                    OrderItems = group.Select(x => _mapper.Map<OrderItemGetByIdResponseDto>(x)).ToList()
+                })
+                .ToList();
 
-                };
-
-                result.Add(warrantyDto);
-            }
-
-            return result;
+            return new WarrantyDetailResponseDto
+            {
+                WarrantyRequest = warrantyRequest != null
+                    ? _mapper.Map<WarrantyRequestGetAllDto>(warrantyRequest)
+                    : null,
+                OriginalOrders = originalOrders
+            };
         }
 
         public async Task<PaginatedList<WarrantyRequestGetAllDto>> GetAllWarrantyRequestAsync(int index, int pageSize,

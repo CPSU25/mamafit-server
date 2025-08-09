@@ -5,5 +5,6 @@ namespace MamaFit.Services.Interface
     public interface IConfigService
     {
         Task<CmsServiceBaseDto> GetConfig();
+        Task<bool> UpdateConfigAsync(CmsFieldDto newConfig);
     }
 }

@@ -355,16 +355,32 @@ namespace MamaFit.Services.Service
                 }
             }
 
-            var decisions = dto.Items.ToDictionary(x => x.OrderItemId);
+            // var decisions = dto.Items.ToDictionary(x => x.OrderItemId);
             var approveGroups = new Dictionary<string, List<WarrantyRequestItem>>();
             var anyApprove = false;
             var anyReject = false;
-
+            var decisions = dto.Items.ToDictionary(
+                x => x.OrderItemId,
+                x => x,
+                StringComparer.OrdinalIgnoreCase
+            );
+            var responseItems = new List<WarrantyDecisionResponseItemDto>();
+            
             // 1) Cập nhật từng item
             foreach (var wri in wr.WarrantyRequestItems)
             {
                 if (!decisions.TryGetValue(wri.OrderItemId, out var d)) continue;
-
+                if (wri.Status == WarrantyRequestItemStatus.REJECTED)
+                {
+                    if (d.Status == WarrantyRequestItemStatus.REJECTED)
+                    {
+                        throw new ErrorException(
+                            StatusCodes.Status409Conflict,
+                            ApiCodes.CONFLICT,
+                            $"OrderItem {wri.OrderItemId} has been REJECTED and cannot be changed.");
+                    }
+                }
+                
                 if (d.Status == WarrantyRequestItemStatus.REJECTED)
                 {
                     anyReject = true;
@@ -374,6 +390,14 @@ namespace MamaFit.Services.Service
                     wri.DestinationBranchId = null;
                     wri.Fee = null;
                     wri.EstimateTime = null;
+                    
+                    responseItems.Add(new WarrantyDecisionResponseItemDto
+                    {
+                        OrderItemId = wri.OrderItemId,
+                        Status = WarrantyRequestItemStatus.REJECTED,
+                        TrackingCode = null
+                    });
+                    
                     continue;
                 }
 
@@ -385,7 +409,7 @@ namespace MamaFit.Services.Service
                 wri.DestinationBranchId = d.DestinationType == DestinationType.BRANCH ? d.DestinationBranchId : null;
                 wri.Fee = d.Fee;
                 wri.EstimateTime = d.EstimateTime;
-                wri.RejectedReason = null; // đảm bảo không còn lý do reject
+                wri.RejectedReason = null;
 
                 var key = d.DestinationType == DestinationType.FACTORY
                     ? "FACTORY"
@@ -398,7 +422,6 @@ namespace MamaFit.Services.Service
             await _unitOfWork.SaveChangesAsync();
 
             // 2) Lên đơn theo nhóm APPROVE
-            var responseItems = new List<WarrantyDecisionResponseItemDto>();
 
             foreach (var (key, group) in approveGroups)
             {

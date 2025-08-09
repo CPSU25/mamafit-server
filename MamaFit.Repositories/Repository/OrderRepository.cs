@@ -146,6 +146,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .ThenInclude(oi => oi.MaternityDressDetail)
             .Include(x => x.OrderItems.Where(oi => !oi.IsDeleted))
             .ThenInclude(oi => oi.Preset)
+            .Include(x => x.OrderItems).ThenInclude(x => x.WarrantyRequestItems).ThenInclude(x => x.WarrantyRequest)
             .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
     }
 

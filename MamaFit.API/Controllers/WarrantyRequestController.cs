@@ -76,7 +76,19 @@ namespace MamaFit.API.Controllers
                     "Warranty request created successfully"
                 ));
         }
-
+        
+        [HttpPost("decisions/{warrantyRequestId}")]
+        public async Task<IActionResult> Decide(string warrantyRequestId, [FromBody] WarrantyDecisionRequestDto dto)
+        {
+            var result = await _warrantyRequestService.DecideAsync(warrantyRequestId, dto);
+        
+            return Ok(new ResponseModel<WarrantyDecisionResponseDto>(
+                StatusCodes.Status200OK,
+                ApiCodes.SUCCESS,
+                result,
+                "Warranty decision processed successfully"
+            ));
+        }
         // [HttpPut]
         // public async Task<IActionResult> Update(string id, [FromBody] WarrantyRequestUpdateDto warrantyRequestUpdateDto)
         // {

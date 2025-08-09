@@ -3,7 +3,7 @@ namespace MamaFit.BusinessObjects.Enum;
 public enum WarrantyRequestItemStatus
 {
     PENDING,
-    APROVED,
+    APPROVED,
     REJECTED,
     IN_TRANSIT
 }

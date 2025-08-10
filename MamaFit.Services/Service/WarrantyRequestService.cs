@@ -436,16 +436,12 @@ namespace MamaFit.Services.Service
 
                 // 2.2 Lấy order gốc (để lấy địa chỉ KH làm Sender)
                 var sampleOi = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(group.First().OrderItemId);
-                var rootOi = !string.IsNullOrEmpty(sampleOi.ParentOrderItemId)
-                    ? await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(sampleOi.ParentOrderItemId)
-                    : sampleOi;
-                var originalOrder = await _unitOfWork.OrderRepository.GetWithItemsAndDressDetails(rootOi.OrderId!);
-                _validationService.CheckNotFound(originalOrder, "Original order not found");
-
-                // Sender = KH
-                var (senderAddr, senderProvince, senderDistrict, senderWard) = ResolveAddress(originalOrder);
-                var senderName = originalOrder.User.FullName;
-                var senderTel = originalOrder.User.PhoneNumber;
+                var orderWarrantyNew  = await _unitOfWork.OrderRepository.GetWithItemsAndDressDetails(sampleOi.OrderId!);
+                _validationService.CheckNotFound(orderWarrantyNew, "Warranty order not found");
+                // Sender = KH theo địa chỉ user nhập cho đơn bảo hành
+                var (senderAddr, senderProvince, senderDistrict, senderWard) = ResolveAddress(orderWarrantyNew);
+                var senderName = orderWarrantyNew.User.FullName;
+                var senderTel = orderWarrantyNew.User.PhoneNumber;
 
                 // Receiver
                 string recvName, recvAddress, recvProvince, recvDistrict, recvWard;

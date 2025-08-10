@@ -12,6 +12,9 @@ public interface IGhtkService
     Task<GhtkCreateAndCancelResult> CreateAndCancelOrderAsync(string orderId);
     Task<GhtkBaseResponse?> AuthenticateGhtkAsync();
     Task<GhtkBaseResponse?> SubmitOrderExpressAsync(string orderId);
+
+    Task<(string? Tracking, GhtkBaseResponse? CreateResp, GhtkBaseResponse? CancelResp)>
+        SubmitAndCancelExpressForWarrantyAsync(List<GhtkProductDto> products, GhtkOrderExpressInfo orderInfo);
     Task<GhtkBaseResponse?> SubmitExpressForWarrantyAsync(
         List<GhtkProductDto> products,
         GhtkOrderExpressInfo orderInfo);

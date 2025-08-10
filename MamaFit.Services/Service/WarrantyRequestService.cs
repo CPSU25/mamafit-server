@@ -590,16 +590,24 @@ namespace MamaFit.Services.Service
                     };
 
                     var singleProduct = new List<GhtkProductDto> { MapToGhtkProduct(oi) };
-
-                    // gọi hàm mới bạn đã viết
+                    
                     var (tracking, _, _) =
                         await _ghtkService.SubmitAndCancelExpressForWarrantyAsync(singleProduct, orderInfo);
 
                     if (!string.IsNullOrWhiteSpace(tracking))
                     {
-                        orderEntity.TrackingOrderCode = tracking;
+                        if (string.IsNullOrWhiteSpace(orderEntity.TrackingOrderCode))
+                        {
+                            orderEntity.TrackingOrderCode = tracking;
+                        }
+                        else
+                        {
+                            orderEntity.TrackingOrderCode += $",{tracking}";
+                        }
+
                         await _unitOfWork.OrderRepository.UpdateAsync(orderEntity);
                     }
+
 
                     wri.TrackingCode = tracking;
                     wri.Status = WarrantyRequestItemStatus.IN_TRANSIT;

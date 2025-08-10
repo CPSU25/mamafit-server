@@ -35,6 +35,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
     public async Task<List<Order>> GetOrderForRequest(string userId)
     {
         var response = await _dbSet
+            .Include(x => x.OrderItems).ThenInclude(x => x.Preset).ThenInclude(x => x.Style)
             .Where(o => !o.IsDeleted
                 && o.Status == OrderStatus.COMPLETED
                 && o.UserId == userId

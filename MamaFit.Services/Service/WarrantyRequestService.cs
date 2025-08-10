@@ -356,7 +356,6 @@ namespace MamaFit.Services.Service
             }
 
             // var decisions = dto.Items.ToDictionary(x => x.OrderItemId);
-            var approveGroups = new Dictionary<string, List<WarrantyRequestItem>>();
             var anyApprove = false;
             var anyReject = false;
             var decisions = dto.Items.ToDictionary(
@@ -364,6 +363,19 @@ namespace MamaFit.Services.Service
                 x => x,
                 StringComparer.OrdinalIgnoreCase
             );
+            var approveGroups = wr.WarrantyRequestItems
+                .Where(wri =>
+                    decisions.ContainsKey(wri.OrderItemId) && wri.Status == WarrantyRequestItemStatus.APPROVED)
+                .GroupBy(wri =>
+                {
+                    var oi = _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(wri.OrderItemId).Result;
+                    var orderId = oi.OrderId;
+                    var destKey = wri.DestinationType == DestinationType.FACTORY
+                        ? "FACTORY"
+                        : $"BRANCH:{wri.DestinationBranchId}";
+                    return $"{orderId}|{destKey}";
+                })
+                .ToDictionary(g => g.Key, g => g.ToList());
             var responseItems = new List<WarrantyDecisionResponseItemDto>();
 
             // 1) Cập nhật từng item
@@ -410,9 +422,14 @@ namespace MamaFit.Services.Service
                 wri.EstimateTime = d.EstimateTime;
                 wri.RejectedReason = null;
 
-                var key = d.DestinationType == DestinationType.FACTORY
+                var oiForKey = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(wri.OrderItemId);
+                _validationService.CheckNotFound(oiForKey, $"OrderItem {wri.OrderItemId} not found");
+                var orderKey = oiForKey.OrderId!;
+                var destKey = d.DestinationType == DestinationType.FACTORY
                     ? "FACTORY"
                     : $"BRANCH:{wri.DestinationBranchId}";
+                var key = $"{orderKey}|{destKey}";
+
                 if (!approveGroups.TryGetValue(key, out var list))
                     approveGroups[key] = list = new();
                 list.Add(wri);
@@ -420,195 +437,105 @@ namespace MamaFit.Services.Service
 
             await _unitOfWork.SaveChangesAsync();
 
+            var clearedOrders = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             // 2) Lên đơn theo nhóm APPROVE
-
             foreach (var (key, group) in approveGroups)
             {
-                // // 2.1 Build products từ các OrderItem bảo hành
-                // var products = new List<GhtkProductDto>();
-                // foreach (var wri in group)
-                // {
-                //     var oi = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(wri.OrderItemId);
-                //     _validationService.CheckNotFound(oi, $"OrderItem {wri.OrderItemId} not found");
-                //     products.Add(MapToGhtkProduct(oi));
-                // }
-                //
-                // // 2.2 Lấy order gốc (để lấy địa chỉ KH làm Sender)
-                // var sampleOi = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(group.First().OrderItemId);
-                // var orderWarrantyNew  = await _unitOfWork.OrderRepository.GetWithItemsAndDressDetails(sampleOi.OrderId!);
-                // _validationService.CheckNotFound(orderWarrantyNew, "Warranty order not found");
-                // // Sender = KH theo địa chỉ user nhập cho đơn bảo hành
-                // var (senderAddr, senderProvince, senderDistrict, senderWard) = ResolveAddress(orderWarrantyNew);
-                // var senderName = orderWarrantyNew.User.FullName;
-                // var senderTel = orderWarrantyNew.User.PhoneNumber;
-                //
-                // // Receiver
-                // string recvName, recvAddress, recvProvince, recvDistrict, recvWard;
-                // var recvTel = _ghtkSettings.PickTel; // default
-                // if (group.First().DestinationType == DestinationType.FACTORY)
-                // {
-                //     recvName = _ghtkSettings.PickName;
-                //     recvAddress = _ghtkSettings.PickAddress ?? "";
-                //     recvProvince = _ghtkSettings.PickProvince ?? "";
-                //     recvDistrict = _ghtkSettings.PickDistrict ?? "";
-                //     recvWard = _ghtkSettings.PickWard ?? "";
-                // }
-                // else
-                // {
-                //     var branchId = group.First().DestinationBranchId!;
-                //     var branch = await _unitOfWork.BranchRepository.GetByIdNotDeletedAsync(branchId);
-                //     _validationService.CheckNotFound(branch, $"Branch {branchId} not found");
-                //     recvName = branch.Name ?? "Chi nhánh";
-                //     recvTel = branch.BranchManager?.PhoneNumber ?? recvTel;
-                //     recvAddress = branch.Street ?? "";
-                //     recvProvince = branch.Province ?? "";
-                //     recvDistrict = branch.District ?? "";
-                //     recvWard = branch.Ward ?? "";
-                // }
-                //
-                // var value = await SumValueAsync(group); 
-                //
-                // var warrantyOrder = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(sampleOi.OrderId!);
-                // _validationService.CheckNotFound(warrantyOrder, "Warranty order not found");
-                //
-                // var shipmentCode = BuildShipmentCode(warrantyOrder.Code, group.First());
-                // var orderInfo = new GhtkOrderExpressInfo
-                // {
-                //     Id = shipmentCode,
-                //     
-                //     PickAddressId = null,
-                //     PickName = senderName,
-                //     PickAddress = senderAddr,
-                //     PickProvince = senderProvince,
-                //     PickDistrict = senderDistrict,
-                //     // PickWard = senderWard, // nếu GHTK bắt buộc thì mở lại
-                //     PickTel = senderTel,
-                //     
-                //     Name = recvName,
-                //     Tel = recvTel,
-                //     Address = recvAddress,
-                //     Province = recvProvince,
-                //     District = recvDistrict,
-                //     Ward = recvWard,
-                //
-                //     Value = value
-                // };
-                //
-                // var ghtkResp = await _ghtkService.SubmitExpressForWarrantyAsync(products, orderInfo);
-                // string? tracking = null;
-                // if (ghtkResp is GhtkOrderSubmitSuccessResponse ok && ok.Order != null)
-                //     tracking = ok.Order.TrackingId.ToString();
-                //
-                // if (!string.IsNullOrWhiteSpace(tracking))
-                // {
-                //     // Nếu 1 đơn bảo hành tạo nhiều shipment (nhiều nhóm), ta append dạng CSV
-                //     var existing = warrantyOrder.TrackingOrderCode;
-                //     if (string.IsNullOrWhiteSpace(existing))
-                //     {
-                //         warrantyOrder.TrackingOrderCode = tracking;
-                //     }
-                //     else
-                //     {
-                //         // tránh trùng code
-                //         var parts = existing.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
-                //         if (!parts.Contains(tracking, StringComparer.OrdinalIgnoreCase))
-                //             parts.Add(tracking);
-                //         warrantyOrder.TrackingOrderCode = string.Join(',', parts);
-                //     }
-                //
-                //     await _unitOfWork.OrderRepository.UpdateAsync(warrantyOrder);
-                //     await _unitOfWork.SaveChangesAsync();
-                //     await _ghtkService.CancelOrderAsync(tracking);
-                // }
-                //
-                // foreach (var wri in group)
-                // {
-                //     wri.TrackingCode = tracking;
-                //     wri.Status = WarrantyRequestItemStatus.IN_TRANSIT;
-                //
-                //     responseItems.Add(new WarrantyDecisionResponseItemDto
-                //     {
-                //         OrderItemId = wri.OrderItemId,
-                //         Status = WarrantyRequestItemStatus.IN_TRANSIT,
-                //         TrackingCode = tracking
-                //     });
-                // }
-                //
-                // await _unitOfWork.SaveChangesAsync();
+                // Lấy order từ item đầu nhóm
+                var firstWri = group.First();
+                var firstOi = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(firstWri.OrderItemId);
+                _validationService.CheckNotFound(firstOi, $"OrderItem {firstWri.OrderItemId} not found");
+
+                var orderEntity = await _unitOfWork.OrderRepository.GetWithItemsAndDressDetails(firstOi.OrderId!);
+                _validationService.CheckNotFound(orderEntity, "Order not found");
+
+                // Sender = theo order của item (đúng với luồng tạo WR trước đó)
+                var (senderAddr, senderProvince, senderDistrict, senderWard) = ResolveAddress(orderEntity);
+
+                // Receiver theo destination của nhóm (lấy từ firstWri)
+                string recvName, recvAddress, recvProvince, recvDistrict, recvWard;
+                var recvTel = _ghtkSettings.PickTel;
+                if (firstWri.DestinationType == DestinationType.FACTORY)
+                {
+                    recvName = _ghtkSettings.PickName;
+                    recvAddress = _ghtkSettings.PickAddress ?? "";
+                    recvProvince = _ghtkSettings.PickProvince ?? "";
+                    recvDistrict = _ghtkSettings.PickDistrict ?? "";
+                    recvWard = _ghtkSettings.PickWard ?? "";
+                }
+                else
+                {
+                    var branchId = firstWri.DestinationBranchId!;
+                    var branch = await _unitOfWork.BranchRepository.GetByIdNotDeletedAsync(branchId);
+                    _validationService.CheckNotFound(branch, $"Branch {branchId} not found");
+                    recvName = branch.Name ?? "Chi nhánh";
+                    recvTel = branch.BranchManager?.PhoneNumber ?? recvTel;
+                    recvAddress = branch.Street ?? "";
+                    recvProvince = branch.Province ?? "";
+                    recvDistrict = branch.District ?? "";
+                    recvWard = branch.Ward ?? "";
+                }
+
+                // Build toàn bộ products cho NHÓM
+                var products = new List<GhtkProductDto>();
                 foreach (var wri in group)
                 {
                     var oi = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(wri.OrderItemId);
                     _validationService.CheckNotFound(oi, $"OrderItem {wri.OrderItemId} not found");
+                    products.Add(MapToGhtkProduct(oi));
+                }
 
-                    var orderEntity = await _unitOfWork.OrderRepository.GetWithItemsAndDressDetails(oi.OrderId!);
-                    _validationService.CheckNotFound(orderEntity, "Order not found");
+                var value = await SumValueAsync(group);
 
-                    var (senderAddr, senderProvince, senderDistrict, senderWard) = ResolveAddress(orderEntity);
+                var orderInfo = new GhtkOrderExpressInfo
+                {
+                    // 1 nhóm → 1 Id; dùng BuildShipmentCode để tránh đụng giữa Factory vs Branch
+                    Id = orderEntity.Code,
+                    PickAddressId = null,
+                    PickName = orderEntity.User.FullName,
+                    PickAddress = senderAddr,
+                    PickProvince = senderProvince,
+                    PickDistrict = senderDistrict,
+                    // PickWard = senderWard, // mở nếu GHTK yêu cầu
+                    PickTel = orderEntity.User.PhoneNumber,
+                    Name = recvName,
+                    Tel = recvTel,
+                    Address = recvAddress,
+                    Province = recvProvince,
+                    District = recvDistrict,
+                    Ward = recvWard,
+                    Value = value
+                };
 
-                    // Receiver info giữ nguyên logic cũ của bạn:
-                    string recvName, recvAddress, recvProvince, recvDistrict, recvWard;
-                    var recvTel = _ghtkSettings.PickTel;
-                    if (wri.DestinationType == DestinationType.FACTORY)
+                // Tạo + hủy 1 shipment cho cả nhóm
+                var (tracking, _, _) = await _ghtkService.SubmitAndCancelExpressForWarrantyAsync(products, orderInfo);
+
+                // Cập nhật tracking vào ORDER (CSV nếu test trên data cũ đã có)
+                if (!string.IsNullOrWhiteSpace(tracking))
+                {
+                    // Clear 1 lần cho order này trong request hiện tại
+                    if (!clearedOrders.Contains(orderEntity.Id))
                     {
-                        recvName = _ghtkSettings.PickName;
-                        recvAddress = _ghtkSettings.PickAddress ?? "";
-                        recvProvince = _ghtkSettings.PickProvince ?? "";
-                        recvDistrict = _ghtkSettings.PickDistrict ?? "";
-                        recvWard = _ghtkSettings.PickWard ?? "";
+                        orderEntity.TrackingOrderCode = null;     // xoá sạch data cũ trong DB
+                        clearedOrders.Add(orderEntity.Id);
+                    }
+
+                    if (string.IsNullOrWhiteSpace(orderEntity.TrackingOrderCode))
+                    {
+                        orderEntity.TrackingOrderCode = tracking; // mã đầu tiên của lần này
                     }
                     else
                     {
-                        var branchId = wri.DestinationBranchId!;
-                        var branch = await _unitOfWork.BranchRepository.GetByIdNotDeletedAsync(branchId);
-                        _validationService.CheckNotFound(branch, $"Branch {branchId} not found");
-                        recvName = branch.Name ?? "Chi nhánh";
-                        recvTel = branch.BranchManager?.PhoneNumber ?? recvTel;
-                        recvAddress = branch.Street ?? "";
-                        recvProvince = branch.Province ?? "";
-                        recvDistrict = branch.District ?? "";
-                        recvWard = branch.Ward ?? "";
+                        // nếu cùng Order có thêm 1 shipment khác (khác destination) trong CHÍNH request này
+                        orderEntity.TrackingOrderCode += $",{tracking}";
                     }
 
-                    var value = await SumValueAsync(new List<WarrantyRequestItem> { wri });
+                    await _unitOfWork.OrderRepository.UpdateAsync(orderEntity);
+                }
 
-                    var orderInfo = new GhtkOrderExpressInfo
-                    {
-                        Id = BuildShipmentCode(orderEntity.Code, wri),
-                        PickAddressId = null,
-                        PickName = orderEntity.User.FullName,
-                        PickAddress = senderAddr,
-                        PickProvince = senderProvince,
-                        PickDistrict = senderDistrict,
-                        PickTel = orderEntity.User.PhoneNumber,
-                        Name = recvName,
-                        Tel = recvTel,
-                        Address = recvAddress,
-                        Province = recvProvince,
-                        District = recvDistrict,
-                        Ward = recvWard,
-                        Value = value
-                    };
-
-                    var singleProduct = new List<GhtkProductDto> { MapToGhtkProduct(oi) };
-                    
-                    var (tracking, _, _) =
-                        await _ghtkService.SubmitAndCancelExpressForWarrantyAsync(singleProduct, orderInfo);
-
-                    if (!string.IsNullOrWhiteSpace(tracking))
-                    {
-                        if (string.IsNullOrWhiteSpace(orderEntity.TrackingOrderCode))
-                        {
-                            orderEntity.TrackingOrderCode = tracking;
-                        }
-                        else
-                        {
-                            orderEntity.TrackingOrderCode += $",{tracking}";
-                        }
-
-                        await _unitOfWork.OrderRepository.UpdateAsync(orderEntity);
-                    }
-
-
+                // Cập nhật tracking cho TỪNG ITEM trong nhóm
+                foreach (var wri in group)
+                {
                     wri.TrackingCode = tracking;
                     wri.Status = WarrantyRequestItemStatus.IN_TRANSIT;
 
@@ -671,19 +598,10 @@ namespace MamaFit.Services.Service
             foreach (var wri in items)
             {
                 var oi = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(wri.OrderItemId);
-                var price = (oi.MaternityDressDetail?.Price) ?? (oi.Preset?.Price) ?? 0;
+                var price = oi.MaternityDressDetail?.Price ?? oi.Preset?.Price ?? 0;
                 sum += price;
             }
-
             return sum;
-        }
-
-        private static string BuildShipmentCode(string baseCode, WarrantyRequestItem first)
-        {
-            if (first.DestinationType == DestinationType.FACTORY)
-                return $"{baseCode}-F"; // ví dụ WR123-F
-            // BRANCH
-            return $"{baseCode}-BR-{first.DestinationBranchId}"; // ví dụ WR123-BR-CHINHANH01
         }
     }
 }

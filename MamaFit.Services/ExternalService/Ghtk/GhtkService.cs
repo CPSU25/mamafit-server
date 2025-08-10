@@ -78,6 +78,22 @@ public class GhtkService : IGhtkService
         };
     }
 
+    public async Task<(string? Tracking, GhtkBaseResponse? CreateResp, GhtkBaseResponse? CancelResp)>
+        SubmitAndCancelExpressForWarrantyAsync(List<GhtkProductDto> products, GhtkOrderExpressInfo orderInfo)
+    {
+        var create = await SubmitExpressForWarrantyAsync(products, orderInfo);
+        string? tracking = null;
+        if (create is GhtkOrderSubmitSuccessResponse ok && ok.Order != null)
+            tracking = ok.Order.TrackingId.ToString();
+
+        GhtkBaseResponse? cancel = null;
+        if (!string.IsNullOrWhiteSpace(tracking))
+            cancel = await CancelOrderAsync(tracking);
+
+        return (tracking, create, cancel);
+    }
+
+    
     public async Task<GhtkBaseResponse?> SubmitExpressForWarrantyAsync(
         List<GhtkProductDto> products,
         GhtkOrderExpressInfo orderInfo)
@@ -97,7 +113,6 @@ public class GhtkService : IGhtkService
         if (baseResp!.Success)
         {
             var ok = JsonConvert.DeserializeObject<GhtkOrderSubmitSuccessResponse>(body);
-            // KHÔNG cập nhật Order DB vì đây là đơn ad-hoc theo nhóm WR-Item
             return ok;
         }
         return JsonConvert.DeserializeObject<GhtkOrderSubmitFailResponse>(body);
@@ -296,8 +311,7 @@ public class GhtkService : IGhtkService
         string? paperSize = null)
     {
         var httpClient = _httpClientFactory.CreateClient("GhtkClient");
-
-        // Xây dựng URL với tham số truyền vào
+        
         var url = $"/services/label/{trackingOrderCode}";
         var paramList = new List<string>();
         if (!string.IsNullOrEmpty(original))
@@ -306,8 +320,7 @@ public class GhtkService : IGhtkService
             paramList.Add($"paper_size={paperSize}");
         if (paramList.Any())
             url += "?" + string.Join("&", paramList);
-
-        // Gửi GET, nhận PDF dạng binary
+        
         var response = await httpClient.GetAsync(url);
         response.EnsureSuccessStatusCode();
 

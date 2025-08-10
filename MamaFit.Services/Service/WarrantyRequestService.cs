@@ -467,7 +467,7 @@ namespace MamaFit.Services.Service
                 {
                     var branchId = firstWri.DestinationBranchId!;
                     var branch = await _unitOfWork.BranchRepository.GetByIdNotDeletedAsync(branchId);
-                    _validationService.CheckNotFound(branch, $"Branch {branchId} not found");
+                    _validationService.CheckNotFound(branch, $"DestinationBranchId {branchId} not found");
                     recvName = branch.Name ?? "Chi nhánh";
                     recvTel = branch.BranchManager?.PhoneNumber ?? recvTel;
                     recvAddress = branch.Street ?? "";
@@ -486,11 +486,10 @@ namespace MamaFit.Services.Service
                 }
 
                 var value = await SumValueAsync(group);
-
+                var random = CodeHelper.GenerateCode('W');
                 var orderInfo = new GhtkOrderExpressInfo
                 {
-                    // 1 nhóm → 1 Id; dùng BuildShipmentCode để tránh đụng giữa Factory vs Branch
-                    Id = orderEntity.Code,
+                    Id = $"{orderEntity.Code}-{random}",
                     PickAddressId = null,
                     PickName = orderEntity.User.FullName,
                     PickAddress = senderAddr,

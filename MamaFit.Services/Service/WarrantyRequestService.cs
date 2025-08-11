@@ -106,7 +106,7 @@ namespace MamaFit.Services.Service
                 orderItem.WarrantyDate = DateTime.UtcNow;
                 await _unitOfWork.OrderItemRepository.UpdateAsync(orderItem);
             }
-            
+
             var warrantyOrder = new Order
             {
                 UserId = userId,
@@ -121,7 +121,7 @@ namespace MamaFit.Services.Service
                 DeliveryMethod = dto.DeliveryMethod,
             };
             await _unitOfWork.OrderRepository.InsertAsync(warrantyOrder);
-            
+
             var warrantyOrderItemIdMap = new Dictionary<string, string>();
             foreach (var orderItem in validOrderItems)
             {
@@ -148,7 +148,7 @@ namespace MamaFit.Services.Service
             };
 
             await _unitOfWork.WarrantyRequestRepository.InsertAsync(warrantyRequest);
-            
+
             foreach (var itemDto in dto.Items)
             {
                 var requestItem = new WarrantyRequestItem
@@ -164,10 +164,6 @@ namespace MamaFit.Services.Service
             }
 
             await _unitOfWork.SaveChangesAsync();
-
-            // Update tổng phí
-            // warrantyRequest.TotalFee = totalFee;
-            //await _unitOfWork.WarrantyRequestRepository.UpdateAsync(warrantyRequest);
 
             await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
             {
@@ -248,16 +244,6 @@ namespace MamaFit.Services.Service
 
             return _mapper.Map<WarrantyGetByIdResponseDto>(result);
         }
-
-        // public async Task UpdateAsync(string id, WarrantyRequestUpdateDto warrantyRequestUpdateDto)
-        // {
-        //     var warrantyRequest = await _unitOfWork.WarrantyRequestRepository.GetByIdAsync(id);
-        //     _validationService.CheckNotFound(warrantyRequest, $"Warranty request with id:{id} not found");
-        //
-        //     _mapper.Map(warrantyRequestUpdateDto, warrantyRequest);
-        //     await _unitOfWork.WarrantyRequestRepository.UpdateAsync(warrantyRequest);
-        //     await _unitOfWork.SaveChangesAsync();
-        // }
 
         private string GenerateOrderCode()
         {
@@ -430,7 +416,6 @@ namespace MamaFit.Services.Service
                     approveGroups[key] = list = new();
                 list.Add(wri);
             }
-
             await _unitOfWork.SaveChangesAsync();
 
             var clearedOrders = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -445,12 +430,14 @@ namespace MamaFit.Services.Service
                 var orderEntity = await _unitOfWork.OrderRepository.GetWithItemsAndDressDetails(firstOi.OrderId!);
                 _validationService.CheckNotFound(orderEntity, "Order not found");
 
+
+                //chi gan milestone cho cac item nao di ve factory
                 var approvedOrderItemIds = group
-                   .Where(wri => wri.Status == WarrantyRequestItemStatus.APPROVED
+                   .Where(wri => wri.Status == WarrantyRequestItemStatus.APPROVED && wri.DestinationType == DestinationType.FACTORY
                        || wri.Status == WarrantyRequestItemStatus.IN_TRANSIT)
                    .Select(wri => wri.OrderItemId)
                    .ToHashSet(StringComparer.OrdinalIgnoreCase);
-
+               
                 await AssignTasksForOrder(orderEntity, approvedOrderItemIds);
 
                 var (senderAddr, senderProvince, senderDistrict, senderWard) = ResolveAddress(orderEntity);
@@ -609,7 +596,6 @@ namespace MamaFit.Services.Service
 
             await _cacheService.RemoveByPrefixAsync("MilestoneAchiveOrderItemResponseDto_");
         }
-
 
         private static GhtkProductDto MapToGhtkProduct(OrderItem oi)
         {

@@ -27,6 +27,7 @@ services:
       - Contentful__ContentDeliveryKey=${CONTENT_DELIVERY_KEY}
       - Contentful__EntryId=${CONTENTFUL_ENTRY_ID}
       - Contentful__SecretKey=${CONTENTFUL_SECRET_KEY}
+      - Contentful__ManagementToken = ${CONTENTFUL_MANAGEMENT_TOKEN}
       - AI__Providers__Ollama__BaseUrl=http://ollama:11434
       - AI__Providers__Groq__ApiKey=${GROQ_API_KEY}
     volumes:

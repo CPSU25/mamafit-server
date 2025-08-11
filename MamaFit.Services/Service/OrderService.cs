@@ -427,8 +427,6 @@ public class OrderService : IOrderService
 
     public async Task<string> CreateDesignRequestOrderAsync(OrderDesignRequestDto request)
     {
-        await _validation.ValidateAndThrowAsync(request);
-
         var userId = GetCurrentUserId();
         var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
         _validation.CheckNotFound(user, $"User with id: {userId} not found");

@@ -188,16 +188,18 @@ public class OrderItemTaskService : IOrderItemTaskService
 
     private async Task HandleInProgressAsync(OrderItemTask task, OrderItem orderItem, Order order)
     {
-        if (orderItem.ItemType == ItemType.DESIGN_REQUEST)
+        if(task.MaternityDressTask.Milestone.SequenceOrder == 1)
         {
-            order.Status = OrderStatus.IN_PROGRESS;
-            await SendMessageAndNoti(task);
+            if (orderItem.ItemType == ItemType.DESIGN_REQUEST)
+            {
+                order.Status = OrderStatus.IN_PROGRESS;
+                await SendMessageAndNoti(task);
+            }
+            else if (orderItem.ItemType == ItemType.PRESET)
+            {
+                order.Status = OrderStatus.IN_PROGRESS;
+            }
         }
-        else if (orderItem.ItemType == ItemType.PRESET)
-        {
-            order.Status = OrderStatus.IN_PROGRESS;
-        }
-
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
     }

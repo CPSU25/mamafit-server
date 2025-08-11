@@ -36,4 +36,11 @@ public class FeedbackRepository : GenericRepository<Feedback>, IFeedbackReposito
             .Where(x => !x.IsDeleted && x.UserId == userId).ToListAsync();
         return query;
     }
+
+    public async Task<Feedback> GetFeedbackByUserIdAndOrderItemId(string userId, string orderItemId)
+    {
+        var result = await _dbSet.FirstOrDefaultAsync(x => !x.IsDeleted && x.UserId == userId && x.OrderItemId == orderItemId);
+
+        return result;
+    }
 }

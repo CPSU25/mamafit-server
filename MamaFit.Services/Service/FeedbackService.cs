@@ -5,7 +5,6 @@ using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
 
 namespace MamaFit.Services.Service;
 
@@ -50,7 +49,21 @@ public class FeedbackService : IFeedbackService
     
     public async Task CreateAsync(FeedbackRequestDto requestDto)
     {
+
+        var userId = GetCurrentUserId();
+        var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+        _validation.CheckNotFound(user, "Please sign in");
+
+        var orderItem = await _unitOfWork.OrderItemRepository.GetByIdAsync(requestDto.OrderItemId);
+        _validation.CheckNotFound(orderItem, $"Order item with id: {requestDto.OrderItemId} not found");
+
+        var oldFeedback = await _unitOfWork.FeedbackRepository.GetFeedbackByUserIdAndOrderItemId(userId, orderItem.Id);
+        if (oldFeedback != null)
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, $"You left a feedback for order item with id: {orderItem.Id} already");
+
         var entity = _mapper.Map<Feedback>(requestDto);
+        entity.User = user;
+        entity.UserId = userId;
         await _unitOfWork.FeedbackRepository.InsertAsync(entity);
         await _unitOfWork.SaveChangesAsync();
     }
@@ -59,6 +72,10 @@ public class FeedbackService : IFeedbackService
     {
         var feedback = await _unitOfWork.FeedbackRepository.GetByIdNotDeletedAsync(id);
         _validation.CheckNotFound(feedback, "Feedback not found");
+
+        var orderItem = await _unitOfWork.OrderItemRepository.GetByIdAsync(requestDto.OrderItemId);
+        _validation.CheckNotFound(orderItem, $"Order item with id: {requestDto.OrderItemId} not found");
+
         _mapper.Map(requestDto, feedback);
         
         await _unitOfWork.FeedbackRepository.UpdateAsync(feedback);

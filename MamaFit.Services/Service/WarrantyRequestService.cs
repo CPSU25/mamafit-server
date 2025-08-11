@@ -288,7 +288,6 @@ namespace MamaFit.Services.Service
                 wr.NoteInternal = dto.NoteInternal;
             }
 
-            // 0) Ràng buộc: mọi OrderItemId trong body phải thuộc WR hiện tại + không trùng lặp
             if (dto.Items == null || dto.Items.Count == 0)
                 throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
                     "Items must not be empty");
@@ -297,7 +296,6 @@ namespace MamaFit.Services.Service
                 .Select(x => x.OrderItemId)
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-            // Kiểm tra item trùng gửi lên
             var dupIds = dto.Items
                 .GroupBy(x => x.OrderItemId, StringComparer.OrdinalIgnoreCase)
                 .Where(g => g.Count() > 1)
@@ -307,7 +305,6 @@ namespace MamaFit.Services.Service
                 throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
                     $"Duplicate OrderItemId in request: {string.Join(", ", dupIds)}");
 
-            // Kiểm tra item không thuộc WR này
             var badIds = dto.Items
                 .Select(x => x.OrderItemId)
                 .Where(id => !wrOrderItemIds.Contains(id))
@@ -377,8 +374,7 @@ namespace MamaFit.Services.Service
                 })
                 .ToDictionary(g => g.Key, g => g.ToList());
             var responseItems = new List<WarrantyDecisionResponseItemDto>();
-
-            // 1) Cập nhật từng item
+            
             foreach (var wri in wr.WarrantyRequestItems)
             {
                 if (!decisions.TryGetValue(wri.OrderItemId, out var d)) continue;
@@ -415,7 +411,7 @@ namespace MamaFit.Services.Service
 
                 anyApprove = true;
 
-                wri.Status = WarrantyRequestItemStatus.APPROVED; // tạm, sẽ set IN_TRANSIT sau khi tạo đơn
+                wri.Status = WarrantyRequestItemStatus.APPROVED;
                 wri.DestinationType = d.DestinationType;
                 wri.DestinationBranchId = d.DestinationType == DestinationType.BRANCH ? d.DestinationBranchId : null;
                 wri.Fee = d.Fee;
@@ -449,7 +445,6 @@ namespace MamaFit.Services.Service
                 var orderEntity = await _unitOfWork.OrderRepository.GetWithItemsAndDressDetails(firstOi.OrderId!);
                 _validationService.CheckNotFound(orderEntity, "Order not found");
 
-                // Sender = theo order của item (đúng với luồng tạo WR trước đó)
                 var (senderAddr, senderProvince, senderDistrict, senderWard) = ResolveAddress(orderEntity);
 
                 // Receiver theo destination của nhóm (lấy từ firstWri)
@@ -491,7 +486,7 @@ namespace MamaFit.Services.Service
                 {
                     Id = $"{orderEntity.Code}-{random}",
                     PickAddressId = null,
-                    PickName = orderEntity.User.FullName,
+                    PickName = orderEntity.User.FullName ,
                     PickAddress = senderAddr,
                     PickProvince = senderProvince,
                     PickDistrict = senderDistrict,
@@ -506,22 +501,27 @@ namespace MamaFit.Services.Service
                     Value = value
                 };
 
-                // Tạo + hủy 1 shipment cho cả nhóm
-                var (tracking, _, _) = await _ghtkService.SubmitAndCancelExpressForWarrantyAsync(products, orderInfo);
-
+                var (tracking, createResp, cancelResp) = await _ghtkService.SubmitAndCancelExpressForWarrantyAsync(products, orderInfo);
+                
+                bool? createOk = createResp?.Success;
+                bool? cancelOk = cancelResp?.Success;
+                string? createMsg = createResp == null ? null
+                    : (createResp.Success ? "Tạo đơn thành công" : "Tạo đơn thất bại");
+                string? cancelMsg = cancelResp == null ? null
+                    : (cancelResp.Success ? "Hủy đơn thành công" : "Hủy đơn thất bại");
                 // Cập nhật tracking vào ORDER (CSV nếu test trên data cũ đã có)
                 if (!string.IsNullOrWhiteSpace(tracking))
                 {
                     // Clear 1 lần cho order này trong request hiện tại
                     if (!clearedOrders.Contains(orderEntity.Id))
                     {
-                        orderEntity.TrackingOrderCode = null;     // xoá sạch data cũ trong DB
+                        orderEntity.TrackingOrderCode = null;  
                         clearedOrders.Add(orderEntity.Id);
                     }
 
                     if (string.IsNullOrWhiteSpace(orderEntity.TrackingOrderCode))
                     {
-                        orderEntity.TrackingOrderCode = tracking; // mã đầu tiên của lần này
+                        orderEntity.TrackingOrderCode = tracking;
                     }
                     else
                     {
@@ -532,7 +532,6 @@ namespace MamaFit.Services.Service
                     await _unitOfWork.OrderRepository.UpdateAsync(orderEntity);
                 }
 
-                // Cập nhật tracking cho TỪNG ITEM trong nhóm
                 foreach (var wri in group)
                 {
                     wri.TrackingCode = tracking;
@@ -542,14 +541,18 @@ namespace MamaFit.Services.Service
                     {
                         OrderItemId = wri.OrderItemId,
                         Status = WarrantyRequestItemStatus.IN_TRANSIT,
-                        TrackingCode = tracking
+                        TrackingCode = tracking,
+                        GhtkCreateMessage = createMsg,
+                        GhtkCancelMessage = cancelMsg,
+                        GhtkCreateResponse = createResp,
+                        GhtkCancelResponse = cancelResp
                     });
                 }
 
                 await _unitOfWork.SaveChangesAsync();
             }
 
-            // 3) Trạng thái tổng của WR (đồng bộ với luồng đã lên đơn)
+            // Trạng thái tổng của WR (đồng bộ với luồng đã lên đơn)
             if (anyApprove && anyReject) wr.Status = WarrantyRequestStatus.PARTIALLY_REJECTED;
             else if (anyApprove) wr.Status = WarrantyRequestStatus.APPROVED;
             else wr.Status = WarrantyRequestStatus.REJECTED;

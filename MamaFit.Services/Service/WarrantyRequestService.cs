@@ -106,8 +106,7 @@ namespace MamaFit.Services.Service
                 orderItem.WarrantyDate = DateTime.UtcNow;
                 await _unitOfWork.OrderItemRepository.UpdateAsync(orderItem);
             }
-
-            //Tao đơn hàng bảo hành
+            
             var warrantyOrder = new Order
             {
                 UserId = userId,
@@ -122,8 +121,7 @@ namespace MamaFit.Services.Service
                 DeliveryMethod = dto.DeliveryMethod,
             };
             await _unitOfWork.OrderRepository.InsertAsync(warrantyOrder);
-
-            //Tạo các OrderItem bảo hành tương ứng với các OrderItem đã chọn
+            
             var warrantyOrderItemIdMap = new Dictionary<string, string>();
             foreach (var orderItem in validOrderItems)
             {
@@ -142,7 +140,6 @@ namespace MamaFit.Services.Service
                 warrantyOrderItemIdMap[orderItem.Id] = warrantyOrderItem.Id;
             }
 
-            //Tạo WarrantyRequest tổng
             var warrantyRequest = new WarrantyRequest
             {
                 SKU = CodeHelper.GenerateCode('W'),
@@ -151,8 +148,7 @@ namespace MamaFit.Services.Service
             };
 
             await _unitOfWork.WarrantyRequestRepository.InsertAsync(warrantyRequest);
-
-            // Tạo các WarrantyRequestItem
+            
             foreach (var itemDto in dto.Items)
             {
                 var requestItem = new WarrantyRequestItem

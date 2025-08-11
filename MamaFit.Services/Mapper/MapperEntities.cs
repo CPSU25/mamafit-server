@@ -29,6 +29,7 @@ using MamaFit.BusinessObjects.DTO.RoleDto;
 using MamaFit.BusinessObjects.DTO.SizeDto;
 using MamaFit.BusinessObjects.DTO.StyleDto;
 using MamaFit.BusinessObjects.DTO.TokenDto;
+using MamaFit.BusinessObjects.DTO.TransactionDto;
 using MamaFit.BusinessObjects.DTO.UserDto;
 using MamaFit.BusinessObjects.DTO.VoucherBatchDto;
 using MamaFit.BusinessObjects.DTO.VoucherDiscountDto;
@@ -503,6 +504,13 @@ namespace MamaFit.Services.Mapper
             CreateMap<Size, SizeDto>().ReverseMap();
             CreateMap<Size, SizeRequestDto>().ReverseMap();
 
+            #endregion
+
+            #region Transaction Mapper
+            CreateMap<Transaction, TransactionResponseDto>()
+                .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderId))
+                .ReverseMap();
+            
             #endregion
         }
     }

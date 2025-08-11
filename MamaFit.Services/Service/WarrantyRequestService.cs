@@ -11,6 +11,7 @@ using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using MamaFit.Services.ExternalService.Ghtk;
+using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -28,6 +29,7 @@ namespace MamaFit.Services.Service
         private readonly IWarrantyRequestItemRepository _warrantyRequestItemRepository;
         private readonly IGhtkService _ghtkService;
         private readonly GhtkSettings _ghtkSettings;
+        private readonly ICacheService _cacheService;
 
         public WarrantyRequestService(
             IUnitOfWork unitOfWork,
@@ -38,7 +40,8 @@ namespace MamaFit.Services.Service
             IOrderItemService orderItemService,
             IWarrantyRequestItemRepository warrantyRequestItemRepository,
             IGhtkService ghtkService,
-            IOptions<GhtkSettings> ghtkSettings)
+            IOptions<GhtkSettings> ghtkSettings,
+            ICacheService cacheService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -49,6 +52,7 @@ namespace MamaFit.Services.Service
             _warrantyRequestItemRepository = warrantyRequestItemRepository;
             _ghtkService = ghtkService;
             _ghtkSettings = ghtkSettings.Value;
+            _cacheService = cacheService;
         }
 
         public async Task<string> CreateAsync(WarrantyRequestCreateDto dto, string accessToken)
@@ -374,13 +378,13 @@ namespace MamaFit.Services.Service
                 })
                 .ToDictionary(g => g.Key, g => g.ToList());
             var responseItems = new List<WarrantyDecisionResponseItemDto>();
-            
+
             foreach (var wri in wr.WarrantyRequestItems)
             {
                 if (!decisions.TryGetValue(wri.OrderItemId, out var d)) continue;
                 if (wri.Status == WarrantyRequestItemStatus.REJECTED)
                 {
-                    if (d.Status == WarrantyRequestItemStatus.REJECTED)
+                    if (d.Status != WarrantyRequestItemStatus.REJECTED)
                     {
                         throw new ErrorException(
                             StatusCodes.Status409Conflict,
@@ -445,6 +449,14 @@ namespace MamaFit.Services.Service
                 var orderEntity = await _unitOfWork.OrderRepository.GetWithItemsAndDressDetails(firstOi.OrderId!);
                 _validationService.CheckNotFound(orderEntity, "Order not found");
 
+                var approvedOrderItemIds = group
+                   .Where(wri => wri.Status == WarrantyRequestItemStatus.APPROVED
+                       || wri.Status == WarrantyRequestItemStatus.IN_TRANSIT)
+                   .Select(wri => wri.OrderItemId)
+                   .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+                await AssignTasksForOrder(orderEntity, approvedOrderItemIds);
+
                 var (senderAddr, senderProvince, senderDistrict, senderWard) = ResolveAddress(orderEntity);
 
                 // Receiver theo destination của nhóm (lấy từ firstWri)
@@ -486,7 +498,7 @@ namespace MamaFit.Services.Service
                 {
                     Id = $"{orderEntity.Code}-{random}",
                     PickAddressId = null,
-                    PickName = orderEntity.User.FullName ,
+                    PickName = orderEntity.User.FullName,
                     PickAddress = senderAddr,
                     PickProvince = senderProvince,
                     PickDistrict = senderDistrict,
@@ -502,7 +514,7 @@ namespace MamaFit.Services.Service
                 };
 
                 var (tracking, createResp, cancelResp) = await _ghtkService.SubmitAndCancelExpressForWarrantyAsync(products, orderInfo);
-                
+
                 bool? createOk = createResp?.Success;
                 bool? cancelOk = cancelResp?.Success;
                 string? createMsg = createResp == null ? null
@@ -515,7 +527,7 @@ namespace MamaFit.Services.Service
                     // Clear 1 lần cho order này trong request hiện tại
                     if (!clearedOrders.Contains(orderEntity.Id))
                     {
-                        orderEntity.TrackingOrderCode = null;  
+                        orderEntity.TrackingOrderCode = null;
                         clearedOrders.Add(orderEntity.Id);
                     }
 
@@ -566,18 +578,55 @@ namespace MamaFit.Services.Service
             };
         }
 
+        private async Task AssignTasksForOrder(Order order, HashSet<string> allowedOrderItemIds)
+        {
+            var milestoneList = await _unitOfWork.MilestoneRepository.GetAllWithInclude();
+
+            var assignRequests = order.OrderItems
+                .Where(orderItem => allowedOrderItemIds.Contains(orderItem.Id))
+                .Select(orderItem =>
+                {
+                    var matchingMilestones = milestoneList
+                        .Where(m => m.ApplyFor.Contains((ItemType)orderItem.ItemType!))
+                        .Select(m => m.Id)
+                        .ToList();
+
+                    if (orderItem.OrderItemAddOnOptions != null && orderItem.OrderItemAddOnOptions.Any())
+                    {
+                        var addOnMilestones = milestoneList
+                            .Where(m => m.ApplyFor.Contains(ItemType.ADD_ON))
+                            .Select(m => m.Id);
+                        matchingMilestones.AddRange(addOnMilestones);
+                    }
+
+                    return new AssignTaskToOrderItemRequestDto
+                    {
+                        OrderItemId = orderItem.Id,
+                        MilestoneIds = matchingMilestones
+                    };
+                }).ToList();
+
+            foreach (var assignRequest in assignRequests)
+            {
+                await _orderItemService.AssignTaskToOrderItemAsync(assignRequest);
+            }
+
+            await _cacheService.RemoveByPrefixAsync("MilestoneAchiveOrderItemResponseDto_");
+        }
+
 
         private static GhtkProductDto MapToGhtkProduct(OrderItem oi)
         {
             if (oi.MaternityDressDetailId != null)
                 return new GhtkProductDto
                 {
-                    Name = oi.MaternityDressDetail?.Name ?? "Đầm bầu", Weight = oi.MaternityDressDetail?.Weight ?? 200,
+                    Name = oi.MaternityDressDetail?.Name ?? "Đầm bầu",
+                    Weight = oi.MaternityDressDetail?.Weight ?? 200,
                     Quantity = 1
                 };
             if (oi.PresetId != null)
                 return new GhtkProductDto
-                    { Name = oi.Preset?.Name ?? "Preset thiết kế", Weight = oi.Preset?.Weight ?? 200, Quantity = 1 };
+                { Name = oi.Preset?.Name ?? "Preset thiết kế", Weight = oi.Preset?.Weight ?? 200, Quantity = 1 };
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
                 "Order item must have either MaternityDressDetail or Preset");
         }

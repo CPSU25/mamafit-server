@@ -3567,19 +3567,6 @@ namespace MamaFit.BusinessObjects.Data
                 },
                 new Milestone
                 {
-                    Id = "5110afc434844342984a1db6944536dc",
-                    Name = "Warranty Check",
-                    Description = "Initial warranty assessment for preset orders",
-                    ApplyFor = [ItemType.WARRANTY],
-                    SequenceOrder = 3,
-                    CreatedBy = "Admin",
-                    UpdatedBy = "Admin",
-                    CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new Milestone
-                {
                     Id = "d677453018e04408ba1d0ddec81e5ffd",
                     Name = "Design",
                     Description = "Design process for custom design requests",
@@ -3630,19 +3617,7 @@ namespace MamaFit.BusinessObjects.Data
                     UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
                     IsDeleted = false
                 },
-                new Milestone
-                {
-                    Id = "e2c7f3d2a1b345ef8a92c1f0b5d7e4a6",
-                    Name = "Waiting For Delivery",
-                    Description = "Awaiting delivery order creation",
-                    ApplyFor = [ItemType.PRESET, ItemType.READY_TO_BUY],
-                    SequenceOrder = 8,
-                    CreatedBy = "Admin",
-                    UpdatedBy = "Admin",
-                    CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
+              
                 new Milestone
                 {
                     Id = "a82b6d4f0c194fa5b92348e7d86c4a10",
@@ -3671,19 +3646,7 @@ namespace MamaFit.BusinessObjects.Data
                     UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
                     IsDeleted = false
                 },
-                new MaternityDressTask
-                {
-                    Id = "16a506ee77974fdaac4eeb2310f56ff0",
-                    MilestoneId = "5110afc434844342984a1db6944536dc",
-                    Name = "Inspect Returned Item",
-                    Description = "Examine returned garment for reported issues",
-                    SequenceOrder = 1,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
+                
                 new MaternityDressTask
                 {
                     Id = "23de35d6fb194c398d09ce00ae01eeea",
@@ -3894,19 +3857,6 @@ namespace MamaFit.BusinessObjects.Data
                 },
                 new MaternityDressTask
                 {
-                    Id = "efcc1a38a9cd4fd38a68bc18437f726b",
-                    MilestoneId = "5110afc434844342984a1db6944536dc",
-                    Name = "Assess Warranty Validity",
-                    Description = "Determine if issue is covered under warranty terms",
-                    SequenceOrder = 2,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
                     Id = "f4f2ebc128514d3a923b82451c575967",
                     MilestoneId = "afa0cfb3844a4bf99e79b40a009b8f58",
                     Name = "Package Product",
@@ -3914,19 +3864,6 @@ namespace MamaFit.BusinessObjects.Data
                     SequenceOrder = 1,
                     CreatedBy = "System",
                     UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new MaternityDressTask
-                {
-                    Id = "c9a4e7d8f5b342e1ad03b8c7f6a1e2d4",
-                    MilestoneId = "e2c7f3d2a1b345ef8a92c1f0b5d7e4a6",
-                    Name = "Create Delivery Order",
-                    Description = "Initiate and submit the delivery order for processing",
-                    SequenceOrder = 1,
-                    CreatedBy = "Admin",
-                    UpdatedBy = "Admin",
                     CreatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
                     UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
                     IsDeleted = false

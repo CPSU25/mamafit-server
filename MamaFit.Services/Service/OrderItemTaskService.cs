@@ -124,6 +124,7 @@ public class OrderItemTaskService : IOrderItemTaskService
                     AddressId = representative.OrderItem.Order.AddressId,
                     Measurement = _mapper.Map<MeasurementResponseDto>(representative.OrderItem.Order.Measurement),
                     OrderCode = representative.OrderItem.Order.Code,
+                    OrderStatus = representative.OrderItem.Order.Status,
                     Milestones = milestoneGroups
                 };
             })

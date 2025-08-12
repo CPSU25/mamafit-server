@@ -19,7 +19,7 @@ namespace MamaFit.BusinessObjects.Entity
         
         //Navigation properties
         public ApplicationUserRole? Role { get; set; }
-        public List<Branch>? Branch { get; set; }
+        public Branch? Branch { get; set; }
         public virtual ICollection<ApplicationUserToken>? Token { get; set; }
         public virtual ICollection<Address>? Addresses { get; set; } = new List<Address>();
         public virtual ICollection<MeasurementDiary>? MeasurementDiaries { get; set; } = new List<MeasurementDiary>();

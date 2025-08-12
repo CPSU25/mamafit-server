@@ -162,9 +162,9 @@ namespace MamaFit.BusinessObjects.DBContext
                     .HasForeignKey(l => l.UserId)
                     .OnDelete(DeleteBehavior.NoAction);
 
-                options.HasMany(u => u.Branch)
+                options.HasOne(u => u.Branch)
                     .WithOne(b => b.BranchManager)
-                    .HasForeignKey(b => b.BranchManagerId)
+                    .HasForeignKey<Branch>(b => b.BranchManagerId)
                     .OnDelete(DeleteBehavior.NoAction);
 
                 options.HasMany(u => u.Presets)

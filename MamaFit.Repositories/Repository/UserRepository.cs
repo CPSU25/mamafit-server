@@ -33,11 +33,12 @@ public class UserRepository : GenericRepository<ApplicationUser>, IUserRepositor
 
         return await roles.GetPaginatedList(index, pageSize);
     }
-
+    
     public async Task<ApplicationUser?> GetByIdAsync(string id)
     {
         var user = await _dbSet
             .Include(x => x.Role)
+            .Include(x => x.Branch)
             .Include(x => x.Appointments)
             .Include(x => x.Orders)
             .Where(x => !x.IsDeleted && x.Id == id)

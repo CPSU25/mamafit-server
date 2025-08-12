@@ -43,4 +43,16 @@ public class WarrantyRequestItemController : ControllerBase
             "Get all warranty request items successfully!")
         );
     }
+
+    [HttpGet("order-item-list/{orderItemId}")]
+    public async Task<IActionResult> GetAllRelatedByOrderItemId(string orderItemId)
+    {
+        var result = await _warrantyRequestItemService.GetAllDetailsByOrderItemIdAsync(orderItemId);
+        return Ok(new ResponseModel<List<WarrantyRequestItemDetailListDto>>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            result,
+            "Get all related warranty request items successfully!")
+        );
+    }
 }

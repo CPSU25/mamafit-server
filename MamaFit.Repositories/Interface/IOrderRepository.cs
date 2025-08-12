@@ -17,4 +17,5 @@ public interface IOrderRepository : IGenericRepository<Order>
     Task<Order?> GetByIdWithItems(string id);
     Task<Order?> GetByCodeAsync(string code);
     Task<Order?> GetWithItemsAndDressDetails(string id);
+    Task<Order> GetByOrderItemId(string orderItemId);
 }

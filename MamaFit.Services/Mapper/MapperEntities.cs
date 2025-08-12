@@ -471,7 +471,11 @@ namespace MamaFit.Services.Mapper
 
             CreateMap<WarrantyRequestItem, WarrantyRequestCreateDto>().ReverseMap();
             CreateMap<WarrantyRequestItem, WarrantyRequestItemGetAllDto>()
-                .ForMember(dest => dest.OrderWithItems, opt => opt.MapFrom(src => src.OrderItem));
+                .ForMember(dest => dest.OrderWithItems, opt => opt.MapFrom(src => src.OrderItem)).ReverseMap();
+            CreateMap<WarrantyRequestItem, WarrantyRequestItemDetailListDto>()
+                .ForMember(dest => dest.WarrantyRequestItems, otp => otp.MapFrom(x => x))
+                .ForMember(dest => dest.Order, otp => otp.MapFrom(x => x.OrderItem!.Order))
+                .ReverseMap();
 
             #endregion
 
@@ -510,7 +514,7 @@ namespace MamaFit.Services.Mapper
             CreateMap<Transaction, TransactionResponseDto>()
                 .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderId))
                 .ReverseMap();
-            
+
             #endregion
         }
     }

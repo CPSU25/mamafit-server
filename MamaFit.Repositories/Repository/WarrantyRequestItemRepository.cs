@@ -78,6 +78,19 @@ public class WarrantyRequestItemRepository : IWarrantyRequestItemRepository
         .FirstOrDefaultAsync(wri => wri.OrderItemId == orderItemId);
     }
 
+    public async Task<List<WarrantyRequestItem>> GetAllRelatedByOrderItemAsync(string orderItemId)
+    {
+        var result = await _dbSet.AsNoTracking()
+            .Include(wri => wri.WarrantyRequest)
+            .Include(wri => wri.OrderItem)
+            .ThenInclude(oi => oi.ParentOrderItem)
+                .ThenInclude(poi => poi.Preset).ThenInclude(x => x.Style)
+        .Include(x => x.OrderItem).ThenInclude(x => x.ParentOrderItem).ThenInclude(x => x.Order)
+        .Where(x => x.OrderItem.Id == orderItemId || x.OrderItem.ParentOrderItemId == orderItemId).ToListAsync();
+
+        return result;
+    }
+
     public async Task UpdateAsync(WarrantyRequestItem entity)
     {
         _dbSet.Update(entity);

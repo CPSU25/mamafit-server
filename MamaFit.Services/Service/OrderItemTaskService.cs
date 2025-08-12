@@ -288,13 +288,10 @@ public class OrderItemTaskService : IOrderItemTaskService
 
     private async Task UpdateStatusWithoutAddOnAsync(Order order, List<MilestoneAchiveOrderItemResponseDto> progress)
     {
-        var packageProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).Skip(1).FirstOrDefault();
+        var packageProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).FirstOrDefault();
         if (packageProgress?.Progress == 100 && packageProgress.IsDone)
         {
             order.Status = OrderStatus.PACKAGING;
-            var deliveringProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).FirstOrDefault();
-            if (deliveringProgress?.Progress == 100 && packageProgress.IsDone)
-                order.Status = OrderStatus.DELIVERING;
         }
         else
             order.Status = OrderStatus.IN_PROGRESS;

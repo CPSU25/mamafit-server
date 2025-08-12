@@ -461,7 +461,7 @@ public class OrderService : IOrderService
         {
             UserId = userId,
             User = user!,
-            Type = OrderType.NORMAL,
+            Type = OrderType.DESIGN,
             Code = GenerateOrderCode(),
             Status = OrderStatus.CREATED,
             IsOnline = true,

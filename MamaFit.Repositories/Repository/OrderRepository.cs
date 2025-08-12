@@ -11,7 +11,6 @@ namespace MamaFit.Repositories.Repository;
 
 public class OrderRepository : GenericRepository<Order>, IOrderRepository
 {
-
     public OrderRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         : base(context, httpContextAccessor)
     {
@@ -37,11 +36,11 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
         var response = await _dbSet
             .Include(x => x.OrderItems).ThenInclude(x => x.Preset).ThenInclude(x => x.Style)
             .Where(o => !o.IsDeleted
-                && o.Status == OrderStatus.COMPLETED
-                && o.UserId == userId
-                && o.OrderItems.Any(oi =>
-                    (oi.ItemType == ItemType.PRESET || oi.ItemType == ItemType.WARRANTY)
-                    && oi.WarrantyDate == null))
+                        && o.Status == OrderStatus.COMPLETED
+                        && o.UserId == userId
+                        && o.OrderItems.Any(oi =>
+                            (oi.ItemType == ItemType.PRESET || oi.ItemType == ItemType.WARRANTY)
+                            && oi.WarrantyDate == null))
             .Select(o => new Order
             {
                 Id = o.Id,
@@ -61,16 +60,17 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
                 DiscountSubtotal = o.DiscountSubtotal,
                 IsDeleted = o.IsDeleted,
                 IsOnline = o.IsOnline,
-                Measurement = o.Measurement,MeasurementId = o.MeasurementId,
+                Measurement = o.Measurement, MeasurementId = o.MeasurementId,
                 PaymentMethod = o.PaymentMethod,
                 PaymentStatus = o.PaymentStatus,
                 PaymentType = o.PaymentType,
                 ReceivedAt = o.ReceivedAt,
                 RemainingBalance = o.RemainingBalance,
-                ServiceAmount = o.ServiceAmount,ShippingFee = o.ShippingFee,SubTotalAmount = o.SubTotalAmount,
+                ServiceAmount = o.ServiceAmount, ShippingFee = o.ShippingFee, SubTotalAmount = o.SubTotalAmount,
                 TotalAmount = o.TotalAmount,
                 TotalPaid = o.TotalPaid,
-                TrackingOrderCode = o.TrackingOrderCode,Transactions = o.Transactions,Type = o.Type,UpdatedAt = o.UpdatedAt,
+                TrackingOrderCode = o.TrackingOrderCode, Transactions = o.Transactions, Type = o.Type,
+                UpdatedAt = o.UpdatedAt,
                 UpdatedBy = o.UpdatedBy,
                 User = o.User,
                 VoucherDiscount = o.VoucherDiscount,
@@ -96,9 +96,21 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
 
         return await _context.Orders
             .Where(o => branchIds.Contains(o.BranchId!))
-            .Include(o => o.OrderItems)
-            .ThenInclude(oi => oi.DesignRequest)
+            .Include(o => o.OrderItems).ThenInclude(oi => oi.Preset)
+            .Include(o => o.OrderItems).ThenInclude(oi => oi.MaternityDressDetail)
+            .Include(o => o.OrderItems).ThenInclude(oi => oi.DesignRequest)
             .ToListAsync();
+    }
+
+    public async Task<Order> GetBySkuAndCodeAsync(string sku, string code)
+    {
+        return await _dbSet.Where(o => o.Code == code && !o.IsDeleted)
+            .Include(o => o.OrderItems)
+            .ThenInclude(oi => oi.MaternityDressDetail)
+            .Include(o => o.OrderItems)
+            .ThenInclude(oi => oi.Preset)
+            .FirstOrDefaultAsync(o => o.OrderItems
+                .Any(oi => oi.MaternityDressDetail.SKU == sku || oi.Preset.SKU == sku));
     }
 
     public async Task<List<Order>> GetOrdersByAssignedStaffAsync(string staffId)
@@ -114,7 +126,8 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .ToListAsync();
     }
 
-    public async Task<PaginatedList<Order>> GetByTokenAsync(int index, int pageSize, string token, string? search, OrderStatus? status = null)
+    public async Task<PaginatedList<Order>> GetByTokenAsync(int index, int pageSize, string token, string? search,
+        OrderStatus? status = null)
     {
         var query = _dbSet
             .Include(x => x.OrderItems)
@@ -132,6 +145,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
         {
             query = query.Where(x => x.Code.Contains(search));
         }
+
         if (status.HasValue)
         {
             query = query.Where(x => x.Status == status.Value);
@@ -163,19 +177,21 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .Include(x => x.Measurement)
             .ThenInclude(x => x.MeasurementDiary)
             .Include(x => x.OrderItems)
-                .ThenInclude(x => x.MaternityDressDetail)
+            .ThenInclude(x => x.MaternityDressDetail)
             .Include(x => x.OrderItems)
-                .ThenInclude(x => x.Preset)
-                    .ThenInclude(x => x.Style)
+            .ThenInclude(x => x.Preset)
+            .ThenInclude(x => x.Style)
             .Include(x => x.OrderItems)
-                .ThenInclude(x => x.DesignRequest)
-                    .ThenInclude(x => x.User)
-                        .ThenInclude(x => x.Role)
+            .ThenInclude(x => x.DesignRequest)
+            .ThenInclude(x => x.User)
+            .ThenInclude(x => x.Role)
             .Include(x => x.Branch)
             .Include(x => x.Address)
             .Include(x => x.VoucherDiscount)
-            .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemAddOnOptions).ThenInclude(x => x.AddOnOption).ThenInclude(x => x.Size)
-            .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemAddOnOptions).ThenInclude(x => x.AddOnOption).ThenInclude(x => x.Position)
+            .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemAddOnOptions).ThenInclude(x => x.AddOnOption)
+            .ThenInclude(x => x.Size)
+            .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemAddOnOptions).ThenInclude(x => x.AddOnOption)
+            .ThenInclude(x => x.Position)
             .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
     }
 
@@ -197,8 +213,10 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
     public async Task<Order?> GetByCodeAsync(string code)
     {
         return await _dbSet
-            .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemTasks).ThenInclude(x => x.MaternityDressTask).ThenInclude(x => x.Milestone)
-            .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemAddOnOptions).ThenInclude(x => x.AddOnOption).ThenInclude(x => x.AddOn)
+            .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemTasks).ThenInclude(x => x.MaternityDressTask)
+            .ThenInclude(x => x.Milestone)
+            .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemAddOnOptions).ThenInclude(x => x.AddOnOption)
+            .ThenInclude(x => x.AddOn)
             .FirstOrDefaultAsync(x => x.Code == code && !x.IsDeleted);
     }
 }

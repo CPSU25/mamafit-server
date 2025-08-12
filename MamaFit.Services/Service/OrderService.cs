@@ -66,6 +66,13 @@ public class OrderService : IOrderService
         }).ToList();
     }
 
+    public async Task<OrderResponseDto> GetBySkuAndCodeAsync(string sku, string code)
+    {
+        var order = await _unitOfWork.OrderRepository.GetBySkuAndCodeAsync(sku, code);
+        _validation.CheckNotFound(order, "Order not found");
+        var orderDto = _mapper.Map<OrderResponseDto>(order);
+        return orderDto;
+    }
     public async Task<List<OrderResponseDto>> GetOrdersForBranchManagerAsync()
     {
         var userId = GetCurrentUserId();

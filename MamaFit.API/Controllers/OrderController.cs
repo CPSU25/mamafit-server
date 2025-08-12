@@ -24,6 +24,20 @@ public class OrderController : ControllerBase
         _contentfulConfig = _configuration.GetSection("Contentful");
     }
 
+    [HttpGet("by-sku-and-code")]
+    public async Task<IActionResult> GetBySkuAndCode(
+        [FromQuery] string sku,
+        [FromQuery] string code)
+    {
+        var result = await _service.GetBySkuAndCodeAsync(sku, code);
+        return Ok(new ResponseModel<OrderResponseDto>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            result,
+            "Get order by SKU and code successfully!"
+        ));
+    }
+    
     [Authorize]
     [HttpGet("by-token")]
     public async Task<IActionResult> GetByAccessToken(
@@ -41,6 +55,7 @@ public class OrderController : ControllerBase
             "Get orders by access token successfully!"
         ));
     }
+    
     [HttpGet("for-warranty")]
     public async Task<IActionResult> GetOrderForRequest()
     {

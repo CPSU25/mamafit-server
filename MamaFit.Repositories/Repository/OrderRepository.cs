@@ -60,16 +60,21 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
                 DiscountSubtotal = o.DiscountSubtotal,
                 IsDeleted = o.IsDeleted,
                 IsOnline = o.IsOnline,
-                Measurement = o.Measurement, MeasurementId = o.MeasurementId,
+                Measurement = o.Measurement,
+                MeasurementId = o.MeasurementId,
                 PaymentMethod = o.PaymentMethod,
                 PaymentStatus = o.PaymentStatus,
                 PaymentType = o.PaymentType,
                 ReceivedAt = o.ReceivedAt,
                 RemainingBalance = o.RemainingBalance,
-                ServiceAmount = o.ServiceAmount, ShippingFee = o.ShippingFee, SubTotalAmount = o.SubTotalAmount,
+                ServiceAmount = o.ServiceAmount,
+                ShippingFee = o.ShippingFee,
+                SubTotalAmount = o.SubTotalAmount,
                 TotalAmount = o.TotalAmount,
                 TotalPaid = o.TotalPaid,
-                TrackingOrderCode = o.TrackingOrderCode, Transactions = o.Transactions, Type = o.Type,
+                TrackingOrderCode = o.TrackingOrderCode,
+                Transactions = o.Transactions,
+                Type = o.Type,
                 UpdatedAt = o.UpdatedAt,
                 UpdatedBy = o.UpdatedBy,
                 User = o.User,
@@ -218,5 +223,14 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemAddOnOptions).ThenInclude(x => x.AddOnOption)
             .ThenInclude(x => x.AddOn)
             .FirstOrDefaultAsync(x => x.Code == code && !x.IsDeleted);
+    }
+
+    public async Task<Order> GetByOrderItemId(string orderItemId)
+    {
+        var order = await _dbSet
+            .Include(x => x.OrderItems)
+            .FirstOrDefaultAsync(x => !x.IsDeleted && x.OrderItems.Any(x => x.Id.Equals(orderItemId)) && x.Type != OrderType.WARRANTY);
+
+        return order;
     }
 }

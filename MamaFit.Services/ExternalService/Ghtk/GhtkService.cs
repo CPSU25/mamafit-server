@@ -5,6 +5,7 @@ using MamaFit.BusinessObjects.DTO.GhtkDto.Fee;
 using MamaFit.BusinessObjects.DTO.GhtkDto.Response;
 using MamaFit.BusinessObjects.DTO.GhtkDto.SubmitOrder;
 using MamaFit.BusinessObjects.DTO.GhtkDto.TrackOrder;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Helper;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
@@ -239,6 +240,7 @@ public class GhtkService : IGhtkService
             var successResp = JsonConvert.DeserializeObject<GhtkOrderSubmitSuccessResponse>(responseBody);
             var trackingId = successResp?.Order?.TrackingId;
             order.TrackingOrderCode = trackingId.ToString();
+            order.Status = OrderStatus.DELIVERING;
             await _unitOfWork.OrderRepository.UpdateAsync(order);
             await _unitOfWork.SaveChangesAsync();
             if (successResp?.Order != null)

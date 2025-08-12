@@ -208,11 +208,11 @@ public class FlexibleAIMeasurementService : IAIMeasurementCalculationService
         MeasurementDiaryDto diary,
         int targetWeek)
     {
-        // Weight safety check
+        measurements.WeekOfPregnancy = targetWeek;
+
         var bmi = diary.Weight / ((diary.Height / 100) * (diary.Height / 100));
         var maxTotalGain = GetMaxSafeWeightGain(bmi);
         var maxWeightForWeek = diary.Weight + (maxTotalGain * targetWeek / 40f);
-
         if (measurements.Weight > maxWeightForWeek)
         {
             _logger.LogWarning(
@@ -225,22 +225,29 @@ public class FlexibleAIMeasurementService : IAIMeasurementCalculationService
             _logger.LogWarning("AI suggested weight loss during pregnancy, adjusting");
             measurements.Weight = diary.Weight;
         }
+        
+        var maxBustIncrease = 20f;
+        measurements.Bust = Math.Min(measurements.Bust, diary.Bust + maxBustIncrease);
 
-        // Basic proportion checks
-        if (measurements.Waist < diary.Waist * 0.9f)
-        {
-            _logger.LogWarning("AI suggested unrealistic waist reduction");
-            measurements.Waist = diary.Waist;
-        }
+        var maxHipIncrease = 15f; 
+        measurements.Hip = Math.Min(measurements.Hip, diary.Hip + maxHipIncrease);
+        
+        var maxWaistIncrease = targetWeek * 0.5f; 
+        measurements.Waist = Math.Min(measurements.Waist, diary.Waist + maxWaistIncrease);
 
-        // Ensure all values are positive and reasonable
-        measurements.WeekOfPregnancy = Math.Max(measurements.WeekOfPregnancy, 0);
-        measurements.Weight = Math.Max(measurements.Weight, 30f);
-        measurements.Bust = Math.Max(measurements.Bust, 60f);
-        measurements.Waist = Math.Max(measurements.Waist, 50f);
-        measurements.Hip = Math.Max(measurements.Hip, 60f);
-        measurements.Neck = Math.Max(measurements.Neck, 25f);
-        measurements.Stomach = Math.Max(measurements.Stomach, measurements.Waist);
+        measurements.SleeveLength = Math.Clamp(
+            measurements.SleeveLength,
+            diary.Height * 0.14f,
+            diary.Height * 0.18f
+        );
+        
+        var estimatedNeck = diary.Height / 5.5f; 
+        measurements.Neck = Math.Clamp(
+            measurements.Neck,
+            estimatedNeck * 0.9f, 
+            estimatedNeck + 2f   
+        );
+        measurements.Stomach = Math.Max(measurements.Stomach, measurements.Waist + 5f);
         measurements.PantsWaist = Math.Max(measurements.PantsWaist, 50f);
         measurements.Coat = Math.Max(measurements.Coat, measurements.Bust);
         measurements.ChestAround = Math.Max(measurements.ChestAround, 60f);
@@ -335,7 +342,6 @@ public class FlexibleAIMeasurementService : IAIMeasurementCalculationService
     {
         if (_activeProvider == null)
         {
-            // Try to reinitialize
             await InitializeProvider();
         }
 

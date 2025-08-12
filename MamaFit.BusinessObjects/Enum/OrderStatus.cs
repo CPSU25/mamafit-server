@@ -11,5 +11,9 @@
         COMPLETED, // khách confirm nhận hàng
         CANCELLED, // hủy đơn hàng
         RETURNED,// trả hàng
+        
+        //status for warranty order
+        AWAITING_PAID_WARRANTY, 
+        COMPLETED_WARRANTY
     }
 }

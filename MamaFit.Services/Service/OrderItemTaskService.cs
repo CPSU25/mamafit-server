@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using CloudinaryDotNet.Core;
 using MamaFit.BusinessObjects.DTO.ChatMessageDto;
 using MamaFit.BusinessObjects.DTO.MaternityDressTaskDto;
 using MamaFit.BusinessObjects.DTO.MeasurementDto;
@@ -173,7 +172,7 @@ public class OrderItemTaskService : IOrderItemTaskService
                 break;
 
             case OrderItemTaskStatus.DONE:
-                await HandleDoneAsync(orderItem, order, progress);
+                await HandleDoneAsync(orderItem, order, progress, milestones);
                 break;
 
             case OrderItemTaskStatus.PASS:
@@ -188,7 +187,7 @@ public class OrderItemTaskService : IOrderItemTaskService
 
     private async Task HandleInProgressAsync(OrderItemTask task, OrderItem orderItem, Order order)
     {
-        if(task.MaternityDressTask.Milestone.SequenceOrder == 1)
+        if (task.MaternityDressTask.Milestone.SequenceOrder == 1)
         {
             if (orderItem.ItemType == ItemType.DESIGN_REQUEST)
             {
@@ -203,7 +202,7 @@ public class OrderItemTaskService : IOrderItemTaskService
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
     }
-    private async Task HandleDoneAsync(OrderItem orderItem, Order order, List<MilestoneAchiveOrderItemResponseDto> progress)
+    private async Task HandleDoneAsync(OrderItem orderItem, Order order, List<MilestoneAchiveOrderItemResponseDto> progress, IEnumerable<Milestone> milestones)
     {
         if (orderItem.ItemType == ItemType.DESIGN_REQUEST)
         {
@@ -215,13 +214,20 @@ public class OrderItemTaskService : IOrderItemTaskService
             var qcFailProgress = progress.Where(x => x.Milestone.ApplyFor.Contains(ItemType.QC_FAIL));
             if (qcFailProgress.Any(x => x.Progress == 100 && x.IsDone))
             {
-                if (order.PaymentType == PaymentType.FULL && order.PaymentStatus == PaymentStatus.PAID_FULL)
+                if (CheckAllItemInLastMilestone(order, milestones))
                 {
-                    order.Status = OrderStatus.PACKAGING;
+                    if (order.PaymentType == PaymentType.FULL && order.PaymentStatus == PaymentStatus.PAID_FULL)
+                    {
+                        order.Status = OrderStatus.PACKAGING;
+                    }
+                    else if (order.PaymentType == PaymentType.DEPOSIT && order.PaymentStatus == PaymentStatus.PAID_DEPOSIT)
+                    {
+                        order.Status = OrderStatus.AWAITING_PAID_REST;
+                    }
                 }
-                else if (order.PaymentType == PaymentType.DEPOSIT && order.PaymentStatus == PaymentStatus.PAID_DEPOSIT)
+                else
                 {
-                    order.Status = OrderStatus.AWAITING_PAID_REST;
+                    order.Status = OrderStatus.IN_PROGRESS;
                 }
             }
         }
@@ -414,12 +420,10 @@ public class OrderItemTaskService : IOrderItemTaskService
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
     }
-
     private string GetCurrentUserId()
     {
         return _contextAccessor.HttpContext.User.FindFirst("userId").Value ?? "System";
     }
-
     private async Task SendMessageAndNoti(OrderItemTask task)
     {
         var designerId = GetCurrentUserId();
@@ -503,5 +507,15 @@ public class OrderItemTaskService : IOrderItemTaskService
         }
     }
 
+    private bool CheckAllItemInLastMilestone(Order order, IEnumerable<Milestone> milestones)
+    {
+        var lastMilestone = milestones.OrderByDescending(x => x.SequenceOrder).FirstOrDefault();
 
+        if (order.OrderItems.All(x => x.OrderItemTasks.Select(x => x.MaternityDressTask.Milestone) == lastMilestone))
+        {
+            return true;
+        }
+
+        return false;
+    }
 }

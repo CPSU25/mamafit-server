@@ -3609,7 +3609,7 @@ namespace MamaFit.BusinessObjects.Data
                     Id = "afa0cfb3844a4bf99e79b40a009b8f58",
                     Name = "Packing",
                     Description = "Final packing for customer",
-                    ApplyFor = [ItemType.PRESET, ItemType.READY_TO_BUY],
+                    ApplyFor = [ItemType.PRESET, ItemType.READY_TO_BUY, ItemType.WARRANTY],
                     SequenceOrder = 7,
                     CreatedBy = "Admin",
                     UpdatedBy = "Admin",

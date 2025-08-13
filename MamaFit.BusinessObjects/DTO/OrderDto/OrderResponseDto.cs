@@ -16,6 +16,7 @@ public class OrderResponseDto : OrderBaseDto
     public decimal? RemainingBalance { get; set; }
     public decimal? TotalPaid { get; set; }
     public DateTime? ReceivedAt { get; set; }
+    public DateTime? ReceivedAtBranch { get; set; }
     public string? CreatedBy { get; set; }
     public string? UpdatedBy { get; set; }
     public DateTime CreatedAt { get; set; }

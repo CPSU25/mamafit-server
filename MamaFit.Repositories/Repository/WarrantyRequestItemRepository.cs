@@ -1,4 +1,4 @@
-using MamaFit.BusinessObjects.DBContext;
+﻿using MamaFit.BusinessObjects.DBContext;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;
@@ -82,11 +82,11 @@ public class WarrantyRequestItemRepository : IWarrantyRequestItemRepository
     {
         var result = await _dbSet.AsNoTracking()
             .Include(wri => wri.WarrantyRequest)
-            .Include(wri => wri.OrderItem)
-            .ThenInclude(oi => oi.ParentOrderItem)
-                .ThenInclude(poi => poi.Preset).ThenInclude(x => x.Style)
-        .Include(x => x.OrderItem).ThenInclude(x => x.ParentOrderItem).ThenInclude(x => x.Order)
-        .Where(x => x.OrderItem.Id == orderItemId || x.OrderItem.ParentOrderItemId == orderItemId).ToListAsync();
+            .Include(x => x.OrderItem).ThenInclude(x => x.Order)
+            .Include(x => x.OrderItem).ThenInclude(x => x.Preset).ThenInclude(x => x.Style)
+            .Include(wri => wri.OrderItem).ThenInclude(oi => oi.ParentOrderItem).ThenInclude(poi => poi.Preset).ThenInclude(x => x.Style)
+            .Include(x => x.OrderItem).ThenInclude(x => x.ParentOrderItem).ThenInclude(x => x.Order)
+            .Where(x => x.OrderItem.Id == orderItemId || x.OrderItem.ParentOrderItemId == orderItemId).ToListAsync();
 
         return result;
     }

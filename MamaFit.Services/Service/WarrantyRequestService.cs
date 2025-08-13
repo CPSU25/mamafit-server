@@ -160,6 +160,7 @@ namespace MamaFit.Services.Service
                     Status = WarrantyRequestItemStatus.PENDING,
                     Description = itemDto.Description,
                     Images = itemDto.Images ?? new List<string>(),
+                    Videos = itemDto.Videos ?? new List<string>(),
                     WarrantyRound = warrantyRounds[itemDto.OrderItemId]
                 };
                 await _warrantyRequestItemRepository.InsertAsync(requestItem);
@@ -283,6 +284,7 @@ namespace MamaFit.Services.Service
                     Status = WarrantyRequestItemStatus.PENDING,
                     Description = itemDto.Description,
                     Images = itemDto.Images ?? new List<string>(),
+                    Videos = itemDto.Videos ?? new List<string>(),
                     WarrantyRound = warrantyRounds[itemDto.OrderItemId]
                 };
                 await _warrantyRequestItemRepository.InsertAsync(requestItem);

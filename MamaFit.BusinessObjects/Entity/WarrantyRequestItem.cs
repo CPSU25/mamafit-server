@@ -11,6 +11,7 @@ public class WarrantyRequestItem
     public decimal? Fee { get; set; }
     public string? RejectedReason { get; set; }
     public string? Description { get; set; }
+    public List<string>? Videos { get; set; } = [];
     public List<string>? Images { get; set; } = [];
     public WarrantyRequestItemStatus? Status { get; set; }
     public DateTime? EstimateTime { get; set; }

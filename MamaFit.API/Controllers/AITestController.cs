@@ -153,13 +153,13 @@ public class AITestController : ControllerBase
 
 public class AITestRequest
 {
-    public int Age { get; set; } = 28;
-    public float Height { get; set; } = 165;
-    public float PrePregnancyWeight { get; set; } = 60;
-    public float PrePregnancyBust { get; set; } = 85;
-    public float PrePregnancyWaist { get; set; } = 70;
-    public float PrePregnancyHip { get; set; } = 90;
-    public int TargetWeek { get; set; } = 20;
+    public int Age { get; set; }
+    public float Height { get; set; }
+    public float PrePregnancyWeight { get; set; }
+    public float PrePregnancyBust { get; set; }
+    public float PrePregnancyWaist { get; set; }
+    public float PrePregnancyHip { get; set; }
+    public int TargetWeek { get; set; }
 }
 
 public class AITestWithInputRequest : AITestRequest

@@ -3989,8 +3989,8 @@ namespace MamaFit.BusinessObjects.Data
                     ReceivedAt = null,
                     CreatedBy = "User",
                     UpdatedBy = "System",
-                    CreatedAt = DateTime.Parse("2025-08-13T07:42:39.766984Z"),
-                    UpdatedAt = DateTime.Parse("2025-08-13T07:44:40.215857Z"),
+                    CreatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc), 
                     IsDeleted = false
                 },
                 new Order
@@ -4202,8 +4202,8 @@ namespace MamaFit.BusinessObjects.Data
                     WarrantyDate = null,
                     CreatedBy = "user",
                     UpdatedBy = "System",
-                    CreatedAt = DateTime.Parse("2025-08-13T07:42:39.754045Z"),
-                    UpdatedAt = DateTime.Parse("2025-08-13T07:44:40.278727Z"),
+                    CreatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
                     IsDeleted = false
                 },
                 new OrderItem
@@ -4219,8 +4219,8 @@ namespace MamaFit.BusinessObjects.Data
                     WarrantyDate = null,
                     CreatedBy = "user",
                     UpdatedBy = "System",
-                    CreatedAt = DateTime.Parse("2025-08-13T07:42:39.738826Z"),
-                    UpdatedAt = DateTime.Parse("2025-08-13T07:44:40.316426Z"),
+                    CreatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
                     IsDeleted = false
                 },
                 new OrderItem

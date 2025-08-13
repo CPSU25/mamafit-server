@@ -138,6 +138,31 @@ public class SepayService : ISepayService
         else
         {
             // Thanh toán full
+            if (order.Type == OrderType.WARRANTY)
+            {
+                await _orderService.UpdateOrderStatusAsync(
+                    order.Id,
+                    OrderStatus.PICKUP_IN_PROGRESS, // đợi lên đơn GHTK
+                    PaymentStatus.PAID_FULL
+                );
+
+                await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
+                {
+                    NotificationTitle = "Thanh toán phí bảo hành thành công",
+                    NotificationContent = $"Bạn đã thanh toán phí bảo hành cho đơn {order.Code}. Chúng tôi sẽ tiến hành lên đơn vận chuyển.",
+                    Metadata = new()
+                    {
+                        { "orderId", order.Id },
+                        { "paymentStatus", PaymentStatus.PAID_FULL.ToString() }
+                    },
+                    Type = NotificationType.PAYMENT,
+                    ReceiverId = order.UserId
+                });
+
+                // KHÔNG AssignTasksForOrder cho đơn bảo hành
+                return;
+            }
+            
             await _orderService.UpdateOrderStatusAsync(
                 order.Id,
                 OrderStatus.CONFIRMED,

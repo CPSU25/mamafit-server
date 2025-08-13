@@ -418,6 +418,9 @@ namespace MamaFit.Services.Service
                 throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
                     $"OrderItemId does not belong to warranty request {warrantyRequestId}: {string.Join(", ", badIds)}");
 
+            bool isFeeRequest = wr.RequestType == RequestType.FEE;
+            var feeByOrderId = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase);
+            var shipByOrderId = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase);
             foreach (var it in dto.Items)
             {
                 if (it.Status != WarrantyRequestItemStatus.APPROVED &&
@@ -433,7 +436,8 @@ namespace MamaFit.Services.Service
                         throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
                             "RejectedReason is required when status is REJECTED");
 
-                    if (it.DestinationType != default || it.Fee.HasValue || it.EstimateTime.HasValue)
+                    if (it.DestinationType != default || it.Fee.HasValue || it.ShippingFee.HasValue ||
+                        it.EstimateTime.HasValue)
                     {
                         throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
                             "Only RejectedReason is allowed when status is REJECTED");
@@ -444,6 +448,9 @@ namespace MamaFit.Services.Service
                     if (!string.IsNullOrWhiteSpace(it.RejectedReason))
                         throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
                             "RejectedReason must be empty when status is APPROVED");
+                    if (!isFeeRequest && it.ShippingFee.HasValue)
+                        throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
+                            "ShippingFee is only allowed when RequestType = FEE");
                 }
             }
 
@@ -498,19 +505,93 @@ namespace MamaFit.Services.Service
                 wri.Fee = d.Fee;
                 wri.EstimateTime = d.EstimateTime;
                 wri.RejectedReason = null;
-                
+
+                var oi = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(wri.OrderItemId);
+                _validationService.CheckNotFound(oi, $"OrderItem {wri.OrderItemId} not found");
+                var orderId = oi.OrderId!;
+                if (isFeeRequest)
+                {
+                    if (!d.Fee.HasValue || d.Fee <= 0)
+                    {
+                        throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
+                            "Fee is required and must be > 0 when RequestType = FEE");
+                    }
+
+                    feeByOrderId[oi.OrderId!] =
+                        (feeByOrderId.TryGetValue(oi.OrderId!, out var s) ? s : 0) + d.Fee!.Value;
+
+                    if (d.ShippingFee.HasValue)
+                    {
+                        if (shipByOrderId.TryGetValue(orderId, out var existed) && existed != d.ShippingFee.Value)
+                            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
+                                "ShippingFee must be the same for all items of the same order");
+                        shipByOrderId[orderId] = d.ShippingFee.Value;
+                    }
+
+                    responseItems.Add(new WarrantyDecisionResponseItemDto
+                    {
+                        OrderItemId = wri.OrderItemId,
+                        Status = WarrantyRequestItemStatus.APPROVED,
+                        TrackingCode = null
+                    });
+                    continue; // KHÔNG gom nhóm GHTK ở luồng FEE
+                }
+
                 var oiForKey = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(wri.OrderItemId);
                 _validationService.CheckNotFound(oiForKey, $"OrderItem {wri.OrderItemId} not found");
                 var orderKey = oiForKey.OrderId!;
                 var destKey = d.DestinationType == DestinationType.FACTORY
-                    ? "FACTORY"  // Tất cả items về FACTORY sẽ cùng nhóm
-                    : "BRANCH";  // Các items về BRANCH sẽ được xử lý riêng lẻ
+                    ? "FACTORY"
+                    : "BRANCH";
 
                 var key = $"{orderKey}|{destKey}";
 
                 if (!approveGroups.TryGetValue(key, out var list))
                     approveGroups[key] = list = new List<WarrantyRequestItem>();
                 list.Add(wri);
+            }
+
+            if (isFeeRequest)
+            {
+                wr.TotalFee = wr.WarrantyRequestItems
+                    .Where(x => x.Status == WarrantyRequestItemStatus.APPROVED)
+                    .Sum(x => x.Fee ?? 0);
+
+                // YÊU CẦU: mỗi order có phí bảo hành phải có ShippingFee
+                foreach (var orderId in feeByOrderId.Keys)
+                {
+                    if (!shipByOrderId.TryGetValue(orderId, out var _))
+                        throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
+                            $"ShippingFee is required for warranty fee order {orderId}");
+                }
+
+                // Cập nhật tiền & trạng thái cho từng Order bảo hành liên quan
+                foreach (var (orderId, feeTotal) in feeByOrderId)
+                {
+                    var orderEntity = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(orderId);
+                    _validationService.CheckNotFound(orderEntity, "Order not found");
+
+                    var ship = shipByOrderId[orderId]; // đã validate tồn tại
+                    orderEntity.SubTotalAmount = feeTotal; // phí BH
+                    orderEntity.ShippingFee = ship; // phí ship (field order-level)
+                    orderEntity.TotalAmount = feeTotal + ship; // cộng ship vào tổng thanh toán
+                    orderEntity.Status = OrderStatus.AWAITING_PAID_WARRANTY;
+
+                    await _unitOfWork.OrderRepository.UpdateAsync(orderEntity);
+                }
+
+                // Cập nhật trạng thái tổng của WarrantyRequest
+                if (anyApprove && anyReject) wr.Status = WarrantyRequestStatus.PARTIALLY_REJECTED;
+                else if (anyApprove) wr.Status = WarrantyRequestStatus.APPROVED;
+                else wr.Status = WarrantyRequestStatus.REJECTED;
+
+                await _unitOfWork.SaveChangesAsync();
+
+                return new WarrantyDecisionResponseDto
+                {
+                    RequestStatus = wr.Status ?? WarrantyRequestStatus.PENDING,
+                    Items = responseItems
+                };
             }
 
             await _unitOfWork.SaveChangesAsync();
@@ -530,7 +611,7 @@ namespace MamaFit.Services.Service
                 // Chỉ gán milestone cho các items về FACTORY
                 var approvedOrderItemIds = group
                     .Where(wri => wri.DestinationType == DestinationType.FACTORY
-                    && wri.Status == WarrantyRequestItemStatus.APPROVED)
+                                  && wri.Status == WarrantyRequestItemStatus.APPROVED)
                     .Select(wri => wri.OrderItemId)
                     .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
@@ -641,6 +722,101 @@ namespace MamaFit.Services.Service
             {
                 RequestStatus = wr.Status ?? WarrantyRequestStatus.PENDING,
                 Items = responseItems
+            };
+        }
+
+        public async Task<WarrantyDecisionResponseDto> ShipPaidWarrantyAsync(string warrantyRequestId)
+        {
+            var wr = await _unitOfWork.WarrantyRequestRepository.GetDetailById(warrantyRequestId);
+            _validationService.CheckNotFound(wr, $"Warranty request {warrantyRequestId} not found");
+
+            // Lấy Order bảo hành từ 1 item bất kỳ
+            var firstItem = wr.WarrantyRequestItems.FirstOrDefault();
+            _validationService.CheckBadRequest(firstItem == null, "No warranty items");
+            var firstOi = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(firstItem!.OrderItemId);
+            var order = await _unitOfWork.OrderRepository.GetWithItemsAndDressDetails(firstOi.OrderId!);
+            _validationService.CheckNotFound(order, "Order not found");
+
+            // Đảm bảo đã thanh toán phí BH
+            if (order.PaymentStatus != PaymentStatus.PAID_FULL)
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                    "Warranty fee must be PAID_FULL before shipping");
+
+            // Chỉ ship những item APPROVED, về FACTORY
+            var toShip = wr.WarrantyRequestItems
+                .Where(x => x.Status == WarrantyRequestItemStatus.APPROVED 
+                            && x.DestinationType == DestinationType.FACTORY)
+                .ToList();
+            if (toShip.Count == 0)
+                return new WarrantyDecisionResponseDto
+                {
+                    RequestStatus = wr.Status ?? WarrantyRequestStatus.PENDING,
+                    Items = new()
+                };
+
+            var (senderAddr, senderProvince, senderDistrict, senderWard) = ResolveAddress(order);
+            var orderInfo = new GhtkOrderExpressInfo
+            {
+                Id = $"{order.Code}-{CodeHelper.GenerateCode('W')}",
+                PickAddressId = null,
+                PickName = order.User.FullName,
+                PickAddress = senderAddr,
+                PickProvince = senderProvince,
+                PickDistrict = senderDistrict,
+                PickTel = order.User.PhoneNumber,
+                Name = _ghtkSettings.PickName,
+                Tel = _ghtkSettings.PickTel,
+                Address = _ghtkSettings.PickAddress ?? "",
+                Province = _ghtkSettings.PickProvince ?? "",
+                District = _ghtkSettings.PickDistrict ?? "",
+                Ward = _ghtkSettings.PickWard ?? "",
+                Value = await SumValueAsync(toShip)
+            };
+
+            var products = new List<GhtkProductDto>();
+            foreach (var wri in toShip)
+            {
+                var oi = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(wri.OrderItemId);
+                products.Add(MapToGhtkProduct(oi));
+            }
+
+            var (tracking, createResp, cancelResp) =
+                await _ghtkService.SubmitAndCancelExpressForWarrantyAsync(products,
+                    orderInfo);
+            
+            if (!string.IsNullOrWhiteSpace(tracking))
+            {
+                // Optional: nếu muốn reset trước khi append giống nhánh FREE theo từng order group:
+                // order.TrackingOrderCode = null;
+
+                order.TrackingOrderCode = string.IsNullOrWhiteSpace(order.TrackingOrderCode)
+                    ? tracking
+                    : $"{order.TrackingOrderCode},{tracking}";
+                order.Status = OrderStatus.PICKUP_IN_PROGRESS; 
+                await _unitOfWork.OrderRepository.UpdateAsync(order);
+            }
+            
+            foreach (var wri in toShip)
+            {
+                wri.TrackingCode = tracking;
+                wri.Status = WarrantyRequestItemStatus.IN_TRANSIT;
+            }
+
+            await _unitOfWork.SaveChangesAsync();
+            
+            return new WarrantyDecisionResponseDto
+            {
+                RequestStatus = wr.Status ?? WarrantyRequestStatus.APPROVED,
+                Items = toShip.Select(x => new WarrantyDecisionResponseItemDto
+                {
+                    OrderItemId = x.OrderItemId,
+                    Status = WarrantyRequestItemStatus.IN_TRANSIT,
+                    TrackingCode = x.TrackingCode,
+                    GhtkCreateMessage = createResp?.Success == true ? "Tạo đơn thành công" : "Tạo đơn thất bại",
+                    GhtkCancelMessage = cancelResp?.Success == true ? "Hủy đơn thành công" : "Hủy đơn thất bại",
+                    GhtkCreateResponse = createResp,
+                    GhtkCancelResponse = cancelResp
+                }).ToList()
             };
         }
 

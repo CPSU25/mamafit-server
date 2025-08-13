@@ -12,6 +12,12 @@
         public int MaxAppointmentPerUser { get; set; }
         public int WarrantyPeriod { get; set; }
         public List<string>? Colors { get; set; }
-        public string? Varriant { get; set; }
+        public Varriants? Varriant { get; set; }
+    }
+
+    public class Varriants
+    {
+        private List<string> Color { get; set; } = new List<string>();
+        private List<string> Size { get; set; } = new List<string>();
     }
 }

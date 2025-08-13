@@ -8,6 +8,7 @@ public class WarrantyDecisionItemDto
     public WarrantyRequestItemStatus Status { get; set; }
     public DestinationType DestinationType { get; set; }
     public decimal? Fee { get; set; }
+    public decimal? ShippingFee { get; set; }
     public DateTime? EstimateTime { get; set; }
     public string? RejectedReason { get; set; }
 }

@@ -14,6 +14,7 @@
         
         //status for warranty order
         AWAITING_PAID_WARRANTY, 
-        COMPLETED_WARRANTY
+        COMPLETED_WARRANTY, // đã hoàn thành bảo hành
+        RECEIVED_AT_BRANCH // đã nhận tại chi nhánh
     }
 }

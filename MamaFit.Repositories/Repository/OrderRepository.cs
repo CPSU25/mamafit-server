@@ -128,6 +128,10 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .ThenInclude(oi => oi.OrderItemTasks)
             .Include(o => o.OrderItems)
             .ThenInclude(oi => oi.DesignRequest)
+            .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemAddOnOptions).ThenInclude(x => x.AddOnOption)
+            .ThenInclude(x => x.Size)
+            .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemAddOnOptions).ThenInclude(x => x.AddOnOption)
+            .ThenInclude(x => x.Position)
             .ToListAsync();
     }
 
@@ -212,6 +216,10 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .Include(x => x.OrderItems.Where(oi => !oi.IsDeleted))
             .ThenInclude(oi => oi.Preset)
             .Include(x => x.OrderItems).ThenInclude(x => x.WarrantyRequestItems).ThenInclude(x => x.WarrantyRequest)
+            .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemAddOnOptions).ThenInclude(x => x.AddOnOption)
+            .ThenInclude(x => x.Size)
+            .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemAddOnOptions).ThenInclude(x => x.AddOnOption)
+            .ThenInclude(x => x.Position)
             .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
     }
 
@@ -222,6 +230,10 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .ThenInclude(x => x.Milestone)
             .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemAddOnOptions).ThenInclude(x => x.AddOnOption)
             .ThenInclude(x => x.AddOn)
+            .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemAddOnOptions).ThenInclude(x => x.AddOnOption)
+            .ThenInclude(x => x.Size)
+            .Include(x => x.OrderItems).ThenInclude(x => x.OrderItemAddOnOptions).ThenInclude(x => x.AddOnOption)
+            .ThenInclude(x => x.Position)
             .FirstOrDefaultAsync(x => x.Code == code && !x.IsDeleted);
     }
 

@@ -409,6 +409,8 @@ namespace MamaFit.Services.Mapper
                 .ReverseMap();
             CreateMap<WarrantyRequest, WarrantyGetByIdResponseDto>()
                 .IncludeBase<WarrantyRequest, WarrantyRequestGetAllDto>()
+                .ForMember(d => d.OrderStatus, o => o.MapFrom(s => s.WarrantyRequestItems.FirstOrDefault().OrderItem.Order.Status))
+                .ForMember(d => d.PickAddressId, o => o.MapFrom(s => s.WarrantyRequestItems.FirstOrDefault().OrderItem.Order.AddressId))
                 .ForMember(d => d.Items, o => o.MapFrom(s => s.WarrantyRequestItems))
                 .AfterMap((src, dest, ctx) =>
                 {

@@ -579,7 +579,7 @@ namespace MamaFit.Services.Service
                         if (!clearedOrders.Contains(orderEntity.Id))
                         {
                             orderEntity.TrackingOrderCode = null;
-                            orderEntity.Status = OrderStatus.DELIVERING;
+                            orderEntity.Status = OrderStatus.PICKUP_IN_PROGRESS;
                             clearedOrders.Add(orderEntity.Id);
                         }
 

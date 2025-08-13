@@ -476,7 +476,8 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.WarrantyRequestItems, otp => otp.MapFrom(x => x))
                 .ForMember(dest => dest.Order, otp => otp.MapFrom(x => x.OrderItem!.Order))
                 .ReverseMap();
-
+            CreateMap<WarrantyRequestItem, WarrantyRequestItemOrderResponseDto>()
+               .ReverseMap();
             #endregion
 
             #region AddOn Mapper

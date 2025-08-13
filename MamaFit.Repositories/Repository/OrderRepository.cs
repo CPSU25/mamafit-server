@@ -228,7 +228,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
     public async Task<Order> GetByOrderItemId(string orderItemId)
     {
         var order = await _dbSet
-            .Include(x => x.OrderItems)
+            .Include(x => x.OrderItems).ThenInclude(x => x.Preset).ThenInclude(x => x.Style)
             .FirstOrDefaultAsync(x => !x.IsDeleted && x.OrderItems.Any(x => x.Id.Equals(orderItemId)) && x.Type != OrderType.WARRANTY);
 
         return order;

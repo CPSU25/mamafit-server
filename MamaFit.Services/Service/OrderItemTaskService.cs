@@ -257,43 +257,44 @@ public class OrderItemTaskService : IOrderItemTaskService
             // Nếu có Add-on
             if (hasAddOn.Any(x => x.Progress == 100 && x.IsDone))
             {
-                await UpdateStatusWithQCAsync(order, progress);
+                // await UpdateStatusWithQCAsync(order, progress);
+                order.Status = OrderStatus.IN_PROGRESS;
             }
         }
         else
         {
             // Không có Add-on
-            await UpdateStatusWithoutAddOnAsync(order, progress);
+            // await UpdateStatusWithoutAddOnAsync(order, progress);
         }
     }
 
-    private async Task UpdateStatusWithQCAsync(Order order, List<MilestoneAchiveOrderItemResponseDto> progress)
-    {
-        var packageProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).FirstOrDefault();
-        var keywordList = new[] { "quality check", "qc" };
-        var qcProgress = progress.Where(x => keywordList.Any(k => x.Milestone!.Name!.ToLower().Contains(k)));
+    // private async Task UpdateStatusWithQCAsync(Order order, List<MilestoneAchiveOrderItemResponseDto> progress)
+    // {
+    //     var packageProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).FirstOrDefault();
+    //     var keywordList = new[] { "quality check", "qc" };
+    //     var qcProgress = progress.Where(x => keywordList.Any(k => x.Milestone!.Name!.ToLower().Contains(k)));
+    //
+    //     if (packageProgress?.Progress == 100 && packageProgress.IsDone)
+    //     {
+    //         order.Status = OrderStatus.PACKAGING;
+    //        
+    //     }
+    //     else if (qcProgress.Any(x => x.Progress == 100))
+    //         order.Status = OrderStatus.PACKAGING;
+    //     else
+    //         order.Status = OrderStatus.IN_PROGRESS;
+    // }
 
-        if (packageProgress?.Progress == 100 && packageProgress.IsDone)
-        {
-            order.Status = OrderStatus.PACKAGING;
-           
-        }
-        else if (qcProgress.Any(x => x.Progress == 100))
-            order.Status = OrderStatus.PACKAGING;
-        else
-            order.Status = OrderStatus.IN_PROGRESS;
-    }
-
-    private async Task UpdateStatusWithoutAddOnAsync(Order order, List<MilestoneAchiveOrderItemResponseDto> progress)
-    {
-        var packageProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).FirstOrDefault();
-        if (packageProgress?.Progress == 100 && packageProgress.IsDone)
-        {
-            order.Status = OrderStatus.PACKAGING;
-        }
-        else
-            order.Status = OrderStatus.IN_PROGRESS;
-    }
+    // private async Task UpdateStatusWithoutAddOnAsync(Order order, List<MilestoneAchiveOrderItemResponseDto> progress)
+    // {
+    //     var packageProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).FirstOrDefault();
+    //     if (packageProgress?.Progress == 100 && packageProgress.IsDone)
+    //     {
+    //         order.Status = OrderStatus.PACKAGING;
+    //     }
+    //     else
+    //         order.Status = OrderStatus.IN_PROGRESS;
+    // }
 
     private async Task HandlePassAsync(Order order, List<MilestoneAchiveOrderItemResponseDto> progress, OrderItemTask currentTask)
     {
@@ -589,7 +590,7 @@ public class OrderItemTaskService : IOrderItemTaskService
         var currentMilestoneName = currentMilestone?.Name?.ToLower() ?? "";
 
         // Kiểm tra xem task hiện tại có thuộc milestone packaging không
-        bool isPackagingMilestone = NameLike(currentMilestoneName, "packaging", "pack", "gói");
+        bool isPackagingMilestone = NameLike(currentMilestoneName, "packing", "pack", "gói");
 
         // Nếu đang ở PACKAGING và task hiện tại thuộc về packaging phase, giữ nguyên status
         if (order.Status == OrderStatus.PACKAGING && isPackagingMilestone)

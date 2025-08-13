@@ -11,7 +11,7 @@
         COMPLETED, // khách confirm nhận hàng
         CANCELLED, // hủy đơn hàng
         RETURNED,// trả hàng
-        
+        PICKUP_IN_PROGRESS, // đang lấy hàng
         //status for warranty order
         AWAITING_PAID_WARRANTY, 
         COMPLETED_WARRANTY, // đã hoàn thành bảo hành

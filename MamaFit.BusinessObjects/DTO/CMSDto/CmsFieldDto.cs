@@ -17,7 +17,7 @@
 
     public class Varriants
     {
-        private List<string> Color { get; set; } = new List<string>();
-        private List<string> Size { get; set; } = new List<string>();
+        public List<string> Color { get; set; } = new List<string>();
+        public List<string> Size { get; set; } = new List<string>();
     }
 }

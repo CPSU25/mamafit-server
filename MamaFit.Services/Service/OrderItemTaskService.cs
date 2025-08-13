@@ -619,13 +619,16 @@ public class OrderItemTaskService : IOrderItemTaskService
         }
 
         // Tất cả items ready, check điều kiện thanh toán để quyết định status
-        if (order.PaymentType == PaymentType.FULL && (order.PaymentStatus == PaymentStatus.PAID_FULL || order.PaymentStatus == PaymentStatus.WARRANTY))
+        if (order.PaymentType == PaymentType.FULL && (order.PaymentStatus == PaymentStatus.PAID_FULL  || order.PaymentStatus == PaymentStatus.WARRANTY))
         {
             order.Status = OrderStatus.PACKAGING;
         }
         else if (order.PaymentType == PaymentType.DEPOSIT && order.PaymentStatus == PaymentStatus.PAID_DEPOSIT)
         {
             order.Status = OrderStatus.AWAITING_PAID_REST;
+        }else if (order.PaymentStatus == PaymentStatus.PAID_DEPOSIT_COMPLETED)
+        {
+            order.Status = OrderStatus.PACKAGING;
         }
         else
         {

@@ -11,5 +11,7 @@
         public int MaxAppointmentPerDay { get; set; }
         public int MaxAppointmentPerUser { get; set; }
         public int WarrantyPeriod { get; set; }
+        public List<string>? Colors { get; set; }
+        public string? Varriant { get; set; }
     }
 }

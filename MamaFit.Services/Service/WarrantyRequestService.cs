@@ -502,7 +502,7 @@ namespace MamaFit.Services.Service
                 var orderKey = oiForKey.OrderId!;
                 var destKey = d.DestinationType == DestinationType.FACTORY
                     ? "FACTORY"  // Tất cả items về FACTORY sẽ cùng nhóm
-                    : $"BRANCH";  // Các items về BRANCH sẽ được xử lý riêng lẻ
+                    : "BRANCH";  // Các items về BRANCH sẽ được xử lý riêng lẻ
 
                 var key = $"{orderKey}|{destKey}";
 

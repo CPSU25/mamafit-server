@@ -160,6 +160,7 @@ namespace MamaFit.Services.Service
                     Status = WarrantyRequestItemStatus.PENDING,
                     Description = itemDto.Description,
                     Images = itemDto.Images ?? new List<string>(),
+                    Videos = itemDto.Videos ?? new List<string>(),
                     WarrantyRound = warrantyRounds[itemDto.OrderItemId]
                 };
                 await _warrantyRequestItemRepository.InsertAsync(requestItem);
@@ -283,6 +284,7 @@ namespace MamaFit.Services.Service
                     Status = WarrantyRequestItemStatus.PENDING,
                     Description = itemDto.Description,
                     Images = itemDto.Images ?? new List<string>(),
+                    Videos = itemDto.Videos ?? new List<string>(),
                     WarrantyRound = warrantyRounds[itemDto.OrderItemId]
                 };
                 await _warrantyRequestItemRepository.InsertAsync(requestItem);
@@ -502,7 +504,7 @@ namespace MamaFit.Services.Service
                 var orderKey = oiForKey.OrderId!;
                 var destKey = d.DestinationType == DestinationType.FACTORY
                     ? "FACTORY"  // Tất cả items về FACTORY sẽ cùng nhóm
-                    : $"BRANCH";  // Các items về BRANCH sẽ được xử lý riêng lẻ
+                    : "BRANCH";  // Các items về BRANCH sẽ được xử lý riêng lẻ
 
                 var key = $"{orderKey}|{destKey}";
 
@@ -577,7 +579,7 @@ namespace MamaFit.Services.Service
                         if (!clearedOrders.Contains(orderEntity.Id))
                         {
                             orderEntity.TrackingOrderCode = null;
-                            orderEntity.Status = OrderStatus.DELIVERING;
+                            orderEntity.Status = OrderStatus.PICKUP_IN_PROGRESS;
                             clearedOrders.Add(orderEntity.Id);
                         }
 

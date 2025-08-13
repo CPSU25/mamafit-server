@@ -3397,7 +3397,7 @@ namespace MamaFit.BusinessObjects.Data
                     ClosingHour = new TimeOnly(18, 00, 00),
                     Images =
                     [
-                        "{https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2Fdownload_1753254774304_m5fg15.jpeg?alt=media&token=02b0e1ee-3126-4c80-ad66-59aea3fdfd70}"
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2Fdownload_1753254774304_m5fg15.jpeg?alt=media&token=02b0e1ee-3126-4c80-ad66-59aea3fdfd70"
                     ],
                     MapId =
                         "XTX4i62tylprNlWCpW2uynJsQW6yIY_EZQ8iropFoomEN3esvWO2cmkXQb-nfP_E-wpZk71HuuxrSHyunEWMQW0Vj6y6G4BjaE5alox8jOVpGkm-uhqcjGsxQaC0MG_fM",
@@ -3424,7 +3424,7 @@ namespace MamaFit.BusinessObjects.Data
                     ClosingHour = new TimeOnly(17, 30, 00),
                     Images =
                     [
-                        "{https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2Fdownload_1753254877456_iubawj.jpeg?alt=media&token=e343f866-8c6b-4fa3-b5fa-17026bed0922}"
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2Fdownload_1753254877456_iubawj.jpeg?alt=media&token=e343f866-8c6b-4fa3-b5fa-17026bed0922"
                     ],
                     MapId =
                         "abpzyvOobyVhaEHDtbmbClhBTYq_RZQIWLtF96RrhC1YiSf7l0SyS2mqTeG5eaoO4bbpnj71Brih0u0HouGumgG_OL0-5RIRKbKhe4Yh4iB6Pkk2Ivh6-NZi6RchtH4gx",
@@ -3529,7 +3529,7 @@ namespace MamaFit.BusinessObjects.Data
                 new Milestone
                 {
                     Id = "08c1f3fd1f71460e9a4afefc14fa01cb",
-                    Name = "In Warrnaty",
+                    Name = "In Warranty",
                     Description = "Warranty repair or replacement",
                     ApplyFor = [ItemType.WARRANTY],
                     SequenceOrder = 4,
@@ -3952,10 +3952,47 @@ namespace MamaFit.BusinessObjects.Data
                     SubTotalAmount = 3000.0m,
                     WarrantyCode = null,
                     ReceivedAt = null,
+                    ReceivedAtBranch = null,
                     CreatedBy = "User",
                     UpdatedBy = null,
                     CreatedAt = new DateTime(2025, 8, 3, 6, 19, 30, DateTimeKind.Utc),
                     UpdatedAt = new DateTime(2025, 8, 3, 6, 19, 30, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Order
+                {
+                    Id = "b2643d4d3f854ad9926b3be5e63e4914",
+                    AddressId = "7aa93cf1dcea43e68da114d7c991a732",
+                    BranchId = null,
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    VoucherDiscountId = null,
+                    MeasurementId = "82e18e44f0984ad08209e575f77f3ca0",
+                    IsOnline = true,
+                    Type = 0,
+                    Code = "O61733",
+                    TrackingOrderCode = null,
+                    Status = 0,
+                    TotalAmount = 30250m,
+                    ShippingFee = 22000m,
+                    ServiceAmount = 4250m,
+                    DiscountSubtotal = 0m,
+                    DepositSubtotal = 2000m,
+                    RemainingBalance = 2000m,
+                    TotalPaid = 28250m,
+                    PaymentStatus = 0,
+                    PaymentMethod = PaymentMethod.ONLINE_BANKING,
+                    DeliveryMethod = DeliveryMethod.DELIVERY,
+                    PaymentType = 0,
+                    CanceledAt = null,
+                    CanceledReason = null,
+                    SubTotalAmount = 4000m,
+                    WarrantyCode = null,
+                    ReceivedAt = null,
+                    ReceivedAtBranch = null,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc), 
                     IsDeleted = false
                 },
                 new Order
@@ -3987,6 +4024,7 @@ namespace MamaFit.BusinessObjects.Data
                     SubTotalAmount = 2000.0m,
                     WarrantyCode = null,
                     ReceivedAt = null,
+                    ReceivedAtBranch = null,
                     CreatedBy = "User",
                     UpdatedBy = null,
                     CreatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
@@ -4022,6 +4060,7 @@ namespace MamaFit.BusinessObjects.Data
                     SubTotalAmount = 2000.0m,
                     WarrantyCode = null,
                     ReceivedAt = null,
+                    ReceivedAtBranch = null,
                     CreatedBy = "User",
                     UpdatedBy = null,
                     CreatedAt = new DateTime(2025, 8, 3, 6, 29, 40, DateTimeKind.Utc),
@@ -4057,6 +4096,7 @@ namespace MamaFit.BusinessObjects.Data
                     SubTotalAmount = 2000.0m,
                     WarrantyCode = null,
                     ReceivedAt = null,
+                    ReceivedAtBranch = null,
                     CreatedBy = "User",
                     UpdatedBy = null,
                     CreatedAt = new DateTime(2025, 8, 3, 6, 30, 48, DateTimeKind.Utc),
@@ -4092,6 +4132,7 @@ namespace MamaFit.BusinessObjects.Data
                     SubTotalAmount = 3000.0m,
                     WarrantyCode = null,
                     ReceivedAt = null,
+                    ReceivedAtBranch = null,
                     CreatedBy = "User",
                     UpdatedBy = null,
                     CreatedAt = new DateTime(2025, 8, 3, 6, 31, 42, DateTimeKind.Utc),
@@ -4127,6 +4168,7 @@ namespace MamaFit.BusinessObjects.Data
                     SubTotalAmount = 4000.0m,
                     WarrantyCode = null,
                     ReceivedAt = null,
+                    ReceivedAtBranch = null,
                     CreatedBy = "User",
                     UpdatedBy = "User",
                     CreatedAt = new DateTime(2025, 8, 9, 10, 3, 21, DateTimeKind.Utc),
@@ -4152,6 +4194,40 @@ namespace MamaFit.BusinessObjects.Data
                     UpdatedBy = null,
                     CreatedAt = new DateTime(2025, 8, 3, 6, 19, 30, DateTimeKind.Utc),
                     UpdatedAt = new DateTime(2025, 8, 3, 6, 19, 30, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new OrderItem
+                {
+                    Id = "b9d43051de4f471aa7228bfc5a51af68",
+                    OrderId = "b2643d4d3f854ad9926b3be5e63e4914",
+                    ParentOrderItemId = null,
+                    MaternityDressDetailId = null,
+                    PresetId = "fe88b53dce4c4938a7785fb9e3db1f0a",
+                    ItemType = ItemType.PRESET,
+                    Price = 2000m,
+                    Quantity = 1,
+                    WarrantyDate = null,
+                    CreatedBy = "user",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new OrderItem
+                {
+                    Id = "ebd9a5edae214c4d8f770c29b7aa8b7e",
+                    OrderId = "b2643d4d3f854ad9926b3be5e63e4914",
+                    ParentOrderItemId = null,
+                    MaternityDressDetailId = null,
+                    PresetId = "fe7043a37995453db2d03741e81da9df",
+                    ItemType = ItemType.PRESET,
+                    Price = 2000m,
+                    Quantity = 1,
+                    WarrantyDate = null,
+                    CreatedBy = "user",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
                     IsDeleted = false
                 },
                 new OrderItem
@@ -4262,6 +4338,12 @@ namespace MamaFit.BusinessObjects.Data
                 {
                     OrderItemId = "5c599ac9632447ff814ffcc127910e01",
                     AddOnOptionId = "0528ef2e60164a3aa4ee078e25e982b2",
+                    Value = ""
+                },
+                new OrderItemAddOnOption
+                {
+                    OrderItemId = "b9d43051de4f471aa7228bfc5a51af68",
+                    AddOnOptionId = "c289f97217504ea4a0a16b7079cf5f2a",
                     Value = ""
                 },
                 new OrderItemAddOnOption

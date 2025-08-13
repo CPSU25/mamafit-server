@@ -31,6 +31,7 @@ namespace MamaFit.BusinessObjects.Entity
         public decimal? SubTotalAmount { get; set; }
         public string? WarrantyCode { get; set; }
         public DateTime? ReceivedAt { get; set; }
+        public DateTime? ReceivedAtBranch { get; set; }
 
         // Navigation properties
         public ApplicationUser User { get; set; }

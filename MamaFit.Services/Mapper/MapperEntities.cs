@@ -409,6 +409,8 @@ namespace MamaFit.Services.Mapper
                 .ReverseMap();
             CreateMap<WarrantyRequest, WarrantyGetByIdResponseDto>()
                 .IncludeBase<WarrantyRequest, WarrantyRequestGetAllDto>()
+                .ForMember(d => d.OrderStatus, o => o.MapFrom(s => s.WarrantyRequestItems.FirstOrDefault().OrderItem.Order.Status))
+                .ForMember(d => d.PickAddressId, o => o.MapFrom(s => s.WarrantyRequestItems.FirstOrDefault().OrderItem.Order.AddressId))
                 .ForMember(d => d.Items, o => o.MapFrom(s => s.WarrantyRequestItems))
                 .AfterMap((src, dest, ctx) =>
                 {
@@ -457,6 +459,7 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.RejectedReason, opt => opt.MapFrom(src => src.RejectedReason))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
                 .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images))
+                .ForMember(dest => dest.Videos, opt => opt.MapFrom(src => src.Videos))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
                 .ForMember(dest => dest.EstimateTime, opt => opt.MapFrom(src => src.EstimateTime))
                 .ForMember(dest => dest.DestinationType, opt => opt.MapFrom(src => src.DestinationType))

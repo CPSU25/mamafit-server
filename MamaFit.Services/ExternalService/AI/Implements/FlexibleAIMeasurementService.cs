@@ -86,87 +86,75 @@ public class FlexibleAIMeasurementService : IAIMeasurementCalculationService
         }
     }
 
+    private bool HasCurrentCore(MeasurementCreateDto? input) =>
+        input != null && input.Weight > 0 && input.Bust > 0 && input.Waist > 0 && input.Hip > 0;
+
+    private bool HasDiaryCore(MeasurementDiaryDto diary) =>
+        diary.Weight > 0 && diary.Bust > 0 && diary.Waist > 0 && diary.Hip > 0;
+
+    private (float Weight, float Bust, float Waist, float Hip)? PickCoreToLock(
+        MeasurementDiaryDto diary, MeasurementCreateDto? input)
+    {
+        if (HasCurrentCore(input))
+            return (input!.Weight, input.Bust, input.Waist, input.Hip);
+        if (HasDiaryCore(diary))
+            return (diary.Weight, diary.Bust, diary.Waist, diary.Hip);
+        return null;
+    }
+
     public async Task<MeasurementDto> CalculateMeasurementsAsync(
         MeasurementDiaryDto diary,
         MeasurementCreateDto? currentInput,
         Measurement? lastMeasurement,
         int targetWeek)
     {
-        
         MeasurementDto fallbackResult;
         try
         {
             var cacheKey = GenerateCacheKey(diary, currentInput, lastMeasurement, targetWeek);
+            var cached = await _cache.GetAsync<MeasurementDto>(cacheKey);
+            if (cached != null) return cached;
 
-            var cachedResult = await _cache.GetAsync<MeasurementDto>(cacheKey);
-            if (cachedResult != null)
+            if (_activeProvider == null) await InitializeProvider();
+
+            string prompt = FlexibleMeasurementPrompts.GetFlexibleCalculationPrompt(
+                diary, currentInput, lastMeasurement, targetWeek);
+
+            MeasurementDto? measurements = null;
+            if (_activeProvider != null)
             {
-                return cachedResult;
-            }
-
-            if (_activeProvider == null)
-            {
-                await InitializeProvider();
-
-                if (_activeProvider == null)
+                try
                 {
-                    fallbackResult = CalculateWithFallback(diary, currentInput, lastMeasurement, targetWeek);
-                    await CacheResult(cacheKey, fallbackResult);
-                    return fallbackResult;
+                    var resp = await _activeProvider.GenerateResponseAsync(prompt);
+                    measurements = ParseAIResponse(resp);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Error with provider: {_activeProvider?.GetProviderName()}");
                 }
             }
 
-            string? prompt = null;
-            try
+            if (measurements == null)
             {
-                prompt = FlexibleMeasurementPrompts.GetFlexibleCalculationPrompt(
-                    diary, currentInput, lastMeasurement, targetWeek);
-
-                var response = await _activeProvider.GenerateResponseAsync(prompt);
-                var measurements = ParseAIResponse(response);
-
-                if (measurements != null)
-                {
-                    var validatedResult = ApplySafetyValidations(measurements, diary, targetWeek);
-                    await CacheResult(cacheKey, validatedResult);
-                    return validatedResult;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error with {_activeProvider?.GetProviderName() ?? "active provider"}");
-
-                if (_activeProvider is GroqService &&
-                    _configuration.GetValue<bool>("AI:Providers:Ollama:Enabled") &&
-                    !string.IsNullOrEmpty(prompt))
-                {
-                    try
-                    {
-                        if (await _ollamaService.IsAvailable())
-                        {
-                            _activeProvider = _ollamaService;
-
-                            var retryResponse = await _ollamaService.GenerateResponseAsync(prompt);
-                            var retryMeasurements = ParseAIResponse(retryResponse);
-
-                            if (retryMeasurements != null)
-                            {
-                                var validatedResult = ApplySafetyValidations(retryMeasurements, diary, targetWeek);
-                                await CacheResult(cacheKey, validatedResult);
-                                return validatedResult;
-                            }
-                        }
-                    }
-                    catch (Exception ollamaEx)
-                    {
-                        _logger.LogError(ollamaEx, "Failed to use Ollama as fallback provider");
-                    }
-                }
+                fallbackResult = CalculateWithFallback(diary, currentInput, lastMeasurement, targetWeek);
+                await CacheResult(cacheKey, fallbackResult);
+                return fallbackResult;
             }
 
-            fallbackResult = CalculateWithFallback(diary, currentInput, lastMeasurement, targetWeek);
-            await CacheResult(cacheKey, fallbackResult);
-            return fallbackResult;
+            var core = PickCoreToLock(diary, currentInput);
+            bool lockCore = core.HasValue;
+
+            if (lockCore)
+            {
+                measurements.Weight = core.Value.Weight;
+                measurements.Bust = core.Value.Bust;
+                measurements.Waist = core.Value.Waist;
+                measurements.Hip = core.Value.Hip;
+            }
+
+            var validated = ApplySafetyValidations(measurements, diary, targetWeek, lockCoreManual: lockCore);
+            await CacheResult(cacheKey, validated);
+            return validated;
         }
         catch (Exception ex)
         {
@@ -227,40 +215,38 @@ public class FlexibleAIMeasurementService : IAIMeasurementCalculationService
     private MeasurementDto ApplySafetyValidations(
         MeasurementDto measurements,
         MeasurementDiaryDto diary,
-        int targetWeek)
+        int targetWeek,
+        bool lockCoreManual = false)
     {
         measurements.WeekOfPregnancy = targetWeek;
 
-        var bmi = diary.Weight / ((diary.Height / 100) * (diary.Height / 100));
-        var maxTotalGain = GetMaxSafeWeightGain(bmi);
-        var maxWeightForWeek = diary.Weight + (maxTotalGain * targetWeek / 40f);
-        if (measurements.Weight > maxWeightForWeek)
+        if (!lockCoreManual)
         {
-            _logger.LogWarning(
-                $"AI suggested weight {measurements.Weight}kg exceeds safe limit, adjusting to {maxWeightForWeek}kg");
-            measurements.Weight = maxWeightForWeek;
+            var bmi = diary.Weight / ((diary.Height / 100) * (diary.Height / 100));
+            var maxTotalGain = GetMaxSafeWeightGain(bmi);
+            var maxWeightForWeek = diary.Weight + (maxTotalGain * targetWeek / 40f);
+            if (measurements.Weight > maxWeightForWeek)
+            {
+                _logger.LogWarning(
+                    $"AI suggested weight {measurements.Weight}kg exceeds safe limit, adjusting to {maxWeightForWeek}kg");
+                measurements.Weight = maxWeightForWeek;
+            }
+
+            if (measurements.Weight < diary.Weight)
+            {
+                _logger.LogWarning("AI suggested weight loss during pregnancy, adjusting");
+                measurements.Weight = diary.Weight;
+            }
+
+            var maxBustIncrease = 20f;
+            measurements.Bust = Math.Min(measurements.Bust, diary.Bust + maxBustIncrease);
+
+            var maxHipIncrease = 15f;
+            measurements.Hip = Math.Min(measurements.Hip, diary.Hip + maxHipIncrease);
+
+            var maxWaistIncrease = targetWeek * 0.5f;
+            measurements.Waist = Math.Min(measurements.Waist, diary.Waist + maxWaistIncrease);
         }
-
-        if (measurements.Weight < diary.Weight)
-        {
-            _logger.LogWarning("AI suggested weight loss during pregnancy, adjusting");
-            measurements.Weight = diary.Weight;
-        }
-
-        var maxBustIncrease = 20f;
-        measurements.Bust = Math.Min(measurements.Bust, diary.Bust + maxBustIncrease);
-
-        var maxHipIncrease = 15f;
-        measurements.Hip = Math.Min(measurements.Hip, diary.Hip + maxHipIncrease);
-
-        var maxWaistIncrease = targetWeek * 0.5f;
-        measurements.Waist = Math.Min(measurements.Waist, diary.Waist + maxWaistIncrease);
-
-        measurements.SleeveLength = Math.Clamp(
-            measurements.SleeveLength,
-            diary.Height * 0.14f,
-            diary.Height * 0.18f
-        );
 
         var estimatedNeck = diary.Height / 5.5f;
         measurements.Neck = Math.Clamp(
@@ -274,12 +260,12 @@ public class FlexibleAIMeasurementService : IAIMeasurementCalculationService
         measurements.ChestAround = Math.Max(measurements.ChestAround, 60f);
         measurements.Thigh = Math.Max(measurements.Thigh, 30f);
         measurements.ShoulderWidth = Math.Max(measurements.ShoulderWidth, 30f);
-        measurements.SleeveLength = Math.Max(measurements.SleeveLength, 40f);
         measurements.DressLength = Math.Max(measurements.DressLength, 80f);
         measurements.LegLength = Math.Max(measurements.LegLength, 60f);
 
         return measurements;
     }
+
 
     private float GetMaxSafeWeightGain(float bmi)
     {

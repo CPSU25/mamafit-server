@@ -14,7 +14,7 @@
         PICKUP_IN_PROGRESS, // đang lấy hàng
         //status for warranty order
         AWAITING_PAID_WARRANTY, 
-        COMPLETED_WARRANTY, // đã hoàn thành bảo hành
+        COMPLETED_WARRANTY, // đã hoàn thành bảo hành, chưa dùng 
         RECEIVED_AT_BRANCH // đã nhận tại chi nhánh
     }
 }

@@ -19,8 +19,8 @@ Your task is to calculate comprehensive body measurements for a pregnant woman.
 Patient Profile:
 - Age: {diary.Age} years
 - Height: {diary.Height} cm
-- Pre-pregnancy weight: {diary.Weight} kg
-- Pre-pregnancy measurements:
+- Baseline (from diary):
+  * Weight: {diary.Weight} kg
   * Bust: {diary.Bust} cm
   * Waist: {diary.Waist} cm
   * Hip: {diary.Hip} cm
@@ -50,14 +50,36 @@ Previous Measurements (Week {lastMeasurement.WeekOfPregnancy}):
 ";
         }
 
-        if (currentInput != null && currentInput.Weight > 0)
+        bool hasCurrentCore = currentInput != null
+                              && currentInput.Weight > 0
+                              && currentInput.Bust  > 0
+                              && currentInput.Waist > 0
+                              && currentInput.Hip   > 0;
+
+        bool hasDiaryCore = diary.Weight > 0
+                            && diary.Bust  > 0
+                            && diary.Waist > 0
+                            && diary.Hip   > 0;
+
+        if (hasCurrentCore)
         {
             prompt += $@"
-Current Manual Input:
-- Weight: {currentInput.Weight} kg
+Current Manual Input (DO NOT MODIFY these four values):
+- Weight: {currentInput!.Weight} kg
 - Bust: {currentInput.Bust} cm
 - Waist: {currentInput.Waist} cm
 - Hip: {currentInput.Hip} cm
+
+";
+        }
+        else if (hasDiaryCore)
+        {
+            prompt += $@"
+Baseline Manual Values from Diary (DO NOT MODIFY these four values):
+- Weight: {diary.Weight} kg
+- Bust: {diary.Bust} cm
+- Waist: {diary.Waist} cm
+- Hip: {diary.Hip} cm
 
 ";
         }
@@ -76,6 +98,7 @@ IMPORTANT CONTEXT:
    - PantsWaist sits below the belly
    - Stomach measurement is for maternity wear
    - Thigh measurement considers potential swelling
+4. If manual baseline values are present (from Current Manual Input or from Diary), you MUST copy weight, bust, waist, and hip EXACTLY as given and only compute the derived measurements around them. Do NOT adjust these four values.
 
 Calculate ALL measurements intelligently based on:
 - The woman's body proportions and height
@@ -85,6 +108,9 @@ Calculate ALL measurements intelligently based on:
 - Individual variation (not everyone follows the same pattern)
 
 Return ONLY a JSON object with these measurements (all values must be positive numbers):
+- Output JSON only (no markdown fences, no extra text).
+- Numbers only (no units in the values).
+- Prefer rounding to 1 decimal place.
 {{
   ""weight"": [realistic weight for week {targetWeek}],
   ""neck"": [proportional to body frame and potential swelling],

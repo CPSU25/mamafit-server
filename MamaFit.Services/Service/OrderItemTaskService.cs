@@ -132,7 +132,6 @@ public class OrderItemTaskService : IOrderItemTaskService
 
         return result;
     }
-
     public async Task<List<OrderItemTaskGetByTokenResponse>> GetTasksByOrderItemIdAsync(string orderItemId)
     {
         var listOrderItemTask = await GetTasksByAssignedStaffAsync();
@@ -142,7 +141,6 @@ public class OrderItemTaskService : IOrderItemTaskService
 
         return response;
     }
-
     public async Task UpdateStatusAsync(string dressTaskId, string orderItemId, OrderItemTaskUpdateRequestDto request,
         bool? severity)
     {
@@ -189,7 +187,6 @@ public class OrderItemTaskService : IOrderItemTaskService
                 break;
         }
     }
-
     private async Task HandleInProgressAsync(OrderItemTask task, OrderItem orderItem, Order order)
     {
         if (task.MaternityDressTask.Milestone.SequenceOrder == 1)
@@ -208,7 +205,6 @@ public class OrderItemTaskService : IOrderItemTaskService
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
     }
-
     private async Task HandleDoneAsync(OrderItem orderItem, Order order,
         List<MilestoneAchiveOrderItemResponseDto> progress, IEnumerable<Milestone> milestones,  OrderItemTask currentTask)
     {
@@ -245,7 +241,6 @@ public class OrderItemTaskService : IOrderItemTaskService
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
     }
-
     private async Task UpdateStatusForPresetDoneAsync(Order order, List<MilestoneAchiveOrderItemResponseDto> progress)
     {
         var presetProgress = progress.Where(x => x.Milestone.ApplyFor.Contains(ItemType.PRESET));
@@ -267,7 +262,6 @@ public class OrderItemTaskService : IOrderItemTaskService
             // await UpdateStatusWithoutAddOnAsync(order, progress);
         }
     }
-
     // private async Task UpdateStatusWithQCAsync(Order order, List<MilestoneAchiveOrderItemResponseDto> progress)
     // {
     //     var packageProgress = progress.OrderByDescending(x => x.Milestone.SequenceOrder).FirstOrDefault();
@@ -295,7 +289,6 @@ public class OrderItemTaskService : IOrderItemTaskService
     //     else
     //         order.Status = OrderStatus.IN_PROGRESS;
     // }
-
     private async Task HandlePassAsync(Order order, List<MilestoneAchiveOrderItemResponseDto> progress, OrderItemTask currentTask)
     {
         if (order.Type == OrderType.WARRANTY)
@@ -358,7 +351,6 @@ public class OrderItemTaskService : IOrderItemTaskService
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
     }
-
     private async Task HandleFailAsync(
         OrderItem orderItem,
         Order order,
@@ -437,12 +429,10 @@ public class OrderItemTaskService : IOrderItemTaskService
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
     }
-
     private string GetCurrentUserId()
     {
         return _contextAccessor.HttpContext.User.FindFirst("userId").Value ?? "System";
     }
-
     private async Task SendMessageAndNoti(OrderItemTask task)
     {
         var designerId = GetCurrentUserId();
@@ -526,7 +516,6 @@ public class OrderItemTaskService : IOrderItemTaskService
             }
         }
     }
-
     // private bool CheckAllItemInLastMilestone(Order order, IEnumerable<Milestone> milestones)
     // {
     //     var lastMilestone = milestones.OrderByDescending(x => x.SequenceOrder).FirstOrDefault();
@@ -560,12 +549,10 @@ public class OrderItemTaskService : IOrderItemTaskService
 
         return qcFailReady || qcReady;
     }
-
     // Chỉ xét các item có sản xuất/thẩm định (PRESET/WARRANTY/...)
     // Nếu bạn dùng ADD_ON như một OrderItem độc lập thì thêm vào filter dưới đây
     private static bool IsProductionItem(OrderItem oi) =>
         oi.ItemType == ItemType.PRESET || oi.ItemType == ItemType.WARRANTY;
-
     private async Task<bool> AreAllItemsReadyForPackagingAsync(Order order)
     {
         var itemIds = order.OrderItems

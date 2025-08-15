@@ -169,6 +169,7 @@ public class OrderItemService : IOrderItemService
                     orderItemTask.User = personInCharge;
                     orderItemTask.UserId = personInCharge!.Id;
                     orderItemTask.UpdatedBy = user?.UserName ?? "System";
+                    orderItemTask.Deadline = DateTime.UtcNow.AddMinutes(task.EstimateTimeSpan * task.SequenceOrder);
                     orderItemTask.UpdatedAt = DateTime.UtcNow;
                     await _unitOfWork.OrderItemTaskRepository.UpdateAsync(orderItemTask);
                 }
@@ -209,7 +210,7 @@ public class OrderItemService : IOrderItemService
             await _orderItemTaskService.UpdateStatusAsync(task, request.OrderItemId, new OrderItemTaskUpdateRequestDto
             {
                 Status = request.Status,
-            },request.Severity);
+            }, request.Severity);
         }
 
         await _cacheService.RemoveByPrefixAsync(cacheKey);
@@ -246,9 +247,9 @@ public class OrderItemService : IOrderItemService
     public async Task<int> GetCurrentOrderItemTaskSequence(string orderItemId)
     {
         var progressList = await _milestoneService.GetMilestoneByOrderItemId(orderItemId);
-        foreach(var progress in progressList)
+        foreach (var progress in progressList)
         {
-            if(progress.Progress >= 100 )
+            if (progress.Progress >= 100)
                 continue;
             else
             {

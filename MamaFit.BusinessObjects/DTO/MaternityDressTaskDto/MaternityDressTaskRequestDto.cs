@@ -8,5 +8,6 @@ namespace MamaFit.BusinessObjects.DTO.MaternityDressTaskDto
         public string? Name { get; set; }
         public string? Description { get; set; }
         public int SequenceOrder { get; set; }
+        public int EstimateTimeSpan { get; set; }
     }
 }

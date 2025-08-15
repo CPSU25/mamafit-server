@@ -9,6 +9,7 @@ namespace MamaFit.BusinessObjects.DTO.OrderItemTaskDto
         public string? ChargeId { get; set; }
         public string? ChargeName { get; set; }
         public OrderItemTaskStatus Status { get; set; }
+        public DateTime? Deadline { get; set; }
         public DateTime CreatedAt { get; set; }
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }

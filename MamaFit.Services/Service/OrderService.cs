@@ -65,7 +65,6 @@ public class OrderService : IOrderService
             return orderDto;
         }).ToList();
     }
-
     public async Task<OrderResponseDto> GetBySkuAndCodeAsync(string sku, string code)
     {
         var order = await _unitOfWork.OrderRepository.GetBySkuAndCodeAsync(sku, code);
@@ -85,7 +84,6 @@ public class OrderService : IOrderService
             return orderDto;
         }).ToList();
     }
-
     public async Task<List<OrderResponseDto>> GetOrdersForDesignerAsync()
     {
         var userId = GetCurrentUserId(); // lấy user từ JWT
@@ -98,7 +96,6 @@ public class OrderService : IOrderService
             return orderDto;
         }).ToList();
     }
-
     public async Task<PaginatedList<OrderResponseDto>> GetByTokenAsync(string accessToken, int index = 1,
         int pageSize = 10, string? search = null, OrderStatus? status = null)
     {
@@ -114,7 +111,6 @@ public class OrderService : IOrderService
             pageSize
         );
     }
-
     public async Task UpdateOrderStatusAsync(string id, OrderStatus orderStatus, PaymentStatus paymentStatus)
     {
         var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
@@ -159,7 +155,6 @@ public class OrderService : IOrderService
             }
         });
     }
-
     public async Task<PaginatedList<OrderResponseDto>> GetAllAsync(int index, int pageSize, DateTime? startDate,
         DateTime? endDate)
     {
@@ -174,14 +169,12 @@ public class OrderService : IOrderService
             pageSize
         );
     }
-
     public async Task<OrderGetByIdResponseDto> GetOrderByIdAsync(string id)
     {
         var order = await _unitOfWork.OrderRepository.GetByIdWithItems(id);
         _validation.CheckNotFound(order, "Order not found");
         return _mapper.Map<OrderGetByIdResponseDto>(order);
     }
-
     public async Task<OrderResponseDto> CreateOrderAsync(OrderRequestDto model)
     {
         await _validation.ValidateAndThrowAsync(model);
@@ -209,7 +202,6 @@ public class OrderService : IOrderService
         await _notificationService.SendAndSaveNotificationAsync(notification);
         return _mapper.Map<OrderResponseDto>(order);
     }
-
     public async Task<OrderResponseDto> UpdateOrderAsync(string id, OrderRequestDto model)
     {
         await _validation.ValidateAndThrowAsync(model);
@@ -222,7 +214,6 @@ public class OrderService : IOrderService
         await _unitOfWork.SaveChangesAsync();
         return _mapper.Map<OrderResponseDto>(order);
     }
-
     public async Task<bool> DeleteOrderAsync(string id)
     {
         var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
@@ -231,7 +222,6 @@ public class OrderService : IOrderService
         await _unitOfWork.SaveChangesAsync();
         return true;
     }
-
     public async Task<string> CreateReadyToBuyOrderAsync(OrderReadyToBuyRequestDto request)
     {
         await _validation.ValidateAndThrowAsync(request);
@@ -419,19 +409,16 @@ public class OrderService : IOrderService
         }
         return order.Id;
     }
-
     private string GenerateOrderCode()
     {
         string prefix = "O";
         string randomPart = new Random().Next(10000, 99999).ToString();
         return $"{prefix}{randomPart}";
     }
-
     private string GetCurrentUserId()
     {
         return _contextAccessor.HttpContext?.User?.FindFirst("userId")?.Value ?? string.Empty;
     }
-
     public async Task<string> CreateDesignRequestOrderAsync(OrderDesignRequestDto request)
     {
         var userId = GetCurrentUserId();
@@ -503,7 +490,6 @@ public class OrderService : IOrderService
         await _unitOfWork.SaveChangesAsync();
         return order.Id;
     }
-
     public async Task<string> CreatePresetOrderAsync(OrderPresetCreateRequestDto request)
     {
         var userId = GetCurrentUserId();
@@ -669,7 +655,6 @@ public class OrderService : IOrderService
         await _unitOfWork.SaveChangesAsync();
         return order.Id;
     }
-
     public async Task UpdateReceivedOrderAsync(string id)
     {
         var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
@@ -687,7 +672,6 @@ public class OrderService : IOrderService
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
     }
-
     public async Task UpdateCancelledOrderAsync(string id, string? cancelReason = null)
     {
         var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
@@ -705,13 +689,11 @@ public class OrderService : IOrderService
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
     }
-
     public async Task WebhookForContentfulWhenUpdateData(CmsServiceBaseDto request)
     {
         await _cacheService.SetAsync("cms:service:base", request, TimeSpan.FromDays(30));
         await _cacheService.RemoveByPrefixAsync("appointment_slots");
     }
-
     public async Task<List<MyOrderStatusCount>> GetMyOrderStatusCounts()
     {
         var userId = GetCurrentUserId();
@@ -734,7 +716,6 @@ public class OrderService : IOrderService
 
         return myOrderStatusCounts;
     }
-
     public async Task OrderReceivedAtUpdateAsync(string orderId)
     {
         var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(orderId);
@@ -743,7 +724,6 @@ public class OrderService : IOrderService
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
     }
-
     public async Task<List<OrderGetByIdResponseDto>> GetForWarranty()
     {
         var userId = GetCurrentUserId();
@@ -754,4 +734,13 @@ public class OrderService : IOrderService
 
         return _mapper.Map<List<OrderGetByIdResponseDto>>(result);
     }
-}
+
+    public async Task<List<OrderGetByIdResponseDto>> GetAllByDesignRequestId(string designRequestId)
+    {
+        var orderList = await _unitOfWork.OrderRepository.GetAllOrderByDesignRequestId(designRequestId);
+        _validation.CheckNotFound(orderList, $"Design request with Id: {designRequestId} has no order");
+
+        var response = orderList.Select(x => _mapper.Map<OrderGetByIdResponseDto>(x)).ToList();
+        return response;
+    }
+}  

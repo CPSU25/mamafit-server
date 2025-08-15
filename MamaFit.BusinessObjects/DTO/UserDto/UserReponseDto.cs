@@ -5,6 +5,7 @@ public class UserReponseDto
     public string? Id { get; set; }
     public string? UserName { get; set; } = string.Empty;
     public string? UserEmail { get; set; } = string.Empty;
+    public string? JobTitle { get; set; }
     public string? PhoneNumber { get; set; } = string.Empty;
     public DateTime? DateOfBirth { get; set; }
     public string? ProfilePicture { get; set; }

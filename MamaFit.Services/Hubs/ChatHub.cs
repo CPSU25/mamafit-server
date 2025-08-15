@@ -3,18 +3,21 @@ using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
 using MamaFit.Services.ExternalService.SignalR;
+using Microsoft.AspNetCore.Http;
 
 namespace MamaFit.Services.Hubs
 {
     public class ChatHub : Hub
     {
         private readonly IChatService _chatService;
+        private readonly IHttpContextAccessor _contextAccessor;
         private readonly IUserConnectionManager _userConnectionManager;
 
-        public ChatHub(IChatService chatService, IUserConnectionManager connectionManager)
+        public ChatHub(IChatService chatService, IUserConnectionManager connectionManager, IHttpContextAccessor contextAccessor)
         {
             _chatService = chatService;
             _userConnectionManager = connectionManager;
+            _contextAccessor = contextAccessor;
         }
 
         public override async Task OnConnectedAsync()
@@ -36,7 +39,7 @@ namespace MamaFit.Services.Hubs
                 await Groups.AddToGroupAsync(Context.ConnectionId, room.Id);
                 await _userConnectionManager.AddUserToRoomAsync(room.Id, userId);
             }
-            
+
             // Chỉ gửi thông báo online nếu đây là kết nối đầu tiên (user vừa online thực sự)
             if (await _userConnectionManager.GetUserConnectionsAsync(userId) is { Count: 1 })
             {
@@ -185,7 +188,7 @@ namespace MamaFit.Services.Hubs
                 await Clients.Caller.SendAsync("Error", $"Failed to send message: {ex.Message}");
             }
         }
-        
+
 
         /// <summary>
         /// Lấy danh sách user online trong room (lọc đúng người đang online)
@@ -245,9 +248,7 @@ namespace MamaFit.Services.Hubs
         private string? GetCurrentUserId()
         {
             return Context.User?.FindFirst("userId")?.Value
-                ?? Context.User?.FindFirst("sub")?.Value
-                ?? Context.User?.FindFirst("nameid")?.Value
-                ?? Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                ?? _contextAccessor.HttpContext.Request.Cookies.TryGetValue("userId", out var value).ToString();
         }
     }
 }

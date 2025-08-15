@@ -734,7 +734,6 @@ public class OrderService : IOrderService
 
         return _mapper.Map<List<OrderGetByIdResponseDto>>(result);
     }
-
     public async Task<List<OrderGetByIdResponseDto>> GetAllByDesignRequestId(string designRequestId)
     {
         var orderList = await _unitOfWork.OrderRepository.GetAllOrderByDesignRequestId(designRequestId);

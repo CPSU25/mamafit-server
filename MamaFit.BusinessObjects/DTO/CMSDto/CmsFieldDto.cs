@@ -13,6 +13,7 @@
         public int WarrantyPeriod { get; set; }
         public List<string>? Colors { get; set; }
         public Varriants? Varriant { get; set; }
+        public string? JobTitle { get; set; }
     }
 
     public class Varriants

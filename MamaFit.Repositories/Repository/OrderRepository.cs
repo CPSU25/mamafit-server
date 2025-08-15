@@ -245,4 +245,16 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
 
         return order;
     }
+
+    public async Task<List<Order>> GetAllOrderByDesignRequestId(string designRequestId)
+    {
+        var order = await _dbSet
+            .AsNoTracking()
+            .Include(x => x.OrderItems).ThenInclude(x => x.Preset).ThenInclude(x => x.Style)
+            .Include(x => x.OrderItems).ThenInclude(x => x.Preset).ThenInclude(x => x.DesignRequest)
+            .Where(x => !x.IsDeleted && 
+            x.OrderItems.Any(p => p.Preset.DesignRequest.Id == designRequestId)).ToListAsync();
+
+        return order;
+    }
 }

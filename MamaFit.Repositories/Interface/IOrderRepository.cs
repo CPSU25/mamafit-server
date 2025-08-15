@@ -14,6 +14,7 @@ public interface IOrderRepository : IGenericRepository<Order>
     Task<PaginatedList<Order>> GetByTokenAsync(int index, int pageSize, string token, string? search, OrderStatus? status = null);
     Task<PaginatedList<Order>> GetAllAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate);
     Task<List<Order>> GetOrderForRequest(string userId);
+    Task<List<Order>> GetAllOrderByDesignRequestId(string designRequestId);
     Task<Order?> GetByIdWithItems(string id);
     Task<Order?> GetByCodeAsync(string code);
     Task<Order?> GetWithItemsAndDressDetails(string id);

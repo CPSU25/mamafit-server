@@ -94,6 +94,19 @@ public class OrderController : ControllerBase
         ));
     }
 
+    [HttpGet("order-group-designRequest/{designRequestId}")]
+    public async Task<IActionResult> GetOrderByDesignRequestId(string designRequestId)
+    {
+        var result = await _service.GetAllByDesignRequestId(designRequestId);
+
+        return Ok(new ResponseModel<List<OrderGetByIdResponseDto>>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            result,
+            "Get all orders successfully!"
+        ));
+    }
+
     [Authorize(Roles = "Admin, Manager")]
     [HttpGet]
     public async Task<IActionResult> GetAll(

@@ -43,9 +43,9 @@ namespace MamaFit.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTicket(TicketRequestCreateDto request)
         {
-            await _ticketService.CreateTicket(request);
+            var ticketId = await _ticketService.CreateTicket(request);
 
-            return StatusCode(StatusCodes.Status201Created, ResponseModel<string>.CreatedResponseModel("Created successfully"));
+            return StatusCode(StatusCodes.Status201Created, ResponseModel<string>.CreatedResponseModel(ticketId));
         }
 
         [HttpPut]

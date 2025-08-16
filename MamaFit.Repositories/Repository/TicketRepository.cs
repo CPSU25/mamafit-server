@@ -38,7 +38,7 @@ namespace MamaFit.Repositories.Repository
             var ticket = await _dbSet
                 .Include(x => x.OrderItem).ThenInclude(x => x.Order).ThenInclude(x => x.User)
                 .Include(x => x.OrderItem).ThenInclude(x => x.Preset).ThenInclude(x => x.Style)
-                .Where(x => !x.IsDeleted).FirstOrDefaultAsync();
+                .Where(x => !x.IsDeleted && x.Id == ticketId).FirstOrDefaultAsync();
 
             return ticket;
         }

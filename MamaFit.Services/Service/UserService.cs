@@ -1,19 +1,14 @@
 using System.Security.Claims;
 using AutoMapper;
-using CloudinaryDotNet.Actions;
 using MamaFit.BusinessObjects.DTO.UploadImageDto;
 using MamaFit.BusinessObjects.DTO.UserDto;
 using MamaFit.BusinessObjects.Entity;
-using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Helper;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
-using MamaFit.Repositories.Interface;
-using MamaFit.Services.ExternalService;
 using MamaFit.Services.ExternalService.CloudinaryService;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 namespace MamaFit.Services.Service;
 
@@ -65,12 +60,22 @@ public class UserService : IUserService
     public async Task<UserReponseDto> UpdateUserAsync(string userId, UpdateUserRequestDto model)
     {
         await _validation.ValidateAndThrowAsync(model);
-        var userRepo = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(userId);
-        _validation.CheckNotFound(userRepo, "User not found!");
-
-        var user = _mapper.Map<ApplicationUser>(model);
-
-
+    
+        var user = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(userId);
+        _validation.CheckNotFound(user, "User not found!");
+    
+        if (user.UserName != model.UserName)
+        {
+            var usernameExists = await _unitOfWork.UserRepository.IsEntityExistsAsync(x => 
+                x.UserName == model.UserName && x.Id != userId);
+            _validation.CheckBadRequest(usernameExists, "Username already exists!");
+        }
+    
+        var role = await _unitOfWork.RoleRepository.GetByIdAsync(model.RoleId);
+        _validation.CheckNotFound(role, "Role not found!");
+    
+        _mapper.Map(model, user);
+    
         await _unitOfWork.UserRepository.UpdateUserAsync(user);
         await _unitOfWork.SaveChangesAsync();
 

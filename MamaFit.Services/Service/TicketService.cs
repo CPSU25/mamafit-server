@@ -22,7 +22,7 @@ namespace MamaFit.Services.Service
             _contextAccessor = contextAccessor;
         }
 
-        public async Task CreateTicket(TicketRequestCreateDto request)
+        public async Task<string> CreateTicket(TicketRequestCreateDto request)
         {
             var orderItem = await _unitOfWork.OrderItemRepository.GetDetailById(request.OrderItemId);
             _validationService.CheckNotFound(orderItem, $"Order item with Id: {request.OrderItemId} is not found ");
@@ -32,6 +32,8 @@ namespace MamaFit.Services.Service
 
             await _unitOfWork.TicketRepository.InsertAsync(ticket);
             await _unitOfWork.SaveChangesAsync();
+
+            return ticket.Id;
         }
 
         public async Task DeleteTicket(string ticketId)

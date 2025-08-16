@@ -8,7 +8,7 @@ namespace MamaFit.Repositories.Implement
         private readonly ApplicationDbContext _context;
         private bool _disposed;
         public IUserRepository UserRepository { get; }
-        public IAddressRepository AddressRepository { get; } 
+        public IAddressRepository AddressRepository { get; }
         public IRoleRepository RoleRepository { get; }
         public ITokenRepository TokenRepository { get; }
         public IOTPRepository OTPRepository { get; }
@@ -41,6 +41,8 @@ namespace MamaFit.Repositories.Implement
         public IAddOnOptionRepository AddOnOptionRepository { get; }
         public IPositionRepository PositionRepository { get; }
         public ISizeRepository SizeRepository { get; }
+
+        public ITicketRepository TicketRepository { get; }
 
         public UnitOfWork(ApplicationDbContext context,
             IUserRepository userRepository,
@@ -76,7 +78,8 @@ namespace MamaFit.Repositories.Implement
             IOrderItemTaskRepository orderItemTaskRepository,
             IAddOnOptionRepository addOnOptionRepository,
             IPositionRepository positionRepository,
-            ISizeRepository sizeRepository)
+            ISizeRepository sizeRepository,
+            ITicketRepository ticketRepository)
         {
             _context = context;
             UserRepository = userRepository;
@@ -113,6 +116,7 @@ namespace MamaFit.Repositories.Implement
             AddOnOptionRepository = addOnOptionRepository;
             PositionRepository = positionRepository;
             SizeRepository = sizeRepository;
+            TicketRepository = ticketRepository;
         }
 
         public int SaveChanges()

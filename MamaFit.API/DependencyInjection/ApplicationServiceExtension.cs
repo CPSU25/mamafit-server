@@ -72,10 +72,11 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IPresetRepository, PresetRepository>();
             services.AddScoped<IWarrantyRequestRepository, WarrantyRequestRepository>();
             services.AddScoped<IAddOnRepository, AddOnRepository>();
-            services.AddScoped<IOrderItemTaskRepository, OrderItemTaskRepository>();     
+            services.AddScoped<IOrderItemTaskRepository, OrderItemTaskRepository>();
             services.AddScoped<IAddOnOptionRepository, AddOnOptionRepository>();
             services.AddScoped<IPositionRepository, PositionRepository>();
             services.AddScoped<ISizeRepository, SizeRepository>();
+            services.AddScoped<ITicketRepository, TicketRepository>();
             services.AddScoped<IWarrantyRequestItemRepository, WarrantyRequestItemRepository>();
         }
 
@@ -102,6 +103,7 @@ namespace MamaFit.API.DependencyInjection
             services.AddScoped<IMeasurementDiaryService, MeasurementDiaryService>();
             services.AddScoped<IMeasurementService, MeasurementService>();
             services.AddScoped<IChatService, ChatService>();
+            services.AddScoped<ITicketService, TicketService>();
             services.AddScoped<IVoucherBatchService, VoucherBatchService>();
             services.AddScoped<IVoucherDiscountService, VoucherDiscountService>();
             services.AddScoped<IMaternityDressTaskService, MaternityDressTaskService>();
@@ -311,7 +313,7 @@ namespace MamaFit.API.DependencyInjection
 
             return services;
         }
-        
+
         public static IServiceCollection AddAIServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddMemoryCache();

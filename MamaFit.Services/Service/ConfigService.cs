@@ -282,7 +282,7 @@ namespace MamaFit.Services.Service
                 // đảm bảo không null để FE render
                 contentfulResponse.Colors ??= new List<string>();
                 contentfulResponse.Sizes  ??= new List<string>();
-                contentfulResponse.JobTitle ??= new List<string>();
+                contentfulResponse.JobTitles ??= new List<string>();
 
                 var config = new CmsServiceBaseDto { Fields = contentfulResponse };
                 await _cacheService.SetAsync(CacheKey, config, TimeSpan.FromDays(30));

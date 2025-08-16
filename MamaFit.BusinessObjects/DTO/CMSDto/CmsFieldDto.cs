@@ -4,7 +4,7 @@
     {
         public string? Name { get; set; }
         public decimal DesignRequestServiceFee { get; set; }
-        public float DepositRate { get; set; }
+        public decimal DepositRate { get; set; }
         public int PresetVersions { get; set; }
         public int WarrantyTime { get; set; }
         public int AppointmentSlotInterval { get; set; }
@@ -12,13 +12,9 @@
         public int MaxAppointmentPerUser { get; set; }
         public int WarrantyPeriod { get; set; }
         public List<string>? Colors { get; set; }
-        public Varriants? Varriant { get; set; }
-        public string? JobTitle { get; set; }
+        public List<string>? Sizes { get; set; }
+
+        public List<string>? JobTitles { get; set; }
     }
 
-    public class Varriants
-    {
-        public List<string> Color { get; set; } = new List<string>();
-        public List<string> Size { get; set; } = new List<string>();
-    }
 }

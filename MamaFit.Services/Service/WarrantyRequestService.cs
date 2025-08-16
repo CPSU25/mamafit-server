@@ -448,9 +448,9 @@ namespace MamaFit.Services.Service
                     if (!string.IsNullOrWhiteSpace(it.RejectedReason))
                         throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
                             "RejectedReason must be empty when status is APPROVED");
-                    if (!isFeeRequest && it.ShippingFee.HasValue)
+                    if (!isFeeRequest && it.ShippingFee.HasValue && it.Fee.HasValue)
                         throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
-                            "ShippingFee is only allowed when RequestType = FEE");
+                            "ShippingFee and Fee cannot be set together when RequestType is not FEE");
                 }
             }
 
@@ -572,9 +572,9 @@ namespace MamaFit.Services.Service
                     _validationService.CheckNotFound(orderEntity, "Order not found");
 
                     var ship = shipByOrderId[orderId]; // đã validate tồn tại
-                    orderEntity.SubTotalAmount = feeTotal; // phí BH
-                    orderEntity.ShippingFee = ship; // phí ship (field order-level)
-                    orderEntity.TotalAmount = feeTotal + ship; // cộng ship vào tổng thanh toán
+                    orderEntity.SubTotalAmount = feeTotal; 
+                    orderEntity.ShippingFee = ship;
+                    orderEntity.TotalAmount = feeTotal + ship;
                     orderEntity.Status = OrderStatus.AWAITING_PAID_WARRANTY;
 
                     await _unitOfWork.OrderRepository.UpdateAsync(orderEntity);
@@ -820,6 +820,36 @@ namespace MamaFit.Services.Service
             };
         }
 
+        public async Task AssignWarrantyTasksAfterPaidAsync(Order order)
+        {
+            var feeRequests = await _unitOfWork.WarrantyRequestRepository
+                .GetFeeWarrantyRequestsByOrderIdAsync(order.Id);
+
+            if (feeRequests.Count == 0) return;
+
+            // Gom các OrderItemId cần gán task (APPROVED + FACTORY)
+            var allowedIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var wr in feeRequests)
+            {
+                foreach (var wri in wr.WarrantyRequestItems)
+                {
+                    if (wri.Status == WarrantyRequestItemStatus.APPROVED &&
+                        wri.DestinationType == DestinationType.FACTORY)
+                    {
+                        allowedIds.Add(wri.OrderItemId);
+                    }
+                }
+            }
+
+            if (allowedIds.Count == 0) return;
+
+            // Lấy lại order đầy đủ để có Items + DressDetail cho AssignTasksForOrder
+            var fullOrder = await _unitOfWork.OrderRepository.GetWithItemsAndDressDetails(order.Id);
+            _validationService.CheckNotFound(fullOrder, "Order not found");
+
+            await AssignTasksForOrder(fullOrder, allowedIds);
+        }
+        
         private async Task AssignTasksForOrder(Order order, HashSet<string> allowedOrderItemIds)
         {
             var milestoneList = await _unitOfWork.MilestoneRepository.GetAllWithInclude();

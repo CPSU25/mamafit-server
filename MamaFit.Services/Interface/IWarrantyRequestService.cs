@@ -1,5 +1,6 @@
 ﻿using MamaFit.BusinessObjects.DTO.WarrantyRequestDto;
 using MamaFit.BusinessObjects.DTO.WarrantyRequestItemDto;
+using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;
 
@@ -17,5 +18,6 @@ namespace MamaFit.Services.Interface
         Task<WarrantyDecisionResponseDto> DecideAsync(string warrantyRequestId,
             WarrantyDecisionRequestDto dto);
         Task<WarrantyDecisionResponseDto> ShipPaidWarrantyAsync(string warrantyRequestId);
+        Task AssignWarrantyTasksAfterPaidAsync(Order order);
     }
 }

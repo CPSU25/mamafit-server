@@ -8,9 +8,6 @@ namespace MamaFit.Services.Validator.Order
     {
         public OrderReadyToBuyRequestDtoValidator()
         {
-            RuleFor(x => x.UserId)
-                .NotEmpty().WithMessage("UserId is required.");
-
             RuleFor(x => x.BranchId)
                 .NotEmpty().WithMessage("BranchId is required.");
 

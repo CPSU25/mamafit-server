@@ -149,7 +149,7 @@ namespace MamaFit.Services.Service
                 var value = el.GetString();
                 var exists = Has(name);
                 var path = exists ? $"/fields/{id}/{locale}" : $"/fields/{id}";
-                object payload = exists
+                object? payload = exists
                     ? (object?)value
                     : new Dictionary<string, object?> { [locale] = value };
 

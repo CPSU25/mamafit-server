@@ -28,6 +28,7 @@ using MamaFit.BusinessObjects.DTO.PresetDto;
 using MamaFit.BusinessObjects.DTO.RoleDto;
 using MamaFit.BusinessObjects.DTO.SizeDto;
 using MamaFit.BusinessObjects.DTO.StyleDto;
+using MamaFit.BusinessObjects.DTO.TicketDto;
 using MamaFit.BusinessObjects.DTO.TokenDto;
 using MamaFit.BusinessObjects.DTO.TransactionDto;
 using MamaFit.BusinessObjects.DTO.UserDto;
@@ -519,6 +520,17 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderId))
                 .ReverseMap();
 
+            #endregion
+
+            #region Ticket Mapper
+            CreateMap<Ticket, TicketBaseDto>().ReverseMap();
+            CreateMap<Ticket, TicketBaseResponseDto>().ReverseMap();
+            CreateMap<Ticket, TicketGetAllResponseDto>().ReverseMap();
+            CreateMap<Ticket, TicketRequestCreateDto>().ReverseMap();
+            CreateMap<Ticket, TicketRequestUpdateDto>().ReverseMap();
+            CreateMap<Ticket, TicketResponseWithOrderDto>()
+                .ForMember(dest => dest.Order, otp => otp.MapFrom(x => x.OrderItem.Order))
+                .ReverseMap();
             #endregion
         }
     }

@@ -69,6 +69,7 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.HashPassword, opt => opt.Ignore())
                 .ForMember(dest => dest.Salt, opt => opt.Ignore());
             CreateMap<ApplicationUser, SendOTPRequestDto>().ReverseMap();
+            CreateMap<ApplicationUser, UpdateUserRequestDto>().ReverseMap();
 
             #endregion
 

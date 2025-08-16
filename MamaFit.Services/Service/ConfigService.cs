@@ -246,7 +246,7 @@ namespace MamaFit.Services.Service
         }
 
         private string EntryUrl =>
-            $"spaces/{_contentfulSettings.SpaceId}/environments/{_contentfulSettings.ManagementToken ?? "master"}/entries/{_contentfulSettings.EntryId}";
+            $"spaces/{_contentfulSettings.SpaceId}/environments/master/entries/{_contentfulSettings.EntryId}";
 
         private void SetAuth()
         {
@@ -267,9 +267,7 @@ namespace MamaFit.Services.Service
             publishReq.Headers.Authorization =
                 new AuthenticationHeaderValue("Bearer", _contentfulSettings.ManagementToken);
             publishReq.Headers.Add("X-Contentful-Version", version.ToString());
-
-            var publishRes = await _httpClient.SendAsync(publishReq);
-            publishRes.EnsureSuccessStatusCode();
+            await _httpClient.SendAsync(publishReq);
         }
 
         public async Task<CmsServiceBaseDto> GetConfig()
@@ -281,7 +279,7 @@ namespace MamaFit.Services.Service
 
                 // đảm bảo không null để FE render
                 contentfulResponse.Colors ??= new List<string>();
-                contentfulResponse.Sizes  ??= new List<string>();
+                contentfulResponse.Sizes ??= new List<string>();
                 contentfulResponse.JobTitles ??= new List<string>();
 
                 var config = new CmsServiceBaseDto { Fields = contentfulResponse };
@@ -303,7 +301,6 @@ namespace MamaFit.Services.Service
 
             // 1) Lấy entry hiện tại để biết version & field nào đã tồn tại (theo locale)
             var getRes = await _httpClient.GetAsync(EntryUrl);
-            getRes.EnsureSuccessStatusCode();
             var currentJson = await getRes.Content.ReadAsStringAsync();
             using var current = JsonDocument.Parse(currentJson);
 

@@ -611,7 +611,7 @@ namespace MamaFit.Services.Service
                 // Chỉ gán milestone cho các items về FACTORY
                 var approvedOrderItemIds = group
                     .Where(wri => wri.DestinationType == DestinationType.FACTORY
-                                  && wri.Status == WarrantyRequestItemStatus.APPROVED)
+                                  && (wri.Status == WarrantyRequestItemStatus.IN_TRANSIT || wri.Status == WarrantyRequestItemStatus.APPROVED))
                     .Select(wri => wri.OrderItemId)
                     .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
@@ -744,7 +744,7 @@ namespace MamaFit.Services.Service
 
             // Chỉ ship những item APPROVED, về FACTORY
             var toShip = wr.WarrantyRequestItems
-                .Where(x => x.Status == WarrantyRequestItemStatus.APPROVED 
+                .Where(x => x.Status == WarrantyRequestItemStatus.APPROVED
                             && x.DestinationType == DestinationType.FACTORY)
                 .ToList();
             if (toShip.Count == 0)
@@ -783,7 +783,7 @@ namespace MamaFit.Services.Service
             var (tracking, createResp, cancelResp) =
                 await _ghtkService.SubmitAndCancelExpressForWarrantyAsync(products,
                     orderInfo);
-            
+
             if (!string.IsNullOrWhiteSpace(tracking))
             {
                 // Optional: nếu muốn reset trước khi append giống nhánh FREE theo từng order group:
@@ -792,10 +792,10 @@ namespace MamaFit.Services.Service
                 order.TrackingOrderCode = string.IsNullOrWhiteSpace(order.TrackingOrderCode)
                     ? tracking
                     : $"{order.TrackingOrderCode},{tracking}";
-                order.Status = OrderStatus.PICKUP_IN_PROGRESS; 
+                order.Status = OrderStatus.PICKUP_IN_PROGRESS;
                 await _unitOfWork.OrderRepository.UpdateAsync(order);
             }
-            
+
             foreach (var wri in toShip)
             {
                 wri.TrackingCode = tracking;
@@ -803,7 +803,7 @@ namespace MamaFit.Services.Service
             }
 
             await _unitOfWork.SaveChangesAsync();
-            
+
             return new WarrantyDecisionResponseDto
             {
                 RequestStatus = wr.Status ?? WarrantyRequestStatus.APPROVED,
@@ -867,7 +867,7 @@ namespace MamaFit.Services.Service
                 };
             if (oi.PresetId != null)
                 return new GhtkProductDto
-                    { Name = oi.Preset?.Name ?? "Preset thiết kế", Weight = oi.Preset?.Weight ?? 200, Quantity = 1 };
+                { Name = oi.Preset?.Name ?? "Preset thiết kế", Weight = oi.Preset?.Weight ?? 200, Quantity = 1 };
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
                 "Order item must have either MaternityDressDetail or Preset");
         }

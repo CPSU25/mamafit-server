@@ -1,198 +1,4 @@
-﻿// using Azure.Core;
-// using Contentful.Core;
-// using MamaFit.BusinessObjects.DTO.CMSDto;
-// using MamaFit.Repositories.Helper;
-// using MamaFit.Services.ExternalService.Redis;
-// using MamaFit.Services.Interface;
-// using Microsoft.Extensions.Options;
-// using System.Net.Http;
-// using System.Net.Http.Headers;
-// using System.Text;
-// using System.Text.Json;
-
-// namespace MamaFit.Services.Service
-// {
-//     public class ConfigService : IConfigService
-//     {
-//         private readonly ICacheService _cacheService;
-//         private readonly ContentfulClient _contentfulClient;
-//         private readonly ContentfulSettings _contentfulSettings;
-//         private readonly HttpClient _httpClient;
-
-//         public ConfigService(
-//             ICacheService cacheService,
-//             IHttpClientFactory httpClientFactory,
-//             IOptions<ContentfulSettings> contentfulOptions,
-//             HttpClient httpClient)
-//         {
-//             _cacheService = cacheService;
-//             _contentfulSettings = contentfulOptions.Value;
-//             var deliveryClient = httpClientFactory.CreateClient("ContentfulClient");
-//             _contentfulClient = new ContentfulClient(
-//                 deliveryClient,
-//                 _contentfulSettings.ContentDeliveryKey,
-//                 null,
-//                 _contentfulSettings.SpaceId,
-//                 false
-//             );
-//             _httpClient = httpClient;
-//         }
-
-//         public async Task<CmsServiceBaseDto> GetConfig()
-//         {
-//             var response = await _cacheService.GetAsync<CmsServiceBaseDto>("cms:service:base");
-//             if (response?.Fields == null)
-//             {
-//                 var contentfulResponse = await _contentfulClient.GetEntry<CmsFieldDto>(_contentfulSettings.EntryId);
-//                 var config = new CmsServiceBaseDto
-//                 {
-//                     Fields = contentfulResponse
-//                 };
-//                 await _cacheService.SetAsync("cms:service:base", config, TimeSpan.FromDays(30));
-//                 response = config;
-//             }
-//             return response;
-//         }
-
-// public async Task<bool> UpdateConfigAsync(CmsFieldDto newConfig)
-// {
-//     // Base URL Contentful Management API
-//     _httpClient.BaseAddress = new Uri("https://api.contentful.com/");
-//     _httpClient.DefaultRequestHeaders.Clear();
-//     _httpClient.DefaultRequestHeaders.Authorization =
-//         new AuthenticationHeaderValue("Bearer", _contentfulSettings.ManagementToken);
-
-//     var entryUrl = $"spaces/{_contentfulSettings.SpaceId}/environments/master/entries/{_contentfulSettings.EntryId}";
-
-//     // 1. Get entry to retrieve version
-//     var getEntryResponse = await _httpClient.GetAsync(entryUrl);
-//     getEntryResponse.EnsureSuccessStatusCode();
-
-//     var entryJson = await getEntryResponse.Content.ReadAsStringAsync();
-//     using var doc = JsonDocument.Parse(entryJson);
-//     var version = doc.RootElement.GetProperty("sys").GetProperty("version").GetInt32();
-
-//     // 2. Build update payload
-//     var payload = new
-//     {
-//         fields = new
-//         {
-//             name = new Dictionary<string, object> { ["en-US"] = newConfig.Name },
-//             designRequestServiceFee = new Dictionary<string, object> { ["en-US"] = newConfig.DesignRequestServiceFee },
-//             depositRate = new Dictionary<string, object> { ["en-US"] = newConfig.DepositRate },
-//             presetVersions = new Dictionary<string, object> { ["en-US"] = newConfig.PresetVersions },
-//             warrantyTime = new Dictionary<string, object> { ["en-US"] = newConfig.WarrantyTime },
-//             appointmentSlotInterval = new Dictionary<string, object> { ["en-US"] = newConfig.AppointmentSlotInterval },
-//             maxAppointmentPerDay = new Dictionary<string, object> { ["en-US"] = newConfig.MaxAppointmentPerDay },
-//             maxAppointmentPerUser = new Dictionary<string, object> { ["en-US"] = newConfig.MaxAppointmentPerUser },
-//             warrantyPeriod = new Dictionary<string, object> { ["en-US"] = newConfig.WarrantyPeriod }
-//         }
-//     };
-
-//     var jsonPayload = JsonSerializer.Serialize(payload);
-//     var content = new StringContent(jsonPayload, Encoding.UTF8,
-//         "application/vnd.contentful.management.v1+json");
-
-//     // 3. Update entry
-//     content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/vnd.contentful.management.v1+json");
-//     _httpClient.DefaultRequestHeaders.Remove("X-Contentful-Version");
-//     _httpClient.DefaultRequestHeaders.Add("X-Contentful-Version", version.ToString());
-
-//     var updateResponse = await _httpClient.PutAsync(entryUrl, content);
-//     updateResponse.EnsureSuccessStatusCode();
-
-//     // 4. Publish entry (POST, not PUT)
-//     var publishUrl = $"{entryUrl}/published";
-//     var publishResponse = await _httpClient.PostAsync(publishUrl, null);
-
-//     // 5. Clear cache
-//     await _cacheService.RemoveAsync("cms:service:base");
-
-//     return true;
-// }
-
-//         public async Task<bool> UpdateAttributesAsync(IEnumerable<string>? colors = null,
-//                                                       IEnumerable<string>? sizes = null)
-//         {
-//             // Chuẩn hóa list
-//             static List<string> Norm(IEnumerable<string> src) =>
-//                 src.Where(s => !string.IsNullOrWhiteSpace(s))
-//                    .Select(s => s.Trim())
-//                    .Distinct(StringComparer.OrdinalIgnoreCase)
-//                    .ToList();
-
-//             var ops = new List<object>();
-
-//             // 1) Lấy version + biết field đã tồn tại chưa
-//             var entryUrl = $"https://api.contentful.com/spaces/{_contentfulSettings.SpaceId}/environments/master/entries/{_contentfulSettings.EntryId}";
-//             _httpClient.DefaultRequestHeaders.Clear();
-//             _httpClient.DefaultRequestHeaders.Authorization =
-//                 new AuthenticationHeaderValue("Bearer", _contentfulSettings.ManagementToken);
-
-//             var getRes = await _httpClient.GetAsync(entryUrl);
-//             getRes.EnsureSuccessStatusCode();
-
-//             var json = await getRes.Content.ReadAsStringAsync();
-//             using var doc = JsonDocument.Parse(json);
-//             var version = doc.RootElement.GetProperty("sys").GetProperty("version").GetInt32();
-//             var fieldsEl = doc.RootElement.GetProperty("fields");
-
-//             bool hasColors = fieldsEl.TryGetProperty("colors", out var cNode) && cNode.TryGetProperty("en-US", out _);
-//             bool hasSizes = fieldsEl.TryGetProperty("sizes", out var sNode) && sNode.TryGetProperty("en-US", out _);
-
-//             // 2) Build JSON Patch ops
-//             if (colors is not null)
-//             {
-//                 var list = Norm(colors);
-//                 ops.Add(new
-//                 {
-//                     op = hasColors ? "replace" : "add",
-//                     path = hasColors ? "/fields/colors/en-US" : "/fields/colors",
-//                     value = hasColors ? list : new Dictionary<string, object> { ["en-US"] = list }
-//                 });
-//             }
-
-//             if (sizes is not null)
-//             {
-//                 var list = Norm(sizes);
-//                 ops.Add(new
-//                 {
-//                     op = hasSizes ? "replace" : "add",
-//                     path = hasSizes ? "/fields/sizes/en-US" : "/fields/sizes",
-//                     value = hasSizes ? list : new Dictionary<string, object> { ["en-US"] = list }
-//                 });
-//             }
-
-//             if (ops.Count == 0) return true; // Không có gì để update
-
-//             var req = new HttpRequestMessage(new HttpMethod("PATCH"), entryUrl)
-//             {
-//                 Content = new StringContent(JsonSerializer.Serialize(ops), Encoding.UTF8, "application/json-patch+json")
-//             };
-//             req.Headers.Add("X-Contentful-Version", version.ToString());
-
-//             var patchRes = await _httpClient.SendAsync(req);
-//             patchRes.EnsureSuccessStatusCode();
-
-//             // Lấy version mới từ response để publish
-//             var updated = JsonDocument.Parse(await patchRes.Content.ReadAsStringAsync());
-//             var newVersion = updated.RootElement.GetProperty("sys").GetProperty("version").GetInt32();
-
-//             // 3) Publish (PUT)
-//             var publishReq = new HttpRequestMessage(HttpMethod.Put, $"{entryUrl}/published");
-//             publishReq.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _contentfulSettings.ManagementToken);
-//             publishReq.Headers.Add("X-Contentful-Version", newVersion.ToString());
-//             var publishRes = await _httpClient.SendAsync(publishReq);
-//             publishRes.EnsureSuccessStatusCode();
-
-//             await _cacheService.RemoveAsync("cms:service:base");
-//             return true;
-//         }
-
-//     }
-// }
-
-using Contentful.Core;
+﻿using Contentful.Core;
 using MamaFit.BusinessObjects.DTO.CMSDto;
 using MamaFit.Repositories.Helper;
 using MamaFit.Services.ExternalService.Redis;
@@ -207,9 +13,9 @@ namespace MamaFit.Services.Service
     public class ConfigService : IConfigService
     {
         private readonly ICacheService _cacheService;
-        private readonly ContentfulClient _contentfulClient;     
+        private readonly ContentfulClient _contentfulClient;
         private readonly ContentfulSettings _contentfulSettings;
-        private readonly HttpClient _httpClient;          
+        private readonly HttpClient _httpClient;
 
         private const string CacheKey = "cms:service:base";
 
@@ -397,7 +203,7 @@ namespace MamaFit.Services.Service
             PatchStringArray("sizes");
             PatchStringArray("jobTitles");
 
-            if (ops.Count == 0) return true; 
+            if (ops.Count == 0) return true;
 
             // 3) PATCH (CMA yêu cầu vnd.contentful…)
             var opsJson = JsonSerializer.Serialize(ops, JsonOpts);
@@ -407,7 +213,8 @@ namespace MamaFit.Services.Service
                 Content = new StringContent(opsJson, Encoding.UTF8)
             };
             req.Content.Headers.ContentType =
-                new MediaTypeHeaderValue("application/vnd.contentful.management.v1+json");
+                new MediaTypeHeaderValue("application/json-patch+json");
+            req.Headers.Accept.Clear();
             req.Headers.Authorization =
                 new AuthenticationHeaderValue("Bearer", _contentfulSettings.ManagementToken);
             req.Headers.Add("X-Contentful-Version", version.ToString());

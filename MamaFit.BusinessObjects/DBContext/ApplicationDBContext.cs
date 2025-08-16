@@ -16,7 +16,7 @@ namespace MamaFit.BusinessObjects.DBContext
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
-        
+
         //DbSet Chat
         public DbSet<ChatMessage> ChatMessages { get; set; }
         public DbSet<ChatRoom> ChatRooms { get; set; }
@@ -51,18 +51,19 @@ namespace MamaFit.BusinessObjects.DBContext
         public DbSet<AddOn> AddOns { get; set; }
         public DbSet<AddOnOption> AddOnOptions { get; set; }
         public DbSet<OrderItemAddOnOption> OrderItemServiceOptions { get; set; }
-        public DbSet<ComponentOptionPreset> ComponentOptionPresets { get; set; } 
+        public DbSet<ComponentOptionPreset> ComponentOptionPresets { get; set; }
         public DbSet<Preset> Presets { get; set; }
         public DbSet<Position> Positions { get; set; }
         public DbSet<Size> Sizes { get; set; }
         public DbSet<WarrantyRequestItem> WarrantyRequestItems { get; set; }
+        public DbSet<Ticket> Tickets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             #region Confiure Table Names
-
+            modelBuilder.Entity<Ticket>().ToTable("Ticket");
             modelBuilder.Entity<ChatMessage>().ToTable("ChatMessage");
             modelBuilder.Entity<ChatRoom>().ToTable("ChatRoom");
             modelBuilder.Entity<ChatRoomMember>().ToTable("ChatRoomMember");
@@ -198,6 +199,11 @@ namespace MamaFit.BusinessObjects.DBContext
                     .WithMany(mdd => mdd.OrderItems)
                     .HasForeignKey(ot => ot.MaternityDressDetailId)
                     .OnDelete(DeleteBehavior.NoAction);
+
+                options.HasMany(ot => ot.Tickets)
+                       .WithOne(t => t.OrderItem)
+                       .HasForeignKey(ot => ot.OrderItemId)
+                       .OnDelete(DeleteBehavior.NoAction);
 
                 options.HasMany(ot => ot.Feedbacks)
                     .WithOne(f => f.OrderItem)
@@ -347,7 +353,7 @@ namespace MamaFit.BusinessObjects.DBContext
             modelBuilder.Entity<WarrantyRequestItem>(options =>
             {
                 options.HasKey(wri => new { wri.WarrantyRequestId, wri.OrderItemId });
-                
+
             });
 
             #endregion

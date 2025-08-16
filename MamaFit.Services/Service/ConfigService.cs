@@ -425,7 +425,6 @@ namespace MamaFit.Services.Service
                 new MediaTypeWithQualityHeaderValue("application/vnd.contentful.management.v1+json"));
 
             var patchRes = await _httpClient.SendAsync(req);
-            patchRes.EnsureSuccessStatusCode();                 // ❗️đừng nuốt lỗi
 
             // 4) Publish bằng version mới
             var newVersion = ExtractVersion(patchRes);

@@ -406,25 +406,26 @@ namespace MamaFit.Services.Service
             PatchStringArray("sizes");
             PatchStringArray("jobTitle");
 
-            if (ops.Count == 0) return true; // không có gì để cập nhật
+            if (ops.Count == 0) return true; 
 
             // 3) PATCH
-            var req = new HttpRequestMessage(new HttpMethod("PATCH"), EntryUrl)
-            {
-                Content = new StringContent(JsonSerializer.Serialize(ops, JsonOpts),
-                                            Encoding.UTF8,
-                                            "application/json-patch+json")
-            };
+            var opsJson = JsonSerializer.Serialize(ops, JsonOpts);
+
+            var req = new HttpRequestMessage(HttpMethod.Patch, EntryUrl);
+            req.Content = new StringContent(opsJson, Encoding.UTF8);
+            req.Content.Headers.ContentType =
+                new MediaTypeHeaderValue("application/vnd.contentful.management.v1+json"); 
+
             req.Headers.Authorization =
                 new AuthenticationHeaderValue("Bearer", _contentfulSettings.ManagementToken);
             req.Headers.Add("X-Contentful-Version", version.ToString());
 
-            var patchRes = await _httpClient.SendAsync(req);
-            patchRes.EnsureSuccessStatusCode();
+            // (không bắt buộc nhưng gọn gàng)
+            req.Headers.Accept.Clear();
+            req.Headers.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/vnd.contentful.management.v1+json"));
 
-            // 4) Publish với version mới
-            var newVersion = ExtractVersion(patchRes);
-            await PublishAsync(newVersion);
+            var patchRes = await _httpClient.SendAsync(req);
 
             // 5) Clear cache
             await _cacheService.RemoveAsync(CacheKey);

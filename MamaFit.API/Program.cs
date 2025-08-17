@@ -30,7 +30,7 @@ namespace MamaFit.API
                 builder.Services.AddCors(options =>
                 {
                     options.AddPolicy(name: CorsConstant.PolicyName,
-                        policy => { policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod().AllowCredentials(); });
+                        policy => { policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod(); });
                 });
 
                 builder.Services.AddControllers().AddJsonOptions(x =>

@@ -13,7 +13,6 @@ namespace MamaFit.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class ChatController : ControllerBase
     {
         private readonly IChatService _chatService;

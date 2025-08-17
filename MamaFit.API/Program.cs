@@ -24,13 +24,13 @@ namespace MamaFit.API
             try
             {
                 var builder = WebApplication.CreateBuilder(args);
-                
+
                 builder.Logging.ClearProviders();
                 builder.Host.UseNLog();
                 builder.Services.AddCors(options =>
                 {
                     options.AddPolicy(name: CorsConstant.PolicyName,
-                        policy => { policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod(); });
+                        policy => { policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod().AllowCredentials(); });
                 });
 
                 builder.Services.AddControllers().AddJsonOptions(x =>
@@ -94,7 +94,7 @@ namespace MamaFit.API
                 }
 
                 app.UseMiddleware<ExceptionMiddleware>();
-                
+
                 app.UseHttpsRedirection();
 
                 app.UseRouting();
@@ -122,7 +122,7 @@ namespace MamaFit.API
                     var recurringJobScheduler = scope.ServiceProvider.GetRequiredService<IRecurringJobScheduler>();
                     recurringJobScheduler.RegisterJob();
                 }
-                
+
                 app.Run();
             }
             catch (Exception exception)

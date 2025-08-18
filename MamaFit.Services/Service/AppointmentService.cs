@@ -74,12 +74,12 @@ namespace MamaFit.Services.Service
 
             var config = await _configService.GetConfig();
 
-            if (user.Appointments.Count(x => x.BookingTime.Date == requestDto.BookingTime.Date) >= config.Fields.MaxAppointmentPerDay)
+            if (user.Appointments.Count(x => x.BookingTime.Date == requestDto.BookingTime.Date && x.Status != AppointmentStatus.CANCELED) >= config.Fields.MaxAppointmentPerDay)
                 throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                     $"User {user.UserName} has reached the maximum number of appointments for the day" +
                     $". Please try again tomorrow.");
 
-            if (user.Appointments.Count(x => x.Status == AppointmentStatus.UP_COMING) >= config.Fields.MaxAppointmentPerUser)
+            if (user.Appointments.Count(x => x.Status == AppointmentStatus.UP_COMING && x.Status != AppointmentStatus.CANCELED) >= config.Fields.MaxAppointmentPerUser)
                 throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                     $"User {user.UserName} has reached the maximum number of upcoming appointments" +
                     $". Please cancel an existing appointment before booking a new one.");

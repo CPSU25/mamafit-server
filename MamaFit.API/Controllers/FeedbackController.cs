@@ -1,4 +1,6 @@
 using MamaFit.BusinessObjects.DTO.FeedbackDto;
+using MamaFit.BusinessObjects.DTO.OrderDto;
+using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +16,7 @@ public class FeedbackController : ControllerBase
     {
         _feedbackService = feedbackService;
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> GetAll(
         [FromQuery] int index = 1,
@@ -35,14 +37,14 @@ public class FeedbackController : ControllerBase
     public async Task<IActionResult> GetAllMyFeedbacks()
     {
         var result = await _feedbackService.GetAllByUserId();
-        return Ok(new ResponseModel<List<FeedbackResponseDto>>(
+        return Ok(new ResponseModel<List<OrderItemResponseDto>>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
             result,
             "Get feedback successfully!"
         ));
     }
-    
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById([FromRoute] string id)
     {
@@ -54,18 +56,22 @@ public class FeedbackController : ControllerBase
             "Get feedback successfully!"
         ));
     }
-    
+
     [HttpPost]
-    public async Task<IActionResult> CreateFeedback([FromBody] FeedbackRequestDto model)
+    public async Task<IActionResult> CreateFeedback([FromBody] List<FeedbackRequestDto> models)
     {
-        await _feedbackService.CreateAsync(model);
+        foreach (var model in models)
+        {
+            await _feedbackService.CreateAsync(model);
+        }
+
         return Ok(new ResponseModel<string>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
             "Feedback created successfully!"
         ));
     }
-    
+
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateFeedback([FromRoute] string id, [FromBody] FeedbackRequestDto model)
     {
@@ -76,7 +82,7 @@ public class FeedbackController : ControllerBase
             "Feedback updated successfully!"
         ));
     }
-    
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteFeedback([FromRoute] string id)
     {

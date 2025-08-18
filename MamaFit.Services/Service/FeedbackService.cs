@@ -1,5 +1,7 @@
-using AutoMapper;
+﻿using AutoMapper;
 using MamaFit.BusinessObjects.DTO.FeedbackDto;
+using MamaFit.BusinessObjects.DTO.OrderDto;
+using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
@@ -91,12 +93,18 @@ public class FeedbackService : IFeedbackService
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<List<FeedbackResponseDto>> GetAllByUserId()
+    public async Task<List<OrderItemResponseDto>> GetAllByUserId()
     {
         var currentUserId = GetCurrentUserId();
 
         var feedbacks = await _unitOfWork.FeedbackRepository.GetAllByUserId(currentUserId);
-        return _mapper.Map<List<FeedbackResponseDto>>(feedbacks);
+        var orderItems = feedbacks
+            .Where(f => f.OrderItem != null)
+            .Select(f => f.OrderItem)
+            .Distinct()
+            .ToList();
+
+        return _mapper.Map<List<OrderItemResponseDto>>(orderItems);
     }
 
     private string GetCurrentUserId()

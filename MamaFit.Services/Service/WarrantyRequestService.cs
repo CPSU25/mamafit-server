@@ -232,6 +232,12 @@ namespace MamaFit.Services.Service
                 orderItem.WarrantyDate = DateTime.UtcNow;
                 await _unitOfWork.OrderItemRepository.UpdateAsync(orderItem);
             }
+            
+            if (requestType == RequestType.FEE && (!dto.Fee.HasValue || dto.Fee <= 0))
+            {
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
+                    "Fee is required and must be greater than 0 when warranty round > 2");
+            }
 
             var warrantyOrder = new Order
             {
@@ -245,6 +251,8 @@ namespace MamaFit.Services.Service
                 PaymentType = PaymentType.FULL,
                 PaymentMethod = dto.PaymentMethod,
                 DeliveryMethod = DeliveryMethod.PICK_UP,
+                SubTotalAmount = dto.Fee ?? 0,
+                TotalAmount = dto.Fee ?? 0,
             };
             await _unitOfWork.OrderRepository.InsertAsync(warrantyOrder);
 
@@ -280,6 +288,7 @@ namespace MamaFit.Services.Service
                 var requestItem = new WarrantyRequestItem
                 {
                     WarrantyRequestId = warrantyRequest.Id,
+                    DestinationBranchId = branchId,
                     OrderItemId = warrantyOrderItemIdMap[itemDto.OrderItemId],
                     Status = WarrantyRequestItemStatus.PENDING,
                     Description = itemDto.Description,

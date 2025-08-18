@@ -66,13 +66,31 @@ public class OrderService : IOrderService
         }).ToList();
     }
 
-    public async Task<OrderResponseDto> GetBySkuAndCodeAsync(string sku, string code)
+    public async Task<OrderResponseDto> GetBySkuAndCodeAsync(string code, string? sku = null)
     {
-        var order = await _unitOfWork.OrderRepository.GetBySkuAndCodeAsync(sku, code);
+        var order = await _unitOfWork.OrderRepository.GetBySkuAndCodeAsync(code, sku);
         _validation.CheckNotFound(order, "Order not found");
-        var orderDto = _mapper.Map<OrderResponseDto>(order);
-        return orderDto;
+
+        var dto = _mapper.Map<OrderResponseDto>(order);
+        
+        if (dto.Items != null && order?.OrderItems != null)
+        {
+            foreach (var itemDto in dto.Items)
+            {
+                var entityItem = order.OrderItems.FirstOrDefault(x => x.Id == itemDto.Id);
+                if (entityItem?.WarrantyRequestItems != null && entityItem.WarrantyRequestItems.Any())
+                {
+                    itemDto.WarrantyRound = entityItem.WarrantyRequestItems.Max(w => w.WarrantyRound);
+                }
+                else
+                {
+                    itemDto.WarrantyRound = 0;
+                }
+            }
+        }
+        return dto;
     }
+
 
     public async Task<List<OrderResponseDto>> GetOrdersForBranchManagerAsync()
     {

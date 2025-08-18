@@ -9,6 +9,7 @@ namespace MamaFit.Repositories.Interface
     {
         Task<List<WarrantyRequest>> GetAllWarrantyRequest();
         Task<PaginatedList<WarrantyRequest>> GetAllWarrantyRequestAsync(int index, int pageSize, string? search, EntitySortBy? sortBy);
-        Task<WarrantyRequest> GetDetailById(string warrantyId);
+        Task<WarrantyRequest?> GetDetailById(string warrantyId);
+        Task<List<WarrantyRequest>> GetFeeWarrantyRequestsByOrderIdAsync(string orderId);
     }
 }

@@ -66,6 +66,14 @@ public class OrderService : IOrderService
         }).ToList();
     }
 
+    public async Task<OrderResponseDto> GetBySkuAndCodeAsync(string sku, string code)
+    {
+        var order = await _unitOfWork.OrderRepository.GetBySkuAndCodeAsync(sku, code);
+        _validation.CheckNotFound(order, "Order not found");
+        var orderDto = _mapper.Map<OrderResponseDto>(order);
+        return orderDto;
+    }
+
     public async Task<List<OrderResponseDto>> GetOrdersForBranchManagerAsync()
     {
         var userId = GetCurrentUserId();
@@ -114,9 +122,11 @@ public class OrderService : IOrderService
         _validation.CheckNotFound(order, "Order not found");
 
         if (order.Status == OrderStatus.COMPLETED &&
-             (order.PaymentStatus == PaymentStatus.PAID_FULL || order.PaymentStatus == PaymentStatus.PAID_DEPOSIT_COMPLETED))
+            (order.PaymentStatus == PaymentStatus.PAID_FULL ||
+             order.PaymentStatus == PaymentStatus.PAID_DEPOSIT_COMPLETED))
         {
-            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Order already completed and paid.");
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                "Order already completed and paid.");
         }
 
         order.Status = orderStatus;
@@ -228,37 +238,17 @@ public class OrderService : IOrderService
     public async Task<string> CreateReadyToBuyOrderAsync(OrderReadyToBuyRequestDto request)
     {
         await _validation.ValidateAndThrowAsync(request);
-        var currentUserId = GetCurrentUserId();
-        var currentUser = await _unitOfWork.UserRepository.GetByIdAsync(currentUserId);
 
-        string? cacheKey = null;
-        string? itemKey = null;
-        bool isCartExist = false;
+        var userId = GetCurrentUserId();
+        var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+        _validation.CheckNotFound(user, $"User with id: {userId} not found");
 
-        ApplicationUser? user = null;
+        var cacheKey = $"cart:user:{userId}";
+        var isCartExist = await _cacheService.KeyExistsAsync(cacheKey);
+        if (!isCartExist)
+            throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND,
+                $"User with id: {userId} has no cart item");
 
-        if (currentUser.Role.RoleName == "User")
-        {
-            cacheKey = $"cart:user:{currentUserId}";
-            isCartExist = await _cacheService.KeyExistsAsync(cacheKey);
-            if (!isCartExist)
-                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, $"User with id: {currentUserId} has no cart item");
-
-            user = currentUser;
-        }
-        else
-        {
-            var requestUser = await _unitOfWork.UserRepository.GetByIdAsync(request.UserId!);
-            _validation.CheckNotFound(requestUser, $"User with id: {request.UserId} not found");
-
-            cacheKey = $"cart:user:{request.UserId}";
-            isCartExist = await _cacheService.KeyExistsAsync(cacheKey);
-
-            if (!isCartExist)
-                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, $"User with id: {request.UserId} has no cart item");
-
-            user = requestUser;
-        }
         VoucherDiscount? voucher = null;
         Measurement? measurement = null;
 
@@ -271,69 +261,84 @@ public class OrderService : IOrderService
         if (request.MeasurementId != null)
         {
             measurement = await _unitOfWork.MeasurementRepository.GetByIdAsync(request.MeasurementId);
-            _validation.CheckNotFound(measurement,
-                $"Measurement diary with id: {request.MeasurementId} not found");
+            _validation.CheckNotFound(measurement, $"Measurement diary with id: {request.MeasurementId} not found");
         }
 
         var dressDetails = new List<MaternityDressDetail>();
+        var orderItems = new List<OrderItem>();
+        decimal addOnListTotalPrice = 0;
+        decimal subTotalAmount = 0;
 
-        foreach (var item in request.OrderItems)
+        foreach (var ri in request.OrderItems)
         {
+            var itemKey = $"item:{ri.MaternityDressDetailId}";
+            var cartItem = await _cacheService.GetHashAsync<CartItem>(cacheKey, itemKey);
+            _validation.CheckNotFound(cartItem,
+                $"Maternity dress with id: {ri.MaternityDressDetailId} not found in cart");
 
-            MaternityDressDetail? dress = null;
-            if (user.Role.RoleName == "User")
-            {
-                itemKey = $"item:{item.MaternityDressDetailId}";
-                var cartItemDress = await _cacheService.GetHashAsync<CartItem>(cacheKey, itemKey);
-                _validation.CheckNotFound(cartItemDress, $"Maternity dress with id: {item.MaternityDressDetailId} not found");
-                dress = await _unitOfWork.MaternityDressDetailRepository.GetByIdAsync(cartItemDress!.MaternityDressDetail!.Id!);
-            }
-            else
-            {
-                dress = await _unitOfWork.MaternityDressDetailRepository.GetByIdAsync(item.MaternityDressDetailId!);
-                _validation.CheckNotFound(dress, $"Maternity dress with id: {item.MaternityDressDetailId} not found");
-            }
+            var dress = await _unitOfWork.MaternityDressDetailRepository
+                .GetByIdAsync(cartItem!.MaternityDressDetail!.Id!);
+            _validation.CheckNotFound(dress, $"Maternity dress with id: {ri.MaternityDressDetailId} not found");
 
-            if (dress.Quantity < item.Quantity)
-            {
+            if (dress.Quantity < ri.Quantity)
                 throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
-                    $"Not enough stock for dress with id: {item.MaternityDressDetailId}");
+                    $"Not enough stock for dress with id: {ri.MaternityDressDetailId}");
+
+            dress.Quantity -= ri.Quantity;
+            await _unitOfWork.MaternityDressDetailRepository.UpdateAsync(dress);
+            dressDetails.Add(dress);
+
+            var orderItemAddOns = new List<OrderItemAddOnOption>();
+            if (ri.Options is not null)
+            {
+                foreach (var opt in ri.Options)
+                {
+                    var addOn = await _unitOfWork.AddOnOptionRepository.GetByIdAsync(opt.AddOnOptionId!);
+                    _validation.CheckNotFound(addOn, $"Add-on option with id: {opt.AddOnOptionId} not found");
+
+                    orderItemAddOns.Add(new OrderItemAddOnOption
+                    {
+                        AddOnOptionId = addOn.Id,
+                        AddOnOption = addOn,
+                        Value = opt.Value
+                    });
+
+                    addOnListTotalPrice += addOn.Price * ri.Quantity;
+                }
             }
 
-            dress.Quantity -= item.Quantity;
-            await _unitOfWork.MaternityDressDetailRepository.UpdateAsync(dress);
+            orderItems.Add(new OrderItem
+            {
+                MaternityDressDetailId = dress.Id,
+                ItemType = ItemType.READY_TO_BUY,
+                Price = dress.Price,
+                Quantity = ri.Quantity,
+                OrderItemAddOnOptions = orderItemAddOns,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                CreatedBy = user!.UserName
+            });
 
-            dressDetails.Add(_mapper.Map<MaternityDressDetail>(dress));
+            subTotalAmount += dress.Price * ri.Quantity;
         }
 
-        var config = await _configService.GetConfig();
-
-        var subTotalAmount = request.OrderItems.Sum(item =>
-        {
-            var dress = dressDetails.FirstOrDefault(d => d.Id == item.MaternityDressDetailId);
-            return dress != null ? dress.Price * item.Quantity : 0;
-        });
-
         decimal? discountValue = 0;
-
         if (voucher != null && voucher.VoucherBatch != null)
         {
             if (voucher.VoucherBatch.DiscountType == DiscountType.PERCENTAGE)
-            {
                 discountValue = (voucher.VoucherBatch.DiscountValue / 100) * subTotalAmount;
-            }
             else if (voucher.VoucherBatch.DiscountType == DiscountType.FIXED)
-            {
                 discountValue = voucher.VoucherBatch.DiscountValue;
-            }
+
+            if (discountValue > subTotalAmount) discountValue = subTotalAmount;
 
             voucher.Status = VoucherStatus.USED;
             await _unitOfWork.VoucherDiscountRepository.UpdateAsync(voucher);
         }
 
-        // Tính merchandise subtotal sau khi trừ discount
         var merchandiseAfterDiscount = subTotalAmount - discountValue;
-        var totalAmount = merchandiseAfterDiscount + request.ShippingFee;
+        var totalAmount = merchandiseAfterDiscount + request.ShippingFee + addOnListTotalPrice;
+        var depositSubtotal = merchandiseAfterDiscount / 2;
 
         var order = _mapper.Map<Order>(request);
         order.User = user!;
@@ -342,37 +347,28 @@ public class OrderService : IOrderService
         order.Code = GenerateOrderCode();
         order.Status = OrderStatus.CREATED;
         order.Measurement = measurement;
-        order.SubTotalAmount = subTotalAmount; // Merchandise subtotal gốc
+        order.SubTotalAmount = subTotalAmount;
         order.DiscountSubtotal = discountValue;
         order.ShippingFee = request.ShippingFee;
         order.TotalAmount = totalAmount;
         order.PaymentStatus = PaymentStatus.PENDING;
+        order.ServiceAmount = addOnListTotalPrice;
+        order.OrderItems = orderItems;
 
-        // Tính toán deposit fields nếu payment type là DEPOSIT
         if (request.PaymentType == PaymentType.DEPOSIT)
         {
             order.PaymentType = PaymentType.DEPOSIT;
-            // Chia đôi số tiền merchandise sau khi đã trừ discount
-            order.DepositSubtotal = merchandiseAfterDiscount / 2; // 50% của merchandise sau discount
+            order.DepositSubtotal = depositSubtotal;
             order.RemainingBalance = merchandiseAfterDiscount - order.DepositSubtotal;
+            order.TotalPaid = depositSubtotal + addOnListTotalPrice + request.ShippingFee;
         }
         else
         {
             order.PaymentType = PaymentType.FULL;
             order.DepositSubtotal = null;
             order.RemainingBalance = null;
+            order.TotalPaid = totalAmount;
         }
-
-        order.OrderItems = dressDetails.Select(d => new OrderItem
-        {
-            MaternityDressDetailId = d.Id,
-            ItemType = ItemType.READY_TO_BUY,
-            Price = d.Price,
-            Quantity = request.OrderItems.First(i => i.MaternityDressDetailId == d.Id).Quantity,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow,
-            CreatedBy = "System"
-        }).ToList();
 
         if (request.DeliveryMethod == DeliveryMethod.DELIVERY)
         {
@@ -382,14 +378,9 @@ public class OrderService : IOrderService
 
             var address = await _unitOfWork.AddressRepository.GetByIdAsync(request.AddressId);
             _validation.CheckNotFound(address, $"Address with id: {request.AddressId} not found");
-
             order.Address = address;
-            await _unitOfWork.OrderRepository.InsertAsync(order);
-            await _unitOfWork.SaveChangesAsync();
-            return order.Id;
         }
-
-        if (request.DeliveryMethod == DeliveryMethod.PICK_UP)
+        else if (request.DeliveryMethod == DeliveryMethod.PICK_UP)
         {
             if (request.BranchId == null)
                 throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
@@ -402,16 +393,16 @@ public class OrderService : IOrderService
 
         await _unitOfWork.OrderRepository.InsertAsync(order);
         await _unitOfWork.SaveChangesAsync();
-        if (user.Role!.RoleName == "User")
+
+        foreach (var ri in request.OrderItems)
         {
-            foreach (var item in request.OrderItems)
-            {
-                var itemRemoveKey = $"item:{item.MaternityDressDetailId}";
-                await _cacheService.DeleteHashFieldAsync(cacheKey, itemRemoveKey);
-            }
+            var itemRemoveKey = $"item:{ri.MaternityDressDetailId}";
+            await _cacheService.DeleteHashFieldAsync(cacheKey, itemRemoveKey);
         }
+
         return order.Id;
     }
+
 
     private string GenerateOrderCode()
     {
@@ -427,8 +418,6 @@ public class OrderService : IOrderService
 
     public async Task<string> CreateDesignRequestOrderAsync(OrderDesignRequestDto request)
     {
-        await _validation.ValidateAndThrowAsync(request);
-
         var userId = GetCurrentUserId();
         var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
         _validation.CheckNotFound(user, $"User with id: {userId} not found");
@@ -463,7 +452,7 @@ public class OrderService : IOrderService
         {
             UserId = userId,
             User = user!,
-            Type = OrderType.NORMAL,
+            Type = OrderType.DESIGN,
             Code = GenerateOrderCode(),
             Status = OrderStatus.CREATED,
             IsOnline = true,
@@ -509,7 +498,8 @@ public class OrderService : IOrderService
         var isCartExist = await _cacheService.KeyExistsAsync(cacheKey);
 
         if (!isCartExist)
-            throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, $"User with id: {userId} has no cart item");
+            throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND,
+                $"User with id: {userId} has no cart item");
 
         VoucherDiscount? voucher = null;
         Measurement? measurement = null;
@@ -748,5 +738,14 @@ public class OrderService : IOrderService
         var result = await _unitOfWork.OrderRepository.GetOrderForRequest(userId);
 
         return _mapper.Map<List<OrderGetByIdResponseDto>>(result);
+    }
+
+    public async Task<List<OrderGetByIdResponseDto>> GetAllByDesignRequestId(string designRequestId)
+    {
+        var orderList = await _unitOfWork.OrderRepository.GetAllOrderByDesignRequestId(designRequestId);
+        _validation.CheckNotFound(orderList, $"Design request with Id: {designRequestId} has no order");
+
+        var response = orderList.Select(x => _mapper.Map<OrderGetByIdResponseDto>(x)).ToList();
+        return response;
     }
 }

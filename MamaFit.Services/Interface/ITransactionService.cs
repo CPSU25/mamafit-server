@@ -10,4 +10,9 @@ public interface ITransactionService
         DateTime? startDate = null, DateTime? endDate = null);
     Task<TransactionResponseDto?> GetTransactionByOrderIdAsync(string orderId);
     Task CreateTransactionAsync(SepayWebhookPayload payload, string orderId, string orderCode);
+    Task<DashboardSummaryResponse> GetDashboardSummaryAsync(DateTime startTime, DateTime endTime);
+    Task<List<RevenuePointDto>> GetRevenueAsync(string groupBy, string range, bool compareYoy);
+    Task<OrderStatusResponse> GetOrderStatusAsync(string range);
+    Task<BranchTopResponse> GetTopBranchesAsync(string metric, int limit, string range);
+    Task<RecentOrdersResponse> GetRecentOrdersAsync(int limit);
 }    

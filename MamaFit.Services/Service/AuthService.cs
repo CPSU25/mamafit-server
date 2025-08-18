@@ -147,6 +147,7 @@ public class AuthService : IAuthService
             FullName = model.FullName,
             UserEmail = model.UserEmail.ToLower(),
             PhoneNumber = model.PhoneNumber,
+            JobTitle = model.JobTitle,
             CreatedAt = DateTime.UtcNow,
             CreatedBy = "System",
             IsVerify = true,

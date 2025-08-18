@@ -13,7 +13,6 @@ namespace MamaFit.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class ChatController : ControllerBase
     {
         private readonly IChatService _chatService;
@@ -79,10 +78,10 @@ namespace MamaFit.API.Controllers
             try
             {
                 var currentUserId = User.FindFirst("userId")?.Value;
-                if (createDto.UserId1 != currentUserId && createDto.UserId2 != currentUserId)
-                {
-                    return Forbid("You can only create rooms that include yourself");
-                }
+                //if (createDto.UserId1 != currentUserId && createDto.UserId2 != currentUserId)
+                //{
+                //    return Forbid("You can only create rooms that include yourself");
+                //}
 
                 var room = await _chatService.CreateChatRoomAsync(createDto.UserId1, createDto.UserId2);
 

@@ -77,6 +77,34 @@ namespace MamaFit.API.Controllers
                 ));
         }
         
+        [Authorize(Roles = "BranchManager")]
+        [HttpPost("branch-manager")] 
+        public async Task<IActionResult> CreateRequestInBranch([FromBody] WarrantyBranchRequestDto dto,
+            [FromHeader(Name = "Authorization")] string accessToken)
+        {
+            var id = await _warrantyRequestService.CreateRequestInBranch(dto, accessToken);
+
+            return Ok(
+                new ResponseModel<string>(
+                    StatusCodes.Status201Created,
+                    ApiCodes.SUCCESS,
+                    id,
+                    "Warranty request created successfully by manager"
+                ));
+        }
+
+        [HttpPost("ship-paid/{warrantyRequestId}")]
+        public async Task<IActionResult> ShipPaidWarranty(string warrantyRequestId)
+        {
+            var result = await _warrantyRequestService.ShipPaidWarrantyAsync(warrantyRequestId);
+            return Ok(new ResponseModel<WarrantyDecisionResponseDto>(
+                StatusCodes.Status200OK,
+                ApiCodes.SUCCESS,
+                result,
+                "Warranty request shipped successfully"
+            ));
+        }
+        
         [HttpPost("decisions/{warrantyRequestId}")]
         public async Task<IActionResult> Decide(string warrantyRequestId, [FromBody] WarrantyDecisionRequestDto dto)
         {

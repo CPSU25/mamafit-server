@@ -9,6 +9,7 @@ namespace MamaFit.BusinessObjects.Entity
         public string? MaternityDressTaskId { get; set; }
         public string? Image { get; set; }
         public string? Note { get; set; }
+        public DateTime? Deadline { get; set; }
         public OrderItemTaskStatus Status { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string? CreatedBy { get; set; } = string.Empty;

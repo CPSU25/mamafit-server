@@ -28,6 +28,7 @@ public class SepayService : ISepayService
     private readonly INotificationService _notificationService;
     private readonly IOrderItemService _orderItemService;
     private readonly ICacheService _cacheService;
+    private readonly IWarrantyRequestService _warrantyRequestService;
 
     public SepayService(IUnitOfWork unitOfWork,
         IOptions<SepaySettings> sepaySettings,
@@ -37,7 +38,8 @@ public class SepayService : ISepayService
         IMapper mapper,
         INotificationService notificationService,
         IOrderItemService orderItemService,
-        ICacheService cacheService)
+        ICacheService cacheService,
+        IWarrantyRequestService warrantyRequestService)
     {
         _unitOfWork = unitOfWork;
         _sepaySettings = sepaySettings.Value;
@@ -48,6 +50,7 @@ public class SepayService : ISepayService
         _notificationService = notificationService;
         _orderItemService = orderItemService;
         _cacheService = cacheService;
+        _warrantyRequestService = warrantyRequestService;
     }
 
     public async Task<string> GetPaymentStatusAsync(string orderId)
@@ -138,6 +141,31 @@ public class SepayService : ISepayService
         else
         {
             // Thanh toán full
+            if (order.Type == OrderType.WARRANTY)
+            {
+                await _orderService.UpdateOrderStatusAsync(
+                    order.Id,
+                    OrderStatus.PICKUP_IN_PROGRESS, 
+                    PaymentStatus.PAID_FULL
+                );
+
+                await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
+                {
+                    NotificationTitle = "Thanh toán phí bảo hành thành công",
+                    NotificationContent = $"Bạn đã thanh toán phí bảo hành cho đơn {order.Code}. Chúng tôi sẽ tiến hành lên đơn vận chuyển.",
+                    Metadata = new()
+                    {
+                        { "orderId", order.Id },
+                        { "paymentStatus", PaymentStatus.PAID_FULL.ToString() }
+                    },
+                    Type = NotificationType.PAYMENT,
+                    ReceiverId = order.UserId
+                });
+
+                await _warrantyRequestService.AssignWarrantyTasksAfterPaidAsync(order);
+                return;
+            }
+            
             await _orderService.UpdateOrderStatusAsync(
                 order.Id,
                 OrderStatus.CONFIRMED,
@@ -259,7 +287,7 @@ public class SepayService : ISepayService
 
         return new string(result);
     }
-
+    
     private async Task AssignTasksForOrder(Order order)
     {
         var milestoneList = await _unitOfWork.MilestoneRepository.GetAllWithInclude();

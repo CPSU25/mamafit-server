@@ -1,4 +1,4 @@
-using MamaFit.BusinessObjects.DBContext;
+﻿using MamaFit.BusinessObjects.DBContext;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;
@@ -41,27 +41,27 @@ public class WarrantyRequestItemRepository : IWarrantyRequestItemRepository
             .Include(x => x.OrderItem.Preset)
             .Include(x => x.OrderItem.MaternityDressDetail)
             .AsQueryable();
-        
+
         if (!string.IsNullOrEmpty(search))
             query = query.Where(x => x.WarrantyRequest.SKU.Contains(search));
-        
+
         return await query.GetPaginatedList(index, pageSize);
     }
-    
-    public async Task InsertAsync(WarrantyRequestItem entity) 
+
+    public async Task InsertAsync(WarrantyRequestItem entity)
     {
         _dbSet.Add(entity);
         await _context.SaveChangesAsync();
     }
-    
+
     public async Task<int> CountWarrantyRequestItemsAsync(string orderItemId)
     {
         var orderItem = await _orderItemRepository.GetByIdAsync(orderItemId);
         if (orderItem == null) return 0;
 
         var rootId = orderItem.ParentOrderItemId ?? orderItem.Id;
-        var all = await _orderItemRepository.GetAllAsync(); 
-        
+        var all = await _orderItemRepository.GetAllAsync();
+
         var count = all.Count(oi => oi.ParentOrderItemId == rootId && oi.ItemType == ItemType.WARRANTY);
         return count;
     }
@@ -73,11 +73,24 @@ public class WarrantyRequestItemRepository : IWarrantyRequestItemRepository
         .Include(wri => wri.WarrantyRequest)
         .Include(wri => wri.OrderItem)
             .ThenInclude(oi => oi.ParentOrderItem)
-                .ThenInclude(poi => poi.Order)
-         .Include(wri => wri.OrderItem).ThenInclude(x => x.Preset).ThenInclude(x => x.Style)
+                .ThenInclude(poi => poi.Preset).ThenInclude(x => x.Style)
+        .Include(x => x.OrderItem).ThenInclude(x => x.ParentOrderItem).ThenInclude(x => x.Order)
         .FirstOrDefaultAsync(wri => wri.OrderItemId == orderItemId);
     }
-    
+
+    public async Task<List<WarrantyRequestItem>> GetAllRelatedByOrderItemAsync(string orderItemId)
+    {
+        var result = await _dbSet.AsNoTracking()
+            .Include(wri => wri.WarrantyRequest)
+            .Include(x => x.OrderItem).ThenInclude(x => x.Order)
+            .Include(x => x.OrderItem).ThenInclude(x => x.Preset).ThenInclude(x => x.Style)
+            .Include(wri => wri.OrderItem).ThenInclude(oi => oi.ParentOrderItem).ThenInclude(poi => poi.Preset).ThenInclude(x => x.Style)
+            .Include(x => x.OrderItem).ThenInclude(x => x.ParentOrderItem).ThenInclude(x => x.Order)
+            .Where(x => x.OrderItem.Id == orderItemId || x.OrderItem.ParentOrderItemId == orderItemId).ToListAsync();
+
+        return result;
+    }
+
     public async Task UpdateAsync(WarrantyRequestItem entity)
     {
         _dbSet.Update(entity);

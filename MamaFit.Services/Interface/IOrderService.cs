@@ -11,9 +11,11 @@ public interface IOrderService
     Task<List<OrderResponseDto>> GetOrdersForDesignerAsync();
     Task<List<OrderResponseDto>> GetOrdersForBranchManagerAsync();
     Task<List<OrderResponseDto>> GetOrdersForAssignedStaffAsync();
+    Task<OrderResponseDto> GetBySkuAndCodeAsync(string sku, string code);
     Task<PaginatedList<OrderResponseDto>> GetByTokenAsync(string accessToken, int index = 1, int pageSize = 10,
         string? search = null, OrderStatus? status = null);
     Task<PaginatedList<OrderResponseDto>> GetAllAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate);
+    Task<List<OrderGetByIdResponseDto>> GetAllByDesignRequestId(string designRequestId);
     Task<OrderGetByIdResponseDto> GetOrderByIdAsync(string id);
     Task<List<OrderGetByIdResponseDto>> GetForWarranty();
     Task<List<MyOrderStatusCount>> GetMyOrderStatusCounts();

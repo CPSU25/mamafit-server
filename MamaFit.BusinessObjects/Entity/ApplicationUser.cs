@@ -8,6 +8,7 @@ namespace MamaFit.BusinessObjects.Entity
     {
         public string? UserName { get; set; }
         public string? UserEmail { get; set; }
+        public string? JobTitle { get; set; }
         public string? HashPassword { get; set; }
         public string? Salt { get; set; }
         public string? FullName { get; set; }
@@ -19,7 +20,7 @@ namespace MamaFit.BusinessObjects.Entity
         
         //Navigation properties
         public ApplicationUserRole? Role { get; set; }
-        public List<Branch>? Branch { get; set; }
+        public Branch? Branch { get; set; }
         public virtual ICollection<ApplicationUserToken>? Token { get; set; }
         public virtual ICollection<Address>? Addresses { get; set; } = new List<Address>();
         public virtual ICollection<MeasurementDiary>? MeasurementDiaries { get; set; } = new List<MeasurementDiary>();

@@ -8,6 +8,7 @@ public class MaternityDressTask : BaseEntity
     public string? Name { get; set; }
     public string? Description { get; set; }
     public int SequenceOrder { get; set; }
+    public int EstimateTimeSpan { get; set; }
 
     // Navigation properties
     public Milestone? Milestone { get; set; }

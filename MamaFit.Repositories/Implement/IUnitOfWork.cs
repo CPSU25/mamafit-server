@@ -4,6 +4,7 @@ namespace MamaFit.Repositories.Implement
 {
     public interface IUnitOfWork
     {
+        public ITicketRepository TicketRepository { get; }
         public IUserRepository UserRepository { get; }
         public IAddressRepository AddressRepository { get; }
         public IRoleRepository RoleRepository { get; }

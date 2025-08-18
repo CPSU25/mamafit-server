@@ -60,7 +60,7 @@ namespace MamaFit.Repositories.Repository
             return await result.ToListAsync(); // nhận orderId, mảng orderItem và orderCode gốc của orderId 
         }
 
-        public async Task<WarrantyRequest> GetDetailById(string warrantyId)
+        public async Task<WarrantyRequest?> GetDetailById(string warrantyId)
         {
             var result = await _dbSet
                 .Include(x => x.WarrantyRequestItems)
@@ -78,6 +78,21 @@ namespace MamaFit.Repositories.Repository
                 .Include(x => x.WarrantyHistories)
                 .SingleOrDefaultAsync(x => !x.IsDeleted && x.Id == warrantyId);
             return result;
+        }
+        
+        public async Task<List<WarrantyRequest>> GetFeeWarrantyRequestsByOrderIdAsync(string orderId)
+        {
+            // Lấy các WR có bất kỳ item thuộc orderId này,
+            // loại FEE, và item đang APPROVED về FACTORY (chưa IN_TRANSIT)
+            return await _dbSet
+                .Include(w => w.WarrantyRequestItems)
+                .ThenInclude(i => i.OrderItem)
+                .Where(w => w.RequestType == RequestType.FEE &&
+                            w.WarrantyRequestItems.Any(i =>
+                                i.OrderItem.OrderId == orderId &&
+                                i.Status == WarrantyRequestItemStatus.APPROVED &&
+                                i.DestinationType == DestinationType.FACTORY))
+                .ToListAsync();
         }
     }
 }

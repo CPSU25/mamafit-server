@@ -5,6 +5,7 @@ using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace MamaFit.Repositories.Repository
 {
@@ -26,8 +27,8 @@ namespace MamaFit.Repositories.Repository
 
             query = sortBy switch
             {
-                
-                
+
+
                 EntitySortBy.CREATED_AT_ASC => query.OrderBy(u => u.CreatedAt),
                 EntitySortBy.CREATED_AT_DESC => query.OrderByDescending(u => u.CreatedAt),
                 _ => query.OrderByDescending(x => x.CreatedAt)
@@ -51,8 +52,8 @@ namespace MamaFit.Repositories.Repository
 
             query = sortBy switch
             {
-                
-                
+
+
                 EntitySortBy.CREATED_AT_ASC => query.OrderBy(u => u.CreatedAt),
                 EntitySortBy.CREATED_AT_DESC => query.OrderByDescending(u => u.CreatedAt),
                 _ => query.OrderByDescending(x => x.CreatedAt)
@@ -63,6 +64,15 @@ namespace MamaFit.Repositories.Repository
                 .ToList();
 
             return new PaginatedList<MaternityDressDetail>(list, paged.TotalCount, paged.PageNumber, pageSize);
+        }
+
+        public async Task<MaternityDressDetail> GetDetailById(string maternityDetailId)
+        {
+            var response = await _dbSet
+                .Include(x => x.MaternityDress)
+                .FirstOrDefaultAsync(x => x.Id == maternityDetailId);
+
+            return response;
         }
     }
 }

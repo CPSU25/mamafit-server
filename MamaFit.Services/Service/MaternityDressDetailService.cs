@@ -44,14 +44,18 @@ namespace MamaFit.Services.Service
 
         public async Task DeleteAsync(string id)
         {
-            var entity = await _unitOfWork.MaternityDressDetailRepository.GetByIdAsync(id);
+            var entity = await _unitOfWork.MaternityDressDetailRepository.GetDetailById(id);
 
             if (entity == null)
             {
                 throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, "Maternity dress detail not found.");
             }
-
             await _unitOfWork.MaternityDressDetailRepository.SoftDeleteAsync(id);
+
+            if (entity.MaternityDress.Details.Where(x => x.IsDeleted).Count() >= entity.MaternityDress.Details.Count())
+                entity.MaternityDress.GlobalStatus = GlobalStatus.INACTIVE;
+
+            await _unitOfWork.MaternityDressRepository.UpdateAsync(entity.MaternityDress);
             await _unitOfWork.SaveChangesAsync();
         }
 

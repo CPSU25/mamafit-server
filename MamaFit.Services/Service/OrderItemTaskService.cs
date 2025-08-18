@@ -108,6 +108,7 @@ public class OrderItemTaskService : IOrderItemTaskService
                                             .MaternityDressTask);
                                     taskDto.Status = orderItemTask.Status;
                                     taskDto.Note = orderItemTask.Note;
+                                    taskDto.Deadline = orderItemTask.Deadline;
                                     taskDto.Image = orderItemTask.Image;
                                     taskDto.UpdatedAt = orderItemTask.UpdatedAt;
                                     return taskDto;

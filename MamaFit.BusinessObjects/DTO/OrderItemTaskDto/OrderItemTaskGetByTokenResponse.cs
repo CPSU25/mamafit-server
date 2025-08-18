@@ -10,7 +10,6 @@ namespace MamaFit.BusinessObjects.DTO.OrderItemTaskDto
         public OrderItemResponseDto? OrderItem { get; set; }
         public MeasurementResponseDto? Measurement { get; set; }
         public string? OrderCode { get; set; }
-        public DateTime? Deadline { get; set; }
         public OrderStatus? OrderStatus { get; set; }
         public string? AddressId { get; set; }
         public List<MilestoneGetByIdOrderTaskResponseDto>? Milestones { get; set; }

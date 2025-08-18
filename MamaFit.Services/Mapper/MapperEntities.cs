@@ -302,10 +302,21 @@ namespace MamaFit.Services.Mapper
                 .ReverseMap();
 
             CreateMap<OrderItemTask, OrderItemTaskGetByTokenResponse>()
-                .ForMember(dest => dest.Milestones, otp => otp.MapFrom(src => src.MaternityDressTask!.Milestone))
-                .ReverseMap()
-                ;
+                .ForMember(dest => dest.OrderItem, otp => otp.MapFrom(src => src.OrderItem))
+                .ForMember(dest => dest.Milestones,
+                    otp => otp.MapFrom(src => src.MaternityDressTask!.Milestone))
+                .ReverseMap();
 
+            CreateMap<OrderItemTask, MaternityDressTaskOrderTaskResponseDto>()
+                .ForMember(dest => dest.Image, otp => otp.MapFrom(src => src.Image))
+                .ForMember(dest => dest.Note, otp => otp.MapFrom(src => src.Note))
+                .ForMember(dest => dest.Status, otp => otp.MapFrom(src => src.Status))
+                .ForMember(dest => dest.Deadline, otp => otp.MapFrom(src => src.Deadline))
+                .ForMember(dest => dest.Id, otp => otp.MapFrom(src => src.MaternityDressTask!.Id))
+                .ForMember(dest => dest.Name, otp => otp.MapFrom(src => src.MaternityDressTask!.Name))
+                .ForMember(dest => dest.Description, otp => otp.MapFrom(src => src.MaternityDressTask!.Description))
+                .ForMember(dest => dest.SequenceOrder, otp => otp.MapFrom(src => src.MaternityDressTask!.SequenceOrder))
+                .ForMember(dest => dest.EstimateTimeSpan, otp => otp.MapFrom(src => src.MaternityDressTask!.EstimateTimeSpan));
             #endregion
 
             #region Milestone Mapper

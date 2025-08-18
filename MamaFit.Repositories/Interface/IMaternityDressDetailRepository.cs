@@ -11,5 +11,6 @@ namespace MamaFit.Repositories.Interface
         Task<PaginatedList<MaternityDressDetail>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy);
         Task<PaginatedList<MaternityDressDetail>> GetAllByMaternityDressId(string maternityDressId, int index, int pageSize, string? search, EntitySortBy? sortBy);
         Task<MaternityDressDetail> GetDetailById(string maternityDetailId);
+        Task<string?> GetLastSkuByPrefixAsync(string prefix);
     }
 }

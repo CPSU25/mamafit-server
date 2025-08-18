@@ -11,6 +11,7 @@ using MamaFit.Services.ExternalService.AI;
 using MamaFit.Services.ExternalService.CronJob;
 using MamaFit.Services.ExternalService.Filter;
 using MamaFit.Services.Validator;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using NLog;
 
 namespace MamaFit.API
@@ -55,6 +56,8 @@ namespace MamaFit.API
                 builder.Services.AddHttpClientServices();
                 builder.Services.AddConfigSwagger();
                 builder.Services.AddJwtAuthentication(builder.Configuration);
+                builder.Services.AddHealthChecks()
+                    .AddCheck("self", () => HealthCheckResult.Healthy());
                 var app = builder.Build();
 
                 if (!app.Environment.IsDevelopment())
@@ -106,7 +109,9 @@ namespace MamaFit.API
                 app.UseAuthentication();
 
                 app.UseAuthorization();
-
+                
+                app.MapHealthChecks("/health");
+                
                 app.MapControllers();
 
                 app.MapHub<ChatHub>("/chatHub");

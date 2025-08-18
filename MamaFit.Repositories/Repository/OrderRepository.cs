@@ -107,16 +107,25 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .ToListAsync();
     }
 
-    public async Task<Order> GetBySkuAndCodeAsync(string sku, string code)
+    public async Task<Order?> GetBySkuAndCodeAsync(string code, string? sku = null)
     {
-        return await _dbSet.Where(o => o.Code == code && !o.IsDeleted)
-            .Include(o => o.OrderItems)
-            .ThenInclude(oi => oi.MaternityDressDetail)
-            .Include(o => o.OrderItems)
-            .ThenInclude(oi => oi.Preset)
-            .FirstOrDefaultAsync(o => o.OrderItems
-                .Any(oi => oi.MaternityDressDetail.SKU == sku || oi.Preset.SKU == sku));
+        IQueryable<Order> query = _dbSet
+            .Where(o => o.Code == code && !o.IsDeleted)
+            .Include(o => o.OrderItems).ThenInclude(oi => oi.MaternityDressDetail)
+            .Include(o => o.OrderItems).ThenInclude(oi => oi.Preset)
+            .Include(o => o.OrderItems).ThenInclude(oi => oi.WarrantyRequestItems);
+
+        if (!string.IsNullOrWhiteSpace(sku))
+        {
+            query = query.Where(o => o.OrderItems.Any(oi =>
+                (oi.MaternityDressDetail != null && oi.MaternityDressDetail.SKU == sku) ||
+                (oi.Preset != null && oi.Preset.SKU == sku)
+            ));
+        }
+
+        return await query.FirstOrDefaultAsync();
     }
+
 
     public async Task<List<Order>> GetOrdersByAssignedStaffAsync(string staffId)
     {

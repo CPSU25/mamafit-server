@@ -12,6 +12,7 @@ public class OrderItemResponseDto : OrderItemBaseDto
     public string? UpdatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+    public int WarrantyRound { get; set; }
 
     public MaternityDressDetailResponseDto MaternityDressDetail { get; set; }
     public PresetGetAllResponseDto? Preset { get; set; }

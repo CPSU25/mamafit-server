@@ -4,9 +4,7 @@ using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
-using MamaFit.Repositories.Interface;
 using MamaFit.Services.Interface;
-using Microsoft.AspNetCore.Http;
 
 namespace MamaFit.Services.Service
 {
@@ -26,12 +24,16 @@ namespace MamaFit.Services.Service
         public async Task CreateAsync(MaternityDressRequestDto requestDto)
         {
             await _validation.ValidateAndThrowAsync(requestDto);
-            var newMaternityDress = _mapper.Map<MaternityDress>(requestDto);
-            newMaternityDress.GlobalStatus = GlobalStatus.INACTIVE;
 
-            await _unitOfWork.MaternityDressRepository.InsertAsync(newMaternityDress); // Insert + Save changes
+            var newMaternityDress = _mapper.Map<MaternityDress>(requestDto);
+            
+            newMaternityDress.GlobalStatus = GlobalStatus.INACTIVE;
+            newMaternityDress.SKU = await GenerateUniqueDressSkuAsync();
+
+            await _unitOfWork.MaternityDressRepository.InsertAsync(newMaternityDress);
             await _unitOfWork.SaveChangesAsync();
         }
+
 
         public async Task DeleteAsync(string id)
         {
@@ -86,6 +88,23 @@ namespace MamaFit.Services.Service
 
             await _unitOfWork.MaternityDressRepository.UpdateAsync(oldMaternityDress); //Update + Save changes
             await _unitOfWork.SaveChangesAsync();
+        }
+        
+        private async Task<string> GenerateUniqueDressSkuAsync()
+        {
+            const string prefix = "MD";
+            var rnd = new Random();
+
+            while (true)
+            {
+                var number = rnd.Next(0, 1000);
+                var sku = $"{prefix}{number:000}";
+
+                var exists = await _unitOfWork.MaternityDressRepository
+                    .IsEntityExistsAsync(x => x.SKU == sku);
+
+                if (!exists) return sku;
+            }
         }
     }
 }

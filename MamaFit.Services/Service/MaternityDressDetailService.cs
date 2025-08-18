@@ -33,14 +33,23 @@ namespace MamaFit.Services.Service
             dress.GlobalStatus = GlobalStatus.ACTIVE;
             await _unitOfWork.MaternityDressRepository.UpdateAsync(dress);
 
+            if (dress.SKU == null)
+            {
+                dress.SKU = await GenerateUniqueDressSkuAsync();
+                await _unitOfWork.MaternityDressRepository.UpdateAsync(dress);
+            }
+                
             var entity = _mapper.Map<MaternityDressDetail>(requestDto);
             entity.MaternityDress = dress;
             entity.CreatedAt = DateTime.UtcNow;
             entity.CreatedBy = GetCurrentUserName();
-            entity.SKU = CodeHelper.GenerateCode('M');
+            
+            entity.SKU = await GenerateNextDetailSkuAsync(dress.SKU);
+
             await _unitOfWork.MaternityDressDetailRepository.InsertAsync(entity);
             await _unitOfWork.SaveChangesAsync();
         }
+
 
         public async Task DeleteAsync(string id)
         {
@@ -116,6 +125,47 @@ namespace MamaFit.Services.Service
         private string GetCurrentUserName()
         {
             return _httpContextAccessor.HttpContext?.User?.FindFirst("name")?.Value ?? "System";
+        }
+        
+        private async Task<string> GenerateNextDetailSkuAsync(string baseSku)
+        {
+            if (string.IsNullOrWhiteSpace(baseSku))
+                throw new ArgumentException("baseSku is required.", nameof(baseSku));
+
+            var prefix = baseSku.Trim() + "-";
+
+            var lastSku = await _unitOfWork
+                .MaternityDressDetailRepository
+                .GetLastSkuByPrefixAsync(prefix);
+
+            var next = 1;
+
+            if (!string.IsNullOrEmpty(lastSku) && lastSku!.Length > prefix.Length)
+            {
+                var suffix = lastSku.Substring(prefix.Length);
+
+                if (int.TryParse(suffix.AsSpan(), out var n))
+                    next = n + 1;
+            }
+
+            return $"{baseSku}-{next:000}";
+        }
+        
+        private async Task<string> GenerateUniqueDressSkuAsync()
+        {
+            const string prefix = "MD";
+            var rnd = new Random();
+
+            while (true)
+            {
+                var number = rnd.Next(0, 1000);
+                var sku = $"{prefix}{number:000}";
+
+                var exists = await _unitOfWork.MaternityDressRepository
+                    .IsEntityExistsAsync(x => x.SKU == sku);
+
+                if (!exists) return sku;
+            }
         }
     }
 }

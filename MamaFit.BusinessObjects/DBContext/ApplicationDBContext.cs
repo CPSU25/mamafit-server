@@ -356,6 +356,11 @@ namespace MamaFit.BusinessObjects.DBContext
 
             });
 
+            modelBuilder.Entity<MaternityDress>()
+                .HasIndex(x => x.SKU).IsUnique();
+
+            modelBuilder.Entity<MaternityDressDetail>()
+                .HasIndex(x => x.SKU).IsUnique();
             #endregion
         }
     }

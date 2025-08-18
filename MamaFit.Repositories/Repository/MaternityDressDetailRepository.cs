@@ -74,5 +74,15 @@ namespace MamaFit.Repositories.Repository
 
             return response;
         }
+        
+        public async Task<string?> GetLastSkuByPrefixAsync(string prefix)
+        {
+            return await _dbSet
+                .Where(d => d.SKU != null && EF.Functions.Like(d.SKU!, prefix + "%"))
+                .OrderByDescending(d => d.SKU)
+                .Select(d => d.SKU)
+                .FirstOrDefaultAsync();
+        }
+
     }
 }

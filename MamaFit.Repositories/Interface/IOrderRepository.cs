@@ -8,7 +8,7 @@ namespace MamaFit.Repositories.Interface;
 public interface IOrderRepository : IGenericRepository<Order>
 {
     Task<List<Order>> GetOrdersByDesignerAsync(string designerId);
-    Task<Order> GetBySkuAndCodeAsync(string sku, string code);
+    Task<Order?> GetBySkuAndCodeAsync(string code, string? sku = null);
     Task<List<Order>> GetOrdersByBranchManagerAsync(string managerId);
     Task<List<Order>> GetOrdersByAssignedStaffAsync(string staffId);
     Task<PaginatedList<Order>> GetByTokenAsync(int index, int pageSize, string token, string? search, OrderStatus? status = null);

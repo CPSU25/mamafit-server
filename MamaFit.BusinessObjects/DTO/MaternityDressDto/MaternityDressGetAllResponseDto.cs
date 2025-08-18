@@ -9,6 +9,7 @@ public class MaternityDressGetAllResponseDto
     public string? StyleName { get; set; }
     public string? Name { get; set; }
     public string? Description { get; set; }
+    public string? SKU { get; set; }
     public List<string> Images { get; set; } = new List<string>();
     public List<float> Price { get; set; } = new List<float>();
     public GlobalStatus GlobalStatus { get; set; }

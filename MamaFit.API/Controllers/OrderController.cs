@@ -26,10 +26,11 @@ public class OrderController : ControllerBase
 
     [HttpGet("by-sku-and-code")]
     public async Task<IActionResult> GetBySkuAndCode(
-        [FromQuery] string sku,
-        [FromQuery] string code)
+        [FromQuery] string code,
+        [FromQuery] string? sku = null
+)
     {
-        var result = await _service.GetBySkuAndCodeAsync(sku, code);
+        var result = await _service.GetBySkuAndCodeAsync(code, sku);
         return Ok(new ResponseModel<OrderResponseDto>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,

@@ -6,6 +6,7 @@ using MamaFit.Repositories.Infrastructure;
 using MamaFit.Repositories.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 
 namespace MamaFit.Repositories.Repository;
 
@@ -192,6 +193,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
     public async Task<Order?> GetByIdWithItems(string id)
     {
         return await _dbSet.AsNoTracking()
+            .Include(x => x.OrderItems).ThenInclude(x => x.Feedbacks)
             .Include(x => x.Measurement)
             .ThenInclude(x => x.MeasurementDiary)
             .Include(x => x.OrderItems)
@@ -261,9 +263,28 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .AsNoTracking()
             .Include(x => x.OrderItems).ThenInclude(x => x.Preset).ThenInclude(x => x.Style)
             .Include(x => x.OrderItems).ThenInclude(x => x.Preset).ThenInclude(x => x.DesignRequest)
-            .Where(x => !x.IsDeleted && 
+            .Where(x => !x.IsDeleted &&
             x.OrderItems.Any(p => p.Preset.DesignRequest.Id == designRequestId)).ToListAsync();
 
         return order;
+    }
+
+    public async Task<List<Order>> GetByTokenAsync(string userId)
+    {
+        var query = await _dbSet
+            .Include(x => x.OrderItems).ThenInclude(x => x.Feedbacks)
+            .Include(x => x.OrderItems)
+            .ThenInclude(x => x.MaternityDressDetail)
+            .Include(x => x.OrderItems)
+            .ThenInclude(x => x.Preset)
+            .ThenInclude(x => x.Style)
+            .Include(x => x.OrderItems)
+            .ThenInclude(x => x.DesignRequest)
+            .ThenInclude(x => x.User)
+            .Include(x => x.Measurement).ThenInclude(x => x.MeasurementDiary)
+            .AsNoTracking()
+            .Where(x => !x.IsDeleted && x.UserId == userId).ToListAsync();
+
+        return query;
     }
 }

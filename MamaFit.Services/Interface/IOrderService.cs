@@ -19,6 +19,7 @@ public interface IOrderService
     Task<OrderGetByIdResponseDto> GetOrderByIdAsync(string id);
     Task<List<OrderGetByIdResponseDto>> GetForWarranty();
     Task<List<MyOrderStatusCount>> GetMyOrderStatusCounts();
+    Task<List<OrderResponseDto>> GetOrderToFeedback();
     Task<OrderResponseDto> CreateOrderAsync(OrderRequestDto model);
     Task OrderReceivedAtUpdateAsync(string orderId);
     Task UpdateOrderStatusAsync(string id, OrderStatus orderStatus, PaymentStatus paymentStatus);

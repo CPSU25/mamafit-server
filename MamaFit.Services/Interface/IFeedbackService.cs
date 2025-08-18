@@ -13,6 +13,7 @@ public interface IFeedbackService
 
     Task<FeedbackResponseDto> GetByIdAsync(string id);
     Task<List<OrderItemResponseDto>> GetAllByUserId();
+    Task<bool> CheckFeedbackByOrderId(string orderId);
     Task CreateAsync(FeedbackRequestDto requestDto);
     Task UpdateAsync(string id, FeedbackRequestDto requestDto);
     Task DeleteAsync(string id);

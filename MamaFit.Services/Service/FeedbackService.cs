@@ -29,11 +29,11 @@ public class FeedbackService : IFeedbackService
         DateTime? endDate)
     {
         var feedbacks = await _unitOfWork.FeedbackRepository.GetAllAsync(index, pageSize, startDate, endDate);
-        
+
         var responseItems = feedbacks.Items
             .Select(feedback => _mapper.Map<FeedbackResponseDto>(feedbacks))
             .ToList();
-        
+
         return new PaginatedList<FeedbackResponseDto>(
             responseItems,
             feedbacks.TotalCount,
@@ -41,14 +41,14 @@ public class FeedbackService : IFeedbackService
             pageSize
         );
     }
-    
+
     public async Task<FeedbackResponseDto> GetByIdAsync(string id)
     {
         var feedback = await _unitOfWork.FeedbackRepository.GetByIdNotDeletedAsync(id);
         _validation.CheckNotFound(feedback, "Feedback not found");
         return _mapper.Map<FeedbackResponseDto>(feedback);
     }
-    
+
     public async Task CreateAsync(FeedbackRequestDto requestDto)
     {
 
@@ -69,7 +69,7 @@ public class FeedbackService : IFeedbackService
         await _unitOfWork.FeedbackRepository.InsertAsync(entity);
         await _unitOfWork.SaveChangesAsync();
     }
-    
+
     public async Task UpdateAsync(string id, FeedbackRequestDto requestDto)
     {
         var feedback = await _unitOfWork.FeedbackRepository.GetByIdNotDeletedAsync(id);
@@ -79,16 +79,16 @@ public class FeedbackService : IFeedbackService
         _validation.CheckNotFound(orderItem, $"Order item with id: {requestDto.OrderItemId} not found");
 
         _mapper.Map(requestDto, feedback);
-        
+
         await _unitOfWork.FeedbackRepository.UpdateAsync(feedback);
         await _unitOfWork.SaveChangesAsync();
     }
-    
+
     public async Task DeleteAsync(string id)
     {
         var feedback = await _unitOfWork.FeedbackRepository.GetByIdNotDeletedAsync(id);
         _validation.CheckNotFound(feedback, "Feedback not found");
-        
+
         await _unitOfWork.FeedbackRepository.SoftDeleteAsync(feedback);
         await _unitOfWork.SaveChangesAsync();
     }
@@ -105,6 +105,17 @@ public class FeedbackService : IFeedbackService
             .ToList();
 
         return _mapper.Map<List<OrderItemResponseDto>>(orderItems);
+    }
+
+    public async Task<bool> CheckFeedbackByOrderId(string orderId)
+    {
+        var order = await _unitOfWork.OrderRepository.GetByIdWithItems(orderId);
+        _validation.CheckNotFound(order, $"Order with id: {orderId} not found");
+        if (order.OrderItems.All(x => x.Feedbacks.Count() <= 0))
+        {
+            return false;
+        }
+        return true;
     }
 
     private string GetCurrentUserId()

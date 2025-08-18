@@ -1,3 +1,4 @@
+using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
@@ -12,6 +13,7 @@ public interface IOrderRepository : IGenericRepository<Order>
     Task<List<Order>> GetOrdersByBranchManagerAsync(string managerId);
     Task<List<Order>> GetOrdersByAssignedStaffAsync(string staffId);
     Task<PaginatedList<Order>> GetByTokenAsync(int index, int pageSize, string token, string? search, OrderStatus? status = null);
+    Task<List<Order>> GetByTokenAsync(string userId);
     Task<PaginatedList<Order>> GetAllAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate);
     Task<List<Order>> GetOrderForRequest(string userId);
     Task<List<Order>> GetAllOrderByDesignRequestId(string designRequestId);

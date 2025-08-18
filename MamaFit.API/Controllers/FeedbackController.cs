@@ -45,6 +45,13 @@ public class FeedbackController : ControllerBase
         ));
     }
 
+    [HttpGet("feedback-status/{orderId}")]
+    public async Task<IActionResult> CheckFeedbackStatusByOrderId(string orderId)
+    {
+        var result = await _feedbackService.CheckFeedbackByOrderId(orderId);
+        return Ok(new ResponseModel<bool>(StatusCodes.Status200OK, ApiCodes.SUCCESS, result));
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById([FromRoute] string id)
     {

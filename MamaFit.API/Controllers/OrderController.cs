@@ -38,6 +38,19 @@ public class OrderController : ControllerBase
             "Get order by SKU and code successfully!"
         ));
     }
+
+    [Authorize]
+    [HttpGet("for-feedback")]
+    public async Task<IActionResult> GetOrderForFeedback()
+    {
+        var result = await _service.GetOrderToFeedback();
+        return Ok(new ResponseModel<List<OrderResponseDto>>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            result,
+            "Get order successfully!"
+        ));
+    }
     
     [Authorize]
     [HttpGet("by-token")]

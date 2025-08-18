@@ -134,6 +134,15 @@ public class OrderService : IOrderService
         );
     }
 
+    public async Task<List<OrderResponseDto>> GetOrderToFeedback()
+    {
+        var userId = GetCurrentUserId();
+        var myOrder = await _unitOfWork.OrderRepository.GetByTokenAsync(userId);
+        myOrder = myOrder.Where(x => x.OrderItems.All(x => x.Feedbacks.Count() <= 0) && x.Status == OrderStatus.COMPLETED).ToList();
+
+        return myOrder.Select(x => _mapper.Map<OrderResponseDto>(x)).ToList();
+    }
+
     public async Task UpdateOrderStatusAsync(string id, OrderStatus orderStatus, PaymentStatus paymentStatus)
     {
         var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);

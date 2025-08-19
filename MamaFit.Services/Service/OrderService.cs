@@ -74,15 +74,34 @@ public class OrderService : IOrderService
         var dto = _mapper.Map<OrderResponseDto>(order);
         if (dto.Items != null && order?.OrderItems != null)
         {
+            // Lấy tất cả original order item IDs
+            var originalOrderItemIds = order.OrderItems
+                .Where(x => x.ParentOrderItemId == null) // Chỉ lấy original items
+                .Select(x => x.Id)
+                .ToList();
+
+            // Lấy warranty rounds cho tất cả original order items
+            var warrantyRounds = await _unitOfWork.WarrantyRequestItemRepository
+                .GetWarrantyRoundsByOriginalOrderItemIdsAsync(originalOrderItemIds);
+
             foreach (var itemDto in dto.Items)
             {
                 var entityItem = order.OrderItems.FirstOrDefault(x => x.Id == itemDto.Id);
-                var originalOrderItem = entityItem?.ParentOrderItemId == null ? entityItem : 
-                    order.OrderItems.FirstOrDefault(x => x.Id == entityItem.ParentOrderItemId);
 
-                if (originalOrderItem?.WarrantyRequestItems != null && originalOrderItem.WarrantyRequestItems.Any())
+                if (entityItem != null)
                 {
-                    itemDto.WarrantyRound = originalOrderItem.WarrantyRequestItems.Max(w => w.WarrantyRound);
+                    // Xác định original order item ID
+                    string originalOrderItemId = entityItem.ParentOrderItemId ?? entityItem.Id;
+
+                    // Lấy warranty round cao nhất cho original order item này
+                    if (warrantyRounds.ContainsKey(originalOrderItemId))
+                    {
+                        itemDto.WarrantyRound = warrantyRounds[originalOrderItemId];
+                    }
+                    else
+                    {
+                        itemDto.WarrantyRound = 0;
+                    }
                 }
                 else
                 {
@@ -90,6 +109,7 @@ public class OrderService : IOrderService
                 }
             }
         }
+
         return dto;
     }
 
@@ -140,7 +160,8 @@ public class OrderService : IOrderService
     {
         var userId = GetCurrentUserId();
         var myOrder = await _unitOfWork.OrderRepository.GetByTokenAsync(userId);
-        myOrder = myOrder.Where(x => x.OrderItems.All(x => x.Feedbacks.Count() <= 0) && x.Status == OrderStatus.COMPLETED).ToList();
+        myOrder = myOrder
+            .Where(x => x.OrderItems.All(x => x.Feedbacks.Count() <= 0) && x.Status == OrderStatus.COMPLETED).ToList();
 
         return myOrder.Select(x => _mapper.Map<OrderResponseDto>(x)).ToList();
     }

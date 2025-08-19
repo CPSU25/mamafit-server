@@ -9,4 +9,5 @@ public interface IWarrantyRequestItemService
     Task<PaginatedList<WarrantyRequestItemGetAllDto>> GetAllAsync(int index, int pageSize, string? search);
     Task<WarrantyRequestItemDetailDto> GetDetailsByOrderItemIdAsync(string orderItemId);
     Task<List<WarrantyRequestItemDetailListDto>> GetAllDetailsByOrderItemIdAsync(string orderItemId);
+    
 }

@@ -92,7 +92,33 @@ namespace MamaFit.API.Controllers
                     "Warranty request created successfully by manager"
                 ));
         }
-
+        [Authorize(Roles = "BranchManager")]
+        [HttpPut("complete-order/{orderId}")]
+        public async Task<IActionResult> CompleteWarrantyOrder(string orderId)
+        {
+            await _warrantyRequestService.CompleteWarrantyOrderAsync(orderId);
+        
+            return Ok(new ResponseModel<string>(
+                StatusCodes.Status200OK,
+                ApiCodes.SUCCESS,
+                null,
+                "Warranty order completed successfully"
+            ));
+        }
+        [Authorize(Roles = "BranchManager,Admin,Manager")]
+        
+        [HttpPut("complete-warranty-request/{warrantyRequestId}")]
+        public async Task<IActionResult> CompleteWarrantyRequest(string warrantyRequestId)
+        {
+            await _warrantyRequestService.CompleteWarrantyRequestAsync(warrantyRequestId);
+        
+            return Ok(new ResponseModel<string>(
+                StatusCodes.Status200OK,
+                ApiCodes.SUCCESS,
+                null,
+                "Warranty request completed successfully"
+            ));
+        }
         [HttpPost("ship-paid/{warrantyRequestId}")]
         public async Task<IActionResult> ShipPaidWarranty(string warrantyRequestId)
         {

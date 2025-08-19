@@ -39,6 +39,7 @@ namespace MamaFit.Repositories.Implement
         public IAddOnRepository AddOnRepository { get; }
         public IOrderItemTaskRepository OrderItemTaskRepository { get; }
         public IAddOnOptionRepository AddOnOptionRepository { get; }
+        public IWarrantyRequestItemRepository WarrantyRequestItemRepository { get; }
         public IPositionRepository PositionRepository { get; }
         public ISizeRepository SizeRepository { get; }
 
@@ -79,7 +80,8 @@ namespace MamaFit.Repositories.Implement
             IAddOnOptionRepository addOnOptionRepository,
             IPositionRepository positionRepository,
             ISizeRepository sizeRepository,
-            ITicketRepository ticketRepository)
+            ITicketRepository ticketRepository,
+            IWarrantyRequestItemRepository warrantyRequestItemRepository)
         {
             _context = context;
             UserRepository = userRepository;
@@ -117,6 +119,7 @@ namespace MamaFit.Repositories.Implement
             PositionRepository = positionRepository;
             SizeRepository = sizeRepository;
             TicketRepository = ticketRepository;
+            WarrantyRequestItemRepository = warrantyRequestItemRepository;
         }
 
         public int SaveChanges()

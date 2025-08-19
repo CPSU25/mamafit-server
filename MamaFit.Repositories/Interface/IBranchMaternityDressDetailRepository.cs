@@ -12,4 +12,5 @@ public interface IBranchMaternityDressDetailRepository
     Task InsertAsync(BranchMaternityDressDetail entity);
     Task UpdateAsync(BranchMaternityDressDetail entity);
     Task DeleteAsync(string branchId, string dressDetailId);
+    Task<BranchMaternityDressDetail?> GetByBranchIdAndDressDetailIdAsync(string branchId, string dressDetailId);
 }

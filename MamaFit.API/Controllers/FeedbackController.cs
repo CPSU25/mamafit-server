@@ -45,6 +45,18 @@ public class FeedbackController : ControllerBase
         ));
     }
 
+    [HttpGet("maternity-dress/{dressId}")]
+    public async Task<IActionResult> GetAllMyFeedbacks(string dressId)
+    {
+        var result = await _feedbackService.GetAllByDressId(dressId);
+        return Ok(new ResponseModel<List<OrderItemResponseDto>>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            result,
+            "Get feedback successfully!"
+        ));
+    }
+
     [HttpGet("feedback-status/{orderId}")]
     public async Task<IActionResult> CheckFeedbackStatusByOrderId(string orderId)
     {

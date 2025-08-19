@@ -58,7 +58,7 @@ namespace MamaFit.Repositories.Repository
 
         public async Task<MaternityDress?> GetById(string id)
         {
-            return await _dbSet.Include(x => x.Details)
+            return await _dbSet.Include(x => x.Details).ThenInclude(x => x.OrderItems).ThenInclude(x => x.Order)
                 .Include(x => x.Style)
                 .Include(x => x.Details.Where(x => !x.IsDeleted))
                 .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);

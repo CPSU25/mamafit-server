@@ -28,6 +28,17 @@ public class FeedbackRepository : GenericRepository<Feedback>, IFeedbackReposito
         return await PaginatedList<Feedback>.CreateAsync(query, index, pageSize);
     }
 
+    public async Task<List<Feedback>> GetAllByDressId(string dressId)
+    {
+        var query = await _dbSet
+            .Include(x => x.OrderItem).ThenInclude(x => x.Preset).ThenInclude(x => x.Style)
+            .Include(x => x.OrderItem).ThenInclude(x => x.MaternityDressDetail).ThenInclude(x => x.MaternityDress)
+            .Include(x => x.OrderItem).ThenInclude(x => x.DesignRequest)
+            .Include(x => x.OrderItem).ThenInclude(x => x.Order)
+            .Where(x => !x.IsDeleted && x.OrderItem.MaternityDressDetail.MaternityDressId == dressId).ToListAsync();
+        return query;
+    }
+
     public async Task<List<Feedback>> GetAllByUserId(string userId)
     {
         var query = await _dbSet

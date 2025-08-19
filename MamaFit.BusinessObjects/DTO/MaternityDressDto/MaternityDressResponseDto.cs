@@ -14,6 +14,7 @@ namespace MamaFit.BusinessObjects.DTO.MaternityDressDto
         public GlobalStatus GlobalStatus { get; set; }
         public string? SKU { get; set; }
         public string? Slug { get; set; }
+        public int SoldCount { get; set; }
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime CreatedAt { get; set; }

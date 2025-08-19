@@ -6,7 +6,8 @@ namespace MamaFit.Repositories.Interface;
 
 public interface IBranchMaternityDressDetailRepository
 {
-    Task<PaginatedList<BranchMaternityDressDetail>> GetAllAsync(int index, int pageSize, string? search);
+    Task<PaginatedList<BranchMaternityDressDetail>> GetAllAsync(int index, int pageSize, string userId, string? search);
+    Task<BranchMaternityDressDetail?> GetDetailByIdAsync(string userId, string branchId, string dressDetailId);
     Task<BranchMaternityDressDetail?> GetByIdAsync(string branchId, string dressDetailId);
     Task InsertAsync(BranchMaternityDressDetail entity);
     Task UpdateAsync(BranchMaternityDressDetail entity);

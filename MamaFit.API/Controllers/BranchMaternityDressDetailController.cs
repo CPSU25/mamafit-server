@@ -10,19 +10,20 @@ namespace MamaFit.API.Controllers;
 public class BranchMaternityDressDetailController : ControllerBase
 {
     private readonly IBranchMaternityDressDetailService _branchMaternityDressDetailService;
-    
+
     public BranchMaternityDressDetailController(IBranchMaternityDressDetailService branchMaternityDressDetailService)
     {
         _branchMaternityDressDetailService = branchMaternityDressDetailService;
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> GetAll(
+        [FromHeader(Name = "Authorization")] string accessToken,
         [FromQuery] int index = 1,
         [FromQuery] int pageSize = 10,
         [FromQuery] string? search = null)
     {
-        var dressDetails = await _branchMaternityDressDetailService.GetAllAsync(index, pageSize, search);
+        var dressDetails = await _branchMaternityDressDetailService.GetAllAsync(index, pageSize, accessToken, search);
         return Ok(new ResponseModel<PaginatedList<BranchMaternityDressDetailDto>>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
@@ -30,19 +31,19 @@ public class BranchMaternityDressDetailController : ControllerBase
             "Get all branch maternity dress details successfully!"
         ));
     }
-    
+
     [HttpGet("{branchId}/{dressId}")]
     public async Task<IActionResult> GetById([FromRoute] string branchId, [FromRoute] string dressId)
     {
         var dressDetail = await _branchMaternityDressDetailService.GetByIdAsync(branchId, dressId);
-        return Ok(new ResponseModel<BranchMaternityDressDetailDto>(
+        return Ok(new ResponseModel<GetDetailById>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
             dressDetail,
             "Get branch maternity dress detail successfully!"
         ));
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] BranchMaternityDressDetailDto request)
     {
@@ -54,7 +55,7 @@ public class BranchMaternityDressDetailController : ControllerBase
             "Created branch maternity dress detail successfully!"
         ));
     }
-    
+
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] BranchMaternityDressDetailDto request)
     {
@@ -66,7 +67,7 @@ public class BranchMaternityDressDetailController : ControllerBase
             "Updated branch maternity dress detail successfully!"
         ));
     }
-    
+
     [HttpDelete("{branchId}/{dressId}")]
     public async Task<IActionResult> Delete([FromRoute] string branchId, [FromRoute] string dressId)
     {

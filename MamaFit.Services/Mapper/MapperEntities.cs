@@ -351,7 +351,7 @@ namespace MamaFit.Services.Mapper
             #region BranchMaternityDressDetail Mapper
 
             CreateMap<BranchMaternityDressDetail, BranchMaternityDressDetailDto>().ReverseMap();
-
+            CreateMap<BranchMaternityDressDetail, GetDetailById>().ReverseMap();
             #endregion
 
             #region WarrantyHistory Mapper

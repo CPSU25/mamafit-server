@@ -20,11 +20,18 @@ public class BranchMaternityDressDetailRepository : IBranchMaternityDressDetailR
         _dbSet = _context.Set<BranchMaternityDressDetail>();
     }
 
-    public async Task<PaginatedList<BranchMaternityDressDetail>> GetAllAsync(int index, int pageSize, string? search)
+    public async Task<PaginatedList<BranchMaternityDressDetail>> GetAllAsync(int index, int pageSize, string userId, string? search)
     {
+        var branchId = await _context.Branches.Where(
+            b => b.BranchManagerId == userId)
+            .Select(b => b.Id)
+            .FirstOrDefaultAsync();
+        
         var query = _dbSet
+            .Where(b => b.BranchId == branchId)
             .Include(b => b.Branch)
             .Include(b => b.MaternityDressDetail)
+            .OrderBy(b => b.MaternityDressDetail.CreatedAt)
             .AsQueryable();
         
         if (!string.IsNullOrEmpty(search))
@@ -36,11 +43,11 @@ public class BranchMaternityDressDetailRepository : IBranchMaternityDressDetailR
         return await query.GetPaginatedList(index, pageSize);
     }
     
-    public async Task<BranchMaternityDressDetail?> GetByIdAsync(string branchId, string dressDetailId)
+    public async Task<BranchMaternityDressDetail?> GetDetailByIdAsync(string userId, string branchId, string dressDetailId)
     {
         if (string.IsNullOrEmpty(branchId) || string.IsNullOrEmpty(dressDetailId))
             return null;
-
+        
         return await _dbSet
             .Include(b => b.Branch)
             .Include(b => b.MaternityDressDetail)
@@ -57,6 +64,17 @@ public class BranchMaternityDressDetailRepository : IBranchMaternityDressDetailR
     {
         _dbSet.Update(entity);
         await _context.SaveChangesAsync();
+    }
+    
+    public async Task<BranchMaternityDressDetail?> GetByIdAsync(string branchId, string dressDetailId)
+    {
+        if (string.IsNullOrEmpty(branchId) || string.IsNullOrEmpty(dressDetailId))
+            return null;
+
+        return await _dbSet
+            .Include(b => b.Branch)
+            .Include(b => b.MaternityDressDetail)
+            .FirstOrDefaultAsync(b => b.BranchId == branchId && b.MaternityDressDetailId == dressDetailId);
     }
     
     public async Task DeleteAsync(string branchId, string dressDetailId)

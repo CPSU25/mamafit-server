@@ -217,7 +217,7 @@ namespace MamaFit.Services.Service
             _validationService.CheckNotFound(preset, $"Default preset for style with ID {styleId} not found.");
             return _mapper.Map<PresetGetByIdResponseDto>(preset);
         }
-        public async Task<List<PresetGetByIdResponseDto>> GetAllPresetByComponentOptionId(List<string> componentOptionIds)
+        public async Task<List<PresetGetByIdResponseDto>> GetAllPresetByComponentOptionId(List<string> componentOptionIds, string styleId)
         {
 
             foreach (var componentOptionId in componentOptionIds)
@@ -226,7 +226,7 @@ namespace MamaFit.Services.Service
                 _validationService.CheckNotFound(componentOption, $"Component option with ID {componentOptionId} not found.");
             }
 
-            var presets = await _unitOfWork.PresetRepository.GetAllPresetByComponentOptionId(componentOptionIds);
+            var presets = await _unitOfWork.PresetRepository.GetAllPresetByComponentOptionId(componentOptionIds,styleId);
             _validationService.CheckNotFound(presets, $"No presets found for component option with ID {componentOptionIds}.");
             return presets.Select(preset => _mapper.Map<PresetGetByIdResponseDto>(preset)).ToList();
         }

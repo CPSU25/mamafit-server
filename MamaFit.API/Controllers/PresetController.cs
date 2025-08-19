@@ -80,9 +80,9 @@ namespace MamaFit.API.Controllers
         }
 
         [HttpPost("component-option")]
-        public async Task<IActionResult> GetAllPresetByComponentOptionId([FromBody] List<string> componentOptionId)
+        public async Task<IActionResult> GetAllPresetByComponentOptionId([FromBody] List<string> componentOptionId, string styleId)
         {
-            var presets = await _presetService.GetAllPresetByComponentOptionId(componentOptionId);
+            var presets = await _presetService.GetAllPresetByComponentOptionId(componentOptionId, styleId);
             return Ok(new ResponseModel<List<PresetGetByIdResponseDto>>(
                 StatusCodes.Status200OK,
                 ApiCodes.SUCCESS,

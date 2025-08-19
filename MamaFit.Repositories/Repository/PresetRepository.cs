@@ -40,7 +40,7 @@ namespace MamaFit.Repositories.Repository
             return new PaginatedList<Preset>(list, paged.TotalCount, paged.PageNumber, pageSize);
         }
 
-        public async Task<List<Preset>> GetAllPresetByComponentOptionId(List<string> componentOptionId)
+        public async Task<List<Preset>> GetAllPresetByComponentOptionId(List<string> componentOptionId, string styleId)
         {
             var presets = await _dbSet
                 .Include(x => x.ComponentOptionPresets)
@@ -48,7 +48,8 @@ namespace MamaFit.Repositories.Repository
                 .ThenInclude(co => co.Component)
                 .Include(x => x.Style)
                 .Where(p => !p.IsDeleted &&
-                     componentOptionId.All(id => p.ComponentOptionPresets.Any(co => co.ComponentOption!.Id == id)))
+                     componentOptionId.All(id => p.ComponentOptionPresets.Any(co => co.ComponentOption!.Id == id) 
+                     && p.StyleId == styleId))
                 .ToListAsync();
 
             return presets;

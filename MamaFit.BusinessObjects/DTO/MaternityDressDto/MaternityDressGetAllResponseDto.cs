@@ -14,6 +14,9 @@ public class MaternityDressGetAllResponseDto
     public List<float> Price { get; set; } = new List<float>();
     public GlobalStatus GlobalStatus { get; set; }
     public string? Slug { get; set; }
+    public int SoldCount { get; set; }
+    public int FeedbackCount { get; set; }
+    public decimal AverageRating { get; set; }
     public string? CreatedBy { get; set; }
     public string? UpdatedBy { get; set; }
     public DateTime CreatedAt { get; set; }

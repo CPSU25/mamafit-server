@@ -27,8 +27,8 @@ namespace MamaFit.Repositories.Repository
 
             query = sortBy switch
             {
-                
-                
+
+
                 EntitySortBy.CREATED_AT_ASC => query.OrderBy(u => u.CreatedAt),
                 EntitySortBy.CREATED_AT_DESC => query.OrderByDescending(u => u.CreatedAt),
                 _ => query.OrderByDescending(c => c.CreatedAt)
@@ -65,7 +65,7 @@ namespace MamaFit.Repositories.Repository
                     Id = c.Id,
                     Name = c.Name,
                     Description = c.Description,
-                    Images = c.Images, 
+                    Images = c.Images,
                     GlobalStatus = c.GlobalStatus,
                     Options = c.Options
                         .Where(o => o.ComponentOptionPresets
@@ -74,7 +74,12 @@ namespace MamaFit.Repositories.Repository
                         {
                             Id = o.Id,
                             Name = o.Name,
-                            // các field khác của Option
+                            GlobalStatus = o.GlobalStatus,
+                            Images = o.Images,
+                            Description = o.Description,
+                            Component = o.Component,
+                            ComponentId = o.ComponentId,
+                            Price = o.Price,                            
                             ComponentOptionPresets = o.ComponentOptionPresets
                                 .Where(cop => cop.Preset != null && cop.Preset.StyleId == styleId)
                                 .ToList()

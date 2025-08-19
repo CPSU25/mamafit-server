@@ -232,7 +232,7 @@ namespace MamaFit.Services.Service
                 orderItem.WarrantyDate = DateTime.UtcNow;
                 await _unitOfWork.OrderItemRepository.UpdateAsync(orderItem);
             }
-            
+
             if (requestType == RequestType.FEE && (!dto.Fee.HasValue || dto.Fee <= 0))
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
@@ -240,7 +240,7 @@ namespace MamaFit.Services.Service
             }
 
             var originalOrder = validOrderItems.FirstOrDefault()?.Order;
-            
+
             var warrantyOrder = new Order
             {
                 UserId = originalOrder.UserId,
@@ -248,13 +248,20 @@ namespace MamaFit.Services.Service
                 IsOnline = false,
                 Type = OrderType.WARRANTY,
                 Code = GenerateOrderCode(),
-                Status = OrderStatus.CONFIRMED,
-                PaymentStatus = PaymentStatus.WARRANTY,
+                Status = requestType == RequestType.FEE && dto.PaymentMethod == PaymentMethod.ONLINE_BANKING
+                    ? OrderStatus.AWAITING_PAID_WARRANTY
+                    : OrderStatus.IN_PROGRESS,
+                PaymentStatus = requestType == RequestType.FEE && dto.PaymentMethod == PaymentMethod.ONLINE_BANKING
+                    ? PaymentStatus.PENDING
+                    : PaymentStatus.WARRANTY,
                 PaymentType = PaymentType.FULL,
                 PaymentMethod = dto.PaymentMethod,
                 DeliveryMethod = DeliveryMethod.PICK_UP,
                 SubTotalAmount = dto.Fee ?? 0,
                 TotalAmount = dto.Fee ?? 0,
+                TotalPaid = requestType == RequestType.FEE && dto.PaymentMethod == PaymentMethod.ONLINE_BANKING
+                    ? dto.Fee
+                    : (dto.Fee ?? 0)
             };
             await _unitOfWork.OrderRepository.InsertAsync(warrantyOrder);
 
@@ -293,7 +300,7 @@ namespace MamaFit.Services.Service
                     DestinationBranchId = branchId,
                     DestinationType = DestinationType.BRANCH,
                     OrderItemId = warrantyOrderItemIdMap[itemDto.OrderItemId],
-                    Status = WarrantyRequestItemStatus.PENDING,
+                    Status = WarrantyRequestItemStatus.APPROVED,
                     Description = itemDto.Description,
                     Images = itemDto.Images ?? new List<string>(),
                     Videos = itemDto.Videos ?? new List<string>(),
@@ -320,6 +327,47 @@ namespace MamaFit.Services.Service
             });
 
             return warrantyOrder.Id;
+        }
+
+
+        public async Task CompleteWarrantyOrderAsync(string orderId)
+        {
+            var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(orderId);
+            _validationService.CheckNotFound(order, $"Order with id {orderId} not found!");
+
+            if (order.Type != OrderType.WARRANTY)
+            {
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                    "Order is not a warranty order");
+            }
+
+            if (order.Status != OrderStatus.IN_PROGRESS)
+            {
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                    "Only in-progress warranty orders can be completed");
+            }
+
+            // Cập nhật trạng thái order và thời gian nhận hàng
+            order.Status = OrderStatus.COMPLETED;
+            order.ReceivedAt = DateTime.UtcNow;
+
+            await _unitOfWork.OrderRepository.UpdateAsync(order);
+            await _unitOfWork.SaveChangesAsync();
+
+            // Gửi thông báo hoàn thành đơn hàng bảo hành
+            await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
+            {
+                ReceiverId = order.UserId,
+                NotificationTitle = "Nhận hàng bảo hành thành công",
+                NotificationContent =
+                    $"Bạn đã nhận thành công đơn hàng bảo hành {order.Code}. Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.",
+                ActionUrl = $"/orders/{order.Id}",
+                Metadata = new Dictionary<string, string>
+                {
+                    { "orderId", order.Id },
+                    { "orderCode", order.Code }
+                }
+            });
         }
 
         public async Task DeleteAsync(string id)
@@ -392,6 +440,57 @@ namespace MamaFit.Services.Service
             return $"{prefix}{randomPart}";
         }
 
+        public async Task CompleteWarrantyRequestAsync(string warrantyRequestId)
+        {
+            var warrantyRequest = await _unitOfWork.WarrantyRequestRepository.GetDetailById(warrantyRequestId);
+            _validationService.CheckNotFound(warrantyRequest,
+                $"Warranty request with id {warrantyRequestId} not found!");
+
+            if (warrantyRequest.Status != WarrantyRequestStatus.APPROVED)
+            {
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                    "Only approved warranty requests can be completed");
+            }
+
+            // Cập nhật trạng thái warranty request
+            if (warrantyRequest.WarrantyRequestItems.Any(x => x.DestinationType == DestinationType.BRANCH))
+            {
+                warrantyRequest.Status = WarrantyRequestStatus.COMPLETED;
+            }
+
+            // Cập nhật trạng thái các warranty request items
+            foreach (var item in warrantyRequest.WarrantyRequestItems)
+            {
+                if (item.Status == WarrantyRequestItemStatus.IN_TRANSIT)
+                {
+                    item.Status = WarrantyRequestItemStatus.APPROVED;
+                }
+            }
+
+            await _unitOfWork.WarrantyRequestRepository.UpdateAsync(warrantyRequest);
+            await _unitOfWork.SaveChangesAsync();
+
+            // Gửi thông báo hoàn thành bảo hành
+            var firstItem = warrantyRequest.WarrantyRequestItems.FirstOrDefault();
+            if (firstItem != null)
+            {
+                var orderItem = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(firstItem.OrderItemId);
+                var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(orderItem.OrderId!);
+
+                await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
+                {
+                    ReceiverId = order.UserId,
+                    NotificationTitle = "Bảo hành hoàn thành",
+                    NotificationContent =
+                        $"Yêu cầu bảo hành {warrantyRequest.SKU} đã được hoàn thành. Vui lòng đến chi nhánh để nhận sản phẩm.",
+                    ActionUrl = $"/warranty-requests/{warrantyRequest.Id}",
+                    Metadata = new Dictionary<string, string>
+                    {
+                        { "warrantyRequestId", warrantyRequest.Id },
+                    }
+                });
+            }
+        }
 
         public async Task<WarrantyDecisionResponseDto> DecideAsync(
             string warrantyRequestId, WarrantyDecisionRequestDto dto)
@@ -584,7 +683,7 @@ namespace MamaFit.Services.Service
                     _validationService.CheckNotFound(orderEntity, "Order not found");
 
                     var ship = shipByOrderId[orderId]; // đã validate tồn tại
-                    orderEntity.SubTotalAmount = feeTotal; 
+                    orderEntity.SubTotalAmount = feeTotal;
                     orderEntity.ShippingFee = ship;
                     orderEntity.TotalAmount = feeTotal + ship;
                     orderEntity.Status = OrderStatus.AWAITING_PAID_WARRANTY;
@@ -623,7 +722,8 @@ namespace MamaFit.Services.Service
                 // Chỉ gán milestone cho các items về FACTORY
                 var approvedOrderItemIds = group
                     .Where(wri => wri.DestinationType == DestinationType.FACTORY
-                                  && (wri.Status == WarrantyRequestItemStatus.IN_TRANSIT || wri.Status == WarrantyRequestItemStatus.APPROVED))
+                                  && (wri.Status == WarrantyRequestItemStatus.IN_TRANSIT ||
+                                      wri.Status == WarrantyRequestItemStatus.APPROVED))
                     .Select(wri => wri.OrderItemId)
                     .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
@@ -861,7 +961,7 @@ namespace MamaFit.Services.Service
 
             await AssignTasksForOrder(fullOrder, allowedIds);
         }
-        
+
         private async Task AssignTasksForOrder(Order order, HashSet<string> allowedOrderItemIds)
         {
             var milestoneList = await _unitOfWork.MilestoneRepository.GetAllWithInclude();
@@ -909,7 +1009,7 @@ namespace MamaFit.Services.Service
                 };
             if (oi.PresetId != null)
                 return new GhtkProductDto
-                { Name = oi.Preset?.Name ?? "Preset thiết kế", Weight = oi.Preset?.Weight ?? 200, Quantity = 1 };
+                    { Name = oi.Preset?.Name ?? "Preset thiết kế", Weight = oi.Preset?.Weight ?? 200, Quantity = 1 };
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
                 "Order item must have either MaternityDressDetail or Preset");
         }

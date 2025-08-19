@@ -143,16 +143,26 @@ public class SepayService : ISepayService
             // Thanh toán full
             if (order.Type == OrderType.WARRANTY)
             {
+                if (order.ShippingFee > 0)
+                {
+                    await _orderService.UpdateOrderStatusAsync(
+                        order.Id,
+                        OrderStatus.PICKUP_IN_PROGRESS,
+                        PaymentStatus.PAID_FULL
+                    );
+                }
                 await _orderService.UpdateOrderStatusAsync(
                     order.Id,
-                    OrderStatus.PICKUP_IN_PROGRESS, 
+                    OrderStatus.IN_PROGRESS,
                     PaymentStatus.PAID_FULL
                 );
+
 
                 await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
                 {
                     NotificationTitle = "Thanh toán phí bảo hành thành công",
-                    NotificationContent = $"Bạn đã thanh toán phí bảo hành cho đơn {order.Code}. Chúng tôi sẽ tiến hành lên đơn vận chuyển.",
+                    NotificationContent =
+                        $"Bạn đã thanh toán phí bảo hành cho đơn {order.Code}. Chúng tôi sẽ tiến hành lên đơn vận chuyển.",
                     Metadata = new()
                     {
                         { "orderId", order.Id },
@@ -165,7 +175,7 @@ public class SepayService : ISepayService
                 await _warrantyRequestService.AssignWarrantyTasksAfterPaidAsync(order);
                 return;
             }
-            
+
             await _orderService.UpdateOrderStatusAsync(
                 order.Id,
                 OrderStatus.CONFIRMED,
@@ -287,7 +297,7 @@ public class SepayService : ISepayService
 
         return new string(result);
     }
-    
+
     private async Task AssignTasksForOrder(Order order)
     {
         var milestoneList = await _unitOfWork.MilestoneRepository.GetAllWithInclude();

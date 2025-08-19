@@ -7,9 +7,9 @@ namespace MamaFit.Services.Interface
     public interface IMaternityDressService
     {
         Task<MaternityDressResponseDto> GetByIdAsync(string id);
-        Task<PaginatedList<MaternityDressGetAllResponseDto>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy);
+        Task<PaginatedList<MaternityDressGetAllResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? styleId, EntitySortBy? sortBy);
         Task CreateAsync(MaternityDressRequestDto requestDto);
-        Task UpdateAsync(string id,MaternityDressRequestDto requestDto);
+        Task UpdateAsync(string id, MaternityDressRequestDto requestDto);
         Task DeleteAsync(string id);
     }
 }

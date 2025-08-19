@@ -16,23 +16,29 @@ namespace MamaFit.Repositories.Repository
         {
         }
 
-        public async Task<PaginatedList<MaternityDress>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
+        public async Task<PaginatedList<MaternityDress>> GetAllAsync(int index, int pageSize, string? search, string styleId, EntitySortBy? sortBy)
         {
             var query = _dbSet
                 .Include(x => x.Style)
-                .Include(x => x.Details.Where(x=> !x.IsDeleted))
+                .Include(x => x.Details.Where(x => !x.IsDeleted))
+                .ThenInclude(x => x.OrderItems).ThenInclude(x => x.Feedbacks)
+                .Include(x => x.Details.Where(x => !x.IsDeleted))
+                .ThenInclude(x => x.OrderItems).ThenInclude(x => x.Order)
                 .Where(md => !md.IsDeleted);
 
             if (!string.IsNullOrWhiteSpace(search))
             {
-                query = query.Where(u => u.Name!.Contains(search));
+                query = query.Where(u => u.Name!.ToLower().Contains(search.ToLower()));
             }
+
+            if (!string.IsNullOrWhiteSpace(styleId))
+                query = query.Where(x => x.StyleId == styleId);
 
             query = sortBy switch
             {
                 EntitySortBy.CREATED_AT_ASC => query.OrderBy(u => u.CreatedAt),
                 EntitySortBy.CREATED_AT_DESC => query.OrderByDescending(u => u.CreatedAt),
-                _ => query.OrderByDescending(u => u.CreatedAt)
+                _ => query.OrderByDescending(u => u.UpdatedAt)
             };
 
             var pagedResult = await GetPaging(query, index, pageSize); // Paging

@@ -59,17 +59,31 @@ namespace MamaFit.Repositories.Repository
         public async Task<List<Component>> GetComponentHavePresetByStyleId(string styleId)
         {
             var components = await _dbSet
-                .Include(c => c.Options)
-                    .ThenInclude(o => o.ComponentOptionPresets)
-                        .ThenInclude(cop => cop.Preset)
-                .Where(c => !c.IsDeleted &&
-                    c.Options.Any(o =>
-                        o.ComponentOptionPresets.Any(cop =>
-                            cop.Preset != null && cop.Preset.StyleId == styleId)))
+                .Where(c => !c.IsDeleted)
+                .Select(c => new Component
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    Images = c.Images, 
+                    GlobalStatus = c.GlobalStatus,
+                    Options = c.Options
+                        .Where(o => o.ComponentOptionPresets
+                            .Any(cop => cop.Preset != null && cop.Preset.StyleId == styleId))
+                        .Select(o => new ComponentOption
+                        {
+                            Id = o.Id,
+                            Name = o.Name,
+                            // các field khác của Option
+                            ComponentOptionPresets = o.ComponentOptionPresets
+                                .Where(cop => cop.Preset != null && cop.Preset.StyleId == styleId)
+                                .ToList()
+                        })
+                        .ToList()
+                })
                 .ToListAsync();
 
             return components;
         }
-
     }
 }

@@ -26,7 +26,7 @@ namespace MamaFit.Services.Service
             await _validation.ValidateAndThrowAsync(requestDto);
 
             var newMaternityDress = _mapper.Map<MaternityDress>(requestDto);
-            
+
             newMaternityDress.GlobalStatus = GlobalStatus.INACTIVE;
             newMaternityDress.SKU = await GenerateUniqueDressSkuAsync();
 
@@ -51,9 +51,9 @@ namespace MamaFit.Services.Service
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<PaginatedList<MaternityDressGetAllResponseDto>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
+        public async Task<PaginatedList<MaternityDressGetAllResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? styleId, EntitySortBy? sortBy)
         {
-            var maternityDressList = await _unitOfWork.MaternityDressRepository.GetAllAsync(index, pageSize, search, sortBy);
+            var maternityDressList = await _unitOfWork.MaternityDressRepository.GetAllAsync(index, pageSize, search, styleId, sortBy);
 
             // Map từng phần tử trong danh sách Items
             var responseList = maternityDressList.Items.Select(item => _mapper.Map<MaternityDressGetAllResponseDto>(item)).ToList();
@@ -89,7 +89,7 @@ namespace MamaFit.Services.Service
             await _unitOfWork.MaternityDressRepository.UpdateAsync(oldMaternityDress); //Update + Save changes
             await _unitOfWork.SaveChangesAsync();
         }
-        
+
         private async Task<string> GenerateUniqueDressSkuAsync()
         {
             const string prefix = "MD";

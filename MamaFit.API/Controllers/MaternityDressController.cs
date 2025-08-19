@@ -22,9 +22,10 @@ namespace MamaFit.API.Controllers
             [FromQuery] int index = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] string? search = null,
+            [FromQuery] string? styleId = null,
             [FromQuery] EntitySortBy? sortBy = EntitySortBy.CREATED_AT_DESC)
         {
-            var maternityDressList = await _maternityDressService.GetAllAsync(index, pageSize, search, sortBy);
+            var maternityDressList = await _maternityDressService.GetAllAsync(index, pageSize, search, styleId, sortBy);
             return Ok(ResponseModel<PaginatedList<MaternityDressGetAllResponseDto>>.OkResponseModel(maternityDressList));
         }
 

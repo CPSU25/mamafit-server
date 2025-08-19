@@ -87,7 +87,26 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.StyleName, otp => otp.MapFrom(x => x.Style!.Name))
                 .ReverseMap();
             CreateMap<MaternityDress, MaternityDressGetAllResponseDto>()
-                .ForMember(dest => dest.Price, otp => otp.MapFrom(x => x.Details!.Select(mdd => mdd.Price)))
+                .ForMember(dest => dest.Price,
+                    otp => otp.MapFrom(x => x.Details!.Select(mdd => mdd.Price)))
+                .ForMember(dest => dest.SoldCount,
+                    otp => otp.MapFrom(x =>
+                    x.Details!.SelectMany(d => d.OrderItems.Where(x => x.Order.Status == OrderStatus.COMPLETED)).Sum(oi => oi.Quantity)))
+                .ForMember(dest => dest.FeedbackCount,
+                    otp => otp.MapFrom(x =>
+                    x.Details!.SelectMany(d => d.OrderItems)
+                     .SelectMany(oi => oi.Feedbacks)
+                     .Count()))
+                .ForMember(dest => dest.AverageRating,
+                    otp => otp.MapFrom(x =>
+                    x.Details!.SelectMany(d => d.OrderItems)
+                     .SelectMany(oi => oi.Feedbacks)
+                     .Any()
+                    ? x.Details!.SelectMany(d => d.OrderItems)
+                            .SelectMany(oi => oi.Feedbacks)
+                            .Average(fb => fb.Rated)
+                : 0
+                ))
                 .ReverseMap();
 
             #endregion
@@ -377,7 +396,7 @@ namespace MamaFit.Services.Mapper
                 .ReverseMap();
 
             CreateMap<Feedback, OrderItemResponseDto>().
-                ForMember(x => x.Feedbacks, otp => otp.MapFrom(x => new List<Feedback> {x})).ReverseMap();
+                ForMember(x => x.Feedbacks, otp => otp.MapFrom(x => new List<Feedback> { x })).ReverseMap();
 
             #endregion
 

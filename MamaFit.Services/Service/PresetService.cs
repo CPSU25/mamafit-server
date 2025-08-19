@@ -50,23 +50,22 @@ namespace MamaFit.Services.Service
 
 
             var preset = _mapper.Map<Preset>(request);
-            var optionList = new List<ComponentOption>();
+            preset.ComponentOptionPresets = new List<ComponentOptionPreset>();
+
             foreach (var optionId in request.ComponentOptionIds)
             {
                 var option = await _unitOfWork.ComponentOptionRepository.GetByIdNotDeletedAsync(optionId);
                 _validationService.CheckNotFound(option, $"Component option with ID {optionId} not found.");
 
-                preset.ComponentOptionPresets = new List<ComponentOptionPreset>
+                preset.ComponentOptionPresets.Add(new ComponentOptionPreset
                 {
-                    new ComponentOptionPreset
-                    {
-                        Preset = preset,
-                        PresetsId = preset.Id,
-                        ComponentOption = option,
-                        ComponentOptionsId = optionId
-                    }
-                };
+                    Preset = preset,
+                    PresetsId = preset.Id,
+                    ComponentOption = option,
+                    ComponentOptionsId = optionId
+                });
             }
+
             preset.UserId = GetCurrentUserId();
             preset.Style = style;
             preset.SKU = CodeHelper.GenerateCode('P');
@@ -74,6 +73,7 @@ namespace MamaFit.Services.Service
             await _unitOfWork.PresetRepository.InsertAsync(preset);
             await _unitOfWork.SaveChangesAsync();
         }
+        
         public async Task<string> CreatePresetForDesignRequestAsync(PresetCreateForDesignRequestDto request)
         {
             await _validationService.ValidateAndThrowAsync(request);

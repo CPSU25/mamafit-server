@@ -13,6 +13,7 @@ public class WarrantyRequestGetAllDto
     public decimal? TotalFee { get; set; }
     public WarrantyRequestStatus? Status { get; set; }
     public UserReponseDto? Customer { get; set; }
+    public DestinationType DestinationType { get; set; }
     public int CountItem { get; set; } = 0;
     public string? CreatedBy { get; set; }
     public string? UpdatedBy { get; set; }

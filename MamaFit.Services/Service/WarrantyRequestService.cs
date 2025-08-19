@@ -291,6 +291,7 @@ namespace MamaFit.Services.Service
                 {
                     WarrantyRequestId = warrantyRequest.Id,
                     DestinationBranchId = branchId,
+                    DestinationType = DestinationType.BRANCH,
                     OrderItemId = warrantyOrderItemIdMap[itemDto.OrderItemId],
                     Status = WarrantyRequestItemStatus.PENDING,
                     Description = itemDto.Description,

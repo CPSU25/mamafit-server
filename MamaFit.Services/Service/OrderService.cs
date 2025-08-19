@@ -72,15 +72,17 @@ public class OrderService : IOrderService
         _validation.CheckNotFound(order, "Order not found");
 
         var dto = _mapper.Map<OrderResponseDto>(order);
-        
         if (dto.Items != null && order?.OrderItems != null)
         {
             foreach (var itemDto in dto.Items)
             {
                 var entityItem = order.OrderItems.FirstOrDefault(x => x.Id == itemDto.Id);
-                if (entityItem?.WarrantyRequestItems != null && entityItem.WarrantyRequestItems.Any())
+                var originalOrderItem = entityItem?.ParentOrderItemId == null ? entityItem : 
+                    order.OrderItems.FirstOrDefault(x => x.Id == entityItem.ParentOrderItemId);
+
+                if (originalOrderItem?.WarrantyRequestItems != null && originalOrderItem.WarrantyRequestItems.Any())
                 {
-                    itemDto.WarrantyRound = entityItem.WarrantyRequestItems.Max(w => w.WarrantyRound);
+                    itemDto.WarrantyRound = originalOrderItem.WarrantyRequestItems.Max(w => w.WarrantyRound);
                 }
                 else
                 {

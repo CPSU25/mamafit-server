@@ -36,6 +36,7 @@ namespace MamaFit.Repositories.Implement
         public IPresetRepository PresetRepository { get; }
         public IAddOnRepository AddOnRepository { get; }
         public IOrderItemTaskRepository OrderItemTaskRepository { get; }
+        public IWarrantyRequestItemRepository WarrantyRequestItemRepository { get; }
         public IAddOnOptionRepository AddOnOptionRepository { get; }
         public IPositionRepository PositionRepository { get; }
         public ISizeRepository SizeRepository { get; }

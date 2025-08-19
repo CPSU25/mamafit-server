@@ -79,8 +79,7 @@ namespace MamaFit.Repositories.Repository
                             Description = o.Description,
                             Component = o.Component,
                             ComponentId = o.ComponentId,
-                            Price = o.Price,
-                            Tag = o.Tag,
+                            Price = o.Price,                            
                             ComponentOptionPresets = o.ComponentOptionPresets
                                 .Where(cop => cop.Preset != null && cop.Preset.StyleId == styleId)
                                 .ToList()

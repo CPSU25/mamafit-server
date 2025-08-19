@@ -12,6 +12,8 @@ namespace MamaFit.Services.Interface
         Task<WarrantyGetByIdResponseDto> GetWarrantyRequestByIdAsync(string id);
         Task<string> CreateAsync(WarrantyRequestCreateDto warrantyRequestCreateDto, string userId);
         Task<string> CreateRequestInBranch(WarrantyBranchRequestDto dto, string accessToken);
+        Task CompleteWarrantyOrderAsync(string orderId);
+        Task CompleteWarrantyRequestAsync(string warrantyRequestId);
         // Task UpdateAsync(string id, WarrantyRequestUpdateDto warrantyRequestUpdateDto);
         Task DeleteAsync(string id);
         Task<WarrantyDetailResponseDto> DetailsByIdAsync(string orderId);

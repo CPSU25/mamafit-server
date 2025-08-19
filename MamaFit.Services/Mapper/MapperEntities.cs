@@ -86,7 +86,8 @@ namespace MamaFit.Services.Mapper
             CreateMap<MaternityDress, MaternityDressResponseDto>()
                 .ForMember(dest => dest.SoldCount,
                     otp => otp.MapFrom(x =>
-                    x.Details!.SelectMany(d => d.OrderItems.Where(x => x.Order.Status == OrderStatus.COMPLETED)).Sum(oi => oi.Quantity)))
+                        x.Details!.SelectMany(d => d.OrderItems.Where(x => x.Order.Status == OrderStatus.COMPLETED))
+                            .Sum(oi => oi.Quantity)))
                 .ForMember(dest => dest.StyleName, otp => otp.MapFrom(x => x.Style!.Name))
                 .ReverseMap();
             CreateMap<MaternityDress, MaternityDressGetAllResponseDto>()
@@ -94,22 +95,23 @@ namespace MamaFit.Services.Mapper
                     otp => otp.MapFrom(x => x.Details!.Select(mdd => mdd.Price)))
                 .ForMember(dest => dest.SoldCount,
                     otp => otp.MapFrom(x =>
-                    x.Details!.SelectMany(d => d.OrderItems.Where(x => x.Order.Status == OrderStatus.COMPLETED)).Sum(oi => oi.Quantity)))
+                        x.Details!.SelectMany(d => d.OrderItems.Where(x => x.Order.Status == OrderStatus.COMPLETED))
+                            .Sum(oi => oi.Quantity)))
                 .ForMember(dest => dest.FeedbackCount,
                     otp => otp.MapFrom(x =>
-                    x.Details!.SelectMany(d => d.OrderItems)
-                     .SelectMany(oi => oi.Feedbacks)
-                     .Count()))
+                        x.Details!.SelectMany(d => d.OrderItems)
+                            .SelectMany(oi => oi.Feedbacks)
+                            .Count()))
                 .ForMember(dest => dest.AverageRating,
                     otp => otp.MapFrom(x =>
-                    x.Details!.SelectMany(d => d.OrderItems)
-                     .SelectMany(oi => oi.Feedbacks)
-                     .Any()
-                    ? x.Details!.SelectMany(d => d.OrderItems)
+                        x.Details!.SelectMany(d => d.OrderItems)
                             .SelectMany(oi => oi.Feedbacks)
-                            .Average(fb => fb.Rated)
-                : 0
-                ))
+                            .Any()
+                            ? x.Details!.SelectMany(d => d.OrderItems)
+                                .SelectMany(oi => oi.Feedbacks)
+                                .Average(fb => fb.Rated)
+                            : 0
+                    ))
                 .ReverseMap();
 
             #endregion
@@ -338,7 +340,9 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.Name, otp => otp.MapFrom(src => src.MaternityDressTask!.Name))
                 .ForMember(dest => dest.Description, otp => otp.MapFrom(src => src.MaternityDressTask!.Description))
                 .ForMember(dest => dest.SequenceOrder, otp => otp.MapFrom(src => src.MaternityDressTask!.SequenceOrder))
-                .ForMember(dest => dest.EstimateTimeSpan, otp => otp.MapFrom(src => src.MaternityDressTask!.EstimateTimeSpan));
+                .ForMember(dest => dest.EstimateTimeSpan,
+                    otp => otp.MapFrom(src => src.MaternityDressTask!.EstimateTimeSpan));
+
             #endregion
 
             #region Milestone Mapper
@@ -374,6 +378,7 @@ namespace MamaFit.Services.Mapper
 
             CreateMap<BranchMaternityDressDetail, BranchMaternityDressDetailDto>().ReverseMap();
             CreateMap<BranchMaternityDressDetail, GetDetailById>().ReverseMap();
+
             #endregion
 
             #region WarrantyHistory Mapper
@@ -398,8 +403,8 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.OrderCode, otp => otp.MapFrom(src => src.OrderItem!.Order!.Code))
                 .ReverseMap();
 
-            CreateMap<Feedback, OrderItemResponseDto>().
-                ForMember(x => x.Feedbacks, otp => otp.MapFrom(x => new List<Feedback> { x })).ReverseMap();
+            CreateMap<Feedback, OrderItemResponseDto>()
+                .ForMember(x => x.Feedbacks, otp => otp.MapFrom(x => new List<Feedback> { x })).ReverseMap();
 
             #endregion
 
@@ -444,12 +449,15 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.Customer,
                     otp => otp.MapFrom(src => src.WarrantyRequestItems.FirstOrDefault().OrderItem.Order.User))
                 .ForMember(dest => dest.CountItem, otp => otp.MapFrom(src => src.WarrantyRequestItems.Count()))
+                .ForMember(dest => dest.DestinationType,
+                    otp => otp.MapFrom(src => src.WarrantyRequestItems.FirstOrDefault().DestinationType))
                 .ReverseMap();
             CreateMap<WarrantyRequest, WarrantyGetByIdResponseDto>()
                 .IncludeBase<WarrantyRequest, WarrantyRequestGetAllDto>()
-                .ForMember(dest => dest.DestinationType, otp => otp.MapFrom(src => src.WarrantyRequestItems.FirstOrDefault().DestinationType))
-                .ForMember(d => d.OrderStatus, o => o.MapFrom(s => s.WarrantyRequestItems.FirstOrDefault().OrderItem.Order.Status))
-                .ForMember(d => d.PickAddressId, o => o.MapFrom(s => s.WarrantyRequestItems.FirstOrDefault().OrderItem.Order.AddressId))
+                .ForMember(d => d.OrderStatus,
+                    o => o.MapFrom(s => s.WarrantyRequestItems.FirstOrDefault().OrderItem.Order.Status))
+                .ForMember(d => d.PickAddressId,
+                    o => o.MapFrom(s => s.WarrantyRequestItems.FirstOrDefault().OrderItem.Order.AddressId))
                 .ForMember(d => d.Items, o => o.MapFrom(s => s.WarrantyRequestItems))
                 .AfterMap((src, dest, ctx) =>
                 {
@@ -519,7 +527,8 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.Order, otp => otp.MapFrom(x => x.OrderItem!.Order))
                 .ReverseMap();
             CreateMap<WarrantyRequestItem, WarrantyRequestItemOrderResponseDto>()
-               .ReverseMap();
+                .ReverseMap();
+
             #endregion
 
             #region AddOn Mapper
@@ -554,6 +563,7 @@ namespace MamaFit.Services.Mapper
             #endregion
 
             #region Transaction Mapper
+
             CreateMap<Transaction, TransactionResponseDto>()
                 .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderId))
                 .ReverseMap();
@@ -561,6 +571,7 @@ namespace MamaFit.Services.Mapper
             #endregion
 
             #region Ticket Mapper
+
             CreateMap<Ticket, TicketBaseDto>().ReverseMap();
             CreateMap<Ticket, TicketBaseResponseDto>().ReverseMap();
             CreateMap<Ticket, TicketGetAllResponseDto>().ReverseMap();
@@ -569,6 +580,7 @@ namespace MamaFit.Services.Mapper
             CreateMap<Ticket, TicketResponseWithOrderDto>()
                 .ForMember(dest => dest.Order, otp => otp.MapFrom(x => x.OrderItem.Order))
                 .ReverseMap();
+
             #endregion
         }
     }

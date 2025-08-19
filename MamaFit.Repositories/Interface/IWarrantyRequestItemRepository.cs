@@ -12,4 +12,5 @@ public interface IWarrantyRequestItemRepository
     Task<WarrantyRequestItem> GetByOrderItemIdAsync(string orderItemId);
     Task<List<WarrantyRequestItem>> GetAllRelatedByOrderItemAsync(string orderItemId);
     Task UpdateAsync(WarrantyRequestItem entity);
+    Task<Dictionary<string, int>> GetWarrantyRoundsByOriginalOrderItemIdsAsync(List<string> orderItemIds);
 }

@@ -96,4 +96,32 @@ public class WarrantyRequestItemRepository : IWarrantyRequestItemRepository
         _dbSet.Update(entity);
         await _context.SaveChangesAsync();
     }
+    public async Task<Dictionary<string, int>> GetWarrantyRoundsByOriginalOrderItemIdsAsync(List<string> originalOrderItemIds)
+    {
+        var warrantyRounds = new Dictionary<string, int>();
+
+        if (originalOrderItemIds == null || !originalOrderItemIds.Any())
+            return warrantyRounds;
+
+        // Tìm tất cả warranty order items có ParentOrderItemId trong danh sách originalOrderItemIds
+        // Hoặc chính là originalOrderItemIds (trường hợp warranty trực tiếp cho original item)
+        var warrantyRequestItems = await _dbSet
+            .Include(wri => wri.OrderItem)
+            .Where(wri =>
+                originalOrderItemIds.Contains(wri.OrderItem.ParentOrderItemId ?? wri.OrderItemId))
+            .GroupBy(wri => wri.OrderItem.ParentOrderItemId ?? wri.OrderItemId)
+            .Select(g => new
+            {
+                OriginalOrderItemId = g.Key,
+                MaxWarrantyRound = g.Max(x => x.WarrantyRound)
+            })
+            .ToListAsync();
+
+        foreach (var item in warrantyRequestItems)
+        {
+            warrantyRounds[item.OriginalOrderItemId] = item.MaxWarrantyRound;
+        }
+
+        return warrantyRounds;
+    }
 }

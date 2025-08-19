@@ -66,7 +66,16 @@ public class BranchMaternityDressDetailService : IBranchMaternityDressDetailServ
                 $"Quantity {request.Quantity} exceeds available quantity {mdd.Quantity} for dress detail with id: {request.MaternityDressDetailId}");
 
         mdd.Quantity -= request.Quantity ?? 0;
+        
         await _unitOfWork.MaternityDressDetailRepository.UpdateAsync(mdd);
+        var existingRecord = await _repository.GetByBranchIdAndDressDetailIdAsync(request.BranchId, request.MaternityDressDetailId);
+        if (existingRecord != null)
+        {
+            existingRecord.Quantity += request.Quantity ?? 0;
+            await _repository.UpdateAsync(existingRecord);
+            return _mapper.Map<BranchMaternityDressDetailDto>(existingRecord);
+        }
+
         var dressDetail = _mapper.Map<BranchMaternityDressDetail>(request);
         await _repository.InsertAsync(dressDetail);
         return _mapper.Map<BranchMaternityDressDetailDto>(dressDetail);

@@ -239,9 +239,11 @@ namespace MamaFit.Services.Service
                     "Fee is required and must be greater than 0 when warranty round > 2");
             }
 
+            var originalOrder = validOrderItems.FirstOrDefault()?.Order;
+            
             var warrantyOrder = new Order
             {
-                UserId = userId,
+                UserId = originalOrder.UserId,
                 BranchId = branchId,
                 IsOnline = false,
                 Type = OrderType.WARRANTY,

@@ -54,6 +54,17 @@ public class BranchMaternityDressDetailRepository : IBranchMaternityDressDetailR
             .FirstOrDefaultAsync(b => b.BranchId == branchId && b.MaternityDressDetailId == dressDetailId);
     }
     
+    public async Task<BranchMaternityDressDetail?> GetByBranchIdAndDressDetailIdAsync(string branchId, string dressDetailId)
+    {
+        if (string.IsNullOrEmpty(branchId) || string.IsNullOrEmpty(dressDetailId))
+            return null;
+
+        return await _dbSet
+            .Include(b => b.Branch)
+            .Include(b => b.MaternityDressDetail)
+            .FirstOrDefaultAsync(b => b.BranchId == branchId && b.MaternityDressDetailId == dressDetailId);
+    }
+    
     public async Task InsertAsync(BranchMaternityDressDetail entity)
     {
         _dbSet.Add(entity);

@@ -20,6 +20,7 @@ namespace MamaFit.Services.Interface
         Task<WarrantyDecisionResponseDto> DecideAsync(string warrantyRequestId,
             WarrantyDecisionRequestDto dto);
         Task<WarrantyDecisionResponseDto> ShipPaidWarrantyAsync(string warrantyRequestId);
+        Task<PaginatedList<WarrantyRequestGetAllDto>> GetAllWarrantyRequestOfBranchAsync(int index, int pageSize, string? search, EntitySortBy? sortBy, string accessToken);
         Task AssignWarrantyTasksAfterPaidAsync(Order order);
     }
 }

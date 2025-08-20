@@ -425,7 +425,26 @@ namespace MamaFit.Services.Service
                 warrantyRequests.PageNumber,
                 pageSize);
         }
+        public async Task<PaginatedList<WarrantyRequestGetAllDto>> GetAllWarrantyRequestOfBranchAsync(int index, int pageSize, string? search, EntitySortBy? sortBy, string accessToken)
+        {
+            var userId = JwtTokenHelper.ExtractUserId(accessToken);
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+            _validationService.CheckNotFound(user, $"User with id {userId} not found!");
 
+            var branch = user.Branch;
+            _validationService.CheckBadRequest(branch == null, "Manager is not assigned to any branch!");
+
+            string branchId = branch.Id;
+            var warrantyRequests =
+                await _unitOfWork.WarrantyRequestRepository.GetAllWarrantyRequestOfBranchAsync(index, pageSize, search, sortBy, branchId);
+
+            var result = _mapper.Map<List<WarrantyRequestGetAllDto>>(warrantyRequests.Items);
+            return new PaginatedList<WarrantyRequestGetAllDto>(
+                result,
+                warrantyRequests.TotalCount,
+                warrantyRequests.PageNumber,
+                pageSize);
+        }
         public async Task<WarrantyGetByIdResponseDto> GetWarrantyRequestByIdAsync(string id)
         {
             var result = await _unitOfWork.WarrantyRequestRepository.GetDetailById(id);
@@ -1010,7 +1029,7 @@ namespace MamaFit.Services.Service
                 };
             if (oi.PresetId != null)
                 return new GhtkProductDto
-                    { Name = oi.Preset?.Name ?? "Preset thiết kế", Weight = oi.Preset?.Weight ?? 200, Quantity = 1 };
+                { Name = oi.Preset?.Name ?? "Preset thiết kế", Weight = oi.Preset?.Weight ?? 200, Quantity = 1 };
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
                 "Order item must have either MaternityDressDetail or Preset");
         }

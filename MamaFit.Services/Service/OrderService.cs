@@ -72,21 +72,42 @@ public class OrderService : IOrderService
         _validation.CheckNotFound(order, "Order not found");
 
         var dto = _mapper.Map<OrderResponseDto>(order);
+
         if (dto.Items != null && order?.OrderItems != null)
         {
-            // Lấy tất cả original order item IDs
-            var originalOrderItemIds = order.OrderItems
-                .Where(x => x.ParentOrderItemId == null) // Chỉ lấy original items
-                .Select(x => x.Id)
-                .ToList();
+            // Filter OrderItems dựa trên SKU nếu có
+            var filteredOrderItems = order.OrderItems.AsEnumerable();
+
+            if (!string.IsNullOrEmpty(sku))
+            {
+                filteredOrderItems = order.OrderItems.Where(item =>
+                    (item.Preset?.SKU != null && item.Preset.SKU.Equals(sku, StringComparison.OrdinalIgnoreCase)) ||
+                    (item.MaternityDressDetail?.SKU != null && item.MaternityDressDetail.SKU.Equals(sku, StringComparison.OrdinalIgnoreCase))
+                );
+            }
+
+            var filteredOrderItemsList = filteredOrderItems.ToList();
+
+            // Nếu có SKU nhưng không tìm thấy OrderItem nào khớp
+            if (!string.IsNullOrEmpty(sku) && !filteredOrderItemsList.Any())
+            {
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND,
+                    $"No order item found with SKU: {sku} in order {code}");
+            }
+
+            // Cập nhật lại Items trong DTO để chỉ chứa filtered items
+            dto.Items = filteredOrderItemsList.Select(item => _mapper.Map<OrderItemResponseDto>(item)).ToList();
+
+            // Lấy tất cả original order item IDs từ filtered items
+             var orderItemIds = filteredOrderItemsList.Select(x => x.Id).ToList();
 
             // Lấy warranty rounds cho tất cả original order items
             var warrantyRounds = await _unitOfWork.WarrantyRequestItemRepository
-                .GetWarrantyRoundsByOriginalOrderItemIdsAsync(originalOrderItemIds);
+                .GetWarrantyRoundsByOrderItemIdsAsync(orderItemIds);
 
             foreach (var itemDto in dto.Items)
             {
-                var entityItem = order.OrderItems.FirstOrDefault(x => x.Id == itemDto.Id);
+                var entityItem = filteredOrderItemsList.FirstOrDefault(x => x.Id == itemDto.Id);
 
                 if (entityItem != null)
                 {

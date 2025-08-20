@@ -806,12 +806,12 @@ namespace MamaFit.Services.Service
                     foreach (var wri in group.Where(wri => wri.DestinationType == DestinationType.FACTORY))
                     {
                         wri.TrackingCode = tracking;
-                        wri.Status = WarrantyRequestItemStatus.IN_TRANSIT;
+                        wri.Status = WarrantyRequestItemStatus.APPROVED;
 
                         responseItems.Add(new WarrantyDecisionResponseItemDto
                         {
                             OrderItemId = wri.OrderItemId,
-                            Status = WarrantyRequestItemStatus.IN_TRANSIT,
+                            Status = WarrantyRequestItemStatus.APPROVED,
                             TrackingCode = tracking,
                             GhtkCreateMessage = createResp?.Success == true
                                 ? "Tạo đơn thành công"

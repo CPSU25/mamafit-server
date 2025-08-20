@@ -287,6 +287,7 @@ namespace MamaFit.Services.Service
             {
                 SKU = CodeHelper.GenerateCode('W'),
                 Status = WarrantyRequestStatus.APPROVED,
+                TotalFee = dto.Fee ?? 0,
                 RequestType = requestType,
             };
 

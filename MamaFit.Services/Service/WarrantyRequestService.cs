@@ -286,7 +286,7 @@ namespace MamaFit.Services.Service
             var warrantyRequest = new WarrantyRequest
             {
                 SKU = CodeHelper.GenerateCode('W'),
-                Status = WarrantyRequestStatus.PENDING,
+                Status = WarrantyRequestStatus.APPROVED,
                 RequestType = requestType,
             };
 

@@ -66,7 +66,7 @@ namespace MamaFit.Repositories.Repository
 
         public async Task<List<MaternityDress>> Autocomplete(string query)
         {
-            var response = await _dbSet.Where(x => x.Name.ToLower().Contains(query.ToLower()) || !x.IsDeleted).ToListAsync();
+            var response = await _dbSet.Where(x => x.Name.ToLower().Contains(query.ToLower()) && !x.IsDeleted).ToListAsync();
             return response;
         }
     }

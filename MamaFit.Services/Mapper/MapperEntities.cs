@@ -303,6 +303,7 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.AddOnOptions,
                     otp => otp.MapFrom(src => src.OrderItemAddOnOptions!.Select(x => x.AddOnOption)))
                 .ForMember(dest => dest.Preset, otp => otp.MapFrom(src => src.Preset))
+                .ForMember(dest => dest.WarrantyRound, otp => otp.MapFrom(src => src.WarrantyRequestItems.OrderByDescending(x => x.WarrantyRound).FirstOrDefault().WarrantyRound))
                 .ReverseMap();
             CreateMap<OrderItem, OrderItemGetByIdResponseDto>()
                 .ForMember(dest => dest.MaternityDressDetail, opt => opt.MapFrom(src => src.MaternityDressDetail))

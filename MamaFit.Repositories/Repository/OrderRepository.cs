@@ -36,6 +36,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
     {
         var response = await _dbSet
             .Include(x => x.OrderItems).ThenInclude(x => x.Preset).ThenInclude(x => x.Style)
+            .Include(x => x.OrderItems).ThenInclude(x => x.WarrantyRequestItems)
             .Where(o => !o.IsDeleted
                         && o.Status == OrderStatus.COMPLETED
                         && o.UserId == userId
@@ -193,6 +194,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
     public async Task<Order?> GetByIdWithItems(string id)
     {
         return await _dbSet.AsNoTracking()
+            .Include(x => x.OrderItems).ThenInclude(x => x.WarrantyRequestItems)
             .Include(x => x.OrderItems).ThenInclude(x => x.Feedbacks)
             .Include(x => x.Measurement)
             .ThenInclude(x => x.MeasurementDiary)

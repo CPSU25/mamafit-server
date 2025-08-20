@@ -17,6 +17,7 @@ public interface IOrderService
     Task<PaginatedList<OrderResponseDto>> GetAllAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate);
     Task<List<OrderGetByIdResponseDto>> GetAllByDesignRequestId(string designRequestId);
     Task<OrderGetByIdResponseDto> GetOrderByIdAsync(string id);
+    Task<OrderGetByIdResponseDto> GetOrderByIdForFeedbackAsync(string id);
     Task<List<OrderGetByIdResponseDto>> GetForWarranty();
     Task<List<MyOrderStatusCount>> GetMyOrderStatusCounts();
     Task<List<OrderResponseDto>> GetOrderToFeedback();

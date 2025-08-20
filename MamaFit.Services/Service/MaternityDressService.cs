@@ -34,6 +34,18 @@ namespace MamaFit.Services.Service
             await _unitOfWork.SaveChangesAsync();
         }
 
+        public async Task<List<AutocompleteDto>> GetAutocompletesAsync(string query)
+        {
+            var dressList = await _unitOfWork.MaternityDressRepository.Autocomplete(query);
+            _validation.CheckNotFound(dressList, "Not found");
+
+            return dressList.Select(x => new AutocompleteDto
+            {
+                Name = x.Name,
+                Id = x.Id,
+                Images = x.Images,
+            }).ToList();
+        }
 
         public async Task DeleteAsync(string id)
         {

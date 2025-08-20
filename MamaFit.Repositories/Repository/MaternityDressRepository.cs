@@ -63,5 +63,11 @@ namespace MamaFit.Repositories.Repository
                 .Include(x => x.Details.Where(x => !x.IsDeleted))
                 .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
         }
+
+        public async Task<List<MaternityDress>> Autocomplete(string query)
+        {
+            var response = await _dbSet.Where(x => x.Name.ToLower().Contains(query.ToLower()) || !x.IsDeleted).ToListAsync();
+            return response;
+        }
     }
 }

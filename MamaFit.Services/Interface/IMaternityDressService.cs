@@ -9,6 +9,7 @@ namespace MamaFit.Services.Interface
         Task<MaternityDressResponseDto> GetByIdAsync(string id);
         Task<PaginatedList<MaternityDressGetAllResponseDto>> GetAllAsync(int index, int pageSize, string? search, string? styleId, EntitySortBy? sortBy);
         Task CreateAsync(MaternityDressRequestDto requestDto);
+        Task<List<AutocompleteDto>> GetAutocompletesAsync(string query);
         Task UpdateAsync(string id, MaternityDressRequestDto requestDto);
         Task DeleteAsync(string id);
     }

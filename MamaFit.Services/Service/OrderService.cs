@@ -798,4 +798,15 @@ public class OrderService : IOrderService
         var response = orderList.Select(x => _mapper.Map<OrderGetByIdResponseDto>(x)).ToList();
         return response;
     }
+
+    public async Task<OrderGetByIdResponseDto> GetOrderByIdForFeedbackAsync(string id)
+    {
+        var order = await _unitOfWork.OrderRepository.GetByIdWithItems(id);
+
+        order.OrderItems = order.OrderItems.Where(x =>
+        x.WarrantyRequestItems.Any(x =>
+        x.Status != WarrantyRequestItemStatus.REJECTED)).ToList();
+
+        return _mapper.Map<OrderGetByIdResponseDto>(order);
+    }
 }

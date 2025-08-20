@@ -51,7 +51,7 @@ public class OrderController : ControllerBase
             "Get order successfully!"
         ));
     }
-    
+
     [Authorize]
     [HttpGet("by-token")]
     public async Task<IActionResult> GetByAccessToken(
@@ -69,7 +69,7 @@ public class OrderController : ControllerBase
             "Get orders by access token successfully!"
         ));
     }
-    
+
     [HttpGet("for-warranty")]
     public async Task<IActionResult> GetOrderForRequest()
     {
@@ -94,7 +94,7 @@ public class OrderController : ControllerBase
             "Get orders for branch manager successfully!"
         ));
     }
-    
+
     [Authorize]
     [HttpGet("my-order-status-counts")]
     public async Task<IActionResult> GetMyOrderStatusCounts()
@@ -142,6 +142,18 @@ public class OrderController : ControllerBase
     public async Task<IActionResult> GetById([FromRoute] string id)
     {
         var result = await _service.GetOrderByIdAsync(id);
+        return Ok(new ResponseModel<OrderGetByIdResponseDto>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            result,
+            "Get order successfully!"
+        ));
+    }
+
+    [HttpGet("for-feedback/{id}")]
+    public async Task<IActionResult> GetByIdForFeedback([FromRoute] string id)
+    {
+        var result = await _service.GetOrderByIdForFeedbackAsync(id);
         return Ok(new ResponseModel<OrderGetByIdResponseDto>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
@@ -275,7 +287,7 @@ public class OrderController : ControllerBase
             "Update order to cancelled successfully!"
         ));
     }
-    
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteOrder([FromRoute] string id)
     {

@@ -96,30 +96,32 @@ public class WarrantyRequestItemRepository : IWarrantyRequestItemRepository
         _dbSet.Update(entity);
         await _context.SaveChangesAsync();
     }
-    public async Task<Dictionary<string, int>> GetWarrantyRoundsByOriginalOrderItemIdsAsync(List<string> originalOrderItemIds)
+    public async Task<Dictionary<string, int>> GetWarrantyRoundsByOrderItemIdsAsync(List<string> orderItemIds)
     {
         var warrantyRounds = new Dictionary<string, int>();
 
-        if (originalOrderItemIds == null || !originalOrderItemIds.Any())
+        if (orderItemIds == null || !orderItemIds.Any())
             return warrantyRounds;
 
-        // Tìm tất cả warranty order items có ParentOrderItemId trong danh sách originalOrderItemIds
-        // Hoặc chính là originalOrderItemIds (trường hợp warranty trực tiếp cho original item)
+        // Tìm tất cả WarrantyRequestItem có liên quan đến orderItemIds
         var warrantyRequestItems = await _dbSet
             .Include(wri => wri.OrderItem)
-            .Where(wri =>
-                originalOrderItemIds.Contains(wri.OrderItem.ParentOrderItemId ?? wri.OrderItemId))
-            .GroupBy(wri => wri.OrderItem.ParentOrderItemId ?? wri.OrderItemId)
-            .Select(g => new
-            {
-                OriginalOrderItemId = g.Key,
-                MaxWarrantyRound = g.Max(x => x.WarrantyRound)
-            })
+            .Where(x => orderItemIds.Contains(x.OrderItem.Id) ||
+                       orderItemIds.Contains(x.OrderItem.ParentOrderItemId))
             .ToListAsync();
 
+        // Group theo original order item ID và lấy warranty round cao nhất
         foreach (var item in warrantyRequestItems)
         {
-            warrantyRounds[item.OriginalOrderItemId] = item.MaxWarrantyRound;
+            // Xác định original order item ID
+            var originalOrderItemId = item.OrderItem.ParentOrderItemId ?? item.OrderItem.Id;
+
+            // Cập nhật warranty round cao nhất
+            if (!warrantyRounds.ContainsKey(originalOrderItemId) ||
+                warrantyRounds[originalOrderItemId] < item.WarrantyRound)
+            {
+                warrantyRounds[originalOrderItemId] = item.WarrantyRound;
+            }
         }
 
         return warrantyRounds;

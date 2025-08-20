@@ -94,5 +94,16 @@ namespace MamaFit.Repositories.Repository
                                 i.DestinationType == DestinationType.FACTORY))
                 .ToListAsync();
         }
+
+        public Task<PaginatedList<WarrantyRequest>> GetAllWarrantyRequestOfBranchAsync(int index, int pageSize, string? search, EntitySortBy? sortBy, string branchId)
+        {
+            var query = _dbSet
+                .Include(w => w.WarrantyHistories)
+                .Include(x => x.WarrantyRequestItems).ThenInclude(x => x.OrderItem).ThenInclude(x => x.Order)
+                .ThenInclude(x => x.User).ThenInclude(x => x.Role)
+                .Where(x => !x.IsDeleted && x.WarrantyRequestItems.Any(i => i.DestinationBranchId == branchId));
+
+            return GetPaging(query, index, pageSize);
+        }
     }
 }

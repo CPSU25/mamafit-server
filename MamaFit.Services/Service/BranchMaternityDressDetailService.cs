@@ -29,13 +29,13 @@ public class BranchMaternityDressDetailService : IBranchMaternityDressDetailServ
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<PaginatedList<BranchMaternityDressDetailDto>> GetAllAsync(int index, int pageSize, string accessToken, string? search)
+    public async Task<PaginatedList<GetDetailById>> GetAllAsync(int index, int pageSize, string accessToken, string? search)
     {
         var userId = JwtTokenHelper.ExtractUserId(accessToken);
         var dressDetails = await _repository.GetAllAsync(index, pageSize, userId, search);
-        var responseList = dressDetails.Items.Select(item => _mapper.Map<BranchMaternityDressDetailDto>(item)).ToList();
+        var responseList = dressDetails.Items.Select(item => _mapper.Map<GetDetailById>(item)).ToList();
 
-        return new PaginatedList<BranchMaternityDressDetailDto>(
+        return new PaginatedList<GetDetailById>(
             responseList,
             dressDetails.TotalCount,
             dressDetails.PageNumber,

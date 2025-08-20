@@ -24,7 +24,7 @@ public class BranchMaternityDressDetailController : ControllerBase
         [FromQuery] string? search = null)
     {
         var dressDetails = await _branchMaternityDressDetailService.GetAllAsync(index, pageSize, accessToken, search);
-        return Ok(new ResponseModel<PaginatedList<BranchMaternityDressDetailDto>>(
+        return Ok(new ResponseModel<PaginatedList<GetDetailById>>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
             dressDetails,

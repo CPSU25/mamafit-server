@@ -9,5 +9,6 @@ namespace MamaFit.Repositories.Interface
     {
         Task<PaginatedList<MaternityDress>> GetAllAsync(int index, int pageSize, string? search, string styleId, EntitySortBy? sortBy);
         Task<MaternityDress?> GetById(string id);
+        Task<List<MaternityDress>> Autocomplete(string query);
     }
 }

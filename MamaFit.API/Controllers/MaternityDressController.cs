@@ -29,6 +29,13 @@ namespace MamaFit.API.Controllers
             return Ok(ResponseModel<PaginatedList<MaternityDressGetAllResponseDto>>.OkResponseModel(maternityDressList));
         }
 
+        [HttpGet("autocomplete")]
+        public async Task<IActionResult> GetAutoCompleteAsync( [FromQuery] string query)
+        {
+            var response = await _maternityDressService.GetAutocompletesAsync(query);
+            return Ok(ResponseModel<List<AutocompleteDto>>.OkResponseModel(response));
+        }
+
         [HttpGet("{maternityDressId}")]
         public async Task<IActionResult> GetById(string maternityDressId)
         {

@@ -75,7 +75,6 @@ public class OrderService : IOrderService
 
         if (dto.Items != null && order?.OrderItems != null)
         {
-            // Filter OrderItems dựa trên SKU nếu có
             var filteredOrderItems = order.OrderItems.AsEnumerable();
 
             if (!string.IsNullOrEmpty(sku))
@@ -150,7 +149,7 @@ public class OrderService : IOrderService
 
     public async Task<List<OrderResponseDto>> GetOrdersForDesignerAsync()
     {
-        var userId = GetCurrentUserId(); // lấy user từ JWT
+        var userId = GetCurrentUserId(); 
         var orders = await _unitOfWork.OrderRepository.GetOrdersByDesignerAsync(userId);
 
         return orders.Select(order =>

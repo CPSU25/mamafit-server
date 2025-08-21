@@ -107,16 +107,10 @@ public class FeedbackService : IFeedbackService
         return _mapper.Map<List<OrderItemResponseDto>>(orderItems);
     }
 
-    public async Task<List<OrderItemResponseDto>> GetAllByDressId(string dressId)
+    public async Task<List<FeedbackResponseDto>> GetAllByDressId(string dressId)
     {
         var feedbacks = await _unitOfWork.FeedbackRepository.GetAllByDressId(dressId);
-        var orderItems = feedbacks
-            .Where(f => f.OrderItem != null)
-            .Select(f => f.OrderItem)
-            .Distinct()
-            .ToList();
-
-        return _mapper.Map<List<OrderItemResponseDto>>(orderItems);
+        return _mapper.Map<List<FeedbackResponseDto>>(feedbacks);
     }
 
     public async Task<bool> CheckFeedbackByOrderId(string orderId)

@@ -99,11 +99,11 @@ public class MeasurementService : IMeasurementService
     public async Task<MeasurementDto> GenerateMeasurementPreviewAsync(MeasurementCreateDto dto)
     {
         await _validation.ValidateAndThrowAsync(dto);
-        var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdNotDeletedAsync(dto.MeasurementId);
+        var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdNotDeletedAsync(dto.MeasurementDiaryId);
         _validation.CheckNotFound(diary, "Measurement diary not found");
         var weeksPregnant = CalculateWeeksPregnant(diary.PregnancyStartDate);
         
-        await ValidateNoExistingMeasurement(dto.MeasurementId, weeksPregnant);
+        await ValidateNoExistingMeasurement(dto.MeasurementDiaryId, weeksPregnant);
         
         var diaryDto = _mapper.Map<MeasurementDiaryDto>(diary);
         

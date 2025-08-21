@@ -803,9 +803,10 @@ public class OrderService : IOrderService
     {
         var order = await _unitOfWork.OrderRepository.GetByIdWithItems(id);
 
-        order.OrderItems = order.OrderItems.Where(x =>
-        x.WarrantyRequestItems.Any(x =>
-        x.Status != WarrantyRequestItemStatus.REJECTED)).ToList();
+        if (order.Type == OrderType.WARRANTY)
+            order.OrderItems = order.OrderItems.Where(x =>
+            x.WarrantyRequestItems.Any(x =>
+            x.Status != WarrantyRequestItemStatus.REJECTED)).ToList();
 
         return _mapper.Map<OrderGetByIdResponseDto>(order);
     }

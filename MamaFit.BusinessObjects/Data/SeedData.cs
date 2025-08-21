@@ -4205,618 +4205,654 @@ namespace MamaFit.BusinessObjects.Data
                     IsDeleted = false
                 });
             modelBuilder.Entity<MaternityDressDetail>().HasData(
-            new MaternityDressDetail
-            {
-                Id = "5fc32f022d374382b0c7dd67759bbbd3",
-                MaternityDressId = "e610ee9fb2494165a6c0bf196f1b2eba",
-                SKU = "MD582-001",
-                Color = "Black",
-                Size = "S",
-                Price = 3000,
-                Quantity = 999,
-                Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664170/ohnkiuwhpvtrlkv2kljj.webp"],
-                CreatedBy = "Admin",
-                UpdatedBy = "",
-                CreatedAt = new DateTime(2025, 8, 20, 4, 29, 34, 528, DateTimeKind.Utc),
-                UpdatedAt = new DateTime(2025, 8, 20, 4, 29, 34, 525, DateTimeKind.Utc),
-                IsDeleted = false
-            },
+    new MaternityDressDetail
+    {
+        Id = "5fc32f022d374382b0c7dd67759bbbd3",
+        MaternityDressId = "e610ee9fb2494165a6c0bf196f1b2eba",
+        SKU = "MD582-001",
+        Name = "Váy thun bà bầu tay ngắn dệt kim gân đen cơ bản",
+        Color = "Black",
+        Size = "S",
+        Price = 3000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664170/ohnkiuwhpvtrlkv2kljj.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:29:34.528 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:29:34.525 +0700"),
+        IsDeleted = false
+    },
 
-            new MaternityDressDetail
-            {
-                Id = "31836c7be57248fda82a237f0a206875",
-                MaternityDressId = "e610ee9fb2494165a6c0bf196f1b2eba",
-                SKU = "MD582-002",
-                Color = "Black",
-                Size = "M",
-                Price = 4000,
-                Quantity = 999,
-                Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664191/n87jx1o0utbpwtjc0sjc.webp"],
-                CreatedBy = "Admin",
-                UpdatedBy = "",
-                CreatedAt = new DateTime(2025, 8, 20, 4, 29, 53, 788, DateTimeKind.Utc),
-                UpdatedAt = new DateTime(2025, 8, 20, 4, 29, 53, 783, DateTimeKind.Utc),
-                IsDeleted = false
-            },
+    new MaternityDressDetail
+    {
+        Id = "31836c7be57248fda82a237f0a206875",
+        MaternityDressId = "e610ee9fb2494165a6c0bf196f1b2eba",
+        SKU = "MD582-002",
+        Name = "Váy thun bà bầu tay ngắn dệt kim gân đen cơ bản",
+        Color = "Black",
+        Size = "M",
+        Price = 4000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664191/n87jx1o0utbpwtjc0sjc.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:29:53.788 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:29:53.783 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "0014266fe6354109aa870bdc11d3a0f1",
-                            MaternityDressId = "e610ee9fb2494165a6c0bf196f1b2eba",
-                            SKU = "MD582-003",
-                            Color = "Black",
-                            Size = "L",
-                            Price = 5000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664222/fjfnf1czaqmnobicojg6.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 4, 30, 24, 174, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 4, 30, 24, 171, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "0014266fe6354109aa870bdc11d3a0f1",
+        MaternityDressId = "e610ee9fb2494165a6c0bf196f1b2eba",
+        SKU = "MD582-003",
+        Name = "Váy thun bà bầu tay ngắn dệt kim gân đen cơ bản",
+        Color = "Black",
+        Size = "L",
+        Price = 5000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664222/fjfnf1czaqmnobicojg6.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:30:24.174 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:30:24.171 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "af9d2d662191461a845b106c09e5e0a3",
-                            MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
-                            SKU = "MD479-001",
-                            Color = "Blue",
-                            Size = "S",
-                            Price = 4000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664644/cetselylq4gofjm7dqqu.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 4, 37, 27, 112, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 4, 37, 27, 109, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "af9d2d662191461a845b106c09e5e0a3",
+        MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
+        SKU = "MD479-001",
+        Name = "Váy ngắn bà bầu trơn màu xanh hoàng gia",
+        Color = "Blue",
+        Size = "S",
+        Price = 4000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664644/cetselylq4gofjm7dqqu.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:37:27.112 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:37:27.109 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "9dd310f17d8b4f5d9c5b6fe7e117ed24",
-                            MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
-                            SKU = "MD479-002",
-                            Color = "Blue",
-                            Size = "M",
-                            Price = 4000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664662/dkekqrmeuph2aw86dzcc.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 4, 37, 43, 850, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 4, 37, 43, 848, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "9dd310f17d8b4f5d9c5b6fe7e117ed24",
+        MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
+        SKU = "MD479-002",
+        Name = "Váy ngắn bà bầu trơn màu xanh hoàng gia",
+        Color = "Blue",
+        Size = "M",
+        Price = 4000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664662/dkekqrmeuph2aw86dzcc.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:37:43.850 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:37:43.848 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "35c1394d34ec4edda3e8409d00009031",
-                            MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
-                            SKU = "MD479-003",
-                            Color = "Blue",
-                            Size = "L",
-                            Price = 4000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664683/qjrw1hpuhnudfvr4ynd7.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 4, 38, 4, 624, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 4, 38, 4, 621, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "35c1394d34ec4edda3e8409d00009031",
+        MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
+        SKU = "MD479-003",
+        Name = "Váy ngắn bà bầu trơn màu xanh hoàng gia",
+        Color = "Blue",
+        Size = "L",
+        Price = 4000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664683/qjrw1hpuhnudfvr4ynd7.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:38:04.624 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:38:04.621 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "21197e4bd7a94f77b173f69a7d3a326a",
-                            MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
-                            SKU = "MD479-004",
-                            Color = "Charcoal",
-                            Size = "S",
-                            Price = 3000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664723/plyadulp1hgcbhu4smzb.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 4, 38, 46, 960, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 4, 38, 46, 957, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "21197e4bd7a94f77b173f69a7d3a326a",
+        MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
+        SKU = "MD479-004",
+        Name = " Váy ngắn bà bầu màu than trơn",
+        Color = "Charcoal",
+        Size = "S",
+        Price = 3000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664723/plyadulp1hgcbhu4smzb.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:38:46.960 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:38:46.957 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "e8a851a8d34c417e8e391687fd4e3882",
-                            MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
-                            SKU = "MD479-005",
-                            Color = "Charcoal",
-                            Size = "M",
-                            Price = 4000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664742/n9s03jrvxv10lgotg3pi.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 4, 39, 3, 783, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 4, 39, 3, 772, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "e8a851a8d34c417e8e391687fd4e3882",
+        MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
+        SKU = "MD479-005",
+        Name = " Váy ngắn bà bầu màu than trơn",
+        Color = "Charcoal",
+        Size = "M",
+        Price = 4000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664742/n9s03jrvxv10lgotg3pi.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:39:03.783 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:39:03.772 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "0e61a37b07134f94916d47ea4937150e",
-                            MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
-                            SKU = "MD479-006",
-                            Color = "Mocha",
-                            Size = "L",
-                            Price = 5000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664802/dro2qohp0twsm79b3ev7.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 4, 40, 3, 809, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 4, 40, 3, 801, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "0e61a37b07134f94916d47ea4937150e",
+        MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
+        SKU = "MD479-006",
+        Name = "Váy ngắn bà bầu màu Mocha trơn",
+        Color = "Mocha",
+        Size = "L",
+        Price = 5000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664802/dro2qohp0twsm79b3ev7.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:40:03.809 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:40:03.801 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "e50c86450e534025948a4019d8975cd4",
-                            MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
-                            SKU = "MD479-007",
-                            Color = "Mocha",
-                            Size = "XL",
-                            Price = 10000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664824/lk8thux237iaf3xlfb18.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 4, 40, 27, 6, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 4, 40, 27, 3, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "e50c86450e534025948a4019d8975cd4",
+        MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
+        SKU = "MD479-007",
+        Name = "Váy ngắn bà bầu màu Mocha trơn",
+        Color = "Mocha",
+        Size = "XL",
+        Price = 10000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664824/lk8thux237iaf3xlfb18.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:40:27.006 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:40:27.003 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "d5b90f90bd8e4952be7355294e2b004c",
-                            MaternityDressId = "6f0fefb8162f458f98e032cf224becf2",
-                            SKU = "MD405-001",
-                            Color = "Gray",
-                            Size = "S",
-                            Price = 3000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665002/aairhrfkyt2coikhbi17.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 4, 43, 24, 267, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 4, 43, 24, 265, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "d5b90f90bd8e4952be7355294e2b004c",
+        MaternityDressId = "6f0fefb8162f458f98e032cf224becf2",
+        SKU = "MD405-001",
+        Name = "Váy bầu nhún bèo bất đối xứng màu xám",
+        Color = "Gray",
+        Size = "S",
+        Price = 3000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665002/aairhrfkyt2coikhbi17.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:43:24.267 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:43:24.265 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "66253122a0c54cd59f103e7e61cd5b90",
-                            MaternityDressId = "6f0fefb8162f458f98e032cf224becf2",
-                            SKU = "MD405-002",
-                            Color = "Gray",
-                            Size = "M",
-                            Price = 4000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665017/wzuybbih4zm9ddt0xpom.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 4, 43, 39, 196, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 4, 43, 39, 193, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "66253122a0c54cd59f103e7e61cd5b90",
+        MaternityDressId = "6f0fefb8162f458f98e032cf224becf2",
+        SKU = "MD405-002",
+        Name = "Váy bầu nhún bèo bất đối xứng màu xám",
+        Color = "Gray",
+        Size = "M",
+        Price = 4000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665017/wzuybbih4zm9ddt0xpom.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:43:39.196 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:43:39.193 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "c90a707cd4414c12831e090be2855140",
-                            MaternityDressId = "6f0fefb8162f458f98e032cf224becf2",
-                            SKU = "MD405-003",
-                            Color = "Gray",
-                            Size = "L",
-                            Price = 5000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665036/ef9y9tybbgmw01fwswr9.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 4, 43, 57, 966, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 4, 43, 57, 964, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "c90a707cd4414c12831e090be2855140",
+        MaternityDressId = "6f0fefb8162f458f98e032cf224becf2",
+        SKU = "MD405-003",
+        Name = "Váy bầu nhún bèo bất đối xứng màu xám",
+        Color = "Gray",
+        Size = "L",
+        Price = 5000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665036/ef9y9tybbgmw01fwswr9.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:43:57.966 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:43:57.964 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "32c6fdb19661480b84bdebf8de5df8eb",
-                            MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
-                            SKU = "MD566-001",
-                            Color = "Olive",
-                            Size = "S",
-                            Price = 4000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665249/cnuulshsmipa0zmuq49b.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 4, 47, 31, 85, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 4, 47, 31, 83, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "32c6fdb19661480b84bdebf8de5df8eb",
+        MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
+        SKU = "MD566-001",
+        Name = "Váy yếm xếp ly màu ô liu cho bà bầu",
+        Color = "Olive",
+        Size = "S",
+        Price = 4000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665249/cnuulshsmipa0zmuq49b.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:47:31.085 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:47:31.083 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "48d92e9e21a54e3c847adac8cc855f62",
-                            MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
-                            SKU = "MD566-002",
-                            Color = "Olive",
-                            Size = "M",
-                            Price = 5000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665264/xosnknggvbkecz9munvu.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 4, 47, 46, 550, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 4, 47, 46, 548, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "48d92e9e21a54e3c847adac8cc855f62",
+        MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
+        SKU = "MD566-002",
+        Name = "Váy yếm xếp ly màu ô liu cho bà bầu",
+        Color = "Olive",
+        Size = "M",
+        Price = 5000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665264/xosnknggvbkecz9munvu.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:47:46.550 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:47:46.548 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "20f6cc4a10ff47b1b6a5eeb93b7b2cd6",
-                            MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
-                            SKU = "MD566-003",
-                            Color = "Olive",
-                            Size = "L",
-                            Price = 6000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665283/qthh4wyuvv906urp9iyr.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 4, 48, 4, 389, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 4, 48, 4, 386, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "20f6cc4a10ff47b1b6a5eeb93b7b2cd6",
+        MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
+        SKU = "MD566-003",
+        Name = "Váy yếm xếp ly màu ô liu cho bà bầu",
+        Color = "Olive",
+        Size = "L",
+        Price = 6000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665283/qthh4wyuvv906urp9iyr.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:48:04.389 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:48:04.386 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "33de2e83cd6c41f69ee7d34d5a8af5a2",
-                            MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
-                            SKU = "MD566-004",
-                            Color = "Black",
-                            Size = "S",
-                            Price = 4000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665314/rerxwpmm2xm6czpsd4ie.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 4, 48, 36, 387, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 4, 48, 36, 384, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "33de2e83cd6c41f69ee7d34d5a8af5a2",
+        MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
+        SKU = "MD566-004",
+        Name = "Váy yếm xếp ly màu đen cho bà bầu",
+        Color = "Black",
+        Size = "S",
+        Price = 4000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665314/rerxwpmm2xm6czpsd4ie.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:48:36.387 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:48:36.384 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "be5de84bde154daab7c053d41fc9af8b",
-                            MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
-                            SKU = "MD566-005",
-                            Color = "Black",
-                            Size = "M",
-                            Price = 4000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665331/ixmlsfs7dtojv1avpqtz.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 4, 48, 56, 512, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 4, 48, 56, 510, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "be5de84bde154daab7c053d41fc9af8b",
+        MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
+        SKU = "MD566-005",
+        Name = "Váy yếm xếp ly màu đen cho bà bầu",
+        Color = "Black",
+        Size = "M",
+        Price = 4000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665331/ixmlsfs7dtojv1avpqtz.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:48:56.512 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:48:56.510 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "3595c4086597411caa4a2af7dd3cf062",
-                            MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
-                            SKU = "MD566-006",
-                            Color = "Black",
-                            Size = "XL",
-                            Price = 10000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665362/ns4vd2ytewr9pinzb7yi.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 4, 49, 23, 162, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 4, 49, 23, 159, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "3595c4086597411caa4a2af7dd3cf062",
+        MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
+        SKU = "MD566-006",
+        Name = "Váy yếm xếp ly màu đen cho bà bầu",
+        Color = "Black",
+        Size = "XL",
+        Price = 10000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665362/ns4vd2ytewr9pinzb7yi.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:49:23.162 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:49:23.159 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "49a7c65b458a4348b56f3cd414056d8d",
-                            MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
-                            SKU = "MD566-007",
-                            Color = "Light Blue",
-                            Size = "XL",
-                            Price = 10000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665415/r0plpmqdwne6ex4geh0w.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 4, 50, 17, 334, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 4, 50, 17, 332, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "49a7c65b458a4348b56f3cd414056d8d",
+        MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
+        SKU = "MD566-007",
+        Name = "Váy yếm xếp ly màu xanh nhạt cho bà bầu",
+        Color = "Light Blue",
+        Size = "XL",
+        Price = 10000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665415/r0plpmqdwne6ex4geh0w.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:50:17.334 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:50:17.332 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "99a9e2e51d834bb88a6ceb7c28df8754",
-                            MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
-                            SKU = "MD566-008",
-                            Color = "Light Blue",
-                            Size = "2XL",
-                            Price = 20000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665432/b25c8zu3aayomgdkrlcl.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 4, 50, 33, 948, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 4, 50, 33, 946, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "99a9e2e51d834bb88a6ceb7c28df8754",
+        MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
+        SKU = "MD566-008",
+        Name = "Váy yếm xếp ly màu xanh nhạt cho bà bầu",
+        Color = "Light Blue",
+        Size = "2XL",
+        Price = 20000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665432/b25c8zu3aayomgdkrlcl.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:50:33.948 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:50:33.946 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "23b349cd42fd4c0b9c3ece3a9dbcd148",
-                            MaternityDressId = "7202c22db49e4511b19661285cf363df",
-                            SKU = "MD920-001",
-                            Color = "Beige",
-                            Size = "S",
-                            Price = 3000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665606/bmdny2uotw2epwbt9l2s.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 4, 53, 27, 864, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 4, 53, 27, 845, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "23b349cd42fd4c0b9c3ece3a9dbcd148",
+        MaternityDressId = "7202c22db49e4511b19661285cf363df",
+        SKU = "MD920-001",
+        Name = "Váy Maxi Bầu Halter Xếp Ly Màu Be",
+        Color = "Beige",
+        Size = "S",
+        Price = 3000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665606/bmdny2uotw2epwbt9l2s.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:53:27.864 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:53:27.845 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "4650cd4e5b1845d2b55dd3b062e52ef2",
-                            MaternityDressId = "7202c22db49e4511b19661285cf363df",
-                            SKU = "MD920-002",
-                            Color = "Beige",
-                            Size = "M",
-                            Price = 5000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665623/wsog1fugbnlicxawbvxu.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 4, 53, 44, 616, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 4, 53, 44, 613, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "4650cd4e5b1845d2b55dd3b062e52ef2",
+        MaternityDressId = "7202c22db49e4511b19661285cf363df",
+        SKU = "MD920-002",
+        Name = "Váy Maxi Bầu Halter Xếp Ly Màu Be",
+        Color = "Beige",
+        Size = "M",
+        Price = 5000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665623/wsog1fugbnlicxawbvxu.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:53:44.616 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:53:44.613 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "271d58b4d79c415aa7a69142aa0fa98b",
-                            MaternityDressId = "7202c22db49e4511b19661285cf363df",
-                            SKU = "MD920-003",
-                            Color = "Beige",
-                            Size = "L",
-                            Price = 5000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665638/kfsazm8zrtftilznaxip.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 4, 54, 0, 890, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 4, 54, 0, 885, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "271d58b4d79c415aa7a69142aa0fa98b",
+        MaternityDressId = "7202c22db49e4511b19661285cf363df",
+        SKU = "MD920-003",
+        Name = "Váy Maxi Bầu Halter Xếp Ly Màu Be",
+        Color = "Beige",
+        Size = "L",
+        Price = 5000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665638/kfsazm8zrtftilznaxip.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 11:54:00.890 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 11:54:00.885 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "5945777a788e48bfa05fbfd0b37548f1",
-                            MaternityDressId = "058811e7dd6842a59ea67452a301ce84",
-                            SKU = "MD515-001",
-                            Color = "Ivory",
-                            Size = "S",
-                            Price = 10000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666569/rioj80hsfwnwlanzw9et.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 5, 9, 30, 883, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 5, 9, 30, 867, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "5945777a788e48bfa05fbfd0b37548f1",
+        MaternityDressId = "058811e7dd6842a59ea67452a301ce84",
+        SKU = "MD515-001",
+        Name = "Váy sơ mi bà bầu tay ngắn cài nút họa tiết màu ngà",
+        Color = "Ivory",
+        Size = "S",
+        Price = 10000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666569/rioj80hsfwnwlanzw9et.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 12:09:30.883 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 12:09:30.867 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "450862bbfdb248f3897c70dc94431070",
-                            MaternityDressId = "058811e7dd6842a59ea67452a301ce84",
-                            SKU = "MD515-002",
-                            Color = "Ivory",
-                            Size = "M",
-                            Price = 10000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666595/hjwo0qkax6imh5a2aeh1.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 5, 10, 2, 346, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 5, 10, 2, 340, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "450862bbfdb248f3897c70dc94431070",
+        MaternityDressId = "058811e7dd6842a59ea67452a301ce84",
+        SKU = "MD515-002",
+        Name = "Váy sơ mi bà bầu tay ngắn cài nút họa tiết màu ngà",
+        Color = "Ivory",
+        Size = "M",
+        Price = 10000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666595/hjwo0qkax6imh5a2aeh1.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 12:10:02.346 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 12:10:02.340 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "9cd6a9f5d6ec4c79823401fd1aa0af3f",
-                            MaternityDressId = "c5773c8eedba465fb0cfea9f8048cbca",
-                            SKU = "MD585-001",
-                            Color = "Black",
-                            Size = "S",
-                            Price = 5000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666772/xwtlq28zrztferbprubt.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 5, 12, 54, 144, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 5, 12, 54, 141, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "9cd6a9f5d6ec4c79823401fd1aa0af3f",
+        MaternityDressId = "c5773c8eedba465fb0cfea9f8048cbca",
+        SKU = "MD585-001",
+        Name = "Váy sơ mi bà bầu họa tiết hoa đen thắt eo",
+        Color = "Black",
+        Size = "S",
+        Price = 5000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666772/xwtlq28zrztferbprubt.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 12:12:54.144 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 12:12:54.141 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "a3dd93959fba4f0bbbab424df7bf5aba",
-                            MaternityDressId = "c5773c8eedba465fb0cfea9f8048cbca",
-                            SKU = "MD585-002",
-                            Color = "Black",
-                            Size = "L",
-                            Price = 10000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666772/xwtlq28zrztferbprubt.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 5, 13, 6, 490, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 5, 13, 6, 487, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "a3dd93959fba4f0bbbab424df7bf5aba",
+        MaternityDressId = "c5773c8eedba465fb0cfea9f8048cbca",
+        SKU = "MD585-002",
+        Name = "Váy sơ mi bà bầu họa tiết hoa đen thắt eo",
+        Color = "Black",
+        Size = "L",
+        Price = 10000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666772/xwtlq28zrztferbprubt.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 12:13:06.490 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 12:13:06.487 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "6267df0da52549af8386d32fb5d3cd17",
-                            MaternityDressId = "058811e7dd6842a59ea67452a301ce84",
-                            SKU = "MD515-003",
-                            Color = "Ivory",
-                            Size = "L",
-                            Price = 7000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666595/hjwo0qkax6imh5a2aeh1.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 5, 10, 30, 369, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 5, 10, 30, 365, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "6267df0da52549af8386d32fb5d3cd17",
+        MaternityDressId = "058811e7dd6842a59ea67452a301ce84",
+        SKU = "MD515-003",
+        Name = "Váy sơ mi bà bầu tay ngắn cài nút họa tiết màu ngà",
+        Color = "Ivory",
+        Size = "L",
+        Price = 7000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666595/hjwo0qkax6imh5a2aeh1.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 12:10:30.369 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 12:10:30.365 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "6fea930520964cf0969f9052bc88cd11",
-                            MaternityDressId = "fdff22c67ad7425ebf40b2f457fc3228",
-                            SKU = "MD220-001",
-                            Color = "Light Blue",
-                            Size = "S",
-                            Price = 5000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667003/juaqopirnx9hy9uk6fpe.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 5, 16, 45, 152, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 5, 16, 45, 150, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "6fea930520964cf0969f9052bc88cd11",
+        MaternityDressId = "fdff22c67ad7425ebf40b2f457fc3228",
+        SKU = "MD220-001",
+        Name = "Váy Maxi hở vai bằng vải denim họa tiết chambray nhạt",
+        Color = "Light Blue",
+        Size = "S",
+        Price = 5000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667003/juaqopirnx9hy9uk6fpe.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 12:16:45.152 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 12:16:45.150 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "be5e7b3b89fe4208bec2fdedf8911f13",
-                            MaternityDressId = "fdff22c67ad7425ebf40b2f457fc3228",
-                            SKU = "MD220-002",
-                            Color = "Light Blue",
-                            Size = "M",
-                            Price = 6000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667020/i2qjoezlgbf6n9m57sah.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 5, 17, 1, 409, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 5, 17, 1, 406, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "be5e7b3b89fe4208bec2fdedf8911f13",
+        MaternityDressId = "fdff22c67ad7425ebf40b2f457fc3228",
+        SKU = "MD220-002",
+        Name = "Váy Maxi hở vai bằng vải denim họa tiết chambray nhạt",
+        Color = "Light Blue",
+        Size = "M",
+        Price = 6000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667020/i2qjoezlgbf6n9m57sah.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 12:17:01.409 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 12:17:01.406 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "e75cfa596866407998267accece512e1",
-                            MaternityDressId = "581aec917bea4d9d9054b8cf1d1cc7b8",
-                            SKU = "MD846-001",
-                            Color = "Black",
-                            Size = "S",
-                            Price = 5000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667122/mntbthkygph097khnszt.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 5, 18, 44, 582, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 5, 18, 44, 580, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "e75cfa596866407998267accece512e1",
+        MaternityDressId = "581aec917bea4d9d9054b8cf1d1cc7b8",
+        SKU = "MD846-001",
+        Name = "Váy midi bà bầu trễ vai nhún bèo màu đen",
+        Color = "Black",
+        Size = "S",
+        Price = 5000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667122/mntbthkygph097khnszt.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 12:18:44.582 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 12:18:44.580 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "6ca47d478d104a4c89b677674fd4ae88",
-                            MaternityDressId = "581aec917bea4d9d9054b8cf1d1cc7b8",
-                            SKU = "MD846-002",
-                            Color = "Black",
-                            Size = "M",
-                            Price = 8000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667143/hm4xhlkuxnfpqlo5n053.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 5, 19, 4, 209, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 5, 19, 4, 207, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "6ca47d478d104a4c89b677674fd4ae88",
+        MaternityDressId = "581aec917bea4d9d9054b8cf1d1cc7b8",
+        SKU = "MD846-002",
+        Name = "Váy midi bà bầu trễ vai nhún bèo màu đen",
+        Color = "Black",
+        Size = "M",
+        Price = 8000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667143/hm4xhlkuxnfpqlo5n053.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 12:19:04.209 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 12:19:04.207 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "107a36d41c9e44b38f9c00f89fbd61df",
-                            MaternityDressId = "581aec917bea4d9d9054b8cf1d1cc7b8",
-                            SKU = "MD846-003",
-                            Color = "Black",
-                            Size = "L",
-                            Price = 10000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667157/jxildxhcn9fqch6hjj9l.webp"],
-                            CreatedBy = "Admin",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 5, 19, 19, 325, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 5, 19, 19, 321, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "107a36d41c9e44b38f9c00f89fbd61df",
+        MaternityDressId = "581aec917bea4d9d9054b8cf1d1cc7b8",
+        SKU = "MD846-003",
+        Name = "Váy midi bà bầu trễ vai nhún bèo màu đen",
+        Color = "Black",
+        Size = "L",
+        Price = 10000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667157/jxildxhcn9fqch6hjj9l.webp"],
+        CreatedBy = "Admin",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 12:19:19.325 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 12:19:19.321 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "1f3a3d61760246f0aae05b43df794304",
-                            MaternityDressId = "039fd8cb6da548299d31cd0b3780d528",
-                            SKU = "MD128-001",
-                            Color = "Light Blue",
-                            Size = "XL",
-                            Price = 30000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667285/vtcwf6bzndx8xfqntyft.webp"],
-                            CreatedBy = "System",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 5, 21, 27, 279, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 5, 21, 27, 276, DateTimeKind.Utc),
-                            IsDeleted = false
-                        },
+    new MaternityDressDetail
+    {
+        Id = "1f3a3d61760246f0aae05b43df794304",
+        MaternityDressId = "039fd8cb6da548299d31cd0b3780d528",
+        SKU = "MD128-001",
+        Name = "Áo dài bà bầu in họa tiết chắp vá nhiều màu xanh nhạt",
+        Color = "Light Blue",
+        Size = "XL",
+        Price = 30000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667285/vtcwf6bzndx8xfqntyft.webp"],
+        CreatedBy = "System",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 12:21:27.279 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 12:21:27.276 +0700"),
+        IsDeleted = false
+    },
 
-                        new MaternityDressDetail
-                        {
-                            Id = "8d8c3c7000d845fc9f70bd7487f780fe",
-                            MaternityDressId = "039fd8cb6da548299d31cd0b3780d528",
-                            SKU = "MD128-002",
-                            Color = "Light Blue",
-                            Size = "2XL",
-                            Price = 40000,
-                            Quantity = 999,
-                            Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667299/ameel0u31pqfmhjlwwvz.webp"],
-                            CreatedBy = "System",
-                            UpdatedBy = "",
-                            CreatedAt = new DateTime(2025, 8, 20, 5, 21, 40, 353, DateTimeKind.Utc),
-                            UpdatedAt = new DateTime(2025, 8, 20, 5, 21, 40, 350, DateTimeKind.Utc),
-                            IsDeleted = false
-                        }
-            );
+    new MaternityDressDetail
+    {
+        Id = "8d8c3c7000d845fc9f70bd7487f780fe",
+        MaternityDressId = "039fd8cb6da548299d31cd0b3780d528",
+        SKU = "MD128-002",
+        Name = "Áo dài bà bầu in họa tiết chắp vá nhiều màu xanh nhạt",
+        Color = "Light Blue",
+        Size = "2XL",
+        Price = 40000,
+        Quantity = 999,
+        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667299/ameel0u31pqfmhjlwwvz.webp"],
+        CreatedBy = "System",
+        UpdatedBy = "",
+        CreatedAt = DateTime.Parse("2025-08-20 12:21:40.353 +0700"),
+        UpdatedAt = DateTime.Parse("2025-08-20 12:21:40.350 +0700"),
+        IsDeleted = false
+    }
+    );
             #endregion
 
             #region Seed Order, OrderItem, Add_On, DesignRequest

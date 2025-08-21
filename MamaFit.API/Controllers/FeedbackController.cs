@@ -49,7 +49,7 @@ public class FeedbackController : ControllerBase
     public async Task<IActionResult> GetAllMyFeedbacks(string dressId)
     {
         var result = await _feedbackService.GetAllByDressId(dressId);
-        return Ok(new ResponseModel<List<OrderItemResponseDto>>(
+        return Ok(new ResponseModel<List<FeedbackResponseDto>>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
             result,

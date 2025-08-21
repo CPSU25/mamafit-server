@@ -137,7 +137,7 @@ public class TransactionService : ITransactionService
     public async Task<DashboardSummaryResponse> GetDashboardSummaryAsync(DateTime startTime, DateTime endTime)
     {
         startTime = EnsureUtc(startTime);
-        endTime   = EnsureUtc(endTime);
+        endTime = EnsureUtc(endTime);
         if (startTime == default || endTime == default || endTime < startTime)
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, "Invalid time range");
 
@@ -187,6 +187,7 @@ public class TransactionService : ITransactionService
     }
 
     // 2) /analytics/revenue?groupBy=month&range=this_year&compare=yoy=true
+    // 2) /analytics/revenue?groupBy=month&range=this_year&compare=yoy=true
     public async Task<List<RevenuePointDto>> GetRevenueAsync(string groupBy, string range, bool compareYoy)
     {
         groupBy = (groupBy ?? "month").ToLowerInvariant();
@@ -208,8 +209,8 @@ public class TransactionService : ITransactionService
         Dictionary<int, decimal>? lastYear = null;
         if (compareYoy)
         {
-            var lyStart = new DateTime(start.Year - 1, 1, 1);
-            var lyEnd = new DateTime(start.Year - 1, 12, 31, 23, 59, 59, 999);
+            var lyStart = new DateTime(start.Year - 1, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var lyEnd = new DateTime(start.Year - 1, 12, 31, 23, 59, 59, 999, DateTimeKind.Utc);
 
             var lyQ = (await _unitOfWork.OrderRepository.GetAllQueryableAsync())
                 .Where(o => !o.IsDeleted && o.CreatedAt >= lyStart && o.CreatedAt <= lyEnd);
@@ -233,6 +234,7 @@ public class TransactionService : ITransactionService
             };
         }).ToList();
     }
+
 
     // 3) /analytics/orders/status?range=month
     public async Task<OrderStatusResponse> GetOrderStatusAsync(string range)

@@ -268,6 +268,7 @@ public class TransactionService : ITransactionService
     }
 
     // 4) /analytics/branches/top?metric=revenue&limit=5&range=month
+    // 4) /analytics/branches/top?metric=revenue&limit=5&range=month
     public async Task<BranchTopResponse> GetTopBranchesAsync(string metric, int limit, string range)
     {
         metric = string.IsNullOrWhiteSpace(metric) ? "revenue" : metric.ToLowerInvariant();
@@ -275,15 +276,18 @@ public class TransactionService : ITransactionService
 
         var (start, end) = ResolveRange(range);
 
+        // Lọc: chỉ lấy đơn có BranchId (tránh nhóm rỗng)
         var ordersQ = (await _unitOfWork.OrderRepository.GetAllQueryableAsync())
-            .Where(o => !o.IsDeleted && o.CreatedAt >= start && o.CreatedAt <= end);
+            .Where(o => !o.IsDeleted
+                        && !string.IsNullOrEmpty(o.BranchId)
+                        && o.CreatedAt >= start && o.CreatedAt <= end);
 
         var curAgg = ApplyRevenuePolicy(ordersQ)
-            .GroupBy(o => new { o.BranchId, Name = o.Branch != null ? o.Branch.Name : "" })
+            .GroupBy(o => new { o.BranchId, BranchName = o.Branch != null ? o.Branch.Name : null })
             .Select(g => new
             {
                 g.Key.BranchId,
-                BranchName = g.Key.Name ?? "",
+                BranchName = g.Key.BranchName ?? "(Không rõ)",
                 Revenue = g.Sum(x => x.TotalAmount ?? 0),
                 Orders = g.Count()
             });
@@ -294,13 +298,15 @@ public class TransactionService : ITransactionService
 
         var top = await ordered.Take(limit).ToListAsync();
 
-        // kỳ trước cùng độ dài
+        // Kỳ trước cùng độ dài — dùng CHUNG tiêu chí lọc
         var span = end - start;
         var prevStart = start.AddTicks(-(span.Ticks + 1));
         var prevEnd = start.AddTicks(-1);
 
         var prevQ = (await _unitOfWork.OrderRepository.GetAllQueryableAsync())
-            .Where(o => !o.IsDeleted && o.CreatedAt >= prevStart && o.CreatedAt <= prevEnd);
+            .Where(o => !o.IsDeleted
+                        && !string.IsNullOrEmpty(o.BranchId)
+                        && o.CreatedAt >= prevStart && o.CreatedAt <= prevEnd);
 
         var prevAgg = await ApplyRevenuePolicy(prevQ)
             .GroupBy(o => o.BranchId)
@@ -310,7 +316,7 @@ public class TransactionService : ITransactionService
         var items = top.Select(x =>
         {
             decimal growth = 0;
-            if (!string.IsNullOrEmpty(x.BranchId) && prevAgg.TryGetValue(x.BranchId, out var p))
+            if (prevAgg.TryGetValue(x.BranchId!, out var p))
             {
                 var curVal = metric == "orders" ? (decimal)x.Orders : x.Revenue;
                 var prevVal = metric == "orders" ? (decimal)p.Orders : p.Revenue;
@@ -319,8 +325,8 @@ public class TransactionService : ITransactionService
 
             return new BranchPerformanceDto
             {
-                BranchId = x.BranchId ?? "",
-                BranchName = x.BranchName,
+                BranchId = x.BranchId!, // đã lọc != null/empty ở trên
+                BranchName = string.IsNullOrWhiteSpace(x.BranchName) ? "(Không rõ)" : x.BranchName,
                 Revenue = x.Revenue,
                 Orders = x.Orders,
                 GrowthPct = growth

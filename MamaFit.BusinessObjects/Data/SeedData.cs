@@ -4218,8 +4218,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664170/ohnkiuwhpvtrlkv2kljj.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:29:34.528 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:29:34.525 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4236,8 +4236,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664191/n87jx1o0utbpwtjc0sjc.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:29:53.788 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:29:53.783 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4254,8 +4254,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664222/fjfnf1czaqmnobicojg6.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:30:24.174 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:30:24.171 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4272,8 +4272,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664644/cetselylq4gofjm7dqqu.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:37:27.112 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:37:27.109 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4290,8 +4290,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664662/dkekqrmeuph2aw86dzcc.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:37:43.850 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:37:43.848 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4308,8 +4308,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664683/qjrw1hpuhnudfvr4ynd7.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:38:04.624 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:38:04.621 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4326,8 +4326,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664723/plyadulp1hgcbhu4smzb.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:38:46.960 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:38:46.957 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4344,8 +4344,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664742/n9s03jrvxv10lgotg3pi.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:39:03.783 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:39:03.772 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4362,8 +4362,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664802/dro2qohp0twsm79b3ev7.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:40:03.809 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:40:03.801 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4380,8 +4380,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664824/lk8thux237iaf3xlfb18.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:40:27.006 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:40:27.003 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4398,8 +4398,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665002/aairhrfkyt2coikhbi17.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:43:24.267 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:43:24.265 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4416,8 +4416,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665017/wzuybbih4zm9ddt0xpom.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:43:39.196 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:43:39.193 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4434,8 +4434,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665036/ef9y9tybbgmw01fwswr9.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:43:57.966 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:43:57.964 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4452,8 +4452,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665249/cnuulshsmipa0zmuq49b.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:47:31.085 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:47:31.083 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4470,8 +4470,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665264/xosnknggvbkecz9munvu.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:47:46.550 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:47:46.548 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4488,8 +4488,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665283/qthh4wyuvv906urp9iyr.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:48:04.389 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:48:04.386 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4506,8 +4506,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665314/rerxwpmm2xm6czpsd4ie.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:48:36.387 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:48:36.384 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4524,8 +4524,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665331/ixmlsfs7dtojv1avpqtz.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:48:56.512 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:48:56.510 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4542,8 +4542,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665362/ns4vd2ytewr9pinzb7yi.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:49:23.162 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:49:23.159 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4560,8 +4560,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665415/r0plpmqdwne6ex4geh0w.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:50:17.334 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:50:17.332 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4578,8 +4578,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665432/b25c8zu3aayomgdkrlcl.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:50:33.948 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:50:33.946 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4596,8 +4596,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665606/bmdny2uotw2epwbt9l2s.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:53:27.864 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:53:27.845 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4614,8 +4614,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665623/wsog1fugbnlicxawbvxu.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:53:44.616 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:53:44.613 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4632,8 +4632,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665638/kfsazm8zrtftilznaxip.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 11:54:00.890 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 11:54:00.885 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4650,8 +4650,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666569/rioj80hsfwnwlanzw9et.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 12:09:30.883 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 12:09:30.867 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4668,8 +4668,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666595/hjwo0qkax6imh5a2aeh1.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 12:10:02.346 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 12:10:02.340 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4686,8 +4686,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666772/xwtlq28zrztferbprubt.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 12:12:54.144 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 12:12:54.141 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4704,8 +4704,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666772/xwtlq28zrztferbprubt.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 12:13:06.490 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 12:13:06.487 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4722,8 +4722,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666595/hjwo0qkax6imh5a2aeh1.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 12:10:30.369 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 12:10:30.365 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4740,8 +4740,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667003/juaqopirnx9hy9uk6fpe.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 12:16:45.152 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 12:16:45.150 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4758,8 +4758,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667020/i2qjoezlgbf6n9m57sah.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 12:17:01.409 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 12:17:01.406 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4776,8 +4776,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667122/mntbthkygph097khnszt.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 12:18:44.582 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 12:18:44.580 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4794,8 +4794,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667143/hm4xhlkuxnfpqlo5n053.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 12:19:04.209 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 12:19:04.207 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4812,8 +4812,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667157/jxildxhcn9fqch6hjj9l.webp"],
         CreatedBy = "Admin",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 12:19:19.325 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 12:19:19.321 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4830,8 +4830,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667285/vtcwf6bzndx8xfqntyft.webp"],
         CreatedBy = "System",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 12:21:27.279 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 12:21:27.276 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     },
 
@@ -4848,8 +4848,8 @@ namespace MamaFit.BusinessObjects.Data
         Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667299/ameel0u31pqfmhjlwwvz.webp"],
         CreatedBy = "System",
         UpdatedBy = "",
-        CreatedAt = DateTime.Parse("2025-08-20 12:21:40.353 +0700"),
-        UpdatedAt = DateTime.Parse("2025-08-20 12:21:40.350 +0700"),
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
         IsDeleted = false
     }
     );

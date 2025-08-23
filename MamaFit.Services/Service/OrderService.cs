@@ -324,7 +324,7 @@ public class OrderService : IOrderService
 
         if (request.VoucherDiscountId != null)
         {
-            voucher = await _unitOfWork.VoucherDiscountRepository.GetByIdAsync(request.VoucherDiscountId);
+            voucher = await _unitOfWork.VoucherDiscountRepository.GetVoucherDiscountWithBatch(request.VoucherDiscountId);
             _validation.CheckNotFound(voucher, $"Voucher with id: {request.VoucherDiscountId} not found");
         }
 

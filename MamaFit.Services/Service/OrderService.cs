@@ -133,7 +133,6 @@ public class OrderService : IOrderService
         return dto;
     }
 
-
     public async Task<List<OrderResponseDto>> GetOrdersForBranchManagerAsync()
     {
         var userId = GetCurrentUserId();

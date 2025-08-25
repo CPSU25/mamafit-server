@@ -248,7 +248,6 @@ public class SepayService : ISepayService
         };
     }
 
-
     private string GenerateSepayQrUrl(string accountNumber, string bankCode, decimal? amount, string description,
         string template, string download)
     {

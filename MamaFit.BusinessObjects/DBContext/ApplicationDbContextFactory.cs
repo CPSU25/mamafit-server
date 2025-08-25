@@ -12,7 +12,7 @@ namespace MamaFit.BusinessObjects.DBContext
 
             var config = new ConfigurationBuilder()
                 .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../MamaFit.API"))
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true)
                 .Build();
 
             var connectionString = config.GetConnectionString("DefaultConnection");

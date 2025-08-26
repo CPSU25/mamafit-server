@@ -1,10 +1,8 @@
 filebeat.inputs:
-  - type: docker
+  - type: container 
     enabled: true
-    containers.ids: ['*']
-    processors:
-      - add_docker_metadata: ~
-      - add_host_metadata: ~
+    containers:
+      ids: ['*']     
 
   - type: filestream
     enabled: true
@@ -12,11 +10,15 @@ filebeat.inputs:
     paths:
       - /data/compose/app-logs/*.log
     parsers:
-      - multiline:           
+      - multiline:
           type: pattern
           pattern: '^\d{4}-\d{2}-\d{2}'
           negate: true
           match: after
+
+processors:
+  - add_docker_metadata: ~
+  - add_host_metadata: ~
 
 output.elasticsearch:
   hosts: ["http://elasticsearch:9200"]

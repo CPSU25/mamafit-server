@@ -1,11 +1,9 @@
 filebeat.inputs:
-  - type: container 
-    enabled: true
-    containers:
-      ids: ['*']     
+  - type: container
+    paths:
+      - '/var/lib/docker/containers/*/*.log'
 
   - type: filestream
-    enabled: true
     id: nlog-files
     paths:
       - /data/compose/app-logs/*.log
@@ -17,7 +15,8 @@ filebeat.inputs:
           match: after
 
 processors:
-  - add_docker_metadata: ~
+  - add_docker_metadata:
+      host: "unix:///var/run/docker.sock"
   - add_host_metadata: ~
 
 output.elasticsearch:

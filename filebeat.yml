@@ -1,0 +1,26 @@
+filebeat.inputs:
+  - type: container
+    paths:
+      - '/var/lib/docker/containers/*/*.log'
+
+  - type: filestream
+    id: nlog-files
+    paths:
+      - /data/compose/app-logs/*.log
+    parsers:
+      - multiline:
+          type: pattern
+          pattern: '^\d{4}-\d{2}-\d{2}'
+          negate: true
+          match: after
+
+processors:
+  - add_docker_metadata:
+      host: "unix:///var/run/docker.sock"
+  - add_host_metadata: ~
+
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
+
+setup.template.enabled: true
+setup.ilm.enabled: true

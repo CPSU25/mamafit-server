@@ -78,6 +78,24 @@ services:
     networks:
       - default
 
+  filebeat:
+    image: elastic/filebeat:8.13.4
+    container_name: filebeat
+    user: root
+    restart: unless-stopped
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    command: ["--strict.perms=false"]
+    volumes:
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /data/compose/app-logs:/data/compose/app-logs:ro
+    networks:
+      - default
+
   kibana:
     image: docker.elastic.co/kibana/kibana:8.13.4
     container_name: kibana

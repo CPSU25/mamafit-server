@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using AutoMapper;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
@@ -237,7 +238,7 @@ public class SepayService : ISepayService
             accountNumber: _sepaySettings.AccountNumber,
             bankCode: _sepaySettings.BankCode,
             amount: paymentAmount,
-            description: $"SEVQR{order.Code}",
+            description: $"{order.Code}",
             template: "qronly",
             download: "true");
 
@@ -339,13 +340,7 @@ public class SepayService : ISepayService
 
     private string ExtractOrderCodeFromContent(string content)
     {
-        var startIndex = content.IndexOf("SEVQR");
-        if (startIndex != -1)
-        {
-            var orderCode = content.Substring(startIndex + "SEVQR".Length, 6);
-            return orderCode;
-        }
-
-        return null;
+        var match = Regex.Match(content, @"ORD\d{7}");
+        return match.Success ? match.Value : null;
     }
 }

@@ -187,7 +187,6 @@ public class TransactionService : ITransactionService
     }
 
     // 2) /analytics/revenue?groupBy=month&range=this_year&compare=yoy=true
-    // 2) /analytics/revenue?groupBy=month&range=this_year&compare=yoy=true
     public async Task<List<RevenuePointDto>> GetRevenueAsync(string groupBy, string range, bool compareYoy)
     {
         groupBy = (groupBy ?? "month").ToLowerInvariant();
@@ -249,8 +248,22 @@ public class TransactionService : ITransactionService
             .Select(g => new { Status = g.Key, Count = g.Count() })
             .ToListAsync();
 
-        // các trạng thái dự kiến (điều chỉnh nếu enum của bạn khác)
-        string[] expected = ["PENDING", "PRODUCTION", "SHIPPING", "COMPLETED", "CANCELLED"];
+        OrderStatus[] expected = new[]
+        {
+            OrderStatus.CREATED,
+            OrderStatus.CONFIRMED,
+            OrderStatus.IN_PROGRESS,
+            OrderStatus.AWAITING_PAID_REST,
+            OrderStatus.PACKAGING,
+            OrderStatus.DELIVERING,
+            OrderStatus.COMPLETED,
+            OrderStatus.CANCELLED,
+            OrderStatus.RETURNED,
+            OrderStatus.PICKUP_IN_PROGRESS,
+            OrderStatus.AWAITING_PAID_WARRANTY,
+            OrderStatus.COMPLETED_WARRANTY,
+            OrderStatus.RECEIVED_AT_BRANCH
+        };
 
         var mapped = raw.Select(x => new OrderStatusCountDto
         {
@@ -259,15 +272,14 @@ public class TransactionService : ITransactionService
         }).ToList();
 
         foreach (var s in expected)
-            if (!mapped.Any(m => m.Status == s))
-                mapped.Add(new OrderStatusCountDto { Status = s, Value = 0 });
+            if (!mapped.Any(m => m.Status == s.ToString()))
+                mapped.Add(new OrderStatusCountDto { Status = s.ToString(), Value = 0 });
 
-        mapped = mapped.OrderBy(c => Array.IndexOf(expected, c.Status)).ToList();
+        mapped = mapped.OrderBy(c => Array.IndexOf(expected.Select(e => e.ToString()).ToArray(), c.Status)).ToList();
 
         return new OrderStatusResponse { Range = range ?? "month", Counts = mapped };
     }
 
-    // 4) /analytics/branches/top?metric=revenue&limit=5&range=month
     // 4) /analytics/branches/top?metric=revenue&limit=5&range=month
     public async Task<BranchTopResponse> GetTopBranchesAsync(string metric, int limit, string range)
     {

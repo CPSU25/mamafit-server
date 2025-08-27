@@ -28,10 +28,15 @@ public class TransactionService : ITransactionService
         _cache = cache;
     }
 
-    public async Task<PaginatedList<TransactionResponseDto>> GetTransactionsAsync(int index, int pageSize,
-        DateTime? startDate = null, DateTime? endDate = null)
+    public async Task<PaginatedList<TransactionResponseDto>> GetTransactionsAsync(
+        int index, int pageSize, DateTime? startDate = null, DateTime? endDate = null)
     {
-        var transactions = await _unitOfWork.TransactionRepository.GetAllAsync(index, pageSize, startDate, endDate);
+        if (startDate.HasValue) startDate = EnsureUtc(startDate.Value);
+        if (endDate.HasValue) endDate = EnsureUtc(endDate.Value);
+
+        var transactions = await _unitOfWork.TransactionRepository
+            .GetAllAsync(index, pageSize, startDate, endDate);
+
         var responseItems = transactions.Items
             .Select(transaction => _mapper.Map<TransactionResponseDto>(transaction))
             .ToList();
@@ -43,6 +48,7 @@ public class TransactionService : ITransactionService
             pageSize
         );
     }
+
 
     public async Task<TransactionResponseDto?> GetTransactionByOrderIdAsync(string orderId)
     {

@@ -81,7 +81,8 @@ public class OrderService : IOrderService
             {
                 filteredOrderItems = order.OrderItems.Where(item =>
                     (item.Preset?.SKU != null && item.Preset.SKU.Equals(sku, StringComparison.OrdinalIgnoreCase)) ||
-                    (item.MaternityDressDetail?.SKU != null && item.MaternityDressDetail.SKU.Equals(sku, StringComparison.OrdinalIgnoreCase))
+                    (item.MaternityDressDetail?.SKU != null &&
+                     item.MaternityDressDetail.SKU.Equals(sku, StringComparison.OrdinalIgnoreCase))
                 );
             }
 
@@ -98,7 +99,7 @@ public class OrderService : IOrderService
             dto.Items = filteredOrderItemsList.Select(item => _mapper.Map<OrderItemResponseDto>(item)).ToList();
 
             // Lấy tất cả original order item IDs từ filtered items
-             var orderItemIds = filteredOrderItemsList.Select(x => x.Id).ToList();
+            var orderItemIds = filteredOrderItemsList.Select(x => x.Id).ToList();
 
             // Lấy warranty rounds cho tất cả original order items
             var warrantyRounds = await _unitOfWork.WarrantyRequestItemRepository
@@ -149,7 +150,7 @@ public class OrderService : IOrderService
 
     public async Task<List<OrderResponseDto>> GetOrdersForDesignerAsync()
     {
-        var userId = GetCurrentUserId(); 
+        var userId = GetCurrentUserId();
         var orders = await _unitOfWork.OrderRepository.GetOrdersByDesignerAsync(userId);
 
         return orders.Select(order =>
@@ -324,7 +325,8 @@ public class OrderService : IOrderService
 
         if (request.VoucherDiscountId != null)
         {
-            voucher = await _unitOfWork.VoucherDiscountRepository.GetByIdAsync(request.VoucherDiscountId);
+            voucher = await _unitOfWork.VoucherDiscountRepository
+                .GetVoucherDiscountWithBatch(request.VoucherDiscountId);
             _validation.CheckNotFound(voucher, $"Voucher with id: {request.VoucherDiscountId} not found");
         }
 
@@ -474,12 +476,14 @@ public class OrderService : IOrderService
     }
 
 
+    private static readonly Random _random = new Random();
     private string GenerateOrderCode()
     {
-        string prefix = "O";
-        string randomPart = new Random().Next(10000, 99999).ToString();
+        string prefix = "ORD";
+        string randomPart = _random.Next(1000000, 9999999).ToString(); 
         return $"{prefix}{randomPart}";
     }
+
 
     private string GetCurrentUserId()
     {
@@ -825,8 +829,8 @@ public class OrderService : IOrderService
 
         if (order.Type == OrderType.WARRANTY)
             order.OrderItems = order.OrderItems.Where(x =>
-            x.WarrantyRequestItems.Any(x =>
-            x.Status != WarrantyRequestItemStatus.REJECTED)).ToList();
+                x.WarrantyRequestItems.Any(x =>
+                    x.Status != WarrantyRequestItemStatus.REJECTED)).ToList();
 
         return _mapper.Map<OrderGetByIdResponseDto>(order);
     }

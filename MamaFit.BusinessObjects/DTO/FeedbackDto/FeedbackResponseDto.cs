@@ -1,13 +1,19 @@
+using MamaFit.BusinessObjects.DTO.MaternityDressDetailDto;
+using MamaFit.BusinessObjects.DTO.MaternityDressDto;
+using MamaFit.BusinessObjects.DTO.UserDto;
+
 namespace MamaFit.BusinessObjects.DTO.FeedbackDto;
 
 public class FeedbackResponseDto
 {
     public string Id { get; set; }
     public string? UserId { get; set; }
+    public UserReponseDto? User { get; set; }
     public string? OrderId { get; set; }
     public string? OrderCode { get; set; }
     public string? Description { get; set; }
     public List<string>? Images { get; set; } = new List<string>();
+    public MaternityDressDetailResponseDto? DressDetail { get; set; }
     public float? Rated { get; set; }
     public string? CreatedBy { get; set; }
     public string? UpdatedBy { get; set; }

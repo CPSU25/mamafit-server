@@ -63,7 +63,7 @@ namespace MamaFit.Repositories.Repository
                 .Include(x => x.OrderItem).ThenInclude(x => x.Order).ThenInclude(x => x.Measurement).ThenInclude(x => x.MeasurementDiary)
                 .Include(t => t.MaternityDressTask).ThenInclude(t => t!.Milestone)
                 .Include(t => t.OrderItem).ThenInclude(o => o!.Preset).ThenInclude(x => x.Style)
-                .Include(t => t.OrderItem).ThenInclude(o => o!.DesignRequest)
+                .Include(t => t.OrderItem).ThenInclude(o => o!.DesignRequest).ThenInclude(x => x.User)
                 .Include(t => t.OrderItem).ThenInclude(o => o!.MaternityDressDetail)
                 .Include(x => x.OrderItem).ThenInclude(x => x.OrderItemAddOnOptions).ThenInclude(x => x.AddOnOption)
                 .ThenInclude(x => x.Size)

@@ -402,6 +402,8 @@ namespace MamaFit.Services.Mapper
             CreateMap<Feedback, FeedbackResponseDto>()
                 .ForMember(dest => dest.OrderId, otp => otp.MapFrom(src => src.OrderItem!.OrderId))
                 .ForMember(dest => dest.OrderCode, otp => otp.MapFrom(src => src.OrderItem!.Order!.Code))
+                .ForMember(dest => dest.DressDetail, otp => otp.MapFrom(src => src.OrderItem!.MaternityDressDetail))
+                .ForMember(dest => dest.User, otp => otp.MapFrom(src => src.User))
                 .ReverseMap();
 
             CreateMap<Feedback, OrderItemResponseDto>()

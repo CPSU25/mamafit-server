@@ -395,10 +395,10 @@ public class OrderService : IOrderService
         }
 
         decimal? discountValue = 0;
-        if (voucher != null && voucher.VoucherBatch != null)
+        if (voucher?.VoucherBatch != null)
         {
             if (voucher.VoucherBatch.DiscountType == DiscountType.PERCENTAGE)
-                discountValue = (voucher.VoucherBatch.DiscountValue / 100) * subTotalAmount;
+                discountValue = ((decimal)voucher.VoucherBatch.DiscountValue! / 100m) * subTotalAmount;
             else if (voucher.VoucherBatch.DiscountType == DiscountType.FIXED)
                 discountValue = voucher.VoucherBatch.DiscountValue;
 
@@ -413,6 +413,7 @@ public class OrderService : IOrderService
         var depositSubtotal = merchandiseAfterDiscount / 2;
 
         var order = _mapper.Map<Order>(request);
+        order.VoucherDiscountId = request.VoucherDiscountId;
         order.User = user!;
         order.VoucherDiscount = voucher;
         order.Type = OrderType.NORMAL;

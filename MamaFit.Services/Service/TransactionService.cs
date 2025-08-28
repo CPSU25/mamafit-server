@@ -132,10 +132,9 @@ public class TransactionService : ITransactionService
     // Policy doanh thu: theo đơn Completed (bạn có thể đổi sang PaymentStatus = Paid nếu cần)
     private static IQueryable<Order> ApplyRevenuePolicy(IQueryable<Order> q)
     {
-        return q.Where(o => o.Status == OrderStatus.COMPLETED);
-
-        // hoặc:
-        // return q.Where(o => o.PaymentStatus == PaymentStatus.Paid);
+        return q.Where(o => o.PaymentStatus == PaymentStatus.PAID_DEPOSIT
+        || o.PaymentStatus == PaymentStatus.PAID_FULL
+        || o.PaymentStatus == PaymentStatus.PAID_DEPOSIT_COMPLETED);
     }
 
 

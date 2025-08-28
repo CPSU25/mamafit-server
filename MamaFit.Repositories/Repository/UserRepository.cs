@@ -54,6 +54,20 @@ public class UserRepository : GenericRepository<ApplicationUser>, IUserRepositor
     {
         return await _dbSet.FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber && !x.IsDeleted);
     }
+    
+    public async Task<List<ApplicationUser>> GetUsersByRoleIdAsync(string roleId, bool onlyActiveUsers = true)
+    {
+        var query = _dbSet
+            .Where(x => !x.IsDeleted && x.RoleId == roleId);
+            
+        if (onlyActiveUsers)
+        {
+            query = query.Where(x => x.IsVerify);
+        }
+        
+        return await query.ToListAsync();
+    }
+    
     public async Task<ApplicationUser?> GetByEmailAsync(string email)
     {
         return await _dbSet.FirstOrDefaultAsync(x => x.UserEmail.ToLower() == email && !x.IsDeleted);

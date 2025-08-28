@@ -125,7 +125,7 @@ public class SepayService : ISepayService
                     PaymentStatus.PAID_DEPOSIT_COMPLETED
                 );
 
-                await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
+                await _notificationService.SendAndSaveNotificationToMultipleAsync(new NotificationMultipleRequestDto
                 {
                     NotificationTitle = "Final Payment Successful",
                     NotificationContent = $"Remaining balance for order {order.Code} has been paid.",
@@ -135,7 +135,11 @@ public class SepayService : ISepayService
                         { "paymentStatus", PaymentStatus.PAID_DEPOSIT_COMPLETED.ToString() }
                     },
                     Type = NotificationType.PAYMENT,
-                    ReceiverId = order.UserId
+                    ReceiverIds = new List<string>
+                    {
+                        order.UserId,
+                        "1a3bcd123456789012345678901234561a3bcd12345678901234567890123456"
+                    }
                 });
             }
         }

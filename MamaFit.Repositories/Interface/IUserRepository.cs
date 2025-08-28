@@ -11,6 +11,7 @@ public interface IUserRepository : IGenericRepository<ApplicationUser>
     Task<ApplicationUser?> GetByUsernameAsync(string username);
     Task<ApplicationUser?> GetByEmailPhoneAsync(string email, string phoneNumber);
     Task<ApplicationUser?> GetByPhoneNumberAsync(string phoneNumber);
+    Task<List<ApplicationUser>> GetUsersByRoleIdAsync(string roleId, bool onlyActiveUsers = true);
     Task CreateUserAsync(ApplicationUser user);
     Task UpdateUserAsync(ApplicationUser user);
     Task DeleteUserAsync(ApplicationUser user);

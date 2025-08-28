@@ -397,17 +397,15 @@ public class OrderService : IOrderService
         }
 
         decimal? discountValue = 0;
-        if (voucher?.VoucherBatch != null)
+        if (voucher != null && voucher.VoucherBatch != null)
         {
-            if (voucher.VoucherBatch.DiscountType == DiscountType.PERCENTAGE)
-                discountValue = ((decimal)voucher.VoucherBatch.DiscountValue! / 100m) * subTotalAmount;
-            else if (voucher.VoucherBatch.DiscountType == DiscountType.FIXED)
-                discountValue = voucher.VoucherBatch.DiscountValue;
+            discountValue = CalculateVoucherDiscount(voucher.VoucherBatch, subTotalAmount);
 
-            if (discountValue > subTotalAmount) discountValue = subTotalAmount;
-
-            voucher.Status = VoucherStatus.USED;
-            await _unitOfWork.VoucherDiscountRepository.UpdateAsync(voucher);
+            if (discountValue > 0)
+            {
+                voucher.Status = VoucherStatus.USED;
+                await _unitOfWork.VoucherDiscountRepository.UpdateAsync(voucher);
+            }
         }
 
         var merchandiseAfterDiscount = subTotalAmount - discountValue;
@@ -499,7 +497,7 @@ public class OrderService : IOrderService
         var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
         _validation.CheckNotFound(user, $"User with id: {userId} not found");
 
-        decimal? designFee = 0;
+        decimal? designFee;
 
         var response = await _cacheService.GetAsync<CmsServiceBaseDto>("cms:service:base");
 
@@ -647,24 +645,15 @@ public class OrderService : IOrderService
 
         // Tính discount nếu có voucher
         decimal? discountValue = 0;
-        if (voucher != null && voucher.VoucherBatch != null)
+        if (voucher?.VoucherBatch != null)
         {
-            if (voucher.VoucherBatch.DiscountType == DiscountType.PERCENTAGE)
-            {
-                discountValue = (decimal)voucher.VoucherBatch.DiscountValue! / 100 * subTotalAmount;
-            }
-            else if (voucher.VoucherBatch.DiscountType == DiscountType.FIXED)
-            {
-                discountValue = voucher.VoucherBatch.DiscountValue;
-            }
+            discountValue = CalculateVoucherDiscount(voucher.VoucherBatch, subTotalAmount);
 
-            if (discountValue > subTotalAmount)
+            if (discountValue > 0)
             {
-                discountValue = subTotalAmount;
+                voucher.Status = VoucherStatus.USED;
+                await _unitOfWork.VoucherDiscountRepository.UpdateAsync(voucher);
             }
-
-            voucher.Status = VoucherStatus.USED;
-            await _unitOfWork.VoucherDiscountRepository.UpdateAsync(voucher);
         }
 
         var merchandiseAfterDiscount = subTotalAmount - discountValue;
@@ -836,5 +825,36 @@ public class OrderService : IOrderService
                     x.Status != WarrantyRequestItemStatus.REJECTED)).ToList();
 
         return _mapper.Map<OrderGetByIdResponseDto>(order);
+    }
+    
+    private static decimal CalculateVoucherDiscount(VoucherBatch batch, decimal subTotalAmount)
+    {
+        if (batch == null) return 0m;
+
+        var minOrder = batch.MinimumOrderValue.HasValue ? batch.MinimumOrderValue.Value : 0m;
+        if (subTotalAmount <= 0m || subTotalAmount < minOrder) return 0m;
+
+        decimal rawDiscount = 0m;
+        if (batch.DiscountType == DiscountType.PERCENTAGE)
+        {
+            var percent = (batch.DiscountValue ?? 0) / 100m;
+            if (percent <= 0m) return 0m;
+            rawDiscount = subTotalAmount * percent;
+        }
+        else if (batch.DiscountType == DiscountType.FIXED)
+        {
+            rawDiscount = batch.DiscountValue ?? 0;
+        }
+
+        if (rawDiscount <= 0m) return 0m;
+
+        if (batch.MaximumDiscountValue.HasValue)
+        {
+            var cap = batch.MaximumDiscountValue.Value;
+            if (cap >= 0m) rawDiscount = Math.Min(rawDiscount, cap);
+        }
+
+        // Không vượt quá subtotal
+        return Math.Min(rawDiscount, subTotalAmount);
     }
 }

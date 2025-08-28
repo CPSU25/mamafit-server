@@ -1,6 +1,7 @@
 using MamaFit.BusinessObjects.DTO.FeedbackDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
@@ -53,7 +54,19 @@ public class FeedbackController : ControllerBase
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
             result,
-            "Get feedback successfully!"
+            "Get feedbacks successfully!"
+        ));
+    }
+
+    [HttpGet("item-type")]
+    public async Task<IActionResult> GetAllFeedbacks(ItemType itemType)
+    {
+        var result = await _feedbackService.GetAllByOrderItemType(itemType);
+        return Ok(new ResponseModel<List<FeedbackResponseDto>>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            result,
+            "Get feedbacks successfully!"
         ));
     }
 

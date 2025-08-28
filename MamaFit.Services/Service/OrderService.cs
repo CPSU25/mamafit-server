@@ -218,9 +218,11 @@ public class OrderService : IOrderService
                 $"Order {order.Code} status updated to {orderStatus.ToString().ToLowerInvariant()}."
         };
 
-        await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
+        await _notificationService.SendAndSaveNotificationToMultipleAsync(new NotificationMultipleRequestDto
         {
-            ReceiverId = order.UserId,
+            ReceiverIds = [
+                order.UserId,
+            ],
             NotificationTitle = "Order Status Updated",
             NotificationContent = notificationContent,
             Type = NotificationType.ORDER_PROGRESS,

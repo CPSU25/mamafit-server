@@ -3,6 +3,7 @@ using MamaFit.BusinessObjects.DTO.FeedbackDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.DTO.OrderItemDto;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.Interface;
@@ -111,6 +112,13 @@ public class FeedbackService : IFeedbackService
     {
         var feedbacks = await _unitOfWork.FeedbackRepository.GetAllByDressId(dressId);
         return _mapper.Map<List<FeedbackResponseDto>>(feedbacks);
+    }
+
+    public async Task<List<FeedbackResponseDto>> GetAllByOrderItemType(ItemType itemType)
+    {
+        var feedbacks = await _unitOfWork.FeedbackRepository.GetAllFeedbackAsync();
+        var response = feedbacks.Where(x => x.OrderItem.ItemType == itemType);
+        return _mapper.Map<List<FeedbackResponseDto>>(response);
     }
 
     public async Task<bool> CheckFeedbackByOrderId(string orderId)

@@ -39,6 +39,17 @@ public class FeedbackRepository : GenericRepository<Feedback>, IFeedbackReposito
         return query;
     }
 
+    public async Task<List<Feedback>> GetAllFeedbackAsync()
+    {
+        var query = await _dbSet
+            .Include(x => x.OrderItem).ThenInclude(x => x.Preset).ThenInclude(x => x.Style)
+            .Include(x => x.OrderItem).ThenInclude(x => x.MaternityDressDetail).ThenInclude(x => x.MaternityDress)
+            .Include(x => x.OrderItem).ThenInclude(x => x.DesignRequest)
+            .Include(x => x.OrderItem).ThenInclude(x => x.Order).ThenInclude(x => x.User)
+            .Where(x => !x.IsDeleted).ToListAsync();
+        return query;
+    }
+
     public async Task<List<Feedback>> GetAllByUserId(string userId)
     {
         var query = await _dbSet

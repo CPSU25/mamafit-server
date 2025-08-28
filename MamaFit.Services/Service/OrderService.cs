@@ -858,61 +858,110 @@ public class OrderService : IOrderService
         return Math.Min(rawDiscount, subTotalAmount);
     }
 
-   public async Task ReceivedAtBranchAsync(string orderId)
-{
-    // 1. Validate order tồn tại
-    var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(orderId);
-    _validation.CheckNotFound(order, $"Order with id: {orderId} not found");
-    var branch = await _unitOfWork.BranchRepository.GetByIdAsync(order.BranchId);
-    // 2. Validate order có branch
-    if (branch == null)
+    public async Task ReceivedAtBranchAsync(string orderId)
     {
-        throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
-            $"Order {orderId} does not have an associated branch");
-    }
+        // 1. Validate order tồn tại
+        var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(orderId);
+        _validation.CheckNotFound(order, $"Order with id: {orderId} not found");
+        var branch = await _unitOfWork.BranchRepository.GetByIdAsync(order.BranchId);
+        // 2. Validate order có branch
+        if (branch == null)
+        {
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                $"Order {orderId} does not have an associated branch");
+        }
 
-    // 3. Validate branch có name
-    if (string.IsNullOrEmpty(branch.Name))
-    {
-        throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
-            $"Branch associated with order {orderId} does not have a name");
-    }
+        // 3. Validate branch có name
+        if (string.IsNullOrEmpty(branch.Name))
+        {
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                $"Branch associated with order {orderId} does not have a name");
+        }
 
-    // 4. Validate branch có manager
-    if (string.IsNullOrEmpty(order.Branch.BranchManagerId))
-    {
-        throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
-            $"Branch {order.Branch.Name} does not have a branch manager assigned");
-    }
+        // 4. Validate branch có manager
+        if (string.IsNullOrEmpty(order.Branch.BranchManagerId))
+        {
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                $"Branch {order.Branch.Name} does not have a branch manager assigned");
+        }
 
-    // 5. Cập nhật order status
-    order.Status = OrderStatus.RECEIVED_AT_BRANCH;
-    order.ReceivedAtBranch = DateTime.UtcNow;
+        // 5. Cập nhật order status
+        order.Status = OrderStatus.RECEIVED_AT_BRANCH;
+        order.ReceivedAtBranch = DateTime.UtcNow;
 
-    // 6. Tạo notification với safe access
-    var notification = new NotificationMultipleRequestDto
-    {
-        NotificationTitle = "Order has been received at branch",
-        NotificationContent = $"Đơn hàng đã được nhận tại chi nhánh {branch.Name}",
-        Type = NotificationType.ORDER_PROGRESS,
-        ReceiverIds = new List<string>
+        // 6. Tạo notification với safe access
+        var notification = new NotificationMultipleRequestDto
+        {
+            NotificationTitle = "Order has been received at branch",
+            NotificationContent = $"Đơn hàng đã được nhận tại chi nhánh {branch.Name}",
+            Type = NotificationType.ORDER_PROGRESS,
+            ReceiverIds = new List<string>
         {
             order.UserId,
             branch.BranchManagerId,
             "4c9804ecc1d645de96fcfc906cc43d6c",
             "1a3bcd12345678901234567890123456"
         },
-        ActionUrl = $"/order/{order.Id}",
-        Metadata = new Dictionary<string, string>
+            ActionUrl = $"/order/{order.Id}",
+            Metadata = new Dictionary<string, string>
         {
             { "orderId", order.Id },
             { "branchId", order.Branch.Id },
             { "status", OrderStatus.RECEIVED_AT_BRANCH.ToString() }
         }
-    };
+        };
 
-    await _notificationService.SendAndSaveNotificationToMultipleAsync(notification);
-    await _unitOfWork.OrderRepository.UpdateAsync(order);
-    await _unitOfWork.SaveChangesAsync();
-}
+        await _notificationService.SendAndSaveNotificationToMultipleAsync(notification);
+        await _unitOfWork.OrderRepository.UpdateAsync(order);
+        await _unitOfWork.SaveChangesAsync();
+    }
+    public async Task CompleteOrderAtBranch(string orderId)
+    {
+       var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(orderId);
+        _validation.CheckNotFound(order, $"Order with id: {orderId} not found");
+        var branch = await _unitOfWork.BranchRepository.GetByIdAsync(order.BranchId);
+        if (branch == null)
+        {
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                $"Order {orderId} does not have an associated branch");
+        }
+        if (string.IsNullOrEmpty(branch.Name))
+        {
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                $"Branch associated with order {orderId} does not have a name");
+        }
+        if (string.IsNullOrEmpty(order.Branch.BranchManagerId))
+        {
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                $"Branch {order.Branch.Name} does not have a branch manager assigned");
+        }
+
+        order.Status = OrderStatus.COMPLETED;
+
+        // 6. Tạo notification với safe access
+        var notification = new NotificationMultipleRequestDto
+        {
+            NotificationTitle = $"Đơn hàng {order.Code} đã được hoàn thành",
+            NotificationContent = $"Đơn hàng đã được hoàn thành tại chi nhánh {branch.Name}",
+            Type = NotificationType.ORDER_PROGRESS,
+            ReceiverIds = new List<string>
+        {
+            order.UserId,
+            branch.BranchManagerId,
+            "4c9804ecc1d645de96fcfc906cc43d6c",
+            "1a3bcd12345678901234567890123456"
+        },
+            ActionUrl = $"/order/{order.Id}",
+            Metadata = new Dictionary<string, string>
+        {
+            { "orderId", order.Id },
+            { "branchId", order.Branch.Id },
+            { "status", OrderStatus.COMPLETED.ToString() }
+        }
+        };
+
+        await _notificationService.SendAndSaveNotificationToMultipleAsync(notification);
+        await _unitOfWork.OrderRepository.UpdateAsync(order);
+        await _unitOfWork.SaveChangesAsync();
+    }
 }

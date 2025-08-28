@@ -209,13 +209,13 @@ public class OrderService : IOrderService
         string notificationContent = paymentStatus switch
         {
             PaymentStatus.PAID_DEPOSIT =>
-                $"Your deposit for order {order.Code} has been received. Order is now {orderStatus.ToString().ToLowerInvariant()}.",
+                $"Tiền cọc cho đơn hàng {order.Code} đã được xác nhận. Đơn hàng hiện đang ở trạng thái {orderStatus.ToString().ToLowerInvariant()}.",
             PaymentStatus.PAID_DEPOSIT_COMPLETED =>
-                $"Final payment for order {order.Code} confirmed. Order is now {orderStatus.ToString().ToLowerInvariant()}.",
+                $"Đơn hàng {order.Code} đã được thanh toán đầy đủ. Đơn hàng hiện đang ở trạng thái {orderStatus.ToString().ToLowerInvariant()}.",
             PaymentStatus.PAID_FULL =>
-                $"Full payment for order {order.Code} confirmed. Order is now {orderStatus.ToString().ToLowerInvariant()}.",
+                $"Thanh toán đầy đủ cho đơn hàng {order.Code} đã được xác nhận. Đơn hàng hiện đang ở trạng thái {orderStatus.ToString().ToLowerInvariant()}.",
             _ =>
-                $"Order {order.Code} status updated to {orderStatus.ToString().ToLowerInvariant()}."
+                $"Trạng thái đơn hàng {order.Code} đã được cập nhật thành {orderStatus.ToString().ToLowerInvariant()}.",
         };
 
         await _notificationService.SendAndSaveNotificationToMultipleAsync(new NotificationMultipleRequestDto
@@ -223,7 +223,7 @@ public class OrderService : IOrderService
             ReceiverIds = [
                 order.UserId,
             ],
-            NotificationTitle = "Order Status Updated",
+            NotificationTitle = "Câp nhật trạng thái đơn hàng",
             NotificationContent = notificationContent,
             Type = NotificationType.ORDER_PROGRESS,
             ActionUrl = $"/order/{order.Id}",
@@ -270,8 +270,8 @@ public class OrderService : IOrderService
         var notification = new NotificationRequestDto
         {
             ReceiverId = model.UserId,
-            NotificationTitle = "New Order Created",
-            NotificationContent = $"Order with code {order.Code} has been created.",
+            NotificationTitle = "Tạo đơn hàng thành công",
+            NotificationContent = $"Đơn hàng {order.Code} đã được tạo thành công.",
             Type = NotificationType.ORDER_PROGRESS,
             ActionUrl = $"/order/{order.Id}",
             Metadata = new Dictionary<string, string>

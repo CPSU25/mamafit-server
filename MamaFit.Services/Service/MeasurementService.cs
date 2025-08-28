@@ -284,10 +284,10 @@ public class MeasurementService : IMeasurementService
             var notification = new NotificationRequestDto
             {
                 ReceiverId = diary.UserId,
-                NotificationTitle = "Measurement Reminder",
                 Type = NotificationType.MEASUREMENT,
+                NotificationTitle = "Thông báo nhắc nhở cập nhật số đo",
                 NotificationContent =
-                    $"You have not recorded your measurements for week {currentWeek} of pregnancy. Please update your measurements.",
+                    $"Bạn chưa cập nhật số đo cho tuần thai thứ {currentWeek}. Vui lòng cập nhật số đo để theo dõi sự phát triển của bạn và thai nhi.",
             };
             await _notificationService.SendAndSaveNotificationAsync(notification);
         }

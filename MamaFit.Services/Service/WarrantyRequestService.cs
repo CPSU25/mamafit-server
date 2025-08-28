@@ -172,6 +172,7 @@ namespace MamaFit.Services.Service
             {
                 ReceiverId = userId,
                 NotificationTitle = "Yêu cầu bảo hành mới",
+                Type = NotificationType.WARRANTY,
                 NotificationContent =
                     $"Bạn đã tạo thành công bảo hành cho các sản phẩm với SKU: {string.Join(", ", orderItemSKUs)}.",
                 ActionUrl = $"/warranty-requests/{warrantyRequest.Id}",
@@ -360,7 +361,8 @@ namespace MamaFit.Services.Service
             {
                 ReceiverId = order.UserId,
                 NotificationTitle = "Nhận hàng bảo hành thành công",
-                NotificationContent =
+                Type = NotificationType.WARRANTY,
+                NotificationContent = 
                     $"Bạn đã nhận thành công đơn hàng bảo hành {order.Code}. Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.",
                 ActionUrl = $"/orders/{order.Id}",
                 Metadata = new Dictionary<string, string>
@@ -501,6 +503,7 @@ namespace MamaFit.Services.Service
                 {
                     ReceiverId = order.UserId,
                     NotificationTitle = "Bảo hành hoàn thành",
+                    Type = NotificationType.WARRANTY,
                     NotificationContent =
                         $"Yêu cầu bảo hành {warrantyRequest.SKU} đã được hoàn thành. Vui lòng đến chi nhánh để nhận sản phẩm.",
                     ActionUrl = $"/warranty-requests/{warrantyRequest.Id}",

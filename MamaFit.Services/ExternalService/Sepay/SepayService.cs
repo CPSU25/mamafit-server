@@ -98,12 +98,11 @@ public class SepayService : ISepayService
                     PaymentStatus.PAID_DEPOSIT
                 );
 
-                // Gửi noti thông báo
                 await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
                 {
-                    NotificationTitle = "Deposit Payment Successful",
+                    NotificationTitle = "Thanh toán cọc thành công",
                     NotificationContent =
-                        $"Your deposit for order {order.Code} has been received. Remaining: {order.RemainingBalance:C}",
+                        $"Bạn đã thanh toán cọc cho đơn {order.Code}. Vui lòng thanh toán phần còn lại để chúng tôi tiến hành sản xuất.",
                     Metadata = new()
                     {
                         { "orderId", order.Id },
@@ -127,8 +126,8 @@ public class SepayService : ISepayService
 
                 await _notificationService.SendAndSaveNotificationToMultipleAsync(new NotificationMultipleRequestDto
                 {
-                    NotificationTitle = "Final Payment Successful",
-                    NotificationContent = $"Remaining balance for order {order.Code} has been paid.",
+                    NotificationTitle = "Thanh toán phần còn lại thành công",
+                    NotificationContent = $"Bạn đã thanh toán phần còn lại cho đơn {order.Code}. Chúng tôi sẽ tiến hành sản xuất và giao hàng cho bạn.",
                     Metadata = new()
                     {
                         { "orderId", order.Id },
@@ -189,8 +188,8 @@ public class SepayService : ISepayService
 
             await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
             {
-                NotificationTitle = "Payment Successful",
-                NotificationContent = $"Your payment for order {order.Code} has been successfully processed.",
+                NotificationTitle = "Thanh toán thành công",
+                NotificationContent = $"Bạn đã thanh toán thành công đơn {order.Code}. Chúng tôi sẽ tiến hành sản xuất và giao hàng cho bạn.",
                 Metadata = new()
                 {
                     { "orderId", order.Id },

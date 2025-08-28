@@ -8,5 +8,6 @@
         VOUCHER,
         PAYMENT,
         MEASUREMENT,
+        WARRANTY,
     }
 }

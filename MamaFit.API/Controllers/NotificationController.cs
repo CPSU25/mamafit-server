@@ -89,4 +89,28 @@ public class NotificationController : ControllerBase
             "Send and save notification successfully!"
         ));
     }
+    
+    [HttpPost("send-multiple")]
+    public async Task<IActionResult> SendAndSaveNotificationToMultiple([FromBody] NotificationMultipleRequestDto model)
+    {
+        await _notificationService.SendAndSaveNotificationToMultipleAsync(model);
+        return Ok(new ResponseModel<string>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            null,
+            "Send and save notifications to multiple users successfully!"
+        ));
+    }
+    
+    [HttpPost("send-by-role")]
+    public async Task<IActionResult> SendAndSaveNotificationByRole([FromBody] NotificationByRoleRequestDto model)
+    {
+        await _notificationService.SendAndSaveNotificationByRoleAsync(model);
+        return Ok(new ResponseModel<string>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            null,
+            "Send and save notifications by role successfully!"
+        ));
+    }
 }

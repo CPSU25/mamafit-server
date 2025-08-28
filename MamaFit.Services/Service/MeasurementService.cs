@@ -2,6 +2,7 @@ using AutoMapper;
 using MamaFit.BusinessObjects.DTO.MeasurementDto;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.ExternalService.AI;
@@ -102,11 +103,11 @@ public class MeasurementService : IMeasurementService
         var diary = await _unitOfWork.MeasurementDiaryRepository.GetByIdNotDeletedAsync(dto.MeasurementDiaryId);
         _validation.CheckNotFound(diary, "Measurement diary not found");
         var weeksPregnant = CalculateWeeksPregnant(diary.PregnancyStartDate);
-        
+
         await ValidateNoExistingMeasurement(dto.MeasurementDiaryId, weeksPregnant);
-        
+
         var diaryDto = _mapper.Map<MeasurementDiaryDto>(diary);
-        
+
         // Get last measurement if exists
         var lastMeasurement = await _unitOfWork.MeasurementRepository
             .GetLatestMeasurementByDiaryIdAsync(diary.Id);
@@ -283,9 +284,10 @@ public class MeasurementService : IMeasurementService
             var notification = new NotificationRequestDto
             {
                 ReceiverId = diary.UserId,
-                NotificationTitle = "Measurement Reminder",
+                Type = NotificationType.MEASUREMENT,
+                NotificationTitle = "Thông báo nhắc nhở cập nhật số đo",
                 NotificationContent =
-                    $"You have not recorded your measurements for week {currentWeek} of pregnancy. Please update your measurements.",
+                    $"Bạn chưa cập nhật số đo cho tuần thai thứ {currentWeek}. Vui lòng cập nhật số đo để theo dõi sự phát triển của bạn và thai nhi.",
             };
             await _notificationService.SendAndSaveNotificationAsync(notification);
         }

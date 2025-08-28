@@ -274,6 +274,17 @@ public class OrderController : ControllerBase
             "Update order to received successfully!"
         ));
     }
+    [HttpPut("{id}/receivedAtBranch")]
+    public async Task<IActionResult> UpdateReceivedAtBranchOrder([FromRoute] string id)
+    {
+        await _service.ReceivedAtBranchAsync(id);
+        return Ok(new ResponseModel<string>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            null,
+            "Order to received at branch successfully!"
+        ));
+    }
 
     [HttpPut("{id}/cancelled")]
     public async Task<IActionResult> UpdateCancelledOrder([FromRoute] string id,

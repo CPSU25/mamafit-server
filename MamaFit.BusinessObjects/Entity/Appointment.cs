@@ -12,6 +12,9 @@ namespace MamaFit.BusinessObjects.Entity
         public AppointmentStatus? Status { get; set; }
         public DateTime? CanceledAt { get; set; }
         public string? CanceledReason { get; set; }
+        //CronJob
+        public string? ReminderJobId { get; set; }
+        public DateTime? Reminder30SentAt { get; set; } 
         
         //Navigation properties
         public ApplicationUser? User { get; set; }

@@ -174,7 +174,7 @@ namespace MamaFit.Services.Service
         }
         public async Task DeletePresetAsync(string id)
         {
-            var preset = _unitOfWork.PresetRepository.GetByIdNotDeletedAsync(id);
+            var preset = await _unitOfWork.PresetRepository.GetByIdNotDeletedAsync(id);
             _validationService.CheckNotFound(preset, $"Preset with ID {id} not found.");
 
             await _unitOfWork.PresetRepository.SoftDeleteAsync(id);

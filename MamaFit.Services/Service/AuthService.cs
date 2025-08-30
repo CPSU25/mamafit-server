@@ -40,7 +40,7 @@ public class AuthService : IAuthService
         _emailSenderService = emailSenderService;
         _validation = validation;
     }
-    
+
     public async Task<PermissionResponseDto> GetCurrentUserAsync()
     {
         var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("userId");
@@ -127,7 +127,7 @@ public class AuthService : IAuthService
         await _unitOfWork.OTPRepository.DeleteOTPAsync(otp);
         await _unitOfWork.SaveChangesAsync();
     }
-    
+
     public async Task CreateSystemAccountAsync(SystemAccountRequestDto model)
     {
         await _validation.ValidateAndThrowAsync(model);
@@ -140,7 +140,7 @@ public class AuthService : IAuthService
             throw new ErrorException(StatusCodes.Status409Conflict,
                 ApiCodes.CONFLICT, "An unverified account with this email or phone already exists.");
         }
-        
+
         var newUser = new ApplicationUser
         {
             UserName = model.UserName,
@@ -152,24 +152,24 @@ public class AuthService : IAuthService
             CreatedBy = "System",
             IsVerify = true,
         };
-        
+
         var salt = HashHelper.GenerateSalt();
         newUser.Salt = salt;
         newUser.HashPassword = HashHelper.HashPassword(model.Password, salt);
-        
+
         var role = await _unitOfWork.RoleRepository.GetByIdAsync(model.RoleId);
         if (role == null)
         {
             throw new ErrorException(StatusCodes.Status404NotFound,
                 ApiCodes.NOT_FOUND, $"Role with ID {model.RoleId} not found.");
         }
-        
+
         newUser.RoleId = role.Id;
-        
+
         await _unitOfWork.UserRepository.InsertWithoutAuditAsync(newUser);
         await _unitOfWork.SaveChangesAsync();
     }
-    
+
     public async Task LogoutAsync(LogoutRequestDto model)
     {
         var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("userId");
@@ -408,10 +408,11 @@ public class AuthService : IAuthService
 
         var salt = HashHelper.GenerateSalt();
         var hashPassword = HashHelper.HashPassword(model.Password, salt);
-
+        var emailParts = model.Email.Split(new[] { '@' }, 2);
         user.HashPassword = hashPassword;
         user.Salt = salt;
-
+        user.FullName = emailParts[0];
+        user.UserName = emailParts[0];
         var userRole = await _unitOfWork.RoleRepository.GetByNameAsync("User");
         if (userRole != null)
             user.RoleId = userRole.Id;

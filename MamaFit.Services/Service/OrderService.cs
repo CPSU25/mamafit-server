@@ -726,7 +726,8 @@ public class OrderService : IOrderService
         var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(id);
         _validation.CheckNotFound(order, "Order not found");
 
-        if (order.Status != OrderStatus.DELIVERING)
+        if (order.Status != OrderStatus.DELIVERING
+            || order.Status != OrderStatus.RECEIVED_AT_BRANCH)
         {
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                 "Order is not in a state that can be received.");

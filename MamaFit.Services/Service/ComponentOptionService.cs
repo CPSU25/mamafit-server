@@ -45,7 +45,6 @@ namespace MamaFit.Services.Service
 
             await _unitOfWork.ComponentOptionRepository.InsertAsync(newOption);
             await _unitOfWork.SaveChangesAsync();
-            await _cacheService.RemoveByPrefixAsync("component");
         }
 
         public async Task DeleteAsync(string id)
@@ -59,7 +58,6 @@ namespace MamaFit.Services.Service
 
             await _unitOfWork.ComponentOptionRepository.SoftDeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
-            await _cacheService.RemoveByPrefixAsync("component");
         }
 
         public async Task<PaginatedList<ComponentOptionResponseDto>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
@@ -108,7 +106,6 @@ namespace MamaFit.Services.Service
 
             await _unitOfWork.ComponentOptionRepository.UpdateAsync(oldOption);
             await _unitOfWork.SaveChangesAsync();
-            await _cacheService.RemoveByPrefixAsync("component");
         }
 
         private string GetCurrentUserName()

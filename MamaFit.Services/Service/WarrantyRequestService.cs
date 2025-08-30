@@ -455,10 +455,11 @@ namespace MamaFit.Services.Service
             return _mapper.Map<WarrantyGetByIdResponseDto>(result);
         }
 
+        private static readonly Random _random = new Random();
         private string GenerateOrderCode()
         {
-            string prefix = "O";
-            string randomPart = new Random().Next(10000, 99999).ToString();
+            string prefix = "ORD";
+            string randomPart = _random.Next(1000000, 9999999).ToString();
             return $"{prefix}{randomPart}";
         }
 

@@ -96,6 +96,7 @@ namespace MamaFit.Services.Service
             preset.UserId = designerId;
             preset.DesignRequestId = request.DesignRequestId;
             preset.DesignRequest = designRequest;
+            preset.SKU = CodeHelper.GenerateCode('P');
 
             await _unitOfWork.PresetRepository.InsertAsync(preset);
             await _unitOfWork.SaveChangesAsync();

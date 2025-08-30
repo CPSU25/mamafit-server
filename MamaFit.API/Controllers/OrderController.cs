@@ -1,3 +1,4 @@
+using CloudinaryDotNet.Actions;
 using MamaFit.BusinessObjects.DTO.CMSDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
 using MamaFit.BusinessObjects.Enum;
@@ -272,6 +273,28 @@ public class OrderController : ControllerBase
             ApiCodes.SUCCESS,
             null,
             "Update order to received successfully!"
+        ));
+    }
+    [HttpPut("{id}/receivedAtBranch")]
+    public async Task<IActionResult> UpdateReceivedAtBranchOrder([FromRoute] string id)
+    {
+        await _service.ReceivedAtBranchAsync(id);
+        return Ok(new ResponseModel<string>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            null,
+            "Đơn hàng đã được nhận tại cửa hàng thành công"
+        ));
+    }
+    [HttpPut("{id}/completeAtBranch")]
+    public async Task<IActionResult> CompleteOrderAtBranch([FromRoute] string id)
+    {
+        await _service.CompleteOrderAtBranch(id);
+        return Ok(new ResponseModel<string>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            null,
+            "Đơn hàng được hoàn thành tại chi nhánh thành công "
         ));
     }
 

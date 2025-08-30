@@ -14,8 +14,8 @@ namespace MamaFit.BusinessObjects.Entity
         public int? RemainingQuantity { get; set; }
         public DiscountType? DiscountType { get; set; }
         public int? DiscountValue { get; set; }
-        public float? MinimumOrderValue { get; set; }
-        public float? MaximumDiscountValue { get; set; }
+        public decimal? MinimumOrderValue { get; set; }
+        public decimal? MaximumDiscountValue { get; set; }
         public bool? IsAutoGenerate { get; set; } = false;
         
         // Navigation properties

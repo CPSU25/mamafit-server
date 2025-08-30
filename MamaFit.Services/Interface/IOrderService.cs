@@ -32,5 +32,6 @@ public interface IOrderService
     Task<string> CreateDesignRequestOrderAsync(OrderDesignRequestDto request);
     Task<string> CreatePresetOrderAsync(OrderPresetCreateRequestDto request);
     Task WebhookForContentfulWhenUpdateData(CmsServiceBaseDto request);
-
+    Task ReceivedAtBranchAsync(string orderId);
+    Task CompleteOrderAtBranch(string orderId);
 }

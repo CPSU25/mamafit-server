@@ -397,17 +397,15 @@ public class OrderService : IOrderService
         }
 
         decimal? discountValue = 0;
-        if (voucher?.VoucherBatch != null)
+        if (voucher != null && voucher.VoucherBatch != null)
         {
-            if (voucher.VoucherBatch.DiscountType == DiscountType.PERCENTAGE)
-                discountValue = ((decimal)voucher.VoucherBatch.DiscountValue! / 100m) * subTotalAmount;
-            else if (voucher.VoucherBatch.DiscountType == DiscountType.FIXED)
-                discountValue = voucher.VoucherBatch.DiscountValue;
+            discountValue = CalculateVoucherDiscount(voucher.VoucherBatch, subTotalAmount);
 
-            if (discountValue > subTotalAmount) discountValue = subTotalAmount;
-
-            voucher.Status = VoucherStatus.USED;
-            await _unitOfWork.VoucherDiscountRepository.UpdateAsync(voucher);
+            if (discountValue > 0)
+            {
+                voucher.Status = VoucherStatus.USED;
+                await _unitOfWork.VoucherDiscountRepository.UpdateAsync(voucher);
+            }
         }
 
         var merchandiseAfterDiscount = subTotalAmount - discountValue;
@@ -483,7 +481,7 @@ public class OrderService : IOrderService
     private string GenerateOrderCode()
     {
         string prefix = "ORD";
-        string randomPart = _random.Next(1000000, 9999999).ToString(); 
+        string randomPart = _random.Next(1000000, 9999999).ToString();
         return $"{prefix}{randomPart}";
     }
 
@@ -499,7 +497,7 @@ public class OrderService : IOrderService
         var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
         _validation.CheckNotFound(user, $"User with id: {userId} not found");
 
-        decimal? designFee = 0;
+        decimal? designFee;
 
         var response = await _cacheService.GetAsync<CmsServiceBaseDto>("cms:service:base");
 
@@ -647,24 +645,15 @@ public class OrderService : IOrderService
 
         // Tính discount nếu có voucher
         decimal? discountValue = 0;
-        if (voucher != null && voucher.VoucherBatch != null)
+        if (voucher?.VoucherBatch != null)
         {
-            if (voucher.VoucherBatch.DiscountType == DiscountType.PERCENTAGE)
-            {
-                discountValue = (decimal)voucher.VoucherBatch.DiscountValue! / 100 * subTotalAmount;
-            }
-            else if (voucher.VoucherBatch.DiscountType == DiscountType.FIXED)
-            {
-                discountValue = voucher.VoucherBatch.DiscountValue;
-            }
+            discountValue = CalculateVoucherDiscount(voucher.VoucherBatch, subTotalAmount);
 
-            if (discountValue > subTotalAmount)
+            if (discountValue > 0)
             {
-                discountValue = subTotalAmount;
+                voucher.Status = VoucherStatus.USED;
+                await _unitOfWork.VoucherDiscountRepository.UpdateAsync(voucher);
             }
-
-            voucher.Status = VoucherStatus.USED;
-            await _unitOfWork.VoucherDiscountRepository.UpdateAsync(voucher);
         }
 
         var merchandiseAfterDiscount = subTotalAmount - discountValue;
@@ -836,5 +825,143 @@ public class OrderService : IOrderService
                     x.Status != WarrantyRequestItemStatus.REJECTED)).ToList();
 
         return _mapper.Map<OrderGetByIdResponseDto>(order);
+    }
+
+    private static decimal CalculateVoucherDiscount(VoucherBatch batch, decimal subTotalAmount)
+    {
+        if (batch == null) return 0m;
+
+        var minOrder = batch.MinimumOrderValue.HasValue ? batch.MinimumOrderValue.Value : 0m;
+        if (subTotalAmount <= 0m || subTotalAmount < minOrder) return 0m;
+
+        decimal rawDiscount = 0m;
+        if (batch.DiscountType == DiscountType.PERCENTAGE)
+        {
+            var percent = (batch.DiscountValue ?? 0) / 100m;
+            if (percent <= 0m) return 0m;
+            rawDiscount = subTotalAmount * percent;
+        }
+        else if (batch.DiscountType == DiscountType.FIXED)
+        {
+            rawDiscount = batch.DiscountValue ?? 0;
+        }
+
+        if (rawDiscount <= 0m) return 0m;
+
+        if (batch.MaximumDiscountValue.HasValue)
+        {
+            var cap = batch.MaximumDiscountValue.Value;
+            if (cap >= 0m) rawDiscount = Math.Min(rawDiscount, cap);
+        }
+
+        // Không vượt quá subtotal
+        return Math.Min(rawDiscount, subTotalAmount);
+    }
+
+    public async Task ReceivedAtBranchAsync(string orderId)
+    {
+        // 1. Validate order tồn tại
+        var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(orderId);
+        _validation.CheckNotFound(order, $"Order with id: {orderId} not found");
+        var branch = await _unitOfWork.BranchRepository.GetByIdAsync(order.BranchId);
+        // 2. Validate order có branch
+        if (branch == null)
+        {
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                $"Order {orderId} does not have an associated branch");
+        }
+
+        // 3. Validate branch có name
+        if (string.IsNullOrEmpty(branch.Name))
+        {
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                $"Branch associated with order {orderId} does not have a name");
+        }
+
+        // 4. Validate branch có manager
+        if (string.IsNullOrEmpty(order.Branch.BranchManagerId))
+        {
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                $"Branch {order.Branch.Name} does not have a branch manager assigned");
+        }
+
+        // 5. Cập nhật order status
+        order.Status = OrderStatus.RECEIVED_AT_BRANCH;
+        order.ReceivedAtBranch = DateTime.UtcNow;
+
+        // 6. Tạo notification với safe access
+        var notification = new NotificationMultipleRequestDto
+        {
+            NotificationTitle = "Order has been received at branch",
+            NotificationContent = $"Đơn hàng đã được nhận tại chi nhánh {branch.Name}",
+            Type = NotificationType.ORDER_PROGRESS,
+            ReceiverIds = new List<string>
+        {
+            order.UserId,
+            branch.BranchManagerId,
+            "4c9804ecc1d645de96fcfc906cc43d6c",
+            "1a3bcd12345678901234567890123456"
+        },
+            ActionUrl = $"/order/{order.Id}",
+            Metadata = new Dictionary<string, string>
+        {
+            { "orderId", order.Id },
+            { "branchId", order.Branch.Id },
+            { "status", OrderStatus.RECEIVED_AT_BRANCH.ToString() }
+        }
+        };
+
+        await _notificationService.SendAndSaveNotificationToMultipleAsync(notification);
+        await _unitOfWork.OrderRepository.UpdateAsync(order);
+        await _unitOfWork.SaveChangesAsync();
+    }
+    public async Task CompleteOrderAtBranch(string orderId)
+    {
+       var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(orderId);
+        _validation.CheckNotFound(order, $"Order with id: {orderId} not found");
+        var branch = await _unitOfWork.BranchRepository.GetByIdAsync(order.BranchId);
+        if (branch == null)
+        {
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                $"Order {orderId} does not have an associated branch");
+        }
+        if (string.IsNullOrEmpty(branch.Name))
+        {
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                $"Branch associated with order {orderId} does not have a name");
+        }
+        if (string.IsNullOrEmpty(order.Branch.BranchManagerId))
+        {
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                $"Branch {order.Branch.Name} does not have a branch manager assigned");
+        }
+
+        order.Status = OrderStatus.COMPLETED;
+
+        // 6. Tạo notification với safe access
+        var notification = new NotificationMultipleRequestDto
+        {
+            NotificationTitle = $"Đơn hàng {order.Code} đã được hoàn thành",
+            NotificationContent = $"Đơn hàng đã được hoàn thành tại chi nhánh {branch.Name}",
+            Type = NotificationType.ORDER_PROGRESS,
+            ReceiverIds = new List<string>
+        {
+            order.UserId,
+            branch.BranchManagerId,
+            "4c9804ecc1d645de96fcfc906cc43d6c",
+            "1a3bcd12345678901234567890123456"
+        },
+            ActionUrl = $"/order/{order.Id}",
+            Metadata = new Dictionary<string, string>
+        {
+            { "orderId", order.Id },
+            { "branchId", order.Branch.Id },
+            { "status", OrderStatus.COMPLETED.ToString() }
+        }
+        };
+
+        await _notificationService.SendAndSaveNotificationToMultipleAsync(notification);
+        await _unitOfWork.OrderRepository.UpdateAsync(order);
+        await _unitOfWork.SaveChangesAsync();
     }
 }

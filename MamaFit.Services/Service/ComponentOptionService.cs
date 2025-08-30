@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using CloudinaryDotNet;
 using MamaFit.BusinessObjects.DTO.ComponentOptionDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
+using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
 
@@ -15,12 +17,14 @@ namespace MamaFit.Services.Service
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IMapper _mapper;
         private readonly IValidationService _validation;
-        public ComponentOptionService(IUnitOfWork unitOfWork, IHttpContextAccessor contextAccessor, IMapper mapper, IValidationService validation)
+        private readonly ICacheService _cacheService;
+        public ComponentOptionService(IUnitOfWork unitOfWork, IHttpContextAccessor contextAccessor, IMapper mapper, IValidationService validation, ICacheService cacheService)
         {
             _unitOfWork = unitOfWork;
             _contextAccessor = contextAccessor;
             _mapper = mapper;
             _validation = validation;
+            _cacheService = cacheService;
         }
 
         public async Task CreateAsync(ComponentOptionRequestDto requestDto)
@@ -41,6 +45,7 @@ namespace MamaFit.Services.Service
 
             await _unitOfWork.ComponentOptionRepository.InsertAsync(newOption);
             await _unitOfWork.SaveChangesAsync();
+            await _cacheService.RemoveByPrefixAsync("component");
         }
 
         public async Task DeleteAsync(string id)
@@ -54,6 +59,7 @@ namespace MamaFit.Services.Service
 
             await _unitOfWork.ComponentOptionRepository.SoftDeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
+            await _cacheService.RemoveByPrefixAsync("component");
         }
 
         public async Task<PaginatedList<ComponentOptionResponseDto>> GetAllAsync(int index, int pageSize, string? search, EntitySortBy? sortBy)
@@ -102,6 +108,7 @@ namespace MamaFit.Services.Service
 
             await _unitOfWork.ComponentOptionRepository.UpdateAsync(oldOption);
             await _unitOfWork.SaveChangesAsync();
+            await _cacheService.RemoveByPrefixAsync("component");
         }
 
         private string GetCurrentUserName()

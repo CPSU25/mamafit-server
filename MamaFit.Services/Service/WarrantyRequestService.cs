@@ -306,6 +306,7 @@ namespace MamaFit.Services.Service
                     Description = itemDto.Description,
                     Images = itemDto.Images ?? new List<string>(),
                     Videos = itemDto.Videos ?? new List<string>(),
+                    Fee = dto.Fee ?? 0,
                     WarrantyRound = warrantyRounds[itemDto.OrderItemId]
                 };
                 await _warrantyRequestItemRepository.InsertAsync(requestItem);

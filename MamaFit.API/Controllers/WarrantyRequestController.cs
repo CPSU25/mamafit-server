@@ -163,19 +163,6 @@ namespace MamaFit.API.Controllers
                 "Warranty decision processed successfully"
             ));
         }
-        // [HttpPut]
-        // public async Task<IActionResult> Update(string id, [FromBody] WarrantyRequestUpdateDto warrantyRequestUpdateDto)
-        // {
-        //     await _warrantyRequestService.UpdateAsync(id, warrantyRequestUpdateDto);
-        //
-        //     return Ok(
-        //         new ResponseModel<string>(
-        //             StatusCodes.Status200OK,
-        //             ApiCodes.SUCCESS,
-        //             null,
-        //             "Warranty request updated successfully"
-        //         ));
-        // }
 
         [HttpDelete]
         public async Task<IActionResult> Delete(string id)

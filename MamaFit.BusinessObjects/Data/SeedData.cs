@@ -19,7 +19,6 @@ namespace MamaFit.BusinessObjects.Data
                     Id = "bf081015e17a41b8b1cae65b1b17cfdb",
                     RoleName = "BranchManager"
                 },
-
                 new ApplicationUserRole
                 {
                     Id = "e5b0f987fbf44608b7a6a2d0e313b3b2",
@@ -121,19 +120,19 @@ namespace MamaFit.BusinessObjects.Data
                     IsVerify = true,
                     RoleId = "5ed8cfa9b62d433c88ab097b6d2baccd",
                 },
-                 new ApplicationUser
-                 {
-                     Id = "5f6855ec48a84ad066b5bee371aa67fe",
-                     UserName = "thanhtuan",
-                     UserEmail = "thanhtuan@mamafit.com",
-                     HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
-                     Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
-                     PhoneNumber = "0909213321",
-                     FullName = "Thanh Tuan",
-                     JobTitle = "Nhân viên vận hành",
-                     IsVerify = true,
-                     RoleId = "5ed8cfa9b62d433c88ab097b6d2baccd",
-                 },
+                new ApplicationUser
+                {
+                    Id = "5f6855ec48a84ad066b5bee371aa67fe",
+                    UserName = "thanhtuan",
+                    UserEmail = "thanhtuan@mamafit.com",
+                    HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
+                    Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
+                    PhoneNumber = "0909213321",
+                    FullName = "Thanh Tuan",
+                    JobTitle = "Nhân viên vận hành",
+                    IsVerify = true,
+                    RoleId = "5ed8cfa9b62d433c88ab097b6d2baccd",
+                },
                 new ApplicationUser
                 {
                     Id = "617b57c35a46c0efbb263506d9321843",
@@ -276,97 +275,119 @@ namespace MamaFit.BusinessObjects.Data
 
             // ===== STYLES =====
             modelBuilder.Entity<Style>().HasData(
-    new Style
-    {
-        Id = "b10d38a099674087b125cf0dfe099f5a",
-        CategoryId = "4f8c9fd3fb4548af8ca11c6521aa3b33",
-        Name = "Nurse Dress",
-        IsCustom = true,
-        Description = "Thiết kế tiện lợi với hàng nút hoặc khóa kéo trước, phù hợp cho mẹ bầu và sau sinh cần cho con bú.",
-        Images = [],
-        GlobalStatus = 0,
-        CreatedBy = "System",
-        UpdatedBy = "System",
-        CreatedAt = new DateTime(2025, 8, 20, 4, 3, 32, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 8, 20, 4, 3, 32, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new Style
-    {
-        Id = "5ed8aceab2d34bd8801e8c6a10dfc0d0",
-        CategoryId = "4f8c9fd3fb4548af8ca11c6521aa3b33",
-        Name = "T-Shirt Dress",
-        IsCustom = true,
-        Description = "Váy dáng áo thun rộng rãi, thoải mái, năng động, dễ mặc hằng ngày.",
-        Images = [],
-        GlobalStatus = 0,
-        CreatedBy = "System",
-        UpdatedBy = "System",
-        CreatedAt = new DateTime(2025, 8, 20, 4, 3, 32, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 8, 20, 4, 3, 32, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new Style
-    {
-        Id = "bd6ae7259f6d42fbac946b3319a92406",
-        CategoryId = "1946de6edbc24354bdd82b7c2c2c4cb2",
-        Name = "Halter Dress",
-        IsCustom = true,
-        Description = "Váy cổ yếm buộc sau gáy, khoe vai và lưng tinh tế, hiện đại và quyến rũ, hợp tiệc tối.",
-        Images = [],
-        GlobalStatus = 0,
-        CreatedBy = "System",
-        UpdatedBy = "System",
-        CreatedAt = new DateTime(2025, 8, 20, 4, 3, 32, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 8, 20, 4, 3, 32, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new Style
-    {
-        Id = "f5d9785312d34110a0aaed96272b630a",
-        CategoryId = "1946de6edbc24354bdd82b7c2c2c4cb2",
-        Name = "Off-Shoulder",
-        IsCustom = true,
-        Description = "Váy trễ vai nhẹ nhàng, tôn cổ và bờ vai, vừa nữ tính vừa sang trọng, lý tưởng cho dịp đặc biệt.",
-        Images = [],
-        GlobalStatus = 0,
-        CreatedBy = "System",
-        UpdatedBy = "System",
-        CreatedAt = new DateTime(2025, 8, 20, 4, 3, 32, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 8, 20, 4, 3, 32, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new Style
-    {
-        Id = "11363158846e4478b326bf58a7ca9d21",
-        CategoryId = "04a3b452cfd841919b4aed099c28d709",
-        Name = "Shirt Dress",
-        IsCustom = true,
-        Description = "Váy sơ mi dáng suông hoặc thắt nhẹ ở eo, thanh lịch và thoải mái khi đi làm, dễ phối với blazer hoặc cardigan.",
-        Images = [],
-        GlobalStatus = 0,
-        CreatedBy = "System",
-        UpdatedBy = "System",
-        CreatedAt = new DateTime(2025, 8, 20, 4, 3, 32, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 8, 20, 4, 3, 32, DateTimeKind.Utc),
-        IsDeleted = false
-    },
-    new Style
-    {
-        Id = "037b41302a4c453f8cef135afceb3956",
-        CategoryId = "a7a75e41c1a64b4498a81f4b76029a5a",
-        Name = "Maxi",
-        IsCustom = true,
-        Description = "Đầm dài maxi, thích hợp đi biển hoặc dạo phố.",
-        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fmaxi-sketch.png?alt=media&token=b595c2a0-da30-45a4-afbd-31ec1b5dfc28"],
-        GlobalStatus = 0,
-        CreatedBy = "System",
-        UpdatedBy = "System",
-        CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-        UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-        IsDeleted = false
-    }
-);
+                new Style
+                {
+                    Id = "11363158846e4478b326bf58a7ca9d21",
+                    CategoryId = "04a3b452cfd841919b4aed099c28d709",
+                    Name = "Shirt Dress",
+                    IsCustom = true,
+                    Description =
+                        "Váy sơ mi dáng suông hoặc thắt nhẹ ở eo, thanh lịch và thoải mái khi đi làm, dễ phối với blazer hoặc cardigan.",
+                    Images =
+                    [
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fsketch%2Fshirt-sketch.png?alt=media&token=4afb0550-e2ed-41e1-b3a6-48b1378f36ec"
+                    ],
+                    GlobalStatus = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 20, 4, 3, 32, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 20, 4, 3, 32, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Style
+                {
+                    Id = "bd6ae7259f6d42fbac946b3319a92406",
+                    CategoryId = "1946de6edbc24354bdd82b7c2c2c4cb2",
+                    Name = "Halter Dress",
+                    IsCustom = true,
+                    Description =
+                        "Váy cổ yếm buộc sau gáy, khoe vai và lưng tinh tế, hiện đại và quyến rũ, hợp tiệc tối.",
+                    Images =
+                    [
+                    ],
+                    GlobalStatus = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 20, 4, 3, 32, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 20, 4, 3, 32, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Style
+                {
+                    Id = "f5d9785312d34110a0aaed96272b630a",
+                    CategoryId = "1946de6edbc24354bdd82b7c2c2c4cb2",
+                    Name = "Off-Shoulder",
+                    IsCustom = true,
+                    Description =
+                        "Váy trễ vai nhẹ nhàng, tôn cổ và bờ vai, vừa nữ tính vừa sang trọng, lý tưởng cho dịp đặc biệt.",
+                    Images =
+                    [
+                    ],
+                    GlobalStatus = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 20, 4, 3, 32, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 20, 4, 3, 32, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Style
+                {
+                    Id = "037b41302a4c453f8cef135afceb3956",
+                    CategoryId = "a7a75e41c1a64b4498a81f4b76029a5a",
+                    Name = "Maxi",
+                    IsCustom = true,
+                    Description =
+                        "Đầm dài maxi, thích hợp đi biển hoặc dạo phố.",
+                    Images =
+                    [
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fsketch%2Fmaxi-sketch.png?alt=media&token=00662628-1f51-4e04-9afc-ec6bfdd64ae9"
+                    ],
+                    GlobalStatus = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Style
+                {
+                    Id = "5ed8aceab2d34bd8801e8c6a10dfc0d0",
+                    CategoryId = "4f8c9fd3fb4548af8ca11c6521aa3b33",
+                    Name = "T-Shirt Dress",
+                    IsCustom = true,
+                    Description =
+                        "Váy dáng áo thun rộng rãi, thoải mái, năng động, dễ mặc hằng ngày.",
+                    Images =
+                    [
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fsketch%2Ft-shirt-sketch.png?alt=media&token=a99e3be5-1508-4614-83c1-fe4af79fdc82"
+                    ],
+                    GlobalStatus = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 20, 4, 3, 32, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 20, 4, 3, 32, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new Style
+                {
+                    Id = "b10d38a099674087b125cf0dfe099f5a",
+                    CategoryId = "4f8c9fd3fb4548af8ca11c6521aa3b33",
+                    Name = "Nurse Dress",
+                    IsCustom = true,
+                    Description =
+                        "Thiết kế tiện lợi với hàng nút hoặc khóa kéo trước, phù hợp cho mẹ bầu và sau sinh cần cho con bú.",
+                    Images =
+                    [
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fsketch%2Fnurse-sketch.png?alt=media&token=3cf25db4-e5ab-436c-8643-721616a4ceba"
+                    ],
+                    GlobalStatus = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 20, 4, 3, 32, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 20, 4, 3, 32, DateTimeKind.Utc),
+                    IsDeleted = false
+                }
+            );
 
             // ===== COMPONENTS =====
             var components = new List<Component>
@@ -420,20 +441,183 @@ namespace MamaFit.BusinessObjects.Data
                     CreatedBy = "System", UpdatedBy = "System", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow
                 }
             };
+
             modelBuilder.Entity<Component>().HasData(components);
 
             // ===== COMPONENT OPTIONS =====
             modelBuilder.Entity<ComponentOption>().HasData(
                 new ComponentOption
                 {
-                    Id = "66645e2f8fa94d228d87450cc4a74706",
-                    ComponentId = "0ec808c3046b4d368962c65eb771dea0",
-                    Name = "Green",
-                    Price = 10000.0m,
-                    Description = "Xanh ngọc quý phái, nổi bật.",
+                    Id = "15fecd17aa014779853f30532d260f47",
+                    ComponentId = "f00fcaf79a86427c995daa1fd0915d8e",
+                    Name = "Asymmetrical",
+                    Price = 0m,
+                    Description = "Gấu lệch, tạo dáng hiện đại.",
                     Images =
                     [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Femerald-green.png?alt=media&token=d63ad4cc-0037-4ca5-b71b-4d8eb394b6ba"
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fasymmetrical-hem.png?alt=media&token=6267ed98-6b96-41bf-b0eb-c0b1574b8b23"
+                    ],
+                    GlobalStatus = 0,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 29, 4, 57, 50, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 29, 4, 57, 50, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new ComponentOption
+                {
+                    Id = "9cc2f01b2fb34f21884b1365acd9bb48",
+                    ComponentId = "c615996abfe24d3885ccea361a199dba",
+                    Name = "Jersey Knit",
+                    Price = 0m,
+                    Description = "Vải thun co giãn, mềm mại, dễ vận động.",
+                    Images =
+                    [
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fjersey-knit.png?alt=media&token=d16f44cc-528e-49e5-a985-61a63c058d77"
+                    ],
+                    GlobalStatus = 0,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 29, 4, 55, 25, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 29, 4, 55, 25, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new ComponentOption
+                {
+                    Id = "ac73834982664ae09fc86ba4359e4aa8",
+                    ComponentId = "c615996abfe24d3885ccea361a199dba",
+                    Name = "Linen",
+                    Price = 0m,
+                    Description = "Vải thoáng mát, nhẹ, thích hợp mùa hè.",
+                    Images =
+                    [
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Flinen.png?alt=media&token=39c033ba-8e36-46d3-8bdf-da5fc16a63f7"
+                    ],
+                    GlobalStatus = 0,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 29, 4, 55, 15, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 29, 4, 55, 15, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new ComponentOption
+                {
+                    Id = "44ecb280dd8f4137af58024e0780e994",
+                    ComponentId = "b66ab857cd93410599bd14b79ae37147",
+                    Name = "Boat Neck",
+                    Price = 0m,
+                    Description = "Cổ ngang, hơi rộng, ôm sát vai.",
+                    Images =
+                    [
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fboat-neck.png?alt=media&token=3f2e448b-e252-4567-841f-b88531f378fc"
+                    ],
+                    GlobalStatus = 0,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 29, 4, 53, 50, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 29, 4, 53, 50, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new ComponentOption
+                {
+                    Id = "3ca4d35ad1b341ed835ab225f9c2faa0",
+                    ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
+                    Name = "Peplum",
+                    Price = 0m,
+                    Description = "Eo xếp bèo nhẹ, tạo điểm nhấn và che bụng.",
+                    Images =
+                    [
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fpeplum-waist.png?alt=media&token=c4d57153-75e2-4bbd-be17-25de6e8a49b7"
+                    ],
+                    GlobalStatus = 0,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 29, 4, 52, 42, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 29, 4, 52, 42, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new ComponentOption
+                {
+                    Id = "d63a7d0c9e5d4e258285ded1974bf9cf",
+                    ComponentId = "0ec808c3046b4d368962c65eb771dea0",
+                    Name = "Black",
+                    Price = 0m,
+                    Description = "Đen cơ bản, thanh lịch.",
+                    Images =
+                    [
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fblack.png?alt=media&token=08e541fa-5ced-449c-bf7a-63da6ea78e2c"
+                    ],
+                    GlobalStatus = 0,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 29, 4, 46, 38, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 29, 4, 46, 38, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new ComponentOption
+                {
+                    Id = "6eb66f2427eb47a1a1fffc0dd3f89f6e",
+                    ComponentId = "3b83e5e47b444880aa9495b58b38a2fd",
+                    Name = "Short Sleeves",
+                    Price = 0m,
+                    Description = "Tay ngắn, gọn gàng.",
+                    Images =
+                    [
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fshort-sleeves.png?alt=media&token=04468aff-6280-41fc-bac7-203bb65ef698"
+                    ],
+                    GlobalStatus = 0,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 29, 4, 44, 53, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 29, 4, 44, 53, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new ComponentOption
+                {
+                    Id = "6b81101144404b9ab306235861eedc12",
+                    ComponentId = "f00fcaf79a86427c995daa1fd0915d8e",
+                    Name = "Straight",
+                    Price = 0m,
+                    Description = "Đường gấu thẳng, đơn giản.",
+                    Images =
+                    [
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fstraight-hem.png?alt=media&token=4ead53a9-08f5-4362-872e-5f3b0272d220"
+                    ],
+                    GlobalStatus = 0,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 29, 4, 59, 34, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 29, 4, 59, 34, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new ComponentOption
+                {
+                    Id = "7186b0e8de2348fdbde87105c0f9abe3",
+                    ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
+                    Name = "Wrap",
+                    Price = 0m,
+                    Description = "Eo quấn chéo, buộc dây, dễ điều chỉnh và tiện lợi cho mẹ bầu.",
+                    Images =
+                    [
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fwrap-waist.png?alt=media&token=3153efa1-17f4-4f8d-8e51-e287ca43ab26"
+                    ],
+                    GlobalStatus = 0,
+                    CreatedBy = "Admin",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 29, 13, 26, 53, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 29, 13, 26, 53, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new ComponentOption
+                {
+                    Id = "06e6899bd6544dd3b9020a50789d9421",
+                    ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
+                    Name = "Normal",
+                    Price = 0m,
+                    Description = "Thiết kế eo trung bình truyền thống.",
+                    Images =
+                    [
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fnormal-waist.png?alt=media&token=6b608665-6975-4993-abd7-c57106c913f8"
                     ],
                     GlobalStatus = 0,
                     CreatedBy = "System",
@@ -447,7 +631,7 @@ namespace MamaFit.BusinessObjects.Data
                     Id = "31c853d3dde94e68ab57903cf8a80798",
                     ComponentId = "c615996abfe24d3885ccea361a199dba",
                     Name = "Cotton",
-                    Price = 9000.0m,
+                    Price = 0m,
                     Description = "Vải cotton thoáng mát, thấm hút tốt.",
                     Images =
                     [
@@ -465,7 +649,7 @@ namespace MamaFit.BusinessObjects.Data
                     Id = "4ed7cdc105ab44de81d333d63db0a222",
                     ComponentId = "3b83e5e47b444880aa9495b58b38a2fd",
                     Name = "No Sleeves",
-                    Price = 10000.0m,
+                    Price = 0m,
                     Description = "Không tay, thoáng mát.",
                     Images =
                     [
@@ -480,140 +664,14 @@ namespace MamaFit.BusinessObjects.Data
                 },
                 new ComponentOption
                 {
-                    Id = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
-                    ComponentId = "b66ab857cd93410599bd14b79ae37147",
-                    Name = "Round",
-                    Price = 20000.0m,
-                    Description = "Cổ tròn cơ bản, thanh lịch.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fround-neck.png?alt=media&token=1f8e06b6-1aa5-49fc-a05a-e88e29593710"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "e2c03da33b12458694a1b01c3ec66474",
+                    Id = "66645e2f8fa94d228d87450cc4a74706",
                     ComponentId = "0ec808c3046b4d368962c65eb771dea0",
-                    Name = "Navy",
-                    Price = 10000.0m,
-                    Description = "Xanh navy lịch sự, thanh nhã.",
+                    Name = "Green",
+                    Price = 0m,
+                    Description = "Xanh ngọc quý phái, nổi bật.",
                     Images =
                     [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fnavy-blue.png?alt=media&token=94e2c88c-a38c-4294-8b35-027b255e26ca"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "8158b8e5ef0340bdaf830fa8eb2e650d",
-                    ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
-                    Name = "Empire Waist",
-                    Price = 20000.0m,
-                    Description = "Eo cao, phù hợp cho phong cách nữ tính.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fempire-waist.png?alt=media&token=292233b5-38d3-4b46-b543-6747d187a702"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "818f875df04a49eebe9c474bba4247b9",
-                    ComponentId = "b66ab857cd93410599bd14b79ae37147",
-                    Name = "V Neck",
-                    Price = 25000.0m,
-                    Description = "Cổ chữ V tạo cảm giác cổ dài hơn.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fv-neck.png?alt=media&token=5418fe58-896e-4559-86ae-e2809c519963"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "81acc249e2664c72908014a28e1e72ef",
-                    ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
-                    Name = "Bow Tie",
-                    Price = 22000.0m,
-                    Description = "Nơ thắt eo tạo điểm nhấn đáng yêu.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fbow-tie-waist.png?alt=media&token=43522a3e-848a-49d1-8e5a-a6610e619c21"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "fecd26fe3b6b4e88ba97ebb406fa6df2",
-                    ComponentId = "3b83e5e47b444880aa9495b58b38a2fd",
-                    Name = "Flattered",
-                    Price = 15000.0m,
-                    Description = "Tay ngắn bay bổng, thoải mái.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fflattered-sleeves.png?alt=media&token=93a07830-1514-4a65-80ca-599c67cd7334"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "c454b97a93f341e78b127d5425acc464",
-                    ComponentId = "0ec808c3046b4d368962c65eb771dea0",
-                    Name = "Red",
-                    Price = 10000.0m,
-                    Description = "Màu đỏ nổi bật, quyến rũ.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fred.png?alt=media&token=b520d1e1-69b9-48bd-aa84-d3824897c0b8"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "06e6899bd6544dd3b9020a50789d9421",
-                    ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
-                    Name = "Normal",
-                    Price = 18000.0m,
-                    Description = "Thiết kế eo trung bình truyền thống.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fnormal-waist.png?alt=media&token=6b608665-6975-4993-abd7-c57106c913f8"
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Femerald-green.png?alt=media&token=d63ad4cc-0037-4ca5-b71b-4d8eb394b6ba"
                     ],
                     GlobalStatus = 0,
                     CreatedBy = "System",
@@ -627,7 +685,7 @@ namespace MamaFit.BusinessObjects.Data
                     Id = "70b69ec5ea074c0f8bf904b20b9c7884",
                     ComponentId = "f00fcaf79a86427c995daa1fd0915d8e",
                     Name = "High-Low",
-                    Price = 16000.0m,
+                    Price = 0m,
                     Description = "Trước ngắn sau dài tạo nét lạ mắt.",
                     Images =
                     [
@@ -645,7 +703,7 @@ namespace MamaFit.BusinessObjects.Data
                     Id = "78b78938aefe4bc6b927ed3722bc5859",
                     ComponentId = "3b83e5e47b444880aa9495b58b38a2fd",
                     Name = "Strap",
-                    Price = 12000.0m,
+                    Price = 0m,
                     Description = "Dây mảnh, nữ tính.",
                     Images =
                     [
@@ -660,14 +718,140 @@ namespace MamaFit.BusinessObjects.Data
                 },
                 new ComponentOption
                 {
+                    Id = "8158b8e5ef0340bdaf830fa8eb2e650d",
+                    ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
+                    Name = "Empire Waist",
+                    Price = 0m,
+                    Description = "Eo cao, phù hợp cho phong cách nữ tính.",
+                    Images =
+                    [
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fempire-waist.png?alt=media&token=292233b5-38d3-4b46-b543-6747d187a702"
+                    ],
+                    GlobalStatus = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new ComponentOption
+                {
+                    Id = "818f875df04a49eebe9c474bba4247b9",
+                    ComponentId = "b66ab857cd93410599bd14b79ae37147",
+                    Name = "V Neck",
+                    Price = 0m,
+                    Description = "Cổ chữ V tạo cảm giác cổ dài hơn.",
+                    Images =
+                    [
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fv-neck.png?alt=media&token=5418fe58-896e-4559-86ae-e2809c519963"
+                    ],
+                    GlobalStatus = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new ComponentOption
+                {
+                    Id = "81acc249e2664c72908014a28e1e72ef",
+                    ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
+                    Name = "Bow Tie",
+                    Price = 0m,
+                    Description = "Nơ thắt eo tạo điểm nhấn đáng yêu.",
+                    Images =
+                    [
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fbow-tie-waist.png?alt=media&token=43522a3e-848a-49d1-8e5a-a6610e619c21"
+                    ],
+                    GlobalStatus = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new ComponentOption
+                {
                     Id = "8cff38afa8464ae191ba152b93438266",
                     ComponentId = "f00fcaf79a86427c995daa1fd0915d8e",
                     Name = "Single Layer",
-                    Price = 12000.0m,
+                    Price = 0m,
                     Description = "Gấu váy đơn giản, thanh lịch.",
                     Images =
                     [
                         "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fsingle-layer-hem.png?alt=media&token=bfd6b737-ca41-4a9d-9257-b35320fd63b4"
+                    ],
+                    GlobalStatus = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new ComponentOption
+                {
+                    Id = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+                    ComponentId = "b66ab857cd93410599bd14b79ae37147",
+                    Name = "Round",
+                    Price = 0m,
+                    Description = "Cổ tròn cơ bản, thanh lịch.",
+                    Images =
+                    [
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fround-neck.png?alt=media&token=1f8e06b6-1aa5-49fc-a05a-e88e29593710"
+                    ],
+                    GlobalStatus = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new ComponentOption
+                {
+                    Id = "c454b97a93f341e78b127d5425acc464",
+                    ComponentId = "0ec808c3046b4d368962c65eb771dea0",
+                    Name = "Red",
+                    Price = 0m,
+                    Description = "Màu đỏ nổi bật, quyến rũ.",
+                    Images =
+                    [
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fred.png?alt=media&token=b520d1e1-69b9-48bd-aa84-d3824897c0b8"
+                    ],
+                    GlobalStatus = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new ComponentOption
+                {
+                    Id = "e2c03da33b12458694a1b01c3ec66474",
+                    ComponentId = "0ec808c3046b4d368962c65eb771dea0",
+                    Name = "Navy",
+                    Price = 0m,
+                    Description = "Xanh navy lịch sự, thanh nhã.",
+                    Images =
+                    [
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fnavy-blue.png?alt=media&token=94e2c88c-a38c-4294-8b35-027b255e26ca"
+                    ],
+                    GlobalStatus = 0,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+                new ComponentOption
+                {
+                    Id = "fecd26fe3b6b4e88ba97ebb406fa6df2",
+                    ComponentId = "3b83e5e47b444880aa9495b58b38a2fd",
+                    Name = "Flattered",
+                    Price = 0m,
+                    Description = "Tay ngắn bay bổng, thoải mái.",
+                    Images =
+                    [
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fflattered-sleeves.png?alt=media&token=93a07830-1514-4a65-80ca-599c67cd7334"
                     ],
                     GlobalStatus = 0,
                     CreatedBy = "System",
@@ -695,7 +879,7 @@ namespace MamaFit.BusinessObjects.Data
                     IsDefault = true,
                     Price = 2000,
                     Type = 0,
-                    SKU ="P00001",
+                    SKU = "P00001",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -714,7 +898,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00002",
+                    Type = 0, SKU = "P00002",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -733,7 +917,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00005",
+                    Type = 0, SKU = "P00005",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -752,7 +936,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00003",
+                    Type = 0, SKU = "P00003",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -771,7 +955,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00004",
+                    Type = 0, SKU = "P00004",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -790,7 +974,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00006",
+                    Type = 0, SKU = "P00006",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -809,7 +993,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00007",
+                    Type = 0, SKU = "P00007",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -828,7 +1012,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00008",
+                    Type = 0, SKU = "P00008",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -847,7 +1031,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00009",
+                    Type = 0, SKU = "P00009",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -866,7 +1050,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00010",
+                    Type = 0, SKU = "P00010",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -885,7 +1069,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00011",
+                    Type = 0, SKU = "P00011",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -904,7 +1088,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00012",
+                    Type = 0, SKU = "P00012",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -923,7 +1107,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00013",
+                    Type = 0, SKU = "P00013",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -942,7 +1126,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00014",
+                    Type = 0, SKU = "P00014",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -961,7 +1145,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00014",
+                    Type = 0, SKU = "P00014",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -980,7 +1164,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00015",
+                    Type = 0, SKU = "P00015",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -999,7 +1183,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00016",
+                    Type = 0, SKU = "P00016",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -1018,7 +1202,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00017",
+                    Type = 0, SKU = "P00017",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -1036,7 +1220,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00018",
+                    Type = 0, SKU = "P00018",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -1055,7 +1239,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00019",
+                    Type = 0, SKU = "P00019",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -1074,7 +1258,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00020",
+                    Type = 0, SKU = "P00020",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -1093,7 +1277,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00021",
+                    Type = 0, SKU = "P00021",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -1112,7 +1296,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00022",
+                    Type = 0, SKU = "P00022",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -1131,7 +1315,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00023",
+                    Type = 0, SKU = "P00023",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -1150,7 +1334,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00024",
+                    Type = 0, SKU = "P00024",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -1169,7 +1353,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00025",
+                    Type = 0, SKU = "P00025",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -1188,7 +1372,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00026",
+                    Type = 0, SKU = "P00026",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -1207,7 +1391,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00027",
+                    Type = 0, SKU = "P00027",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -1226,7 +1410,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00028",
+                    Type = 0, SKU = "P00028",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -1245,7 +1429,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00029",
+                    Type = 0, SKU = "P00029",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -1264,7 +1448,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00030",
+                    Type = 0, SKU = "P00030",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -1283,7 +1467,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00031",
+                    Type = 0, SKU = "P00031",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -1302,7 +1486,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00032",
+                    Type = 0, SKU = "P00032",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -1321,7 +1505,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00034",
+                    Type = 0, SKU = "P00034",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -1340,7 +1524,7 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00035",
+                    Type = 0, SKU = "P00035",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
@@ -1359,13 +1543,14 @@ namespace MamaFit.BusinessObjects.Data
                     },
                     IsDefault = false,
                     Price = 2000,
-                    Type = 0,SKU ="P00036",
+                    Type = 0, SKU = "P00036",
                     CreatedBy = "User",
                     UpdatedBy = "System",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 }
             };
+
             modelBuilder.Entity<Preset>().HasData(presets);
 
             // ===== COMPONENT OPTION PRESETS =====
@@ -2452,6 +2637,7 @@ namespace MamaFit.BusinessObjects.Data
                     PresetsId = "68fca8f086454898ae81b1ea29890b60"
                 }
             };
+
             modelBuilder.Entity<ComponentOptionPreset>().HasData(componentoptionpresets);
 
             #endregion
@@ -3692,7 +3878,6 @@ namespace MamaFit.BusinessObjects.Data
                     UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
                     IsDeleted = false
                 },
-
                 new Milestone
                 {
                     Id = "a82b6d4f0c194fa5b92348e7d86c4a10",
@@ -3722,7 +3907,6 @@ namespace MamaFit.BusinessObjects.Data
                     UpdatedAt = new DateTime(2025, 7, 23, 14, 17, 54, DateTimeKind.Utc),
                     IsDeleted = false
                 },
-
                 new MaternityDressTask
                 {
                     Id = "23de35d6fb194c398d09ce00ae01eeea",
@@ -3979,17 +4163,20 @@ namespace MamaFit.BusinessObjects.Data
             #endregion
 
             #region Seed Dress, Detail
+
             // Dress seed data
             modelBuilder.Entity<MaternityDress>().HasData(
                 new MaternityDress
                 {
                     Id = "e610ee9fb2494165a6c0bf196f1b2eba",
                     Name = "Đầm Bầu Thun Gân Cơ Bản Dáng Suông Tay Ngắn Thời Trang Thoải Mái Hằng Ngày",
-                    Description = "<p>Đầm bầu dáng suông đơn giản, thiết kế tay ngắn dễ mặc. Kiểu dáng basic, thoải mái cho mẹ bầu trong nhiều hoàn cảnh: đi làm, đi chơi hay ở nhà. Chất liệu thun gân co giãn giúp ôm vừa vặn cơ thể mà vẫn tạo sự thoáng mát, nhẹ nhàng.</p><p><strong>Chất Liệu</strong></p><ul><li><p>Vải thun gân cao cấp</p></li><li><p>Co giãn 4 chiều, mềm mại</p></li><li><p>Thoáng khí, thấm hút tốt</p></li></ul><p><strong>Cách Chăm Sóc</strong></p><ul><li><p>Giặt máy ở chế độ nhẹ hoặc giặt tay</p></li><li><p>Không dùng thuốc tẩy mạnh</p></li><li><p>Phơi nơi thoáng mát, tránh ánh nắng trực tiếp</p></li><li><p>Ủi ở nhiệt độ thấp</p></li></ul><p></p>",
-                    Images = new List<string> {
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F1_1755664026966_gku80f.webp?alt=media&token=523c6ebc-18d7-4f60-ba10-aa5038ab51ab",
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F2_1755664026967_aen00h.webp?alt=media&token=3c252172-b875-4ce7-a804-2d73bf95598f",
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F3_1755664026967_3x26tj.webp?alt=media&token=3c479c27-654b-4098-bc61-59c0c2e2bba9"
+                    Description =
+                        "<p>Đầm bầu dáng suông đơn giản, thiết kế tay ngắn dễ mặc. Kiểu dáng basic, thoải mái cho mẹ bầu trong nhiều hoàn cảnh: đi làm, đi chơi hay ở nhà. Chất liệu thun gân co giãn giúp ôm vừa vặn cơ thể mà vẫn tạo sự thoáng mát, nhẹ nhàng.</p><p><strong>Chất Liệu</strong></p><ul><li><p>Vải thun gân cao cấp</p></li><li><p>Co giãn 4 chiều, mềm mại</p></li><li><p>Thoáng khí, thấm hút tốt</p></li></ul><p><strong>Cách Chăm Sóc</strong></p><ul><li><p>Giặt máy ở chế độ nhẹ hoặc giặt tay</p></li><li><p>Không dùng thuốc tẩy mạnh</p></li><li><p>Phơi nơi thoáng mát, tránh ánh nắng trực tiếp</p></li><li><p>Ủi ở nhiệt độ thấp</p></li></ul><p></p>",
+                    Images = new List<string>
+                    {
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F1_1755664026966_gku80f.webp?alt=media&token=523c6ebc-18d7-4f60-ba10-aa5038ab51ab",
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F2_1755664026967_aen00h.webp?alt=media&token=3c252172-b875-4ce7-a804-2d73bf95598f",
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F3_1755664026967_3x26tj.webp?alt=media&token=3c479c27-654b-4098-bc61-59c0c2e2bba9"
                     },
                     Slug = "dam-bau-thun-gan-co-ban-dang-suong-tay-ngan-thoi-trang-thoai-mai-hang-ngay",
                     SKU = "MD582",
@@ -4008,10 +4195,12 @@ namespace MamaFit.BusinessObjects.Data
                 {
                     Id = "c5773c8eedba465fb0cfea9f8048cbca",
                     Name = "Đầm Bầu Sơ Mi Họa Tiết Hoa Thắt Eo Dáng Suông Thanh Lịch",
-                    Description = "<p>Đầm bầu sơ mi họa tiết hoa tươi trẻ, thiết kế thắt dây eo tạo điểm nhấn giúp tôn dáng và che bụng bầu gọn gàng. Dáng suông thoải mái, dễ mặc trong nhiều hoàn cảnh: đi làm, đi chơi hay dự tiệc nhẹ. Phong cách nữ tính, thanh lịch nhưng vẫn mang lại sự thoải mái cho mẹ bầu.</p><h3><strong>Chất Liệu</strong></h3><ul><li><p>Vải cotton pha rayon/voan in hoa</p></li><li><p>Mềm mại, thoáng khí, ít nhăn</p></li><li><p>Thắt dây eo linh hoạt điều chỉnh</p></li></ul><h3><strong>Cách Chăm Sóc</strong></h3><ul><li><p>Giặt máy chế độ nhẹ hoặc giặt tay</p></li><li><p>Không dùng thuốc tẩy mạnh</p></li><li><p>Phơi khô tự nhiên, tránh ánh nắng gắt</p></li><li><p>Ủi nhẹ ở nhiệt độ thấp, ưu tiên hơi nước</p></li></ul><p></p>",
-                    Images = new List<string> {
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F26_1755666733667_9tuldf.webp?alt=media&token=9903703c-9c9f-4e61-ad85-f09b864b6118",
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F27_1755666733668_bk0k77.webp?alt=media&token=d0701c86-3b85-49a8-99a0-556a27e88e79"
+                    Description =
+                        "<p>Đầm bầu sơ mi họa tiết hoa tươi trẻ, thiết kế thắt dây eo tạo điểm nhấn giúp tôn dáng và che bụng bầu gọn gàng. Dáng suông thoải mái, dễ mặc trong nhiều hoàn cảnh: đi làm, đi chơi hay dự tiệc nhẹ. Phong cách nữ tính, thanh lịch nhưng vẫn mang lại sự thoải mái cho mẹ bầu.</p><h3><strong>Chất Liệu</strong></h3><ul><li><p>Vải cotton pha rayon/voan in hoa</p></li><li><p>Mềm mại, thoáng khí, ít nhăn</p></li><li><p>Thắt dây eo linh hoạt điều chỉnh</p></li></ul><h3><strong>Cách Chăm Sóc</strong></h3><ul><li><p>Giặt máy chế độ nhẹ hoặc giặt tay</p></li><li><p>Không dùng thuốc tẩy mạnh</p></li><li><p>Phơi khô tự nhiên, tránh ánh nắng gắt</p></li><li><p>Ủi nhẹ ở nhiệt độ thấp, ưu tiên hơi nước</p></li></ul><p></p>",
+                    Images = new List<string>
+                    {
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F26_1755666733667_9tuldf.webp?alt=media&token=9903703c-9c9f-4e61-ad85-f09b864b6118",
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F27_1755666733668_bk0k77.webp?alt=media&token=d0701c86-3b85-49a8-99a0-556a27e88e79"
                     },
                     Slug = "dam-bau-so-mi-hoa-tiet-hoa-that-eo-dang-suong-thanh-lich",
                     SKU = "MD585",
@@ -4030,11 +4219,13 @@ namespace MamaFit.BusinessObjects.Data
                 {
                     Id = "ab00ca8d32fa49b0bd9037572f64351d",
                     Name = "Đầm Bầu Thun Trơn Dáng Suông Mini Tay Ngắn Thoải Mái Hằng Ngày",
-                    Description = "<p>Đầm bầu mini dáng suông trẻ trung, thiết kế trơn basic dễ phối với nhiều phong cách. Form rộng rãi giúp mẹ bầu thoải mái di chuyển, phù hợp khi đi làm, đi dạo hay mặc ở nhà. Chiều dài mini tạo cảm giác năng động, hiện đại.</p><h3><strong>Chất Liệu</strong></h3><ul><li><p>Vải thun mềm mại, co giãn tốt</p></li><li><p>Thấm hút mồ hôi, thoáng khí</p></li><li><p>Bề mặt vải mịn, ít nhăn</p></li></ul><h3><strong>Cách Chăm Sóc</strong></h3><ul><li><p>Giặt máy chế độ nhẹ hoặc giặt tay</p></li><li><p>Không sử dụng thuốc tẩy mạnh</p></li><li><p>Phơi khô tự nhiên, tránh nắng gắt</p></li><li><p>Ủi ở nhiệt độ thấp</p></li></ul><p></p>",
-                    Images = new List<string> {
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F5_1755664463275_fe2k1i.webp?alt=media&token=0e9677e3-c641-437a-9be6-335c27784ec4",
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F7_1755664463276_lw9ovp.webp?alt=media&token=030cd258-5c2c-4038-9e08-2d158f7b9011",
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F8_1755664463276_6usrfm.webp?alt=media&token=80a2cf35-3929-4e73-828b-3d11bd10f86d"
+                    Description =
+                        "<p>Đầm bầu mini dáng suông trẻ trung, thiết kế trơn basic dễ phối với nhiều phong cách. Form rộng rãi giúp mẹ bầu thoải mái di chuyển, phù hợp khi đi làm, đi dạo hay mặc ở nhà. Chiều dài mini tạo cảm giác năng động, hiện đại.</p><h3><strong>Chất Liệu</strong></h3><ul><li><p>Vải thun mềm mại, co giãn tốt</p></li><li><p>Thấm hút mồ hôi, thoáng khí</p></li><li><p>Bề mặt vải mịn, ít nhăn</p></li></ul><h3><strong>Cách Chăm Sóc</strong></h3><ul><li><p>Giặt máy chế độ nhẹ hoặc giặt tay</p></li><li><p>Không sử dụng thuốc tẩy mạnh</p></li><li><p>Phơi khô tự nhiên, tránh nắng gắt</p></li><li><p>Ủi ở nhiệt độ thấp</p></li></ul><p></p>",
+                    Images = new List<string>
+                    {
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F5_1755664463275_fe2k1i.webp?alt=media&token=0e9677e3-c641-437a-9be6-335c27784ec4",
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F7_1755664463276_lw9ovp.webp?alt=media&token=030cd258-5c2c-4038-9e08-2d158f7b9011",
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F8_1755664463276_6usrfm.webp?alt=media&token=80a2cf35-3929-4e73-828b-3d11bd10f86d"
                     },
                     Slug = "dam-bau-thun-tron-dang-suong-mini-tay-ngan-thoai-mai-hang-ngay",
                     SKU = "MD479",
@@ -4053,11 +4244,13 @@ namespace MamaFit.BusinessObjects.Data
                 {
                     Id = "6f0fefb8162f458f98e032cf224becf2",
                     Name = "Đầm Bầu Thun Xếp Ly Bất Đối Xứng Dáng Suông Ôm Nhẹ Thời Trang Hiện Đại",
-                    Description = "<p>Đầm bầu thiết kế bất đối xứng độc đáo, nhấn nhá chi tiết xếp ly tinh tế tạo cảm giác thon gọn và thời trang. Dáng suông ôm nhẹ, phù hợp cho mẹ bầu vừa muốn thoải mái vừa giữ được phong cách hiện đại. Có thể mặc đi làm, dạo phố hoặc dự tiệc nhẹ.</p><h3><strong>Chất Liệu</strong></h3><ul><li><p>Vải thun cao cấp, co giãn 4 chiều</p></li><li><p>Bề mặt mịn, ôm form vừa vặn</p></li><li><p>Thấm hút tốt, thoáng mát cả ngày</p></li></ul><h3><strong>Cách Chăm Sóc</strong></h3><ul><li><p>Giặt tay hoặc giặt máy chế độ nhẹ</p></li><li><p>Không dùng thuốc tẩy mạnh</p></li><li><p>Phơi trong bóng râm, tránh nắng gắt</p></li><li><p>Ủi nhẹ ở nhiệt độ thấp</p></li></ul><p></p>",
-                    Images = new List<string> {
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F9_1755664927531_8hiuaa.webp?alt=media&token=ead50e57-f8c6-4099-b463-149f74164722",
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F10_1755664927532_fdcv17.webp?alt=media&token=acb2e49e-624e-444b-b31f-949383c80347",
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F11_1755664927532_d856sz.webp?alt=media&token=058e96d1-a695-406d-8b03-bcb7760bb2db"
+                    Description =
+                        "<p>Đầm bầu thiết kế bất đối xứng độc đáo, nhấn nhá chi tiết xếp ly tinh tế tạo cảm giác thon gọn và thời trang. Dáng suông ôm nhẹ, phù hợp cho mẹ bầu vừa muốn thoải mái vừa giữ được phong cách hiện đại. Có thể mặc đi làm, dạo phố hoặc dự tiệc nhẹ.</p><h3><strong>Chất Liệu</strong></h3><ul><li><p>Vải thun cao cấp, co giãn 4 chiều</p></li><li><p>Bề mặt mịn, ôm form vừa vặn</p></li><li><p>Thấm hút tốt, thoáng mát cả ngày</p></li></ul><h3><strong>Cách Chăm Sóc</strong></h3><ul><li><p>Giặt tay hoặc giặt máy chế độ nhẹ</p></li><li><p>Không dùng thuốc tẩy mạnh</p></li><li><p>Phơi trong bóng râm, tránh nắng gắt</p></li><li><p>Ủi nhẹ ở nhiệt độ thấp</p></li></ul><p></p>",
+                    Images = new List<string>
+                    {
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F9_1755664927531_8hiuaa.webp?alt=media&token=ead50e57-f8c6-4099-b463-149f74164722",
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F10_1755664927532_fdcv17.webp?alt=media&token=acb2e49e-624e-444b-b31f-949383c80347",
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F11_1755664927532_d856sz.webp?alt=media&token=058e96d1-a695-406d-8b03-bcb7760bb2db"
                     },
                     Slug = "dam-bau-thun-xep-ly-bat-doi-xung-dang-suong-om-nhe-thoi-trang-hien-dai",
                     SKU = "MD405",
@@ -4076,11 +4269,13 @@ namespace MamaFit.BusinessObjects.Data
                 {
                     Id = "a3295084c7ca4c948017b82fa1d06ebf",
                     Name = "Đầm Bầu Cổ Yếm Xếp Ly Dáng Suông Thời Trang Thanh Lịch",
-                    Description = "<p>Đầm bầu thiết kế cổ yếm hiện đại, mang đến vẻ ngoài thanh lịch và nữ tính. Chi tiết xếp ly nhẹ nhàng tạo độ rũ tự nhiên, giúp che dáng hiệu quả mà vẫn giữ sự thoải mái. Phù hợp cho mẹ bầu trong các dịp dự tiệc, sự kiện hoặc dạo phố.</p><h3><strong>Chất Liệu</strong></h3><ul><li><p>Vải voan/lụa cao cấp, mềm mại</p></li><li><p>Xếp ly tinh tế, giữ form tốt</p></li><li><p>Thoáng mát, nhẹ nhàng khi mặc</p></li></ul><h3><strong>Cách Chăm Sóc</strong></h3><ul><li><p>Giặt tay nhẹ, hạn chế giặt máy</p></li><li><p>Không vắt mạnh, tránh nhăn ly</p></li><li><p>Phơi tự nhiên nơi thoáng mát</p></li><li><p>Ủi bằng hơi nước ở nhiệt độ thấp</p></li></ul><p></p>",
-                    Images = new List<string> {
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F13_1755665190797_pl6kg4.webp?alt=media&token=4a602e98-117d-4991-83a0-35fc97900c81",
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F14_1755665190798_l17w7c.webp?alt=media&token=bb2f0c23-dda4-4892-809e-c1ec2ef61ee5",
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F15_1755665190798_fk8d63.webp?alt=media&token=8c4bd588-42b3-4338-899d-ea9b81297e93"
+                    Description =
+                        "<p>Đầm bầu thiết kế cổ yếm hiện đại, mang đến vẻ ngoài thanh lịch và nữ tính. Chi tiết xếp ly nhẹ nhàng tạo độ rũ tự nhiên, giúp che dáng hiệu quả mà vẫn giữ sự thoải mái. Phù hợp cho mẹ bầu trong các dịp dự tiệc, sự kiện hoặc dạo phố.</p><h3><strong>Chất Liệu</strong></h3><ul><li><p>Vải voan/lụa cao cấp, mềm mại</p></li><li><p>Xếp ly tinh tế, giữ form tốt</p></li><li><p>Thoáng mát, nhẹ nhàng khi mặc</p></li></ul><h3><strong>Cách Chăm Sóc</strong></h3><ul><li><p>Giặt tay nhẹ, hạn chế giặt máy</p></li><li><p>Không vắt mạnh, tránh nhăn ly</p></li><li><p>Phơi tự nhiên nơi thoáng mát</p></li><li><p>Ủi bằng hơi nước ở nhiệt độ thấp</p></li></ul><p></p>",
+                    Images = new List<string>
+                    {
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F13_1755665190797_pl6kg4.webp?alt=media&token=4a602e98-117d-4991-83a0-35fc97900c81",
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F14_1755665190798_l17w7c.webp?alt=media&token=bb2f0c23-dda4-4892-809e-c1ec2ef61ee5",
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F15_1755665190798_fk8d63.webp?alt=media&token=8c4bd588-42b3-4338-899d-ea9b81297e93"
                     },
                     Slug = "dam-bau-co-yem-xep-ly-dang-suong-thoi-trang-thanh-lich",
                     SKU = "MD566",
@@ -4099,12 +4294,14 @@ namespace MamaFit.BusinessObjects.Data
                 {
                     Id = "7202c22db49e4511b19661285cf363df",
                     Name = "Đầm Bầu Maxi Cổ Yếm Smocked Co Giãn Dáng Dài Thoải Mái Thanh Lịch",
-                    Description = "<p>Đầm bầu maxi dáng dài với thiết kế cổ yếm hiện đại, phần thân trên smocked co giãn ôm vừa vặn, tôn dáng mà vẫn dễ chịu cho mẹ bầu. Chiều dài maxi thướt tha mang lại vẻ nữ tính, thanh lịch, phù hợp cho dạo biển, dự tiệc hay đi chơi cuối tuần.</p><h3><strong>Chất Liệu</strong></h3><ul><li><p>Vải cotton pha rayon/voan mềm mại</p></li><li><p>Phần smocked co giãn linh hoạt</p></li><li><p>Thoáng mát, nhẹ nhàng, dễ chịu cả ngày</p></li></ul><h3><strong>Cách Chăm Sóc</strong></h3><ul><li><p>Giặt tay hoặc giặt máy chế độ nhẹ</p></li><li><p>Không dùng thuốc tẩy mạnh</p></li><li><p>Phơi trong bóng râm, tránh ánh nắng trực tiếp</p></li><li><p>Ủi nhẹ ở nhiệt độ thấp, ưu tiên hơi nước</p></li></ul><p></p>",
-                    Images = new List<string> {
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F16_1755665554429_2dk5aj.webp?alt=media&token=f8bc21ee-0125-49c0-a4ad-92d21ee0ee57",
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F17_1755665554430_damvff.webp?alt=media&token=424a337e-6cd1-4870-b628-ffac503b0b0a",
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F18_1755665554430_e2sm12.webp?alt=media&token=dbc2f371-c454-4adf-8775-85166f705e30",
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F19_1755665554430_z0js4s.webp?alt=media&token=8495676a-d79c-49c8-bb20-64a83bd81f5d"
+                    Description =
+                        "<p>Đầm bầu maxi dáng dài với thiết kế cổ yếm hiện đại, phần thân trên smocked co giãn ôm vừa vặn, tôn dáng mà vẫn dễ chịu cho mẹ bầu. Chiều dài maxi thướt tha mang lại vẻ nữ tính, thanh lịch, phù hợp cho dạo biển, dự tiệc hay đi chơi cuối tuần.</p><h3><strong>Chất Liệu</strong></h3><ul><li><p>Vải cotton pha rayon/voan mềm mại</p></li><li><p>Phần smocked co giãn linh hoạt</p></li><li><p>Thoáng mát, nhẹ nhàng, dễ chịu cả ngày</p></li></ul><h3><strong>Cách Chăm Sóc</strong></h3><ul><li><p>Giặt tay hoặc giặt máy chế độ nhẹ</p></li><li><p>Không dùng thuốc tẩy mạnh</p></li><li><p>Phơi trong bóng râm, tránh ánh nắng trực tiếp</p></li><li><p>Ủi nhẹ ở nhiệt độ thấp, ưu tiên hơi nước</p></li></ul><p></p>",
+                    Images = new List<string>
+                    {
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F16_1755665554429_2dk5aj.webp?alt=media&token=f8bc21ee-0125-49c0-a4ad-92d21ee0ee57",
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F17_1755665554430_damvff.webp?alt=media&token=424a337e-6cd1-4870-b628-ffac503b0b0a",
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F18_1755665554430_e2sm12.webp?alt=media&token=dbc2f371-c454-4adf-8775-85166f705e30",
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F19_1755665554430_z0js4s.webp?alt=media&token=8495676a-d79c-49c8-bb20-64a83bd81f5d"
                     },
                     Slug = "dam-bau-maxi-co-yem-smocked-co-gian-dang-dai-thoai-mai-thanh-lich",
                     SKU = "MD920",
@@ -4123,12 +4320,14 @@ namespace MamaFit.BusinessObjects.Data
                 {
                     Id = "058811e7dd6842a59ea67452a301ce84",
                     Name = "Đầm Bầu Sơ Mi Dáng Suông Tay Ngắn Cơ Nút Chất Liệu Gân Nhẹ Thoáng Mát",
-                    Description = "<p>Đầm bầu sơ mi cổ điển với hàng nút phía trước, thiết kế tay ngắn tiện lợi. Chất liệu vải gân nhẹ tạo cảm giác thoáng mát, dễ chịu cho mẹ bầu. Dáng suông thoải mái, phù hợp đi làm, dạo phố hoặc mặc thường ngày.</p><h3><strong>Chất Liệu</strong></h3><ul><li><p>Vải gân cotton pha polyester</p></li><li><p>Thoáng khí, mềm mại, ít nhăn</p></li><li><p>Dễ dàng vận động, giữ form tốt</p></li></ul><h3><strong>Cách Chăm Sóc</strong></h3><ul><li><p>Giặt máy chế độ nhẹ hoặc giặt tay</p></li><li><p>Không dùng thuốc tẩy mạnh</p></li><li><p>Phơi nơi thoáng gió, tránh nắng gắt</p></li><li><p>Ủi ở nhiệt độ thấp, nên ủi khi vải còn ẩm</p></li></ul><p></p>",
-                    Images = new List<string> {
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F21_1755666412679_qzyqzs.webp?alt=media&token=42219328-3264-4f84-9973-306a5e2c9391",
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F22_1755666412680_915gcc.webp?alt=media&token=ff532280-b9f8-4835-9644-75972703f588",
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F23_1755666412681_ccsxb9.webp?alt=media&token=8d4395c7-4dd9-4ff1-bf84-19c2258bbdd1",
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F24_1755666412681_lpxt3c.webp?alt=media&token=42170be9-50f4-4b03-812f-49dadcb718c9"
+                    Description =
+                        "<p>Đầm bầu sơ mi cổ điển với hàng nút phía trước, thiết kế tay ngắn tiện lợi. Chất liệu vải gân nhẹ tạo cảm giác thoáng mát, dễ chịu cho mẹ bầu. Dáng suông thoải mái, phù hợp đi làm, dạo phố hoặc mặc thường ngày.</p><h3><strong>Chất Liệu</strong></h3><ul><li><p>Vải gân cotton pha polyester</p></li><li><p>Thoáng khí, mềm mại, ít nhăn</p></li><li><p>Dễ dàng vận động, giữ form tốt</p></li></ul><h3><strong>Cách Chăm Sóc</strong></h3><ul><li><p>Giặt máy chế độ nhẹ hoặc giặt tay</p></li><li><p>Không dùng thuốc tẩy mạnh</p></li><li><p>Phơi nơi thoáng gió, tránh nắng gắt</p></li><li><p>Ủi ở nhiệt độ thấp, nên ủi khi vải còn ẩm</p></li></ul><p></p>",
+                    Images = new List<string>
+                    {
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F21_1755666412679_qzyqzs.webp?alt=media&token=42219328-3264-4f84-9973-306a5e2c9391",
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F22_1755666412680_915gcc.webp?alt=media&token=ff532280-b9f8-4835-9644-75972703f588",
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F23_1755666412681_ccsxb9.webp?alt=media&token=8d4395c7-4dd9-4ff1-bf84-19c2258bbdd1",
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F24_1755666412681_lpxt3c.webp?alt=media&token=42170be9-50f4-4b03-812f-49dadcb718c9"
                     },
                     Slug = "dam-bau-so-mi-dang-suong-tay-ngan-co-nut-chat-lieu-gan-nhe-thoang-mat",
                     SKU = "MD515",
@@ -4147,11 +4346,13 @@ namespace MamaFit.BusinessObjects.Data
                 {
                     Id = "fdff22c67ad7425ebf40b2f457fc3228",
                     Name = "Đầm Bầu Maxi Jean Chambray Trễ Vai Smocked Co Giãn Thoải Mái Thời Trang",
-                    Description = "<p>Đầm bầu maxi dáng dài làm từ chất liệu chambray denim nhẹ, thiết kế trễ vai nữ tính kết hợp phần smocked co giãn ôm vừa vặn phần ngực. Dáng maxi thướt tha mang đến sự thoải mái, trẻ trung và phong cách. Thích hợp cho mẹ bầu khi đi dạo phố, du lịch hay dự tiệc ngoài trời.</p><h3><strong>Chất Liệu</strong></h3><ul><li><p>Chambray denim mềm nhẹ, thoáng khí</p></li><li><p>Smocked co giãn linh hoạt, ôm dáng vừa vặn</p></li><li><p>Bền màu, thoải mái khi mặc</p></li></ul><h3><strong>Cách Chăm Sóc</strong></h3><ul><li><p>Giặt máy chế độ nhẹ hoặc giặt tay</p></li><li><p>Không dùng thuốc tẩy mạnh</p></li><li><p>Phơi nơi thoáng mát, tránh ánh nắng gắt</p></li><li><p>Ủi ở nhiệt độ trung bình, lộn trái khi ủi</p></li></ul><p></p>",
-                    Images = new List<string> {
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F28_1755666977929_37y0c2.webp?alt=media&token=c19e606c-0879-43e8-913f-dd66569fa1c6",
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F29_1755666977930_x8d6zx.webp?alt=media&token=b372199a-502a-4bab-bd95-d1355d3b9282",
-            "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F30_1755666977930_8zlgyp.webp?alt=media&token=6e5780b4-1750-4984-ac89-89a4fcb0e615"
+                    Description =
+                        "<p>Đầm bầu maxi dáng dài làm từ chất liệu chambray denim nhẹ, thiết kế trễ vai nữ tính kết hợp phần smocked co giãn ôm vừa vặn phần ngực. Dáng maxi thướt tha mang đến sự thoải mái, trẻ trung và phong cách. Thích hợp cho mẹ bầu khi đi dạo phố, du lịch hay dự tiệc ngoài trời.</p><h3><strong>Chất Liệu</strong></h3><ul><li><p>Chambray denim mềm nhẹ, thoáng khí</p></li><li><p>Smocked co giãn linh hoạt, ôm dáng vừa vặn</p></li><li><p>Bền màu, thoải mái khi mặc</p></li></ul><h3><strong>Cách Chăm Sóc</strong></h3><ul><li><p>Giặt máy chế độ nhẹ hoặc giặt tay</p></li><li><p>Không dùng thuốc tẩy mạnh</p></li><li><p>Phơi nơi thoáng mát, tránh ánh nắng gắt</p></li><li><p>Ủi ở nhiệt độ trung bình, lộn trái khi ủi</p></li></ul><p></p>",
+                    Images = new List<string>
+                    {
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F28_1755666977929_37y0c2.webp?alt=media&token=c19e606c-0879-43e8-913f-dd66569fa1c6",
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F29_1755666977930_x8d6zx.webp?alt=media&token=b372199a-502a-4bab-bd95-d1355d3b9282",
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F30_1755666977930_8zlgyp.webp?alt=media&token=6e5780b4-1750-4984-ac89-89a4fcb0e615"
                     },
                     Slug = "dam-bau-maxi-jean-chambray-tre-vai-smocked-co-gian-thoai-mai-thoi-trang",
                     SKU = "MD220",
@@ -4170,8 +4371,12 @@ namespace MamaFit.BusinessObjects.Data
                 {
                     Id = "039fd8cb6da548299d31cd0b3780d528",
                     Name = "Đầm Bầu Maxi Sơ Mi Cotton Phối Họa Tiết Patchwork Có Nút Dài Thoải Mái Cá Tính",
-                    Description = "<p>Đầm bầu maxi dáng sơ mi dài, thiết kế phối patchwork nhiều họa tiết độc đáo từ chất liệu cotton mềm nhẹ. Hàng nút phía trước tiện lợi, dễ mặc và thoải mái cho mẹ bầu. Kiểu dáng vừa phóng khoáng vừa thời trang, phù hợp khi đi dạo phố, du lịch hoặc mặc hằng ngày.</p><h3><strong>Chất Liệu</strong></h3><ul><li><p>100% cotton hoặc cotton pha mềm mại</p></li><li><p>Thấm hút mồ hôi, thoáng khí</p></li><li><p>Phối patchwork bền màu, độc đáo</p></li></ul><h3><strong>Cách Chăm Sóc</strong></h3><ul><li><p>Giặt máy chế độ nhẹ, tách màu đậm nhạt</p></li><li><p>Không dùng thuốc tẩy mạnh</p></li><li><p>Phơi nơi thoáng mát, tránh ánh nắng trực tiếp</p></li><li><p>Ủi ở nhiệt độ trung bình, nên ủi khi vải còn hơi ẩm</p></li></ul><p></p>",
-                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F36_1755667248975_kj2tcn.webp?alt=media&token=8bd7c41b-7751-49a9-8eff-0a2c4fdcc8c9,https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F37_1755667248976_9mcq7e.webp?alt=media&token=fc162103-bddd-4a33-8cdd-0ed26445afdf,https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F38_1755667248977_ptwwk3.webp?alt=media&token=0d0e727a-35cd-4333-b0bf-6d836be00e35,https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F39_1755667248977_gew4mo.webp?alt=media&token=8fa985c3-50f6-4c1e-b0e3-a691967eab39"],
+                    Description =
+                        "<p>Đầm bầu maxi dáng sơ mi dài, thiết kế phối patchwork nhiều họa tiết độc đáo từ chất liệu cotton mềm nhẹ. Hàng nút phía trước tiện lợi, dễ mặc và thoải mái cho mẹ bầu. Kiểu dáng vừa phóng khoáng vừa thời trang, phù hợp khi đi dạo phố, du lịch hoặc mặc hằng ngày.</p><h3><strong>Chất Liệu</strong></h3><ul><li><p>100% cotton hoặc cotton pha mềm mại</p></li><li><p>Thấm hút mồ hôi, thoáng khí</p></li><li><p>Phối patchwork bền màu, độc đáo</p></li></ul><h3><strong>Cách Chăm Sóc</strong></h3><ul><li><p>Giặt máy chế độ nhẹ, tách màu đậm nhạt</p></li><li><p>Không dùng thuốc tẩy mạnh</p></li><li><p>Phơi nơi thoáng mát, tránh ánh nắng trực tiếp</p></li><li><p>Ủi ở nhiệt độ trung bình, nên ủi khi vải còn hơi ẩm</p></li></ul><p></p>",
+                    Images =
+                    [
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F36_1755667248975_kj2tcn.webp?alt=media&token=8bd7c41b-7751-49a9-8eff-0a2c4fdcc8c9,https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F37_1755667248976_9mcq7e.webp?alt=media&token=fc162103-bddd-4a33-8cdd-0ed26445afdf,https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F38_1755667248977_ptwwk3.webp?alt=media&token=0d0e727a-35cd-4333-b0bf-6d836be00e35,https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F39_1755667248977_gew4mo.webp?alt=media&token=8fa985c3-50f6-4c1e-b0e3-a691967eab39"
+                    ],
                     Slug = "dam-bau-maxi-so-mi-cotton-phoi-hoa-tiet-patchwork-co-nut-dai-thoai-mai-ca-tinh",
                     SKU = "MD128",
                     AverageRating = 0.0f,
@@ -4189,8 +4394,12 @@ namespace MamaFit.BusinessObjects.Data
                 {
                     Id = "581aec917bea4d9d9054b8cf1d1cc7b8",
                     Name = "Đầm Bầu Midi Trễ Vai Xếp Ly Dáng Ôm Nhẹ Sang Trọng Quyến Rũ",
-                    Description = "<p>Đầm bầu midi trễ vai với thiết kế xếp ly dọc thân giúp tạo hiệu ứng thon gọn, tôn dáng mà vẫn thoải mái cho mẹ bầu. Form ôm nhẹ kết hợp chiều dài midi mang đến sự thanh lịch, quyến rũ, thích hợp cho các buổi tiệc, sự kiện hoặc hẹn hò.</p><h3><strong>Chất Liệu</strong></h3><ul><li><p>Vải thun co giãn 4 chiều</p></li><li><p>Mềm mại, thoáng khí, ôm dáng vừa vặn</p></li><li><p>Giữ phom tốt, ít nhăn</p></li></ul><h3><strong>Cách Chăm Sóc</strong></h3><ul><li><p>Giặt tay hoặc giặt máy chế độ nhẹ</p></li><li><p>Không sử dụng thuốc tẩy mạnh</p></li><li><p>Phơi tự nhiên nơi thoáng gió, tránh ánh nắng trực tiếp</p></li><li><p>Ủi nhẹ ở nhiệt độ thấp</p></li></ul><p></p>",
-                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F32_1755667088967_kmint4.webp?alt=media&token=f9fe98a1-b1cb-4b83-97f4-4c6f8715d49c,https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F34_1755667088968_mmep92.webp?alt=media&token=067ca95c-2dfb-4b0b-9ded-1436513fe4d7,https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F35_1755667088968_sl8kv0.webp?alt=media&token=3ea7fe14-0a3f-47f3-9f51-2acba56bd41f"],
+                    Description =
+                        "<p>Đầm bầu midi trễ vai với thiết kế xếp ly dọc thân giúp tạo hiệu ứng thon gọn, tôn dáng mà vẫn thoải mái cho mẹ bầu. Form ôm nhẹ kết hợp chiều dài midi mang đến sự thanh lịch, quyến rũ, thích hợp cho các buổi tiệc, sự kiện hoặc hẹn hò.</p><h3><strong>Chất Liệu</strong></h3><ul><li><p>Vải thun co giãn 4 chiều</p></li><li><p>Mềm mại, thoáng khí, ôm dáng vừa vặn</p></li><li><p>Giữ phom tốt, ít nhăn</p></li></ul><h3><strong>Cách Chăm Sóc</strong></h3><ul><li><p>Giặt tay hoặc giặt máy chế độ nhẹ</p></li><li><p>Không sử dụng thuốc tẩy mạnh</p></li><li><p>Phơi tự nhiên nơi thoáng gió, tránh ánh nắng trực tiếp</p></li><li><p>Ủi nhẹ ở nhiệt độ thấp</p></li></ul><p></p>",
+                    Images =
+                    [
+                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F32_1755667088967_kmint4.webp?alt=media&token=f9fe98a1-b1cb-4b83-97f4-4c6f8715d49c,https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F34_1755667088968_mmep92.webp?alt=media&token=067ca95c-2dfb-4b0b-9ded-1436513fe4d7,https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F35_1755667088968_sl8kv0.webp?alt=media&token=3ea7fe14-0a3f-47f3-9f51-2acba56bd41f"
+                    ],
                     Slug = "dam-bau-midi-tre-vai-xep-ly-dang-om-nhe-sang-trong-quyen-ru",
                     SKU = "MD846",
                     AverageRating = 0.0f,
@@ -4205,654 +4414,620 @@ namespace MamaFit.BusinessObjects.Data
                     IsDeleted = false
                 });
             modelBuilder.Entity<MaternityDressDetail>().HasData(
-    new MaternityDressDetail
-    {
-        Id = "5fc32f022d374382b0c7dd67759bbbd3",
-        MaternityDressId = "e610ee9fb2494165a6c0bf196f1b2eba",
-        SKU = "MD582-001",
-        Name = "Váy thun bà bầu tay ngắn dệt kim gân đen cơ bản",
-        Color = "Black",
-        Size = "S",
-        Price = 3000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664170/ohnkiuwhpvtrlkv2kljj.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
+                new MaternityDressDetail
+                {
+                    Id = "5fc32f022d374382b0c7dd67759bbbd3",
+                    MaternityDressId = "e610ee9fb2494165a6c0bf196f1b2eba",
+                    SKU = "MD582-001",
+                    Name = "Váy thun bà bầu tay ngắn dệt kim gân đen cơ bản",
+                    Color = "Black",
+                    Size = "S",
+                    Price = 3000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664170/ohnkiuwhpvtrlkv2kljj.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "31836c7be57248fda82a237f0a206875",
+                    MaternityDressId = "e610ee9fb2494165a6c0bf196f1b2eba",
+                    SKU = "MD582-002",
+                    Name = "Váy thun bà bầu tay ngắn dệt kim gân đen cơ bản",
+                    Color = "Black",
+                    Size = "M",
+                    Price = 4000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664191/n87jx1o0utbpwtjc0sjc.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "0014266fe6354109aa870bdc11d3a0f1",
+                    MaternityDressId = "e610ee9fb2494165a6c0bf196f1b2eba",
+                    SKU = "MD582-003",
+                    Name = "Váy thun bà bầu tay ngắn dệt kim gân đen cơ bản",
+                    Color = "Black",
+                    Size = "L",
+                    Price = 5000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664222/fjfnf1czaqmnobicojg6.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "af9d2d662191461a845b106c09e5e0a3",
+                    MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
+                    SKU = "MD479-001",
+                    Name = "Váy ngắn bà bầu trơn màu xanh hoàng gia",
+                    Color = "Blue",
+                    Size = "S",
+                    Price = 4000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664644/cetselylq4gofjm7dqqu.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "9dd310f17d8b4f5d9c5b6fe7e117ed24",
+                    MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
+                    SKU = "MD479-002",
+                    Name = "Váy ngắn bà bầu trơn màu xanh hoàng gia",
+                    Color = "Blue",
+                    Size = "M",
+                    Price = 4000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664662/dkekqrmeuph2aw86dzcc.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "35c1394d34ec4edda3e8409d00009031",
+                    MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
+                    SKU = "MD479-003",
+                    Name = "Váy ngắn bà bầu trơn màu xanh hoàng gia",
+                    Color = "Blue",
+                    Size = "L",
+                    Price = 4000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664683/qjrw1hpuhnudfvr4ynd7.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "21197e4bd7a94f77b173f69a7d3a326a",
+                    MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
+                    SKU = "MD479-004",
+                    Name = " Váy ngắn bà bầu màu than trơn",
+                    Color = "Charcoal",
+                    Size = "S",
+                    Price = 3000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664723/plyadulp1hgcbhu4smzb.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "e8a851a8d34c417e8e391687fd4e3882",
+                    MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
+                    SKU = "MD479-005",
+                    Name = " Váy ngắn bà bầu màu than trơn",
+                    Color = "Charcoal",
+                    Size = "M",
+                    Price = 4000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664742/n9s03jrvxv10lgotg3pi.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "0e61a37b07134f94916d47ea4937150e",
+                    MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
+                    SKU = "MD479-006",
+                    Name = "Váy ngắn bà bầu màu Mocha trơn",
+                    Color = "Mocha",
+                    Size = "L",
+                    Price = 5000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664802/dro2qohp0twsm79b3ev7.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "e50c86450e534025948a4019d8975cd4",
+                    MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
+                    SKU = "MD479-007",
+                    Name = "Váy ngắn bà bầu màu Mocha trơn",
+                    Color = "Mocha",
+                    Size = "XL",
+                    Price = 10000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664824/lk8thux237iaf3xlfb18.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "d5b90f90bd8e4952be7355294e2b004c",
+                    MaternityDressId = "6f0fefb8162f458f98e032cf224becf2",
+                    SKU = "MD405-001",
+                    Name = "Váy bầu nhún bèo bất đối xứng màu xám",
+                    Color = "Gray",
+                    Size = "S",
+                    Price = 3000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665002/aairhrfkyt2coikhbi17.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "66253122a0c54cd59f103e7e61cd5b90",
+                    MaternityDressId = "6f0fefb8162f458f98e032cf224becf2",
+                    SKU = "MD405-002",
+                    Name = "Váy bầu nhún bèo bất đối xứng màu xám",
+                    Color = "Gray",
+                    Size = "M",
+                    Price = 4000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665017/wzuybbih4zm9ddt0xpom.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "c90a707cd4414c12831e090be2855140",
+                    MaternityDressId = "6f0fefb8162f458f98e032cf224becf2",
+                    SKU = "MD405-003",
+                    Name = "Váy bầu nhún bèo bất đối xứng màu xám",
+                    Color = "Gray",
+                    Size = "L",
+                    Price = 5000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665036/ef9y9tybbgmw01fwswr9.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "32c6fdb19661480b84bdebf8de5df8eb",
+                    MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
+                    SKU = "MD566-001",
+                    Name = "Váy yếm xếp ly màu ô liu cho bà bầu",
+                    Color = "Olive",
+                    Size = "S",
+                    Price = 4000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665249/cnuulshsmipa0zmuq49b.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "48d92e9e21a54e3c847adac8cc855f62",
+                    MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
+                    SKU = "MD566-002",
+                    Name = "Váy yếm xếp ly màu ô liu cho bà bầu",
+                    Color = "Olive",
+                    Size = "M",
+                    Price = 5000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665264/xosnknggvbkecz9munvu.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "20f6cc4a10ff47b1b6a5eeb93b7b2cd6",
+                    MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
+                    SKU = "MD566-003",
+                    Name = "Váy yếm xếp ly màu ô liu cho bà bầu",
+                    Color = "Olive",
+                    Size = "L",
+                    Price = 6000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665283/qthh4wyuvv906urp9iyr.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "33de2e83cd6c41f69ee7d34d5a8af5a2",
+                    MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
+                    SKU = "MD566-004",
+                    Name = "Váy yếm xếp ly màu đen cho bà bầu",
+                    Color = "Black",
+                    Size = "S",
+                    Price = 4000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665314/rerxwpmm2xm6czpsd4ie.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "be5de84bde154daab7c053d41fc9af8b",
+                    MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
+                    SKU = "MD566-005",
+                    Name = "Váy yếm xếp ly màu đen cho bà bầu",
+                    Color = "Black",
+                    Size = "M",
+                    Price = 4000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665331/ixmlsfs7dtojv1avpqtz.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "3595c4086597411caa4a2af7dd3cf062",
+                    MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
+                    SKU = "MD566-006",
+                    Name = "Váy yếm xếp ly màu đen cho bà bầu",
+                    Color = "Black",
+                    Size = "XL",
+                    Price = 10000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665362/ns4vd2ytewr9pinzb7yi.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "49a7c65b458a4348b56f3cd414056d8d",
+                    MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
+                    SKU = "MD566-007",
+                    Name = "Váy yếm xếp ly màu xanh nhạt cho bà bầu",
+                    Color = "Light Blue",
+                    Size = "XL",
+                    Price = 10000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665415/r0plpmqdwne6ex4geh0w.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "99a9e2e51d834bb88a6ceb7c28df8754",
+                    MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
+                    SKU = "MD566-008",
+                    Name = "Váy yếm xếp ly màu xanh nhạt cho bà bầu",
+                    Color = "Light Blue",
+                    Size = "2XL",
+                    Price = 20000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665432/b25c8zu3aayomgdkrlcl.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "23b349cd42fd4c0b9c3ece3a9dbcd148",
+                    MaternityDressId = "7202c22db49e4511b19661285cf363df",
+                    SKU = "MD920-001",
+                    Name = "Váy Maxi Bầu Halter Xếp Ly Màu Be",
+                    Color = "Beige",
+                    Size = "S",
+                    Price = 3000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665606/bmdny2uotw2epwbt9l2s.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "4650cd4e5b1845d2b55dd3b062e52ef2",
+                    MaternityDressId = "7202c22db49e4511b19661285cf363df",
+                    SKU = "MD920-002",
+                    Name = "Váy Maxi Bầu Halter Xếp Ly Màu Be",
+                    Color = "Beige",
+                    Size = "M",
+                    Price = 5000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665623/wsog1fugbnlicxawbvxu.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "271d58b4d79c415aa7a69142aa0fa98b",
+                    MaternityDressId = "7202c22db49e4511b19661285cf363df",
+                    SKU = "MD920-003",
+                    Name = "Váy Maxi Bầu Halter Xếp Ly Màu Be",
+                    Color = "Beige",
+                    Size = "L",
+                    Price = 5000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665638/kfsazm8zrtftilznaxip.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "5945777a788e48bfa05fbfd0b37548f1",
+                    MaternityDressId = "058811e7dd6842a59ea67452a301ce84",
+                    SKU = "MD515-001",
+                    Name = "Váy sơ mi bà bầu tay ngắn cài nút họa tiết màu ngà",
+                    Color = "Ivory",
+                    Size = "S",
+                    Price = 10000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666569/rioj80hsfwnwlanzw9et.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "450862bbfdb248f3897c70dc94431070",
+                    MaternityDressId = "058811e7dd6842a59ea67452a301ce84",
+                    SKU = "MD515-002",
+                    Name = "Váy sơ mi bà bầu tay ngắn cài nút họa tiết màu ngà",
+                    Color = "Ivory",
+                    Size = "M",
+                    Price = 10000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666595/hjwo0qkax6imh5a2aeh1.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "9cd6a9f5d6ec4c79823401fd1aa0af3f",
+                    MaternityDressId = "c5773c8eedba465fb0cfea9f8048cbca",
+                    SKU = "MD585-001",
+                    Name = "Váy sơ mi bà bầu họa tiết hoa đen thắt eo",
+                    Color = "Black",
+                    Size = "S",
+                    Price = 5000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666772/xwtlq28zrztferbprubt.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "a3dd93959fba4f0bbbab424df7bf5aba",
+                    MaternityDressId = "c5773c8eedba465fb0cfea9f8048cbca",
+                    SKU = "MD585-002",
+                    Name = "Váy sơ mi bà bầu họa tiết hoa đen thắt eo",
+                    Color = "Black",
+                    Size = "L",
+                    Price = 10000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666772/xwtlq28zrztferbprubt.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "6267df0da52549af8386d32fb5d3cd17",
+                    MaternityDressId = "058811e7dd6842a59ea67452a301ce84",
+                    SKU = "MD515-003",
+                    Name = "Váy sơ mi bà bầu tay ngắn cài nút họa tiết màu ngà",
+                    Color = "Ivory",
+                    Size = "L",
+                    Price = 7000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666595/hjwo0qkax6imh5a2aeh1.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "6fea930520964cf0969f9052bc88cd11",
+                    MaternityDressId = "fdff22c67ad7425ebf40b2f457fc3228",
+                    SKU = "MD220-001",
+                    Name = "Váy Maxi hở vai bằng vải denim họa tiết chambray nhạt",
+                    Color = "Light Blue",
+                    Size = "S",
+                    Price = 5000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667003/juaqopirnx9hy9uk6fpe.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "be5e7b3b89fe4208bec2fdedf8911f13",
+                    MaternityDressId = "fdff22c67ad7425ebf40b2f457fc3228",
+                    SKU = "MD220-002",
+                    Name = "Váy Maxi hở vai bằng vải denim họa tiết chambray nhạt",
+                    Color = "Light Blue",
+                    Size = "M",
+                    Price = 6000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667020/i2qjoezlgbf6n9m57sah.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "e75cfa596866407998267accece512e1",
+                    MaternityDressId = "581aec917bea4d9d9054b8cf1d1cc7b8",
+                    SKU = "MD846-001",
+                    Name = "Váy midi bà bầu trễ vai nhún bèo màu đen",
+                    Color = "Black",
+                    Size = "S",
+                    Price = 5000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667122/mntbthkygph097khnszt.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "6ca47d478d104a4c89b677674fd4ae88",
+                    MaternityDressId = "581aec917bea4d9d9054b8cf1d1cc7b8",
+                    SKU = "MD846-002",
+                    Name = "Váy midi bà bầu trễ vai nhún bèo màu đen",
+                    Color = "Black",
+                    Size = "M",
+                    Price = 8000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667143/hm4xhlkuxnfpqlo5n053.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "107a36d41c9e44b38f9c00f89fbd61df",
+                    MaternityDressId = "581aec917bea4d9d9054b8cf1d1cc7b8",
+                    SKU = "MD846-003",
+                    Name = "Váy midi bà bầu trễ vai nhún bèo màu đen",
+                    Color = "Black",
+                    Size = "L",
+                    Price = 10000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667157/jxildxhcn9fqch6hjj9l.webp"],
+                    CreatedBy = "Admin",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "1f3a3d61760246f0aae05b43df794304",
+                    MaternityDressId = "039fd8cb6da548299d31cd0b3780d528",
+                    SKU = "MD128-001",
+                    Name = "Áo dài bà bầu in họa tiết chắp vá nhiều màu xanh nhạt",
+                    Color = "Light Blue",
+                    Size = "XL",
+                    Price = 30000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667285/vtcwf6bzndx8xfqntyft.webp"],
+                    CreatedBy = "System",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                },
+                new MaternityDressDetail
+                {
+                    Id = "8d8c3c7000d845fc9f70bd7487f780fe",
+                    MaternityDressId = "039fd8cb6da548299d31cd0b3780d528",
+                    SKU = "MD128-002",
+                    Name = "Áo dài bà bầu in họa tiết chắp vá nhiều màu xanh nhạt",
+                    Color = "Light Blue",
+                    Size = "2XL",
+                    Price = 40000,
+                    Quantity = 999,
+                    Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667299/ameel0u31pqfmhjlwwvz.webp"],
+                    CreatedBy = "System",
+                    UpdatedBy = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                }
+            );
 
-    new MaternityDressDetail
-    {
-        Id = "31836c7be57248fda82a237f0a206875",
-        MaternityDressId = "e610ee9fb2494165a6c0bf196f1b2eba",
-        SKU = "MD582-002",
-        Name = "Váy thun bà bầu tay ngắn dệt kim gân đen cơ bản",
-        Color = "Black",
-        Size = "M",
-        Price = 4000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664191/n87jx1o0utbpwtjc0sjc.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "0014266fe6354109aa870bdc11d3a0f1",
-        MaternityDressId = "e610ee9fb2494165a6c0bf196f1b2eba",
-        SKU = "MD582-003",
-        Name = "Váy thun bà bầu tay ngắn dệt kim gân đen cơ bản",
-        Color = "Black",
-        Size = "L",
-        Price = 5000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664222/fjfnf1czaqmnobicojg6.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "af9d2d662191461a845b106c09e5e0a3",
-        MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
-        SKU = "MD479-001",
-        Name = "Váy ngắn bà bầu trơn màu xanh hoàng gia",
-        Color = "Blue",
-        Size = "S",
-        Price = 4000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664644/cetselylq4gofjm7dqqu.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "9dd310f17d8b4f5d9c5b6fe7e117ed24",
-        MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
-        SKU = "MD479-002",
-        Name = "Váy ngắn bà bầu trơn màu xanh hoàng gia",
-        Color = "Blue",
-        Size = "M",
-        Price = 4000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664662/dkekqrmeuph2aw86dzcc.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "35c1394d34ec4edda3e8409d00009031",
-        MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
-        SKU = "MD479-003",
-        Name = "Váy ngắn bà bầu trơn màu xanh hoàng gia",
-        Color = "Blue",
-        Size = "L",
-        Price = 4000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664683/qjrw1hpuhnudfvr4ynd7.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "21197e4bd7a94f77b173f69a7d3a326a",
-        MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
-        SKU = "MD479-004",
-        Name = " Váy ngắn bà bầu màu than trơn",
-        Color = "Charcoal",
-        Size = "S",
-        Price = 3000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664723/plyadulp1hgcbhu4smzb.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "e8a851a8d34c417e8e391687fd4e3882",
-        MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
-        SKU = "MD479-005",
-        Name = " Váy ngắn bà bầu màu than trơn",
-        Color = "Charcoal",
-        Size = "M",
-        Price = 4000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664742/n9s03jrvxv10lgotg3pi.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "0e61a37b07134f94916d47ea4937150e",
-        MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
-        SKU = "MD479-006",
-        Name = "Váy ngắn bà bầu màu Mocha trơn",
-        Color = "Mocha",
-        Size = "L",
-        Price = 5000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664802/dro2qohp0twsm79b3ev7.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "e50c86450e534025948a4019d8975cd4",
-        MaternityDressId = "ab00ca8d32fa49b0bd9037572f64351d",
-        SKU = "MD479-007",
-        Name = "Váy ngắn bà bầu màu Mocha trơn",
-        Color = "Mocha",
-        Size = "XL",
-        Price = 10000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755664824/lk8thux237iaf3xlfb18.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "d5b90f90bd8e4952be7355294e2b004c",
-        MaternityDressId = "6f0fefb8162f458f98e032cf224becf2",
-        SKU = "MD405-001",
-        Name = "Váy bầu nhún bèo bất đối xứng màu xám",
-        Color = "Gray",
-        Size = "S",
-        Price = 3000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665002/aairhrfkyt2coikhbi17.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "66253122a0c54cd59f103e7e61cd5b90",
-        MaternityDressId = "6f0fefb8162f458f98e032cf224becf2",
-        SKU = "MD405-002",
-        Name = "Váy bầu nhún bèo bất đối xứng màu xám",
-        Color = "Gray",
-        Size = "M",
-        Price = 4000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665017/wzuybbih4zm9ddt0xpom.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "c90a707cd4414c12831e090be2855140",
-        MaternityDressId = "6f0fefb8162f458f98e032cf224becf2",
-        SKU = "MD405-003",
-        Name = "Váy bầu nhún bèo bất đối xứng màu xám",
-        Color = "Gray",
-        Size = "L",
-        Price = 5000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665036/ef9y9tybbgmw01fwswr9.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "32c6fdb19661480b84bdebf8de5df8eb",
-        MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
-        SKU = "MD566-001",
-        Name = "Váy yếm xếp ly màu ô liu cho bà bầu",
-        Color = "Olive",
-        Size = "S",
-        Price = 4000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665249/cnuulshsmipa0zmuq49b.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "48d92e9e21a54e3c847adac8cc855f62",
-        MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
-        SKU = "MD566-002",
-        Name = "Váy yếm xếp ly màu ô liu cho bà bầu",
-        Color = "Olive",
-        Size = "M",
-        Price = 5000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665264/xosnknggvbkecz9munvu.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "20f6cc4a10ff47b1b6a5eeb93b7b2cd6",
-        MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
-        SKU = "MD566-003",
-        Name = "Váy yếm xếp ly màu ô liu cho bà bầu",
-        Color = "Olive",
-        Size = "L",
-        Price = 6000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665283/qthh4wyuvv906urp9iyr.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "33de2e83cd6c41f69ee7d34d5a8af5a2",
-        MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
-        SKU = "MD566-004",
-        Name = "Váy yếm xếp ly màu đen cho bà bầu",
-        Color = "Black",
-        Size = "S",
-        Price = 4000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665314/rerxwpmm2xm6czpsd4ie.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "be5de84bde154daab7c053d41fc9af8b",
-        MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
-        SKU = "MD566-005",
-        Name = "Váy yếm xếp ly màu đen cho bà bầu",
-        Color = "Black",
-        Size = "M",
-        Price = 4000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665331/ixmlsfs7dtojv1avpqtz.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "3595c4086597411caa4a2af7dd3cf062",
-        MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
-        SKU = "MD566-006",
-        Name = "Váy yếm xếp ly màu đen cho bà bầu",
-        Color = "Black",
-        Size = "XL",
-        Price = 10000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665362/ns4vd2ytewr9pinzb7yi.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "49a7c65b458a4348b56f3cd414056d8d",
-        MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
-        SKU = "MD566-007",
-        Name = "Váy yếm xếp ly màu xanh nhạt cho bà bầu",
-        Color = "Light Blue",
-        Size = "XL",
-        Price = 10000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665415/r0plpmqdwne6ex4geh0w.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "99a9e2e51d834bb88a6ceb7c28df8754",
-        MaternityDressId = "a3295084c7ca4c948017b82fa1d06ebf",
-        SKU = "MD566-008",
-        Name = "Váy yếm xếp ly màu xanh nhạt cho bà bầu",
-        Color = "Light Blue",
-        Size = "2XL",
-        Price = 20000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665432/b25c8zu3aayomgdkrlcl.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "23b349cd42fd4c0b9c3ece3a9dbcd148",
-        MaternityDressId = "7202c22db49e4511b19661285cf363df",
-        SKU = "MD920-001",
-        Name = "Váy Maxi Bầu Halter Xếp Ly Màu Be",
-        Color = "Beige",
-        Size = "S",
-        Price = 3000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665606/bmdny2uotw2epwbt9l2s.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "4650cd4e5b1845d2b55dd3b062e52ef2",
-        MaternityDressId = "7202c22db49e4511b19661285cf363df",
-        SKU = "MD920-002",
-        Name = "Váy Maxi Bầu Halter Xếp Ly Màu Be",
-        Color = "Beige",
-        Size = "M",
-        Price = 5000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665623/wsog1fugbnlicxawbvxu.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "271d58b4d79c415aa7a69142aa0fa98b",
-        MaternityDressId = "7202c22db49e4511b19661285cf363df",
-        SKU = "MD920-003",
-        Name = "Váy Maxi Bầu Halter Xếp Ly Màu Be",
-        Color = "Beige",
-        Size = "L",
-        Price = 5000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755665638/kfsazm8zrtftilznaxip.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "5945777a788e48bfa05fbfd0b37548f1",
-        MaternityDressId = "058811e7dd6842a59ea67452a301ce84",
-        SKU = "MD515-001",
-        Name = "Váy sơ mi bà bầu tay ngắn cài nút họa tiết màu ngà",
-        Color = "Ivory",
-        Size = "S",
-        Price = 10000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666569/rioj80hsfwnwlanzw9et.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "450862bbfdb248f3897c70dc94431070",
-        MaternityDressId = "058811e7dd6842a59ea67452a301ce84",
-        SKU = "MD515-002",
-        Name = "Váy sơ mi bà bầu tay ngắn cài nút họa tiết màu ngà",
-        Color = "Ivory",
-        Size = "M",
-        Price = 10000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666595/hjwo0qkax6imh5a2aeh1.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "9cd6a9f5d6ec4c79823401fd1aa0af3f",
-        MaternityDressId = "c5773c8eedba465fb0cfea9f8048cbca",
-        SKU = "MD585-001",
-        Name = "Váy sơ mi bà bầu họa tiết hoa đen thắt eo",
-        Color = "Black",
-        Size = "S",
-        Price = 5000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666772/xwtlq28zrztferbprubt.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "a3dd93959fba4f0bbbab424df7bf5aba",
-        MaternityDressId = "c5773c8eedba465fb0cfea9f8048cbca",
-        SKU = "MD585-002",
-        Name = "Váy sơ mi bà bầu họa tiết hoa đen thắt eo",
-        Color = "Black",
-        Size = "L",
-        Price = 10000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666772/xwtlq28zrztferbprubt.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "6267df0da52549af8386d32fb5d3cd17",
-        MaternityDressId = "058811e7dd6842a59ea67452a301ce84",
-        SKU = "MD515-003",
-        Name = "Váy sơ mi bà bầu tay ngắn cài nút họa tiết màu ngà",
-        Color = "Ivory",
-        Size = "L",
-        Price = 7000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755666595/hjwo0qkax6imh5a2aeh1.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "6fea930520964cf0969f9052bc88cd11",
-        MaternityDressId = "fdff22c67ad7425ebf40b2f457fc3228",
-        SKU = "MD220-001",
-        Name = "Váy Maxi hở vai bằng vải denim họa tiết chambray nhạt",
-        Color = "Light Blue",
-        Size = "S",
-        Price = 5000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667003/juaqopirnx9hy9uk6fpe.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "be5e7b3b89fe4208bec2fdedf8911f13",
-        MaternityDressId = "fdff22c67ad7425ebf40b2f457fc3228",
-        SKU = "MD220-002",
-        Name = "Váy Maxi hở vai bằng vải denim họa tiết chambray nhạt",
-        Color = "Light Blue",
-        Size = "M",
-        Price = 6000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667020/i2qjoezlgbf6n9m57sah.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "e75cfa596866407998267accece512e1",
-        MaternityDressId = "581aec917bea4d9d9054b8cf1d1cc7b8",
-        SKU = "MD846-001",
-        Name = "Váy midi bà bầu trễ vai nhún bèo màu đen",
-        Color = "Black",
-        Size = "S",
-        Price = 5000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667122/mntbthkygph097khnszt.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "6ca47d478d104a4c89b677674fd4ae88",
-        MaternityDressId = "581aec917bea4d9d9054b8cf1d1cc7b8",
-        SKU = "MD846-002",
-        Name = "Váy midi bà bầu trễ vai nhún bèo màu đen",
-        Color = "Black",
-        Size = "M",
-        Price = 8000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667143/hm4xhlkuxnfpqlo5n053.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "107a36d41c9e44b38f9c00f89fbd61df",
-        MaternityDressId = "581aec917bea4d9d9054b8cf1d1cc7b8",
-        SKU = "MD846-003",
-        Name = "Váy midi bà bầu trễ vai nhún bèo màu đen",
-        Color = "Black",
-        Size = "L",
-        Price = 10000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667157/jxildxhcn9fqch6hjj9l.webp"],
-        CreatedBy = "Admin",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "1f3a3d61760246f0aae05b43df794304",
-        MaternityDressId = "039fd8cb6da548299d31cd0b3780d528",
-        SKU = "MD128-001",
-        Name = "Áo dài bà bầu in họa tiết chắp vá nhiều màu xanh nhạt",
-        Color = "Light Blue",
-        Size = "XL",
-        Price = 30000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667285/vtcwf6bzndx8xfqntyft.webp"],
-        CreatedBy = "System",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    },
-
-    new MaternityDressDetail
-    {
-        Id = "8d8c3c7000d845fc9f70bd7487f780fe",
-        MaternityDressId = "039fd8cb6da548299d31cd0b3780d528",
-        SKU = "MD128-002",
-        Name = "Áo dài bà bầu in họa tiết chắp vá nhiều màu xanh nhạt",
-        Color = "Light Blue",
-        Size = "2XL",
-        Price = 40000,
-        Quantity = 999,
-        Image = ["https://res.cloudinary.com/dzykiyef5/image/upload/v1755667299/ameel0u31pqfmhjlwwvz.webp"],
-        CreatedBy = "System",
-        UpdatedBy = "",
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow,
-        IsDeleted = false
-    }
-    );
             #endregion
 
             #region Seed Order, OrderItem, Add_On, DesignRequest
@@ -4904,7 +5079,7 @@ namespace MamaFit.BusinessObjects.Data
                     MeasurementId = null,
                     IsOnline = true,
                     Type = OrderType.DESIGN,
-                    Code = "O75387",
+                    Code = "ORD3216355",
                     TrackingOrderCode = null,
                     Status = 0,
                     TotalAmount = 3000.0m,
@@ -4940,7 +5115,7 @@ namespace MamaFit.BusinessObjects.Data
                     MeasurementId = "82e18e44f0984ad08209e575f77f3ca0",
                     IsOnline = true,
                     Type = 0,
-                    Code = "O61733",
+                    Code = "ORD2983710",
                     TrackingOrderCode = null,
                     Status = 0,
                     TotalAmount = 30250m,
@@ -4976,7 +5151,7 @@ namespace MamaFit.BusinessObjects.Data
                     MeasurementId = "c49743c2e5d746239bddd1ade3d76ae9",
                     IsOnline = true,
                     Type = 0,
-                    Code = "O71956",
+                    Code = "ORD3900133",
                     TrackingOrderCode = null,
                     Status = 0,
                     TotalAmount = 27150.0m,
@@ -5012,7 +5187,7 @@ namespace MamaFit.BusinessObjects.Data
                     MeasurementId = "82e18e44f0984ad08209e575f77f3ca0",
                     IsOnline = true,
                     Type = 0,
-                    Code = "O89007",
+                    Code = "ORD6500230",
                     TrackingOrderCode = null,
                     Status = 0,
                     TotalAmount = 25850.0m,
@@ -5048,7 +5223,7 @@ namespace MamaFit.BusinessObjects.Data
                     MeasurementId = "c49743c2e5d746239bddd1ade3d76ae9",
                     IsOnline = true,
                     Type = 0,
-                    Code = "O84288",
+                    Code = "ORD3021123",
                     TrackingOrderCode = null,
                     Status = 0,
                     TotalAmount = 24000.0m,
@@ -5084,7 +5259,7 @@ namespace MamaFit.BusinessObjects.Data
                     MeasurementId = null,
                     IsOnline = true,
                     Type = OrderType.DESIGN,
-                    Code = "O47111",
+                    Code = "ORD1354972",
                     TrackingOrderCode = null,
                     Status = 0,
                     TotalAmount = 3000.0m,
@@ -5120,7 +5295,7 @@ namespace MamaFit.BusinessObjects.Data
                     MeasurementId = "c49743c2e5d746239bddd1ade3d76ae9",
                     IsOnline = true,
                     Type = 0,
-                    Code = "O46002",
+                    Code = "ORD9498301",
                     TrackingOrderCode = null,
                     Status = 0,
                     TotalAmount = 27950.0m,

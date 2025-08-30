@@ -727,7 +727,7 @@ public class OrderService : IOrderService
         _validation.CheckNotFound(order, "Order not found");
 
         if (order.Status != OrderStatus.DELIVERING
-            || order.Status != OrderStatus.RECEIVED_AT_BRANCH)
+            && order.Status != OrderStatus.RECEIVED_AT_BRANCH)
         {
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                 "Order is not in a state that can be received.");

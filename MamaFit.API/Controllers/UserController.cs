@@ -1,3 +1,4 @@
+using Contentful.Core.Models.Management;
 using MamaFit.BusinessObjects.DTO.UploadImageDto;
 using MamaFit.BusinessObjects.DTO.UserDto;
 using MamaFit.Repositories.Helper;
@@ -34,6 +35,17 @@ public class UserController : ControllerBase
         ));
     }
 
+    [HttpGet("staff")]
+    public async Task<IActionResult> GetAllStaff()
+    {
+        var listStaff = await _service.GetAllStaffAsync();
+        return Ok(new ResponseModel<List<UserReponseDto>>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            listStaff,
+            "Get all staff successfully!"
+        ));
+    }
 
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetUserById(string userId)

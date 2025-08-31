@@ -203,7 +203,6 @@ namespace MamaFit.BusinessObjects.Data
             #region Seed Category, Style, and Component
 
             var now = DateTime.UtcNow;
-            var createdBy = "System";
 
             // ===== CATEGORIES =====
             modelBuilder.Entity<Category>().HasData(
@@ -444,2307 +443,3502 @@ namespace MamaFit.BusinessObjects.Data
 
             modelBuilder.Entity<Component>().HasData(components);
 
-            // ===== COMPONENT OPTIONS =====
+            #region ComponentOption Seed
             modelBuilder.Entity<ComponentOption>().HasData(
-                new ComponentOption
-                {
-                    Id = "15fecd17aa014779853f30532d260f47",
-                    ComponentId = "f00fcaf79a86427c995daa1fd0915d8e",
-                    Name = "Asymmetrical",
-                    Price = 0m,
-                    Description = "Gấu lệch, tạo dáng hiện đại.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fasymmetrical-hem.png?alt=media&token=6267ed98-6b96-41bf-b0eb-c0b1574b8b23"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "Admin",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 29, 4, 57, 50, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 29, 4, 57, 50, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "9cc2f01b2fb34f21884b1365acd9bb48",
-                    ComponentId = "c615996abfe24d3885ccea361a199dba",
-                    Name = "Jersey Knit",
-                    Price = 0m,
-                    Description = "Vải thun co giãn, mềm mại, dễ vận động.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fjersey-knit.png?alt=media&token=d16f44cc-528e-49e5-a985-61a63c058d77"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "Admin",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 29, 4, 55, 25, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 29, 4, 55, 25, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "ac73834982664ae09fc86ba4359e4aa8",
-                    ComponentId = "c615996abfe24d3885ccea361a199dba",
-                    Name = "Linen",
-                    Price = 0m,
-                    Description = "Vải thoáng mát, nhẹ, thích hợp mùa hè.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Flinen.png?alt=media&token=39c033ba-8e36-46d3-8bdf-da5fc16a63f7"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "Admin",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 29, 4, 55, 15, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 29, 4, 55, 15, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "44ecb280dd8f4137af58024e0780e994",
-                    ComponentId = "b66ab857cd93410599bd14b79ae37147",
-                    Name = "Boat Neck",
-                    Price = 0m,
-                    Description = "Cổ ngang, hơi rộng, ôm sát vai.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fboat-neck.png?alt=media&token=3f2e448b-e252-4567-841f-b88531f378fc"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "Admin",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 29, 4, 53, 50, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 29, 4, 53, 50, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "3ca4d35ad1b341ed835ab225f9c2faa0",
-                    ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
-                    Name = "Peplum",
-                    Price = 0m,
-                    Description = "Eo xếp bèo nhẹ, tạo điểm nhấn và che bụng.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fpeplum-waist.png?alt=media&token=c4d57153-75e2-4bbd-be17-25de6e8a49b7"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "Admin",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 29, 4, 52, 42, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 29, 4, 52, 42, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "d63a7d0c9e5d4e258285ded1974bf9cf",
-                    ComponentId = "0ec808c3046b4d368962c65eb771dea0",
-                    Name = "Black",
-                    Price = 0m,
-                    Description = "Đen cơ bản, thanh lịch.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fblack.png?alt=media&token=08e541fa-5ced-449c-bf7a-63da6ea78e2c"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "Admin",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 29, 4, 46, 38, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 29, 4, 46, 38, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "6eb66f2427eb47a1a1fffc0dd3f89f6e",
-                    ComponentId = "3b83e5e47b444880aa9495b58b38a2fd",
-                    Name = "Short Sleeves",
-                    Price = 0m,
-                    Description = "Tay ngắn, gọn gàng.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fshort-sleeves.png?alt=media&token=04468aff-6280-41fc-bac7-203bb65ef698"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "Admin",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 29, 4, 44, 53, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 29, 4, 44, 53, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "6b81101144404b9ab306235861eedc12",
-                    ComponentId = "f00fcaf79a86427c995daa1fd0915d8e",
-                    Name = "Straight",
-                    Price = 0m,
-                    Description = "Đường gấu thẳng, đơn giản.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fstraight-hem.png?alt=media&token=4ead53a9-08f5-4362-872e-5f3b0272d220"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "Admin",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 29, 4, 59, 34, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 29, 4, 59, 34, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "7186b0e8de2348fdbde87105c0f9abe3",
-                    ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
-                    Name = "Wrap",
-                    Price = 0m,
-                    Description = "Eo quấn chéo, buộc dây, dễ điều chỉnh và tiện lợi cho mẹ bầu.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fwrap-waist.png?alt=media&token=3153efa1-17f4-4f8d-8e51-e287ca43ab26"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "Admin",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 29, 13, 26, 53, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 29, 13, 26, 53, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
                 new ComponentOption
                 {
                     Id = "06e6899bd6544dd3b9020a50789d9421",
                     ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
                     Name = "Normal",
-                    Price = 0m,
+                    Price = 0.0m,
                     Description = "Thiết kế eo trung bình truyền thống.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fnormal-waist.png?alt=media&token=6b608665-6975-4993-abd7-c57106c913f8"
-                    ],
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fnormal-waist.png?alt=media&token=6b608665-6975-4993-abd7-c57106c913f8"],
                     GlobalStatus = 0,
                     CreatedBy = "System",
                     UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    IsDeleted = false
+                    CreatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+                    IsDeleted = false,
                 },
-                new ComponentOption
-                {
-                    Id = "31c853d3dde94e68ab57903cf8a80798",
-                    ComponentId = "c615996abfe24d3885ccea361a199dba",
-                    Name = "Cotton",
-                    Price = 0m,
-                    Description = "Vải cotton thoáng mát, thấm hút tốt.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fcotton.png?alt=media&token=bdd471d7-c695-4c05-8770-ffb8eeb0f03e"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "4ed7cdc105ab44de81d333d63db0a222",
-                    ComponentId = "3b83e5e47b444880aa9495b58b38a2fd",
-                    Name = "No Sleeves",
-                    Price = 0m,
-                    Description = "Không tay, thoáng mát.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fno-sleeves.png?alt=media&token=222c148c-22b0-407d-acf9-03b91a793123"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "66645e2f8fa94d228d87450cc4a74706",
-                    ComponentId = "0ec808c3046b4d368962c65eb771dea0",
-                    Name = "Green",
-                    Price = 0m,
-                    Description = "Xanh ngọc quý phái, nổi bật.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Femerald-green.png?alt=media&token=d63ad4cc-0037-4ca5-b71b-4d8eb394b6ba"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "70b69ec5ea074c0f8bf904b20b9c7884",
-                    ComponentId = "f00fcaf79a86427c995daa1fd0915d8e",
-                    Name = "High-Low",
-                    Price = 0m,
-                    Description = "Trước ngắn sau dài tạo nét lạ mắt.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fhigh-low-hem.png?alt=media&token=258a7314-654c-4a9a-8af7-90a5b23597e3"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "78b78938aefe4bc6b927ed3722bc5859",
-                    ComponentId = "3b83e5e47b444880aa9495b58b38a2fd",
-                    Name = "Strap",
-                    Price = 0m,
-                    Description = "Dây mảnh, nữ tính.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fspaghetti-strap.png?alt=media&token=db6fb73c-11e8-4b72-8a64-3f87c82eb34c"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "8158b8e5ef0340bdaf830fa8eb2e650d",
-                    ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
-                    Name = "Empire Waist",
-                    Price = 0m,
-                    Description = "Eo cao, phù hợp cho phong cách nữ tính.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fempire-waist.png?alt=media&token=292233b5-38d3-4b46-b543-6747d187a702"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "818f875df04a49eebe9c474bba4247b9",
-                    ComponentId = "b66ab857cd93410599bd14b79ae37147",
-                    Name = "V Neck",
-                    Price = 0m,
-                    Description = "Cổ chữ V tạo cảm giác cổ dài hơn.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fv-neck.png?alt=media&token=5418fe58-896e-4559-86ae-e2809c519963"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "81acc249e2664c72908014a28e1e72ef",
-                    ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
-                    Name = "Bow Tie",
-                    Price = 0m,
-                    Description = "Nơ thắt eo tạo điểm nhấn đáng yêu.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fbow-tie-waist.png?alt=media&token=43522a3e-848a-49d1-8e5a-a6610e619c21"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "8cff38afa8464ae191ba152b93438266",
-                    ComponentId = "f00fcaf79a86427c995daa1fd0915d8e",
-                    Name = "Single Layer",
-                    Price = 0m,
-                    Description = "Gấu váy đơn giản, thanh lịch.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fsingle-layer-hem.png?alt=media&token=bfd6b737-ca41-4a9d-9257-b35320fd63b4"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
-                    ComponentId = "b66ab857cd93410599bd14b79ae37147",
-                    Name = "Round",
-                    Price = 0m,
-                    Description = "Cổ tròn cơ bản, thanh lịch.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fround-neck.png?alt=media&token=1f8e06b6-1aa5-49fc-a05a-e88e29593710"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "c454b97a93f341e78b127d5425acc464",
-                    ComponentId = "0ec808c3046b4d368962c65eb771dea0",
-                    Name = "Red",
-                    Price = 0m,
-                    Description = "Màu đỏ nổi bật, quyến rũ.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fred.png?alt=media&token=b520d1e1-69b9-48bd-aa84-d3824897c0b8"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "e2c03da33b12458694a1b01c3ec66474",
-                    ComponentId = "0ec808c3046b4d368962c65eb771dea0",
-                    Name = "Navy",
-                    Price = 0m,
-                    Description = "Xanh navy lịch sự, thanh nhã.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fnavy-blue.png?alt=media&token=94e2c88c-a38c-4294-8b35-027b255e26ca"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new ComponentOption
-                {
-                    Id = "fecd26fe3b6b4e88ba97ebb406fa6df2",
-                    ComponentId = "3b83e5e47b444880aa9495b58b38a2fd",
-                    Name = "Flattered",
-                    Price = 0m,
-                    Description = "Tay ngắn bay bổng, thoải mái.",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fflattered-sleeves.png?alt=media&token=93a07830-1514-4a65-80ca-599c67cd7334"
-                    ],
-                    GlobalStatus = 0,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 4, 14, 5, 3, DateTimeKind.Utc),
-                    IsDeleted = false
-                }
-            );
+    new ComponentOption
+    {
+        Id = "15fecd17aa014779853f30532d260f47",
+        ComponentId = "f00fcaf79a86427c995daa1fd0915d8e",
+        Name = "Asymmetrical",
+        Price = 0.0m,
+        Description = "Gấu lệch, tạo dáng hiện đại.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fasymmetrical-hem.png?alt=media&token=6267ed98-6b96-41bf-b0eb-c0b1574b8b23"],
+        GlobalStatus = 0,
+        CreatedBy = "Admin",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-29 11:57:50.000 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-29 11:57:50.000 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    },
+    new ComponentOption
+    {
+        Id = "31c853d3dde94e68ab57903cf8a80798",
+        ComponentId = "c615996abfe24d3885ccea361a199dba",
+        Name = "Cotton",
+        Price = 0.0m,
+        Description = "Vải cotton thoáng mát, thấm hút tốt.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fcotton.png?alt=media&token=bdd471d7-c695-4c05-8770-ffb8eeb0f03e"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    },
+    new ComponentOption
+    {
+        Id = "3ca4d35ad1b341ed835ab225f9c2faa0",
+        ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
+        Name = "Peplum",
+        Price = 0.0m,
+        Description = "Eo xếp bèo nhẹ, tạo điểm nhấn và che bụng.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fpeplum-waist.png?alt=media&token=c4d57153-75e2-4bbd-be17-25de6e8a49b7"],
+        GlobalStatus = 0,
+        CreatedBy = "Admin",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-29 11:52:42.000 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-29 11:52:42.000 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    },
+    new ComponentOption
+    {
+        Id = "44ecb280dd8f4137af58024e0780e994",
+        ComponentId = "b66ab857cd93410599bd14b79ae37147",
+        Name = "Boat Neck",
+        Price = 0.0m,
+        Description = "Cổ ngang, hơi rộng, ôm sát vai.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fboat-neck.png?alt=media&token=3f2e448b-e252-4567-841f-b88531f378fc"],
+        GlobalStatus = 0,
+        CreatedBy = "Admin",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-29 11:53:50.000 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-29 11:53:50.000 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    },
+    new ComponentOption
+    {
+        Id = "4ed7cdc105ab44de81d333d63db0a222",
+        ComponentId = "3b83e5e47b444880aa9495b58b38a2fd",
+        Name = "No Sleeves",
+        Price = 0.0m,
+        Description = "Không tay, thoáng mát.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fno-sleeves.png?alt=media&token=222c148c-22b0-407d-acf9-03b91a793123"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    },
+    new ComponentOption
+    {
+        Id = "66645e2f8fa94d228d87450cc4a74706",
+        ComponentId = "0ec808c3046b4d368962c65eb771dea0",
+        Name = "Green",
+        Price = 0.0m,
+        Description = "Xanh ngọc quý phái, nổi bật.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Femerald-green.png?alt=media&token=d63ad4cc-0037-4ca5-b71b-4d8eb394b6ba"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    },
+    new ComponentOption
+    {
+        Id = "6b81101144404b9ab306235861eedc12",
+        ComponentId = "f00fcaf79a86427c995daa1fd0915d8e",
+        Name = "Straight",
+        Price = 0.0m,
+        Description = "Đường gấu thẳng, đơn giản.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fstraight-hem.png?alt=media&token=4ead53a9-08f5-4362-872e-5f3b0272d220"],
+        GlobalStatus = 0,
+        CreatedBy = "Admin",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-29 11:59:34.000 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-29 11:59:34.000 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    },
+    new ComponentOption
+    {
+        Id = "6eb66f2427eb47a1a1fffc0dd3f89f6e",
+        ComponentId = "3b83e5e47b444880aa9495b58b38a2fd",
+        Name = "Short Sleeves",
+        Price = 0.0m,
+        Description = "Tay ngắn, gọn gàng.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fshort-sleeves.png?alt=media&token=04468aff-6280-41fc-bac7-203bb65ef698"],
+        GlobalStatus = 0,
+        CreatedBy = "Admin",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-29 11:44:53.000 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-29 11:44:53.000 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    },
+    new ComponentOption
+    {
+        Id = "70b69ec5ea074c0f8bf904b20b9c7884",
+        ComponentId = "f00fcaf79a86427c995daa1fd0915d8e",
+        Name = "High-Low",
+        Price = 0.0m,
+        Description = "Trước ngắn sau dài tạo nét lạ mắt.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fhigh-low-hem.png?alt=media&token=258a7314-654c-4a9a-8af7-90a5b23597e3"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    },
+    new ComponentOption
+    {
+        Id = "7186b0e8de2348fdbde87105c0f9abe3",
+        ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
+        Name = "Wrap",
+        Price = 0.0m,
+        Description = "Eo quấn chéo, buộc dây, dễ điều chỉnh và tiện lợi cho mẹ bầu.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fwrap-waist.png?alt=media&token=3153efa1-17f4-4f8d-8e51-e287ca43ab26"],
+        GlobalStatus = 0,
+        CreatedBy = "Admin",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-29 20:26:53.000 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-29 20:26:53.000 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    },
+    new ComponentOption
+    {
+        Id = "78b78938aefe4bc6b927ed3722bc5859",
+        ComponentId = "3b83e5e47b444880aa9495b58b38a2fd",
+        Name = "Strap",
+        Price = 0.0m,
+        Description = "Dây mảnh, nữ tính.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fspaghetti-strap.png?alt=media&token=db6fb73c-11e8-4b72-8a64-3f87c82eb34c"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    },
+    new ComponentOption
+    {
+        Id = "8158b8e5ef0340bdaf830fa8eb2e650d",
+        ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
+        Name = "Empire Waist",
+        Price = 0.0m,
+        Description = "Eo cao, phù hợp cho phong cách nữ tính.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fempire-waist.png?alt=media&token=292233b5-38d3-4b46-b543-6747d187a702"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    },
+    new ComponentOption
+    {
+        Id = "818f875df04a49eebe9c474bba4247b9",
+        ComponentId = "b66ab857cd93410599bd14b79ae37147",
+        Name = "V Neck",
+        Price = 0.0m,
+        Description = "Cổ chữ V tạo cảm giác cổ dài hơn.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fv-neck.png?alt=media&token=5418fe58-896e-4559-86ae-e2809c519963"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    },
+    new ComponentOption
+    {
+        Id = "81acc249e2664c72908014a28e1e72ef",
+        ComponentId = "3e9f3d9beeff47f1977a6713cffe781e",
+        Name = "Bow Tie",
+        Price = 0.0m,
+        Description = "Nơ thắt eo tạo điểm nhấn đáng yêu.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fbow-tie-waist.png?alt=media&token=43522a3e-848a-49d1-8e5a-a6610e619c21"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    },
+    new ComponentOption
+    {
+        Id = "8cff38afa8464ae191ba152b93438266",
+        ComponentId = "f00fcaf79a86427c995daa1fd0915d8e",
+        Name = "Single Layer",
+        Price = 0.0m,
+        Description = "Gấu váy đơn giản, thanh lịch.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fsingle-layer-hem.png?alt=media&token=bfd6b737-ca41-4a9d-9257-b35320fd63b4"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    },
+    new ComponentOption
+    {
+        Id = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        ComponentId = "b66ab857cd93410599bd14b79ae37147",
+        Name = "Round",
+        Price = 0.0m,
+        Description = "Cổ tròn cơ bản, thanh lịch.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fround-neck.png?alt=media&token=1f8e06b6-1aa5-49fc-a05a-e88e29593710"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    },
+    new ComponentOption
+    {
+        Id = "9cc2f01b2fb34f21884b1365acd9bb48",
+        ComponentId = "c615996abfe24d3885ccea361a199dba",
+        Name = "Jersey Knit",
+        Price = 0.0m,
+        Description = "Vải thun co giãn, mềm mại, dễ vận động.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fjersey-knit.png?alt=media&token=d16f44cc-528e-49e5-a985-61a63c058d77"],
+        GlobalStatus = 0,
+        CreatedBy = "Admin",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-29 11:55:25.000 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-29 11:55:25.000 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    },
+    new ComponentOption
+    {
+        Id = "ac73834982664ae09fc86ba4359e4aa8",
+        ComponentId = "c615996abfe24d3885ccea361a199dba",
+        Name = "Linen",
+        Price = 0.0m,
+        Description = "Vải thoáng mát, nhẹ, thích hợp mùa hè.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Flinen.png?alt=media&token=39c033ba-8e36-46d3-8bdf-da5fc16a63f7"],
+        GlobalStatus = 0,
+        CreatedBy = "Admin",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-29 11:55:15.000 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-29 11:55:15.000 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    },
+    new ComponentOption
+    {
+        Id = "c454b97a93f341e78b127d5425acc464",
+        ComponentId = "0ec808c3046b4d368962c65eb771dea0",
+        Name = "Red",
+        Price = 0.0m,
+        Description = "Màu đỏ nổi bật, quyến rũ.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fred.png?alt=media&token=b520d1e1-69b9-48bd-aa84-d3824897c0b8"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    },
+    new ComponentOption
+    {
+        Id = "d63a7d0c9e5d4e258285ded1974bf9cf",
+        ComponentId = "0ec808c3046b4d368962c65eb771dea0",
+        Name = "Black",
+        Price = 0.0m,
+        Description = "Đen cơ bản, thanh lịch.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fblack.png?alt=media&token=08e541fa-5ced-449c-bf7a-63da6ea78e2c"],
+        GlobalStatus = 0,
+        CreatedBy = "Admin",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-29 11:46:38.000 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-29 11:46:38.000 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    },
+    new ComponentOption
+    {
+        Id = "e2c03da33b12458694a1b01c3ec66474",
+        ComponentId = "0ec808c3046b4d368962c65eb771dea0",
+        Name = "Navy",
+        Price = 0.0m,
+        Description = "Xanh navy lịch sự, thanh nhã.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fnavy-blue.png?alt=media&token=94e2c88c-a38c-4294-8b35-027b255e26ca"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    },
+    new ComponentOption
+    {
+        Id = "fecd26fe3b6b4e88ba97ebb406fa6df2",
+        ComponentId = "3b83e5e47b444880aa9495b58b38a2fd",
+        Name = "Flattered",
+        Price = 0.0m,
+        Description = "Tay ngắn bay bổng, thoải mái.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fflattered-sleeves.png?alt=media&token=93a07830-1514-4a65-80ca-599c67cd7334"],
+        GlobalStatus = 0,
+        CreatedBy = "System",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-04 21:05:03.000 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    },
+    new ComponentOption
+    {
+        Id = "e639e41ce412489cbd74fbf43428344d",
+        ComponentId = "b66ab857cd93410599bd14b79ae37147",
+        Name = "Shirt Collar",
+        Price = 0.0m,
+        Description = "Cổ áo sơ mi thanh lịch, tinh tế.",
+        Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fshirt-collar.png?alt=media&token=bd88f9a8-61bb-4aad-85b3-97d5e0bb37c6"],
+        GlobalStatus = 0,
+        CreatedBy = "Admin",
+        UpdatedBy = "System",
+        CreatedAt = DateTime.Parse("2025-08-30 22:47:06.920 +0700").ToUniversalTime(),
+        UpdatedAt = DateTime.Parse("2025-08-30 22:47:06.919 +0700").ToUniversalTime(),
+        IsDeleted = false,
+    }
+);
+            #endregion
 
-            // ===== PRESETS =====
-            var presets = new List<Preset>
-            {
+            #region Preset Seed
+            modelBuilder.Entity<Preset>().HasData(
+                            new Preset
+                            {
+                                Id = "11230115583c4994bfaa3925951d3817",
+                                Name = "Name",
+                                UserId = "f49aa51bbd304e77933e24bbed65b165",
+                                StyleId = "037b41302a4c453f8cef135afceb3956",
+                                SKU = "P00005",
+                                Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-19.png?alt=media&token=053f4feb-7e75-4645-b8aa-e0e0b1fae0b3"],
+                                IsDefault = false,
+                                Weight = 200,
+                                Price = 2000.0m,
+                                Type = 0,
+                                CreatedBy = "User",
+                                UpdatedBy = "System",
+                                CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                                UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                                IsDeleted = false,
+                            },
                 new Preset
                 {
-                    Id = "fe88b53dce4c4938a7785fb9e3db1f0a",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    Id = "1453c4e8983c4a3397deecaccf1230c1",
                     Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi.png?alt=media&token=da59cd6d-df28-4605-a464-88951676e0fd"
-                    },
-                    IsDefault = true,
-                    Price = 2000,
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "5ed8aceab2d34bd8801e8c6a10dfc0d0",
+                    SKU = "P27814",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F5_1756533760956_6yighu.png?alt=media&token=5b241827-624f-434c-9399-9556893e98e8"],
+                    IsDefault = false,
+                    Price = 2000.0m,
                     Type = 0,
-                    SKU = "P00001",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "7ae7818fdf09466f819808beed30e707",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-11.png?alt=media&token=14bc30f9-fa14-41ae-8bfa-cc4b94acda1b"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00002",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "11230115583c4994bfaa3925951d3817",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-19.png?alt=media&token=053f4feb-7e75-4645-b8aa-e0e0b1fae0b3"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00005",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "33c8177630a54906b92c0b8c03c57450",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-18.png?alt=media&token=fe931377-e708-4586-b897-4bdef49a0d5f"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00003",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "c9348ab0418743d08ee786e31083d76b",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-17.png?alt=media&token=f90d9acc-504a-496b-8c4d-eb35b2a05fb0"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00004",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "41e4b32655a44dca862141df8099f646",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-16.png?alt=media&token=1d05c179-85bd-444e-9056-be2509352f8c"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00006",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "bcdcf89795b2484f96a3a12b25383a12",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-15.png?alt=media&token=a4a6b9e1-b20a-4939-bf9f-524f0c5911ae"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00007",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "5ef79dda17e64808afa6287c07c8bac9",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-14.png?alt=media&token=77ec4929-09f7-427c-9714-9f287ac89f4c"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00008",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "3583422ceef647d28a14b82680058ff0",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-13.png?alt=media&token=fdf74485-b0af-4c32-b7d3-cc78beb9dcd7"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00009",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "6ab0daed7fe54e9fa791bfcb6bf1a043",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-12.png?alt=media&token=72e10ea4-1d5c-4f50-b614-b8c56eed7cfb"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00010",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "ccc662f99d7a41d7aa1505e3a2cb8950",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-29.png?alt=media&token=25bc32d6-d2b7-4881-8ead-38dbad9096b6"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00011",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "49e11d4698f643dca14364eed4d9c239",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-28.png?alt=media&token=6276c8c2-679d-48fc-a4ec-214ce17fe3b9"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00012",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "6fd08876dd804c01983236cb5277b406",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-27.png?alt=media&token=c80d1ad8-5a45-4d8d-8e77-558ec415f728"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00013",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "b0daa08ae6064686a59c0835bf58145c",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-26.png?alt=media&token=d3653bec-f9bc-4558-bc54-81d6a19c4ce2"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00014",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "dd737fac7e8b4b0cb353b6d8ac16cb51",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-25.png?alt=media&token=f0a6e9b6-05cf-4e31-b1f3-9ecdbdcde3d2"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00014",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "a80f79e565d240af9d77d2550c6e2933",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-24.png?alt=media&token=b0ceddd4-b37a-4be9-951a-e403ae5b9433"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00015",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "be7b594cc1274fb5b9c4fa5571ed8952",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-23.png?alt=media&token=03440f28-4ec7-4fd7-8cd5-8a269106a726"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00016",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "45f43125d239423893e337915ccaaea3",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-22.png?alt=media&token=0d80783e-3267-4743-a2b1-f931a48716fd"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00017",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "7c2f591168f144d199a8d9e174addc45",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956", Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-21.png?alt=media&token=13248af4-08bf-454c-9b30-6c741dbef82b"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00018",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "ac1b2b6941c04598ae5a50d48efd8232",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-20.png?alt=media&token=2294c5c4-403d-4b33-afec-78f20bf02566"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00019",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "58d759c12387490fb3a97c4633d6f1bb",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-10.png?alt=media&token=8fb01fe1-9ff2-4d7a-bf84-e8e1093f0f9b"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00020",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "4f4d8b91705f4a9bb95ecf18b57b0306",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-2.png?alt=media&token=f6cf6663-58a2-4b43-9c8a-46796b1dd8e1"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00021",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "694d8135f4ca4238956e9f47460b5dff",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-36.png?alt=media&token=dfa8808c-c87d-4ae0-be6b-1108343320ac"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00022",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "f1ec1932c78e4a5a8035df1864fb32a4",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-35.png?alt=media&token=1a81d76f-506a-4b60-9c03-05fa9aab1483"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00023",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "cc5b36affe2243f2b119fd65cb3434d5",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-34.png?alt=media&token=076bb0d1-0496-4353-adb2-1be1fce6e8bb"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00024",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "7abc9feb7c1e47778ec32b24aac95985",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-33.png?alt=media&token=5f0263e2-84b2-4260-9c25-ca2b12411fc2"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00025",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "380e3d771eac4488ad94b09c9e77ccd2",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-32.png?alt=media&token=d9268430-d725-4813-a70f-260ee49cd1c5"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00026",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 13:03:05.443 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 13:03:05.427 +0700").ToUniversalTime(),
+                    IsDeleted = false,
                 },
                 new Preset
                 {
                     Id = "1acd7ac56e5c4d15895f03cc2d6e7723",
+                    Name = "Name",
                     UserId = "f49aa51bbd304e77933e24bbed65b165",
                     StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-31.png?alt=media&token=97b8fadf-6bf1-4ab7-995a-5126f7fbfc65"
-                    },
+                    SKU = "P00027",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-31.png?alt=media&token=97b8fadf-6bf1-4ab7-995a-5126f7fbfc65"],
                     IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00027",
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
                     CreatedBy = "User",
                     UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "1f55382a1ffa42be9f046634d90b9f97",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "b10d38a099674087b125cf0dfe099f5a",
+                    SKU = "P08902",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F2_1756534037761_mo4ug4.png?alt=media&token=47295ccb-b880-4518-aaad-e1b940afca2a"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 13:07:42.563 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 13:07:42.549 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "21b2065adaf44984b32cd6b9eb75c2f7",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "b10d38a099674087b125cf0dfe099f5a",
+                    SKU = "P76993",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F5_1756534347472_dby3ui.png?alt=media&token=7025a677-e2ba-4530-9c5b-1c4e3b4386de"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 13:12:38.904 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 13:12:38.895 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "220bff408b7e465eb4652da38241c7a2",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "b10d38a099674087b125cf0dfe099f5a",
+                    SKU = "P47695",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F1_1756533995037_rmpl8f.png?alt=media&token=921d7c58-edc6-4126-80e3-da79b82e4e4e"],
+                    IsDefault = true,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 13:07:04.474 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 13:07:04.457 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "2b9900f612414d2f80531a48275927aa",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "5ed8aceab2d34bd8801e8c6a10dfc0d0",
+                    SKU = "P97701",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F2_1756533623846_6edofr.png?alt=media&token=67e03656-ec4e-4674-ae0a-099e419c3355"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 13:00:46.623 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 13:00:46.605 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "33c8177630a54906b92c0b8c03c57450",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00003",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-18.png?alt=media&token=fe931377-e708-4586-b897-4bdef49a0d5f"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "3583422ceef647d28a14b82680058ff0",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00009",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-13.png?alt=media&token=fdf74485-b0af-4c32-b7d3-cc78beb9dcd7"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "380e3d771eac4488ad94b09c9e77ccd2",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00026",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-32.png?alt=media&token=d9268430-d725-4813-a70f-260ee49cd1c5"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "3d0b5e4af6114f659e6c4457bae78782",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "b10d38a099674087b125cf0dfe099f5a",
+                    SKU = "P23653",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F9_1756534458495_tj8z04.png?alt=media&token=9baf6664-59ad-4ffb-b7d5-a2255b45a070"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 13:14:57.621 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 13:14:57.607 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "41e4b32655a44dca862141df8099f646",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00006",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-16.png?alt=media&token=1d05c179-85bd-444e-9056-be2509352f8c"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "440dfdc24b064c9babc883547439de24",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "5ed8aceab2d34bd8801e8c6a10dfc0d0",
+                    SKU = "P37612",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F6_1756533821543_mr824m.png?alt=media&token=3f027290-4b53-41f0-a67f-3d4e113cb9ce"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 13:03:55.690 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 13:03:55.672 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "45f43125d239423893e337915ccaaea3",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00017",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-22.png?alt=media&token=0d80783e-3267-4743-a2b1-f931a48716fd"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "49e11d4698f643dca14364eed4d9c239",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00012",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-28.png?alt=media&token=6276c8c2-679d-48fc-a4ec-214ce17fe3b9"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "4f4d8b91705f4a9bb95ecf18b57b0306",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00021",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-2.png?alt=media&token=f6cf6663-58a2-4b43-9c8a-46796b1dd8e1"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
                 },
                 new Preset
                 {
                     Id = "50959c7c201e45a9b5255558ac9dfcf7",
+                    Name = "Name",
                     UserId = "f49aa51bbd304e77933e24bbed65b165",
                     StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-30.png?alt=media&token=373eb84b-cd7b-4e81-840d-516781ae9d72"
-                    },
+                    SKU = "P00028",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-30.png?alt=media&token=373eb84b-cd7b-4e81-840d-516781ae9d72"],
                     IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00028",
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
                     CreatedBy = "User",
                     UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "58d759c12387490fb3a97c4633d6f1bb",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00020",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-10.png?alt=media&token=8fb01fe1-9ff2-4d7a-bf84-e8e1093f0f9b"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
                 },
                 new Preset
                 {
                     Id = "5a5081ce720141188c09336e4a936ef9",
+                    Name = "Name",
                     UserId = "f49aa51bbd304e77933e24bbed65b165",
                     StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-3.png?alt=media&token=149e97e6-d906-4345-bfcb-dfc3d619a73b"
-                    },
+                    SKU = "P00029",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-3.png?alt=media&token=149e97e6-d906-4345-bfcb-dfc3d619a73b"],
                     IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00029",
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
                     CreatedBy = "User",
                     UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
                 },
                 new Preset
                 {
-                    Id = "fe7043a37995453db2d03741e81da9df",
+                    Id = "5ef79dda17e64808afa6287c07c8bac9",
+                    Name = "Name",
                     UserId = "f49aa51bbd304e77933e24bbed65b165",
                     StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-9.png?alt=media&token=221bb4f5-1a84-452a-9a40-48cc8f50afdc"
-                    },
+                    SKU = "P00008",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-14.png?alt=media&token=77ec4929-09f7-427c-9714-9f287ac89f4c"],
                     IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00030",
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
                     CreatedBy = "User",
                     UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "7faa6eb739d548bf9f9ce7d3de978d3d",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-8.png?alt=media&token=ccad2c07-0022-4956-9591-8ddcbda3a31a"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00031",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "caa36b99b068411aaa62b0f4234c1656",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-7.png?alt=media&token=29058fd5-ec1f-4199-94ff-72c77584b562"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00032",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
                 },
                 new Preset
                 {
                     Id = "68ee38a6554f407abd932d492719a834",
+                    Name = "Name",
                     UserId = "f49aa51bbd304e77933e24bbed65b165",
                     StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-6.png?alt=media&token=28833b6c-ff85-4eb2-8f85-65e9ea4d8d23"
-                    },
+                    SKU = "P00034",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-6.png?alt=media&token=28833b6c-ff85-4eb2-8f85-65e9ea4d8d23"],
                     IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00034",
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
                     CreatedBy = "User",
                     UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Preset
-                {
-                    Id = "bac18c4350314174b9f4cbe73ca0b24d",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-5.png?alt=media&token=778c61b7-68ff-4224-afd8-223d9295c99c"
-                    },
-                    IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00035",
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
                 },
                 new Preset
                 {
                     Id = "68fca8f086454898ae81b1ea29890b60",
+                    Name = "Name",
                     UserId = "f49aa51bbd304e77933e24bbed65b165",
                     StyleId = "037b41302a4c453f8cef135afceb3956",
-                    Name = "Name",
-                    Weight = 200,
-                    Images = new List<string>
-                    {
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-4.png?alt=media&token=ea8426c2-8bac-4b0d-bff3-e7e2536ac351"
-                    },
+                    SKU = "P00036",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-4.png?alt=media&token=ea8426c2-8bac-4b0d-bff3-e7e2536ac351"],
                     IsDefault = false,
-                    Price = 2000,
-                    Type = 0, SKU = "P00036",
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
                     CreatedBy = "User",
                     UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "694d8135f4ca4238956e9f47460b5dff",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00022",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-36.png?alt=media&token=dfa8808c-c87d-4ae0-be6b-1108343320ac"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "6ab0daed7fe54e9fa791bfcb6bf1a043",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00010",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-12.png?alt=media&token=72e10ea4-1d5c-4f50-b614-b8c56eed7cfb"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "6fd08876dd804c01983236cb5277b406",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00013",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-27.png?alt=media&token=c80d1ad8-5a45-4d8d-8e77-558ec415f728"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "7abc9feb7c1e47778ec32b24aac95985",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00025",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-33.png?alt=media&token=5f0263e2-84b2-4260-9c25-ca2b12411fc2"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "7ae7818fdf09466f819808beed30e707",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00002",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-11.png?alt=media&token=14bc30f9-fa14-41ae-8bfa-cc4b94acda1b"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "7c2f591168f144d199a8d9e174addc45",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00018",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-21.png?alt=media&token=13248af4-08bf-454c-9b30-6c741dbef82b"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "7faa6eb739d548bf9f9ce7d3de978d3d",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00031",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-8.png?alt=media&token=ccad2c07-0022-4956-9591-8ddcbda3a31a"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "8311c9434d354d689a5049c5041026ea",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "b10d38a099674087b125cf0dfe099f5a",
+                    SKU = "P44678",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F3_1756534093513_hy9hc3.png?alt=media&token=e02d24e8-fd1c-4de2-83df-95eb1e36a556"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 13:08:45.368 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 13:08:45.358 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "88d4e4ed5bbe49fc81059e4f7bf45de3",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "5ed8aceab2d34bd8801e8c6a10dfc0d0",
+                    SKU = "P27141",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F8_1756533902237_0nejhm.png?alt=media&token=a95e6e0c-f2be-4475-9b8c-1a1ee87571d2"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 13:05:17.573 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 13:05:17.563 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "9d84ba5aa4404a6b8c3daa1648ef947a",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "b10d38a099674087b125cf0dfe099f5a",
+                    SKU = "P14659",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F8_1756534426322_zfev71.png?alt=media&token=9216b266-05ed-45cf-97eb-75bfe4db2cb3"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 13:14:07.572 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 13:14:07.557 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "a80f79e565d240af9d77d2550c6e2933",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00015",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-24.png?alt=media&token=b0ceddd4-b37a-4be9-951a-e403ae5b9433"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "a90e932d3ff14830b3c4c95dd42e9ff8",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "b10d38a099674087b125cf0dfe099f5a",
+                    SKU = "P94059",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F10_1756534507244_zgbdk3.png?alt=media&token=96858234-8f94-469d-a570-0ba1d55d2c5d"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 13:15:27.076 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 13:15:27.066 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "ac1b2b6941c04598ae5a50d48efd8232",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00019",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-20.png?alt=media&token=2294c5c4-403d-4b33-afec-78f20bf02566"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "af643fe22b414985b6896d0532875528",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "b10d38a099674087b125cf0dfe099f5a",
+                    SKU = "P40728",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F11_1756534531134_5nd356.png?alt=media&token=c63bab87-3613-4164-ad00-8919403786b8"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 13:15:46.054 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 13:15:46.041 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "b0daa08ae6064686a59c0835bf58145c",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00014",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-26.png?alt=media&token=d3653bec-f9bc-4558-bc54-81d6a19c4ce2"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "b9c4df5bcd4240f98a86ba7fd55faea6",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "5ed8aceab2d34bd8801e8c6a10dfc0d0",
+                    SKU = "P30539",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F4_1756533692233_qcpddf.png?alt=media&token=744b1ee0-dd1a-4048-b424-6d74d904db52"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 13:02:28.135 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 13:02:28.121 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "bac18c4350314174b9f4cbe73ca0b24d",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00035",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-5.png?alt=media&token=778c61b7-68ff-4224-afd8-223d9295c99c"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "bcdcf89795b2484f96a3a12b25383a12",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00007",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-15.png?alt=media&token=a4a6b9e1-b20a-4939-bf9f-524f0c5911ae"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "be7b594cc1274fb5b9c4fa5571ed8952",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00016",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-23.png?alt=media&token=03440f28-4ec7-4fd7-8cd5-8a269106a726"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "c3797a5e9c9a42dba09b0001c8cdaed6",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "b10d38a099674087b125cf0dfe099f5a",
+                    SKU = "P36965",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F7_1756534384235_g4rq8h.png?alt=media&token=57af6647-4ac2-43f1-ab9c-48d80f19eea8"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 13:13:42.971 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 13:13:42.959 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "c9348ab0418743d08ee786e31083d76b",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00004",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-17.png?alt=media&token=f90d9acc-504a-496b-8c4d-eb35b2a05fb0"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "caa36b99b068411aaa62b0f4234c1656",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00032",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-7.png?alt=media&token=29058fd5-ec1f-4199-94ff-72c77584b562"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "cc5b36affe2243f2b119fd65cb3434d5",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00024",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-34.png?alt=media&token=076bb0d1-0496-4353-adb2-1be1fce6e8bb"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "ccc662f99d7a41d7aa1505e3a2cb8950",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00011",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-29.png?alt=media&token=25bc32d6-d2b7-4881-8ead-38dbad9096b6"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "cfdabdeb4fd748849e6a635ec6418dd2",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "5ed8aceab2d34bd8801e8c6a10dfc0d0",
+                    SKU = "P12312",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F3_1756533654085_mvf12n.png?alt=media&token=2485dbac-18bb-44b2-af37-e1d8ffa5bb59"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 13:01:24.126 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 13:01:24.111 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "d1d9616eb7904f189659505eca16cd43",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "5ed8aceab2d34bd8801e8c6a10dfc0d0",
+                    SKU = "P05656",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F1_1756533543886_ahm0dk.png?alt=media&token=e73093c0-402a-4b85-9389-d1e91a61fc4b"],
+                    IsDefault = true,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:59:26.373 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:59:26.361 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "d208c36d9fa640c48eb05f6dd19963e2",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "b10d38a099674087b125cf0dfe099f5a",
+                    SKU = "P22298",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F4_1756534137369_gxxhyl.png?alt=media&token=35280be5-5e61-4e95-81c6-e2b8d243dcaf"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 13:09:20.050 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 13:09:20.035 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "dd737fac7e8b4b0cb353b6d8ac16cb51",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00014",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-25.png?alt=media&token=f0a6e9b6-05cf-4e31-b1f3-9ecdbdcde3d2"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "e3485b7dc853448588da3dde04c4e3eb",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "b10d38a099674087b125cf0dfe099f5a",
+                    SKU = "P44253",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F6_1756534362326_l8sazc.png?alt=media&token=c9256b37-db4d-45aa-a3fe-3f1d5efe954d"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 13:13:00.832 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 13:13:00.823 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "f1beda0c907a40dfaa73738cd6313d03",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "5ed8aceab2d34bd8801e8c6a10dfc0d0",
+                    SKU = "P25932",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F7_1756533844208_jjmei1.png?alt=media&token=a2facff1-8085-486c-bc89-df1da42bed17"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 13:04:31.466 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 13:04:31.453 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "f1ec1932c78e4a5a8035df1864fb32a4",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00023",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-35.png?alt=media&token=1a81d76f-506a-4b60-9c03-05fa9aab1483"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "fe7043a37995453db2d03741e81da9df",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00030",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi-9.png?alt=media&token=221bb4f5-1a84-452a-9a40-48cc8f50afdc"],
+                    IsDefault = false,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "fe88b53dce4c4938a7785fb9e3db1f0a",
+                    Name = "Name",
+                    UserId = "f49aa51bbd304e77933e24bbed65b165",
+                    StyleId = "037b41302a4c453f8cef135afceb3956",
+                    SKU = "P00001",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/presets%2Fmaxi%2Fmaxi.png?alt=media&token=da59cd6d-df28-4605-a464-88951676e0fd"],
+                    IsDefault = true,
+                    Weight = 200,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "User",
+                    UpdatedBy = "System",
+                    CreatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 12:56:25.590 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "ff13d99b031a4a93b571c0a0dfdf5770",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "b10d38a099674087b125cf0dfe099f5a",
+                    SKU = "P89985",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F12_1756534565372_psoeuj.png?alt=media&token=efee87be-b611-4645-a91a-c934ed00c9ee"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 13:16:20.119 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 13:16:20.106 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "edaba02c35264bfcbddd4d80ee293da6",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "11363158846e4478b326bf58a7ca9d21",
+                    SKU = "P30666",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F1_1756568980028_xb2nkv.png?alt=media&token=4d45a38c-a88b-4556-98f4-9349edd382f5"],
+                    IsDefault = true,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 22:49:56.614 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 22:49:56.585 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "bb4fa5ef967845ed9df5ff26d2dd1c4c",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "11363158846e4478b326bf58a7ca9d21",
+                    SKU = "P56619",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F2_1756569003946_l22m8e.png?alt=media&token=eaaa11aa-dfbb-4908-8438-ce66cff84342"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 22:50:17.339 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 22:50:17.318 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "54963650e77e411daa0afe6cf4e0bd87",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "11363158846e4478b326bf58a7ca9d21",
+                    SKU = "P84279",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F3_1756569024889_a9kaaw.png?alt=media&token=752ee4ab-ba75-4a31-bb05-309359d0f295"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 22:50:38.660 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 22:50:38.645 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "dd486595e71d444cb8f42d0c91f5a0e7",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "11363158846e4478b326bf58a7ca9d21",
+                    SKU = "P77304",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F4_1756569070512_o2s30f.png?alt=media&token=3516a508-f6be-483b-9b8d-f2d9a6f1d7fc"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 22:51:23.449 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 22:51:23.432 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "461e2cae39e14726b2cd1772cdb4c66e",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "11363158846e4478b326bf58a7ca9d21",
+                    SKU = "P27707",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F5_1756569091241_b3i5lw.png?alt=media&token=90621bde-0b81-4edb-9ac3-5a9a730b1687"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 22:51:44.681 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 22:51:44.662 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "7afdd951b8f948519388689b84373fba",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "11363158846e4478b326bf58a7ca9d21",
+                    SKU = "P16180",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F6_1756569112965_kl3g47.png?alt=media&token=e65e0446-dd65-44d1-984d-8709a96bda91"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 22:52:29.302 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 22:52:29.289 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "7f7a036811a14c9ba4058fa770b9a7e6",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "11363158846e4478b326bf58a7ca9d21",
+                    SKU = "P64333",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F7_1756569155414_z0c8fl.png?alt=media&token=25dfd3d5-7870-4142-bcc7-4a21b9f0a02c"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 22:53:46.396 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 22:53:46.383 +0700").ToUniversalTime(),
+                    IsDeleted = false,
+                },
+                new Preset
+                {
+                    Id = "e4de6c02c26a42a6bc1ba0b9ac158774",
+                    Name = "Name",
+                    UserId = "4c9804ecc1d645de96fcfc906cc43d6c",
+                    StyleId = "11363158846e4478b326bf58a7ca9d21",
+                    SKU = "P20124",
+                    Images = ["https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/images%2F8_1756569236306_x05poe.png?alt=media&token=7d22aabb-0a1d-4b09-b8a7-0d386f0cd71c"],
+                    IsDefault = false,
+                    Price = 2000.0m,
+                    Type = 0,
+                    CreatedBy = "Manager",
+                    CreatedAt = DateTime.Parse("2025-08-30 22:54:37.024 +0700").ToUniversalTime(),
+                    UpdatedAt = DateTime.Parse("2025-08-30 22:54:37.009 +0700").ToUniversalTime(),
+                    IsDeleted = false,
                 }
-            };
+            );
+            #endregion
 
-            modelBuilder.Entity<Preset>().HasData(presets);
-
-            // ===== COMPONENT OPTION PRESETS =====
-            var componentoptionpresets = new List<ComponentOptionPreset>
-            {
+            #region ComponentOptionPreset Seed
+            modelBuilder.Entity<ComponentOptionPreset>().HasData(
                 new ComponentOptionPreset
                 {
                     ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
-                    PresetsId = "fe88b53dce4c4938a7785fb9e3db1f0a"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "fe88b53dce4c4938a7785fb9e3db1f0a"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
-                    PresetsId = "fe88b53dce4c4938a7785fb9e3db1f0a"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
-                    PresetsId = "fe88b53dce4c4938a7785fb9e3db1f0a"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
-                    PresetsId = "fe88b53dce4c4938a7785fb9e3db1f0a"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "fe88b53dce4c4938a7785fb9e3db1f0a"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "58d759c12387490fb3a97c4633d6f1bb"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
-                    PresetsId = "58d759c12387490fb3a97c4633d6f1bb"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
-                    PresetsId = "58d759c12387490fb3a97c4633d6f1bb"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
-                    PresetsId = "58d759c12387490fb3a97c4633d6f1bb"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "58d759c12387490fb3a97c4633d6f1bb"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
-                    PresetsId = "58d759c12387490fb3a97c4633d6f1bb"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "7ae7818fdf09466f819808beed30e707"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
-                    PresetsId = "7ae7818fdf09466f819808beed30e707"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
-                    PresetsId = "7ae7818fdf09466f819808beed30e707"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
-                    PresetsId = "7ae7818fdf09466f819808beed30e707"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "7ae7818fdf09466f819808beed30e707"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
-                    PresetsId = "7ae7818fdf09466f819808beed30e707"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
-                    PresetsId = "11230115583c4994bfaa3925951d3817"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "11230115583c4994bfaa3925951d3817"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
-                    PresetsId = "11230115583c4994bfaa3925951d3817"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
-                    PresetsId = "11230115583c4994bfaa3925951d3817"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
-                    PresetsId = "11230115583c4994bfaa3925951d3817"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "11230115583c4994bfaa3925951d3817"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "33c8177630a54906b92c0b8c03c57450"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
-                    PresetsId = "33c8177630a54906b92c0b8c03c57450"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
-                    PresetsId = "33c8177630a54906b92c0b8c03c57450"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
-                    PresetsId = "33c8177630a54906b92c0b8c03c57450"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "33c8177630a54906b92c0b8c03c57450"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
-                    PresetsId = "33c8177630a54906b92c0b8c03c57450"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
-                    PresetsId = "c9348ab0418743d08ee786e31083d76b"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "c9348ab0418743d08ee786e31083d76b"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
-                    PresetsId = "c9348ab0418743d08ee786e31083d76b"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
-                    PresetsId = "c9348ab0418743d08ee786e31083d76b"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "c9348ab0418743d08ee786e31083d76b"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
-                    PresetsId = "c9348ab0418743d08ee786e31083d76b"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
-                    PresetsId = "41e4b32655a44dca862141df8099f646"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "41e4b32655a44dca862141df8099f646"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
-                    PresetsId = "41e4b32655a44dca862141df8099f646"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
-                    PresetsId = "41e4b32655a44dca862141df8099f646"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
-                    PresetsId = "41e4b32655a44dca862141df8099f646"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "41e4b32655a44dca862141df8099f646"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
-                    PresetsId = "bcdcf89795b2484f96a3a12b25383a12"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "bcdcf89795b2484f96a3a12b25383a12"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
-                    PresetsId = "bcdcf89795b2484f96a3a12b25383a12"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
-                    PresetsId = "bcdcf89795b2484f96a3a12b25383a12"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
-                    PresetsId = "bcdcf89795b2484f96a3a12b25383a12"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "bcdcf89795b2484f96a3a12b25383a12"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "5ef79dda17e64808afa6287c07c8bac9"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
-                    PresetsId = "5ef79dda17e64808afa6287c07c8bac9"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
-                    PresetsId = "5ef79dda17e64808afa6287c07c8bac9"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
-                    PresetsId = "5ef79dda17e64808afa6287c07c8bac9"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
-                    PresetsId = "5ef79dda17e64808afa6287c07c8bac9"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "5ef79dda17e64808afa6287c07c8bac9"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
-                    PresetsId = "3583422ceef647d28a14b82680058ff0"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "3583422ceef647d28a14b82680058ff0"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
-                    PresetsId = "3583422ceef647d28a14b82680058ff0"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
-                    PresetsId = "3583422ceef647d28a14b82680058ff0"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
-                    PresetsId = "3583422ceef647d28a14b82680058ff0"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "3583422ceef647d28a14b82680058ff0"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "6ab0daed7fe54e9fa791bfcb6bf1a043"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
-                    PresetsId = "6ab0daed7fe54e9fa791bfcb6bf1a043"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
-                    PresetsId = "6ab0daed7fe54e9fa791bfcb6bf1a043"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
-                    PresetsId = "6ab0daed7fe54e9fa791bfcb6bf1a043"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "6ab0daed7fe54e9fa791bfcb6bf1a043"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
-                    PresetsId = "6ab0daed7fe54e9fa791bfcb6bf1a043"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "ccc662f99d7a41d7aa1505e3a2cb8950"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
-                    PresetsId = "ccc662f99d7a41d7aa1505e3a2cb8950"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
-                    PresetsId = "ccc662f99d7a41d7aa1505e3a2cb8950"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
-                    PresetsId = "ccc662f99d7a41d7aa1505e3a2cb8950"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "ccc662f99d7a41d7aa1505e3a2cb8950"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
-                    PresetsId = "ccc662f99d7a41d7aa1505e3a2cb8950"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "49e11d4698f643dca14364eed4d9c239"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
-                    PresetsId = "49e11d4698f643dca14364eed4d9c239"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
-                    PresetsId = "49e11d4698f643dca14364eed4d9c239"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
-                    PresetsId = "49e11d4698f643dca14364eed4d9c239"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
-                    PresetsId = "49e11d4698f643dca14364eed4d9c239"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "49e11d4698f643dca14364eed4d9c239"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "6fd08876dd804c01983236cb5277b406"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
-                    PresetsId = "6fd08876dd804c01983236cb5277b406"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
-                    PresetsId = "6fd08876dd804c01983236cb5277b406"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
-                    PresetsId = "6fd08876dd804c01983236cb5277b406"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
-                    PresetsId = "6fd08876dd804c01983236cb5277b406"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "6fd08876dd804c01983236cb5277b406"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "b0daa08ae6064686a59c0835bf58145c"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
-                    PresetsId = "b0daa08ae6064686a59c0835bf58145c"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
-                    PresetsId = "b0daa08ae6064686a59c0835bf58145c"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
-                    PresetsId = "b0daa08ae6064686a59c0835bf58145c"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
-                    PresetsId = "b0daa08ae6064686a59c0835bf58145c"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "b0daa08ae6064686a59c0835bf58145c"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "dd737fac7e8b4b0cb353b6d8ac16cb51"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
-                    PresetsId = "dd737fac7e8b4b0cb353b6d8ac16cb51"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
-                    PresetsId = "dd737fac7e8b4b0cb353b6d8ac16cb51"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
-                    PresetsId = "dd737fac7e8b4b0cb353b6d8ac16cb51"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
-                    PresetsId = "dd737fac7e8b4b0cb353b6d8ac16cb51"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "dd737fac7e8b4b0cb353b6d8ac16cb51"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
-                    PresetsId = "a80f79e565d240af9d77d2550c6e2933"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "a80f79e565d240af9d77d2550c6e2933"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
-                    PresetsId = "a80f79e565d240af9d77d2550c6e2933"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
-                    PresetsId = "a80f79e565d240af9d77d2550c6e2933"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
-                    PresetsId = "a80f79e565d240af9d77d2550c6e2933"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "a80f79e565d240af9d77d2550c6e2933"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "be7b594cc1274fb5b9c4fa5571ed8952"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
-                    PresetsId = "be7b594cc1274fb5b9c4fa5571ed8952"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
-                    PresetsId = "be7b594cc1274fb5b9c4fa5571ed8952"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
-                    PresetsId = "be7b594cc1274fb5b9c4fa5571ed8952"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
-                    PresetsId = "be7b594cc1274fb5b9c4fa5571ed8952"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "be7b594cc1274fb5b9c4fa5571ed8952"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "45f43125d239423893e337915ccaaea3"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
-                    PresetsId = "45f43125d239423893e337915ccaaea3"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
-                    PresetsId = "45f43125d239423893e337915ccaaea3"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
-                    PresetsId = "45f43125d239423893e337915ccaaea3"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
-                    PresetsId = "45f43125d239423893e337915ccaaea3"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "45f43125d239423893e337915ccaaea3"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "7c2f591168f144d199a8d9e174addc45"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
-                    PresetsId = "7c2f591168f144d199a8d9e174addc45"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
-                    PresetsId = "7c2f591168f144d199a8d9e174addc45"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
-                    PresetsId = "7c2f591168f144d199a8d9e174addc45"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "7c2f591168f144d199a8d9e174addc45"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
-                    PresetsId = "7c2f591168f144d199a8d9e174addc45"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "ac1b2b6941c04598ae5a50d48efd8232"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
-                    PresetsId = "ac1b2b6941c04598ae5a50d48efd8232"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
-                    PresetsId = "ac1b2b6941c04598ae5a50d48efd8232"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
-                    PresetsId = "ac1b2b6941c04598ae5a50d48efd8232"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
-                    PresetsId = "ac1b2b6941c04598ae5a50d48efd8232"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "ac1b2b6941c04598ae5a50d48efd8232"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
-                    PresetsId = "4f4d8b91705f4a9bb95ecf18b57b0306"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "4f4d8b91705f4a9bb95ecf18b57b0306"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
-                    PresetsId = "4f4d8b91705f4a9bb95ecf18b57b0306"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
-                    PresetsId = "4f4d8b91705f4a9bb95ecf18b57b0306"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
-                    PresetsId = "4f4d8b91705f4a9bb95ecf18b57b0306"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "4f4d8b91705f4a9bb95ecf18b57b0306"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
-                    PresetsId = "694d8135f4ca4238956e9f47460b5dff"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "694d8135f4ca4238956e9f47460b5dff"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
-                    PresetsId = "694d8135f4ca4238956e9f47460b5dff"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
-                    PresetsId = "694d8135f4ca4238956e9f47460b5dff"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "694d8135f4ca4238956e9f47460b5dff"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
-                    PresetsId = "694d8135f4ca4238956e9f47460b5dff"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "f1ec1932c78e4a5a8035df1864fb32a4"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
-                    PresetsId = "f1ec1932c78e4a5a8035df1864fb32a4"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
-                    PresetsId = "f1ec1932c78e4a5a8035df1864fb32a4"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
-                    PresetsId = "f1ec1932c78e4a5a8035df1864fb32a4"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
-                    PresetsId = "f1ec1932c78e4a5a8035df1864fb32a4"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "f1ec1932c78e4a5a8035df1864fb32a4"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "cc5b36affe2243f2b119fd65cb3434d5"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
-                    PresetsId = "cc5b36affe2243f2b119fd65cb3434d5"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
-                    PresetsId = "cc5b36affe2243f2b119fd65cb3434d5"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
-                    PresetsId = "cc5b36affe2243f2b119fd65cb3434d5"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
-                    PresetsId = "cc5b36affe2243f2b119fd65cb3434d5"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "cc5b36affe2243f2b119fd65cb3434d5"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
-                    PresetsId = "7abc9feb7c1e47778ec32b24aac95985"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "7abc9feb7c1e47778ec32b24aac95985"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
-                    PresetsId = "7abc9feb7c1e47778ec32b24aac95985"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
-                    PresetsId = "7abc9feb7c1e47778ec32b24aac95985"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
-                    PresetsId = "7abc9feb7c1e47778ec32b24aac95985"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "7abc9feb7c1e47778ec32b24aac95985"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "380e3d771eac4488ad94b09c9e77ccd2"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
-                    PresetsId = "380e3d771eac4488ad94b09c9e77ccd2"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
-                    PresetsId = "380e3d771eac4488ad94b09c9e77ccd2"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
-                    PresetsId = "380e3d771eac4488ad94b09c9e77ccd2"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
-                    PresetsId = "380e3d771eac4488ad94b09c9e77ccd2"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "380e3d771eac4488ad94b09c9e77ccd2"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "1acd7ac56e5c4d15895f03cc2d6e7723"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
-                    PresetsId = "1acd7ac56e5c4d15895f03cc2d6e7723"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
-                    PresetsId = "1acd7ac56e5c4d15895f03cc2d6e7723"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
-                    PresetsId = "1acd7ac56e5c4d15895f03cc2d6e7723"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
-                    PresetsId = "1acd7ac56e5c4d15895f03cc2d6e7723"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "1acd7ac56e5c4d15895f03cc2d6e7723"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "50959c7c201e45a9b5255558ac9dfcf7"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
-                    PresetsId = "50959c7c201e45a9b5255558ac9dfcf7"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
-                    PresetsId = "50959c7c201e45a9b5255558ac9dfcf7"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
-                    PresetsId = "50959c7c201e45a9b5255558ac9dfcf7"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "50959c7c201e45a9b5255558ac9dfcf7"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
-                    PresetsId = "50959c7c201e45a9b5255558ac9dfcf7"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "5a5081ce720141188c09336e4a936ef9"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
-                    PresetsId = "5a5081ce720141188c09336e4a936ef9"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
-                    PresetsId = "5a5081ce720141188c09336e4a936ef9"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
-                    PresetsId = "5a5081ce720141188c09336e4a936ef9"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
-                    PresetsId = "5a5081ce720141188c09336e4a936ef9"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "5a5081ce720141188c09336e4a936ef9"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
-                    PresetsId = "fe7043a37995453db2d03741e81da9df"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "fe7043a37995453db2d03741e81da9df"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
-                    PresetsId = "fe7043a37995453db2d03741e81da9df"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
-                    PresetsId = "fe7043a37995453db2d03741e81da9df"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "fe7043a37995453db2d03741e81da9df"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
-                    PresetsId = "fe7043a37995453db2d03741e81da9df"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "7faa6eb739d548bf9f9ce7d3de978d3d"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
-                    PresetsId = "7faa6eb739d548bf9f9ce7d3de978d3d"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
-                    PresetsId = "7faa6eb739d548bf9f9ce7d3de978d3d"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
-                    PresetsId = "7faa6eb739d548bf9f9ce7d3de978d3d"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "7faa6eb739d548bf9f9ce7d3de978d3d"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
-                    PresetsId = "7faa6eb739d548bf9f9ce7d3de978d3d"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "caa36b99b068411aaa62b0f4234c1656"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
-                    PresetsId = "caa36b99b068411aaa62b0f4234c1656"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
-                    PresetsId = "caa36b99b068411aaa62b0f4234c1656"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
-                    PresetsId = "caa36b99b068411aaa62b0f4234c1656"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
-                    PresetsId = "caa36b99b068411aaa62b0f4234c1656"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "caa36b99b068411aaa62b0f4234c1656"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
-                    PresetsId = "68ee38a6554f407abd932d492719a834"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "68ee38a6554f407abd932d492719a834"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
-                    PresetsId = "68ee38a6554f407abd932d492719a834"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
-                    PresetsId = "68ee38a6554f407abd932d492719a834"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "68ee38a6554f407abd932d492719a834"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
-                    PresetsId = "68ee38a6554f407abd932d492719a834"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "bac18c4350314174b9f4cbe73ca0b24d"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
-                    PresetsId = "bac18c4350314174b9f4cbe73ca0b24d"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
-                    PresetsId = "bac18c4350314174b9f4cbe73ca0b24d"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
-                    PresetsId = "bac18c4350314174b9f4cbe73ca0b24d"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
-                    PresetsId = "bac18c4350314174b9f4cbe73ca0b24d"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "bac18c4350314174b9f4cbe73ca0b24d"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
-                    PresetsId = "68fca8f086454898ae81b1ea29890b60"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
-                    PresetsId = "68fca8f086454898ae81b1ea29890b60"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
-                    PresetsId = "68fca8f086454898ae81b1ea29890b60"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
-                    PresetsId = "68fca8f086454898ae81b1ea29890b60"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
-                    PresetsId = "68fca8f086454898ae81b1ea29890b60"
-                },
-                new ComponentOptionPreset
-                {
-                    ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
-                    PresetsId = "68fca8f086454898ae81b1ea29890b60"
-                }
-            };
-
-            modelBuilder.Entity<ComponentOptionPreset>().HasData(componentoptionpresets);
+                    PresetsId = "11230115583c4994bfaa3925951d3817",
+                },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "11230115583c4994bfaa3925951d3817",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "11230115583c4994bfaa3925951d3817",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
+        PresetsId = "11230115583c4994bfaa3925951d3817",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "11230115583c4994bfaa3925951d3817",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "11230115583c4994bfaa3925951d3817",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
+        PresetsId = "1453c4e8983c4a3397deecaccf1230c1",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "1453c4e8983c4a3397deecaccf1230c1",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "66645e2f8fa94d228d87450cc4a74706",
+        PresetsId = "1453c4e8983c4a3397deecaccf1230c1",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "1453c4e8983c4a3397deecaccf1230c1",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6eb66f2427eb47a1a1fffc0dd3f89f6e",
+        PresetsId = "1453c4e8983c4a3397deecaccf1230c1",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "1453c4e8983c4a3397deecaccf1230c1",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "1acd7ac56e5c4d15895f03cc2d6e7723",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
+        PresetsId = "1acd7ac56e5c4d15895f03cc2d6e7723",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
+        PresetsId = "1acd7ac56e5c4d15895f03cc2d6e7723",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
+        PresetsId = "1acd7ac56e5c4d15895f03cc2d6e7723",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "1acd7ac56e5c4d15895f03cc2d6e7723",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "1acd7ac56e5c4d15895f03cc2d6e7723",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "1f55382a1ffa42be9f046634d90b9f97",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "1f55382a1ffa42be9f046634d90b9f97",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "1f55382a1ffa42be9f046634d90b9f97",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "7186b0e8de2348fdbde87105c0f9abe3",
+        PresetsId = "1f55382a1ffa42be9f046634d90b9f97",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "1f55382a1ffa42be9f046634d90b9f97",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "e2c03da33b12458694a1b01c3ec66474",
+        PresetsId = "1f55382a1ffa42be9f046634d90b9f97",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "21b2065adaf44984b32cd6b9eb75c2f7",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "44ecb280dd8f4137af58024e0780e994",
+        PresetsId = "21b2065adaf44984b32cd6b9eb75c2f7",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "21b2065adaf44984b32cd6b9eb75c2f7",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "21b2065adaf44984b32cd6b9eb75c2f7",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "7186b0e8de2348fdbde87105c0f9abe3",
+        PresetsId = "21b2065adaf44984b32cd6b9eb75c2f7",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "e2c03da33b12458694a1b01c3ec66474",
+        PresetsId = "21b2065adaf44984b32cd6b9eb75c2f7",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "220bff408b7e465eb4652da38241c7a2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "220bff408b7e465eb4652da38241c7a2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6eb66f2427eb47a1a1fffc0dd3f89f6e",
+        PresetsId = "220bff408b7e465eb4652da38241c7a2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "7186b0e8de2348fdbde87105c0f9abe3",
+        PresetsId = "220bff408b7e465eb4652da38241c7a2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "220bff408b7e465eb4652da38241c7a2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "e2c03da33b12458694a1b01c3ec66474",
+        PresetsId = "220bff408b7e465eb4652da38241c7a2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
+        PresetsId = "2b9900f612414d2f80531a48275927aa",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "2b9900f612414d2f80531a48275927aa",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "2b9900f612414d2f80531a48275927aa",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "2b9900f612414d2f80531a48275927aa",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "2b9900f612414d2f80531a48275927aa",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "d63a7d0c9e5d4e258285ded1974bf9cf",
+        PresetsId = "2b9900f612414d2f80531a48275927aa",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "33c8177630a54906b92c0b8c03c57450",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
+        PresetsId = "33c8177630a54906b92c0b8c03c57450",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
+        PresetsId = "33c8177630a54906b92c0b8c03c57450",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "33c8177630a54906b92c0b8c03c57450",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "33c8177630a54906b92c0b8c03c57450",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
+        PresetsId = "33c8177630a54906b92c0b8c03c57450",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
+        PresetsId = "3583422ceef647d28a14b82680058ff0",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "3583422ceef647d28a14b82680058ff0",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
+        PresetsId = "3583422ceef647d28a14b82680058ff0",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
+        PresetsId = "3583422ceef647d28a14b82680058ff0",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "3583422ceef647d28a14b82680058ff0",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "3583422ceef647d28a14b82680058ff0",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "380e3d771eac4488ad94b09c9e77ccd2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
+        PresetsId = "380e3d771eac4488ad94b09c9e77ccd2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
+        PresetsId = "380e3d771eac4488ad94b09c9e77ccd2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "380e3d771eac4488ad94b09c9e77ccd2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
+        PresetsId = "380e3d771eac4488ad94b09c9e77ccd2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "380e3d771eac4488ad94b09c9e77ccd2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "3d0b5e4af6114f659e6c4457bae78782",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "3d0b5e4af6114f659e6c4457bae78782",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "7186b0e8de2348fdbde87105c0f9abe3",
+        PresetsId = "3d0b5e4af6114f659e6c4457bae78782",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "3d0b5e4af6114f659e6c4457bae78782",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "d63a7d0c9e5d4e258285ded1974bf9cf",
+        PresetsId = "3d0b5e4af6114f659e6c4457bae78782",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
+        PresetsId = "3d0b5e4af6114f659e6c4457bae78782",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
+        PresetsId = "41e4b32655a44dca862141df8099f646",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "41e4b32655a44dca862141df8099f646",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "41e4b32655a44dca862141df8099f646",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
+        PresetsId = "41e4b32655a44dca862141df8099f646",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "41e4b32655a44dca862141df8099f646",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "41e4b32655a44dca862141df8099f646",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
+        PresetsId = "440dfdc24b064c9babc883547439de24",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "440dfdc24b064c9babc883547439de24",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "440dfdc24b064c9babc883547439de24",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "66645e2f8fa94d228d87450cc4a74706",
+        PresetsId = "440dfdc24b064c9babc883547439de24",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "440dfdc24b064c9babc883547439de24",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "440dfdc24b064c9babc883547439de24",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "45f43125d239423893e337915ccaaea3",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
+        PresetsId = "45f43125d239423893e337915ccaaea3",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
+        PresetsId = "45f43125d239423893e337915ccaaea3",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
+        PresetsId = "45f43125d239423893e337915ccaaea3",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "45f43125d239423893e337915ccaaea3",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "45f43125d239423893e337915ccaaea3",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "49e11d4698f643dca14364eed4d9c239",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
+        PresetsId = "49e11d4698f643dca14364eed4d9c239",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "49e11d4698f643dca14364eed4d9c239",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
+        PresetsId = "49e11d4698f643dca14364eed4d9c239",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
+        PresetsId = "49e11d4698f643dca14364eed4d9c239",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "49e11d4698f643dca14364eed4d9c239",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
+        PresetsId = "4f4d8b91705f4a9bb95ecf18b57b0306",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "4f4d8b91705f4a9bb95ecf18b57b0306",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "4f4d8b91705f4a9bb95ecf18b57b0306",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "4f4d8b91705f4a9bb95ecf18b57b0306",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
+        PresetsId = "4f4d8b91705f4a9bb95ecf18b57b0306",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "4f4d8b91705f4a9bb95ecf18b57b0306",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "50959c7c201e45a9b5255558ac9dfcf7",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
+        PresetsId = "50959c7c201e45a9b5255558ac9dfcf7",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "50959c7c201e45a9b5255558ac9dfcf7",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
+        PresetsId = "50959c7c201e45a9b5255558ac9dfcf7",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "50959c7c201e45a9b5255558ac9dfcf7",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
+        PresetsId = "50959c7c201e45a9b5255558ac9dfcf7",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "58d759c12387490fb3a97c4633d6f1bb",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
+        PresetsId = "58d759c12387490fb3a97c4633d6f1bb",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
+        PresetsId = "58d759c12387490fb3a97c4633d6f1bb",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "58d759c12387490fb3a97c4633d6f1bb",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "58d759c12387490fb3a97c4633d6f1bb",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
+        PresetsId = "58d759c12387490fb3a97c4633d6f1bb",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "5a5081ce720141188c09336e4a936ef9",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "5a5081ce720141188c09336e4a936ef9",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
+        PresetsId = "5a5081ce720141188c09336e4a936ef9",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
+        PresetsId = "5a5081ce720141188c09336e4a936ef9",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "5a5081ce720141188c09336e4a936ef9",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "5a5081ce720141188c09336e4a936ef9",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "5ef79dda17e64808afa6287c07c8bac9",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "5ef79dda17e64808afa6287c07c8bac9",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
+        PresetsId = "5ef79dda17e64808afa6287c07c8bac9",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
+        PresetsId = "5ef79dda17e64808afa6287c07c8bac9",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "5ef79dda17e64808afa6287c07c8bac9",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "5ef79dda17e64808afa6287c07c8bac9",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
+        PresetsId = "68ee38a6554f407abd932d492719a834",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "68ee38a6554f407abd932d492719a834",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "68ee38a6554f407abd932d492719a834",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
+        PresetsId = "68ee38a6554f407abd932d492719a834",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "68ee38a6554f407abd932d492719a834",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
+        PresetsId = "68ee38a6554f407abd932d492719a834",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "68fca8f086454898ae81b1ea29890b60",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "68fca8f086454898ae81b1ea29890b60",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
+        PresetsId = "68fca8f086454898ae81b1ea29890b60",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
+        PresetsId = "68fca8f086454898ae81b1ea29890b60",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "68fca8f086454898ae81b1ea29890b60",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "68fca8f086454898ae81b1ea29890b60",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
+        PresetsId = "694d8135f4ca4238956e9f47460b5dff",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "694d8135f4ca4238956e9f47460b5dff",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
+        PresetsId = "694d8135f4ca4238956e9f47460b5dff",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "694d8135f4ca4238956e9f47460b5dff",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "694d8135f4ca4238956e9f47460b5dff",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
+        PresetsId = "694d8135f4ca4238956e9f47460b5dff",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "6ab0daed7fe54e9fa791bfcb6bf1a043",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
+        PresetsId = "6ab0daed7fe54e9fa791bfcb6bf1a043",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
+        PresetsId = "6ab0daed7fe54e9fa791bfcb6bf1a043",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "6ab0daed7fe54e9fa791bfcb6bf1a043",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "6ab0daed7fe54e9fa791bfcb6bf1a043",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
+        PresetsId = "6ab0daed7fe54e9fa791bfcb6bf1a043",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "6fd08876dd804c01983236cb5277b406",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
+        PresetsId = "6fd08876dd804c01983236cb5277b406",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
+        PresetsId = "6fd08876dd804c01983236cb5277b406",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "6fd08876dd804c01983236cb5277b406",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
+        PresetsId = "6fd08876dd804c01983236cb5277b406",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "6fd08876dd804c01983236cb5277b406",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
+        PresetsId = "7abc9feb7c1e47778ec32b24aac95985",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "7abc9feb7c1e47778ec32b24aac95985",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
+        PresetsId = "7abc9feb7c1e47778ec32b24aac95985",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
+        PresetsId = "7abc9feb7c1e47778ec32b24aac95985",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "7abc9feb7c1e47778ec32b24aac95985",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "7abc9feb7c1e47778ec32b24aac95985",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "7ae7818fdf09466f819808beed30e707",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "7ae7818fdf09466f819808beed30e707",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
+        PresetsId = "7ae7818fdf09466f819808beed30e707",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
+        PresetsId = "7ae7818fdf09466f819808beed30e707",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "7ae7818fdf09466f819808beed30e707",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
+        PresetsId = "7ae7818fdf09466f819808beed30e707",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "7c2f591168f144d199a8d9e174addc45",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
+        PresetsId = "7c2f591168f144d199a8d9e174addc45",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
+        PresetsId = "7c2f591168f144d199a8d9e174addc45",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "7c2f591168f144d199a8d9e174addc45",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "7c2f591168f144d199a8d9e174addc45",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
+        PresetsId = "7c2f591168f144d199a8d9e174addc45",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "7faa6eb739d548bf9f9ce7d3de978d3d",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
+        PresetsId = "7faa6eb739d548bf9f9ce7d3de978d3d",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "7faa6eb739d548bf9f9ce7d3de978d3d",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
+        PresetsId = "7faa6eb739d548bf9f9ce7d3de978d3d",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "7faa6eb739d548bf9f9ce7d3de978d3d",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
+        PresetsId = "7faa6eb739d548bf9f9ce7d3de978d3d",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "8311c9434d354d689a5049c5041026ea",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "8311c9434d354d689a5049c5041026ea",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "7186b0e8de2348fdbde87105c0f9abe3",
+        PresetsId = "8311c9434d354d689a5049c5041026ea",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "8311c9434d354d689a5049c5041026ea",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "e2c03da33b12458694a1b01c3ec66474",
+        PresetsId = "8311c9434d354d689a5049c5041026ea",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
+        PresetsId = "8311c9434d354d689a5049c5041026ea",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "88d4e4ed5bbe49fc81059e4f7bf45de3",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "88d4e4ed5bbe49fc81059e4f7bf45de3",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "66645e2f8fa94d228d87450cc4a74706",
+        PresetsId = "88d4e4ed5bbe49fc81059e4f7bf45de3",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "88d4e4ed5bbe49fc81059e4f7bf45de3",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
+        PresetsId = "88d4e4ed5bbe49fc81059e4f7bf45de3",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "88d4e4ed5bbe49fc81059e4f7bf45de3",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "9d84ba5aa4404a6b8c3daa1648ef947a",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "9d84ba5aa4404a6b8c3daa1648ef947a",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "9d84ba5aa4404a6b8c3daa1648ef947a",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "7186b0e8de2348fdbde87105c0f9abe3",
+        PresetsId = "9d84ba5aa4404a6b8c3daa1648ef947a",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "9d84ba5aa4404a6b8c3daa1648ef947a",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "d63a7d0c9e5d4e258285ded1974bf9cf",
+        PresetsId = "9d84ba5aa4404a6b8c3daa1648ef947a",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
+        PresetsId = "a80f79e565d240af9d77d2550c6e2933",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "a80f79e565d240af9d77d2550c6e2933",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
+        PresetsId = "a80f79e565d240af9d77d2550c6e2933",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
+        PresetsId = "a80f79e565d240af9d77d2550c6e2933",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "a80f79e565d240af9d77d2550c6e2933",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "a80f79e565d240af9d77d2550c6e2933",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "a90e932d3ff14830b3c4c95dd42e9ff8",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "44ecb280dd8f4137af58024e0780e994",
+        PresetsId = "a90e932d3ff14830b3c4c95dd42e9ff8",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "a90e932d3ff14830b3c4c95dd42e9ff8",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6eb66f2427eb47a1a1fffc0dd3f89f6e",
+        PresetsId = "a90e932d3ff14830b3c4c95dd42e9ff8",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "7186b0e8de2348fdbde87105c0f9abe3",
+        PresetsId = "a90e932d3ff14830b3c4c95dd42e9ff8",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "d63a7d0c9e5d4e258285ded1974bf9cf",
+        PresetsId = "a90e932d3ff14830b3c4c95dd42e9ff8",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "ac1b2b6941c04598ae5a50d48efd8232",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "ac1b2b6941c04598ae5a50d48efd8232",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
+        PresetsId = "ac1b2b6941c04598ae5a50d48efd8232",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
+        PresetsId = "ac1b2b6941c04598ae5a50d48efd8232",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "ac1b2b6941c04598ae5a50d48efd8232",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "ac1b2b6941c04598ae5a50d48efd8232",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "af643fe22b414985b6896d0532875528",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "44ecb280dd8f4137af58024e0780e994",
+        PresetsId = "af643fe22b414985b6896d0532875528",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "af643fe22b414985b6896d0532875528",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "af643fe22b414985b6896d0532875528",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "7186b0e8de2348fdbde87105c0f9abe3",
+        PresetsId = "af643fe22b414985b6896d0532875528",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "d63a7d0c9e5d4e258285ded1974bf9cf",
+        PresetsId = "af643fe22b414985b6896d0532875528",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "b0daa08ae6064686a59c0835bf58145c",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
+        PresetsId = "b0daa08ae6064686a59c0835bf58145c",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
+        PresetsId = "b0daa08ae6064686a59c0835bf58145c",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
+        PresetsId = "b0daa08ae6064686a59c0835bf58145c",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "b0daa08ae6064686a59c0835bf58145c",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "b0daa08ae6064686a59c0835bf58145c",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "b9c4df5bcd4240f98a86ba7fd55faea6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "b9c4df5bcd4240f98a86ba7fd55faea6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "b9c4df5bcd4240f98a86ba7fd55faea6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
+        PresetsId = "b9c4df5bcd4240f98a86ba7fd55faea6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "b9c4df5bcd4240f98a86ba7fd55faea6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "d63a7d0c9e5d4e258285ded1974bf9cf",
+        PresetsId = "b9c4df5bcd4240f98a86ba7fd55faea6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "bac18c4350314174b9f4cbe73ca0b24d",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "bac18c4350314174b9f4cbe73ca0b24d",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
+        PresetsId = "bac18c4350314174b9f4cbe73ca0b24d",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "bac18c4350314174b9f4cbe73ca0b24d",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
+        PresetsId = "bac18c4350314174b9f4cbe73ca0b24d",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "bac18c4350314174b9f4cbe73ca0b24d",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
+        PresetsId = "bcdcf89795b2484f96a3a12b25383a12",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "bcdcf89795b2484f96a3a12b25383a12",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
+        PresetsId = "bcdcf89795b2484f96a3a12b25383a12",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "bcdcf89795b2484f96a3a12b25383a12",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
+        PresetsId = "bcdcf89795b2484f96a3a12b25383a12",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "bcdcf89795b2484f96a3a12b25383a12",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "be7b594cc1274fb5b9c4fa5571ed8952",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
+        PresetsId = "be7b594cc1274fb5b9c4fa5571ed8952",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
+        PresetsId = "be7b594cc1274fb5b9c4fa5571ed8952",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
+        PresetsId = "be7b594cc1274fb5b9c4fa5571ed8952",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "be7b594cc1274fb5b9c4fa5571ed8952",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "be7b594cc1274fb5b9c4fa5571ed8952",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "c3797a5e9c9a42dba09b0001c8cdaed6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "c3797a5e9c9a42dba09b0001c8cdaed6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6eb66f2427eb47a1a1fffc0dd3f89f6e",
+        PresetsId = "c3797a5e9c9a42dba09b0001c8cdaed6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "7186b0e8de2348fdbde87105c0f9abe3",
+        PresetsId = "c3797a5e9c9a42dba09b0001c8cdaed6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "c3797a5e9c9a42dba09b0001c8cdaed6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "d63a7d0c9e5d4e258285ded1974bf9cf",
+        PresetsId = "c3797a5e9c9a42dba09b0001c8cdaed6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
+        PresetsId = "c9348ab0418743d08ee786e31083d76b",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "c9348ab0418743d08ee786e31083d76b",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
+        PresetsId = "c9348ab0418743d08ee786e31083d76b",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "c9348ab0418743d08ee786e31083d76b",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "c9348ab0418743d08ee786e31083d76b",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
+        PresetsId = "c9348ab0418743d08ee786e31083d76b",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "caa36b99b068411aaa62b0f4234c1656",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "caa36b99b068411aaa62b0f4234c1656",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "caa36b99b068411aaa62b0f4234c1656",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
+        PresetsId = "caa36b99b068411aaa62b0f4234c1656",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
+        PresetsId = "caa36b99b068411aaa62b0f4234c1656",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "caa36b99b068411aaa62b0f4234c1656",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "cc5b36affe2243f2b119fd65cb3434d5",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "cc5b36affe2243f2b119fd65cb3434d5",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
+        PresetsId = "cc5b36affe2243f2b119fd65cb3434d5",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
+        PresetsId = "cc5b36affe2243f2b119fd65cb3434d5",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "cc5b36affe2243f2b119fd65cb3434d5",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "cc5b36affe2243f2b119fd65cb3434d5",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "ccc662f99d7a41d7aa1505e3a2cb8950",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
+        PresetsId = "ccc662f99d7a41d7aa1505e3a2cb8950",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
+        PresetsId = "ccc662f99d7a41d7aa1505e3a2cb8950",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "ccc662f99d7a41d7aa1505e3a2cb8950",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "ccc662f99d7a41d7aa1505e3a2cb8950",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
+        PresetsId = "ccc662f99d7a41d7aa1505e3a2cb8950",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "cfdabdeb4fd748849e6a635ec6418dd2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "cfdabdeb4fd748849e6a635ec6418dd2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6eb66f2427eb47a1a1fffc0dd3f89f6e",
+        PresetsId = "cfdabdeb4fd748849e6a635ec6418dd2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
+        PresetsId = "cfdabdeb4fd748849e6a635ec6418dd2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "cfdabdeb4fd748849e6a635ec6418dd2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "d63a7d0c9e5d4e258285ded1974bf9cf",
+        PresetsId = "cfdabdeb4fd748849e6a635ec6418dd2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
+        PresetsId = "d1d9616eb7904f189659505eca16cd43",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "d1d9616eb7904f189659505eca16cd43",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "d1d9616eb7904f189659505eca16cd43",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6eb66f2427eb47a1a1fffc0dd3f89f6e",
+        PresetsId = "d1d9616eb7904f189659505eca16cd43",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "d1d9616eb7904f189659505eca16cd43",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "d63a7d0c9e5d4e258285ded1974bf9cf",
+        PresetsId = "d1d9616eb7904f189659505eca16cd43",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "d208c36d9fa640c48eb05f6dd19963e2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "44ecb280dd8f4137af58024e0780e994",
+        PresetsId = "d208c36d9fa640c48eb05f6dd19963e2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "d208c36d9fa640c48eb05f6dd19963e2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6eb66f2427eb47a1a1fffc0dd3f89f6e",
+        PresetsId = "d208c36d9fa640c48eb05f6dd19963e2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "7186b0e8de2348fdbde87105c0f9abe3",
+        PresetsId = "d208c36d9fa640c48eb05f6dd19963e2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "e2c03da33b12458694a1b01c3ec66474",
+        PresetsId = "d208c36d9fa640c48eb05f6dd19963e2",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "dd737fac7e8b4b0cb353b6d8ac16cb51",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
+        PresetsId = "dd737fac7e8b4b0cb353b6d8ac16cb51",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "78b78938aefe4bc6b927ed3722bc5859",
+        PresetsId = "dd737fac7e8b4b0cb353b6d8ac16cb51",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
+        PresetsId = "dd737fac7e8b4b0cb353b6d8ac16cb51",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "dd737fac7e8b4b0cb353b6d8ac16cb51",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "dd737fac7e8b4b0cb353b6d8ac16cb51",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "e3485b7dc853448588da3dde04c4e3eb",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "44ecb280dd8f4137af58024e0780e994",
+        PresetsId = "e3485b7dc853448588da3dde04c4e3eb",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "e3485b7dc853448588da3dde04c4e3eb",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "7186b0e8de2348fdbde87105c0f9abe3",
+        PresetsId = "e3485b7dc853448588da3dde04c4e3eb",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "e2c03da33b12458694a1b01c3ec66474",
+        PresetsId = "e3485b7dc853448588da3dde04c4e3eb",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
+        PresetsId = "e3485b7dc853448588da3dde04c4e3eb",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "f1beda0c907a40dfaa73738cd6313d03",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "66645e2f8fa94d228d87450cc4a74706",
+        PresetsId = "f1beda0c907a40dfaa73738cd6313d03",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "f1beda0c907a40dfaa73738cd6313d03",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6eb66f2427eb47a1a1fffc0dd3f89f6e",
+        PresetsId = "f1beda0c907a40dfaa73738cd6313d03",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8158b8e5ef0340bdaf830fa8eb2e650d",
+        PresetsId = "f1beda0c907a40dfaa73738cd6313d03",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "f1beda0c907a40dfaa73738cd6313d03",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "f1ec1932c78e4a5a8035df1864fb32a4",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "f1ec1932c78e4a5a8035df1864fb32a4",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "70b69ec5ea074c0f8bf904b20b9c7884",
+        PresetsId = "f1ec1932c78e4a5a8035df1864fb32a4",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "818f875df04a49eebe9c474bba4247b9",
+        PresetsId = "f1ec1932c78e4a5a8035df1864fb32a4",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
+        PresetsId = "f1ec1932c78e4a5a8035df1864fb32a4",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "f1ec1932c78e4a5a8035df1864fb32a4",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
+        PresetsId = "fe7043a37995453db2d03741e81da9df",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "fe7043a37995453db2d03741e81da9df",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
+        PresetsId = "fe7043a37995453db2d03741e81da9df",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "fe7043a37995453db2d03741e81da9df",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "fe7043a37995453db2d03741e81da9df",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
+        PresetsId = "fe7043a37995453db2d03741e81da9df",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "06e6899bd6544dd3b9020a50789d9421",
+        PresetsId = "fe88b53dce4c4938a7785fb9e3db1f0a",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "fe88b53dce4c4938a7785fb9e3db1f0a",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "fe88b53dce4c4938a7785fb9e3db1f0a",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "8cff38afa8464ae191ba152b93438266",
+        PresetsId = "fe88b53dce4c4938a7785fb9e3db1f0a",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "92bdbbdbfd3b4dcf8256b68a66dfa35b",
+        PresetsId = "fe88b53dce4c4938a7785fb9e3db1f0a",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "fe88b53dce4c4938a7785fb9e3db1f0a",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "31c853d3dde94e68ab57903cf8a80798",
+        PresetsId = "ff13d99b031a4a93b571c0a0dfdf5770",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "44ecb280dd8f4137af58024e0780e994",
+        PresetsId = "ff13d99b031a4a93b571c0a0dfdf5770",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "ff13d99b031a4a93b571c0a0dfdf5770",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "7186b0e8de2348fdbde87105c0f9abe3",
+        PresetsId = "ff13d99b031a4a93b571c0a0dfdf5770",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "d63a7d0c9e5d4e258285ded1974bf9cf",
+        PresetsId = "ff13d99b031a4a93b571c0a0dfdf5770",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "fecd26fe3b6b4e88ba97ebb406fa6df2",
+        PresetsId = "ff13d99b031a4a93b571c0a0dfdf5770",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "edaba02c35264bfcbddd4d80ee293da6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6eb66f2427eb47a1a1fffc0dd3f89f6e",
+        PresetsId = "edaba02c35264bfcbddd4d80ee293da6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "7186b0e8de2348fdbde87105c0f9abe3",
+        PresetsId = "edaba02c35264bfcbddd4d80ee293da6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "ac73834982664ae09fc86ba4359e4aa8",
+        PresetsId = "edaba02c35264bfcbddd4d80ee293da6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "edaba02c35264bfcbddd4d80ee293da6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "e639e41ce412489cbd74fbf43428344d",
+        PresetsId = "edaba02c35264bfcbddd4d80ee293da6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "bb4fa5ef967845ed9df5ff26d2dd1c4c",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6eb66f2427eb47a1a1fffc0dd3f89f6e",
+        PresetsId = "bb4fa5ef967845ed9df5ff26d2dd1c4c",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
+        PresetsId = "bb4fa5ef967845ed9df5ff26d2dd1c4c",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "ac73834982664ae09fc86ba4359e4aa8",
+        PresetsId = "bb4fa5ef967845ed9df5ff26d2dd1c4c",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "bb4fa5ef967845ed9df5ff26d2dd1c4c",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "e639e41ce412489cbd74fbf43428344d",
+        PresetsId = "bb4fa5ef967845ed9df5ff26d2dd1c4c",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "54963650e77e411daa0afe6cf4e0bd87",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "54963650e77e411daa0afe6cf4e0bd87",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "7186b0e8de2348fdbde87105c0f9abe3",
+        PresetsId = "54963650e77e411daa0afe6cf4e0bd87",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "ac73834982664ae09fc86ba4359e4aa8",
+        PresetsId = "54963650e77e411daa0afe6cf4e0bd87",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "54963650e77e411daa0afe6cf4e0bd87",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "e639e41ce412489cbd74fbf43428344d",
+        PresetsId = "54963650e77e411daa0afe6cf4e0bd87",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "dd486595e71d444cb8f42d0c91f5a0e7",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "dd486595e71d444cb8f42d0c91f5a0e7",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
+        PresetsId = "dd486595e71d444cb8f42d0c91f5a0e7",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "ac73834982664ae09fc86ba4359e4aa8",
+        PresetsId = "dd486595e71d444cb8f42d0c91f5a0e7",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "c454b97a93f341e78b127d5425acc464",
+        PresetsId = "dd486595e71d444cb8f42d0c91f5a0e7",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "e639e41ce412489cbd74fbf43428344d",
+        PresetsId = "dd486595e71d444cb8f42d0c91f5a0e7",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "66645e2f8fa94d228d87450cc4a74706",
+        PresetsId = "461e2cae39e14726b2cd1772cdb4c66e",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "461e2cae39e14726b2cd1772cdb4c66e",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6eb66f2427eb47a1a1fffc0dd3f89f6e",
+        PresetsId = "461e2cae39e14726b2cd1772cdb4c66e",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "7186b0e8de2348fdbde87105c0f9abe3",
+        PresetsId = "461e2cae39e14726b2cd1772cdb4c66e",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "ac73834982664ae09fc86ba4359e4aa8",
+        PresetsId = "461e2cae39e14726b2cd1772cdb4c66e",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "e639e41ce412489cbd74fbf43428344d",
+        PresetsId = "461e2cae39e14726b2cd1772cdb4c66e",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "66645e2f8fa94d228d87450cc4a74706",
+        PresetsId = "7afdd951b8f948519388689b84373fba",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "7afdd951b8f948519388689b84373fba",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6eb66f2427eb47a1a1fffc0dd3f89f6e",
+        PresetsId = "7afdd951b8f948519388689b84373fba",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
+        PresetsId = "7afdd951b8f948519388689b84373fba",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "ac73834982664ae09fc86ba4359e4aa8",
+        PresetsId = "7afdd951b8f948519388689b84373fba",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "e639e41ce412489cbd74fbf43428344d",
+        PresetsId = "7afdd951b8f948519388689b84373fba",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "7f7a036811a14c9ba4058fa770b9a7e6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "66645e2f8fa94d228d87450cc4a74706",
+        PresetsId = "7f7a036811a14c9ba4058fa770b9a7e6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "7f7a036811a14c9ba4058fa770b9a7e6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "7186b0e8de2348fdbde87105c0f9abe3",
+        PresetsId = "7f7a036811a14c9ba4058fa770b9a7e6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "ac73834982664ae09fc86ba4359e4aa8",
+        PresetsId = "7f7a036811a14c9ba4058fa770b9a7e6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "e639e41ce412489cbd74fbf43428344d",
+        PresetsId = "7f7a036811a14c9ba4058fa770b9a7e6",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "4ed7cdc105ab44de81d333d63db0a222",
+        PresetsId = "e4de6c02c26a42a6bc1ba0b9ac158774",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "66645e2f8fa94d228d87450cc4a74706",
+        PresetsId = "e4de6c02c26a42a6bc1ba0b9ac158774",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "6b81101144404b9ab306235861eedc12",
+        PresetsId = "e4de6c02c26a42a6bc1ba0b9ac158774",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "81acc249e2664c72908014a28e1e72ef",
+        PresetsId = "e4de6c02c26a42a6bc1ba0b9ac158774",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "ac73834982664ae09fc86ba4359e4aa8",
+        PresetsId = "e4de6c02c26a42a6bc1ba0b9ac158774",
+    },
+    new ComponentOptionPreset
+    {
+        ComponentOptionsId = "e639e41ce412489cbd74fbf43428344d",
+        PresetsId = "e4de6c02c26a42a6bc1ba0b9ac158774",
+    }
+);
+            #endregion
 
             #endregion
 
             #region Seed Positions, Sizes, and AddOns
 
             modelBuilder.Entity<Position>().HasData(
-                new Position
-                {
-                    Id = "dddef2e0837e4461a3edf6f6fc4ca6a5",
-                    Name = "Right Sleeve Hem",
-                    Image = null,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
-                    IsDeleted = false,
-                },
-                new Position
-                {
-                    Id = "dda917d763ef470ba63a76a0c46b6dd3",
-                    Name = "Left Sleeve Hem",
-                    Image = null,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
-                    IsDeleted = false,
-                },
-                new Position
-                {
-                    Id = "1892d3778cf44b8eb791801be53d1950",
-                    Name = "Left Chest",
-                    Image = null,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
-                    IsDeleted = false,
-                },
-                new Position
-                {
-                    Id = "6351c905181f4959973341881dcbc3ac",
-                    Name = "Right Chest",
-                    Image = null,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
-                    IsDeleted = false,
-                },
-                new Position
-                {
-                    Id = "d1a6e54ea47d4b89beaa90421e819a2f",
-                    Name = "Center Chest",
-                    Image = null,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
-                    IsDeleted = false,
-                },
-                new Position
-                {
-                    Id = "18d2ffb3804c4a6d89db65961c26d687",
-                    Name = "Left Dress Side",
-                    Image = null,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
-                    IsDeleted = false,
-                },
-                new Position
-                {
-                    Id = "cf321914500e44e0ab21fffebff8f63b",
-                    Name = "Right Dress Side",
-                    Image = null,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
-                    IsDeleted = false,
-                },
-                new Position
-                {
-                    Id = "7ab17c28f8764667a8cdd92015d135a7",
-                    Name = "Full Neckline",
-                    Image = null,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
-                    IsDeleted = false,
-                },
-                new Position
-                {
-                    Id = "3a0440ea7695472f9324919567fbd548",
-                    Name = "Full Dress Hem",
-                    Image = null,
-                    CreatedBy = "System",
-                    UpdatedBy = "System",
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
-                    IsDeleted = false,
-                }
-            );
+                                        new Position
+                                        {
+                                            Id = "dddef2e0837e4461a3edf6f6fc4ca6a5",
+                                            Name = "Right Sleeve Hem",
+                                            Image = null,
+                                            CreatedBy = "System",
+                                            UpdatedBy = "System",
+                                            CreatedAt = DateTime.UtcNow,
+                                            UpdatedAt = DateTime.UtcNow,
+                                            IsDeleted = false,
+                                        },
+                                        new Position
+                                        {
+                                            Id = "dda917d763ef470ba63a76a0c46b6dd3",
+                                            Name = "Left Sleeve Hem",
+                                            Image = null,
+                                            CreatedBy = "System",
+                                            UpdatedBy = "System",
+                                            CreatedAt = DateTime.UtcNow,
+                                            UpdatedAt = DateTime.UtcNow,
+                                            IsDeleted = false,
+                                        },
+                                        new Position
+                                        {
+                                            Id = "1892d3778cf44b8eb791801be53d1950",
+                                            Name = "Left Chest",
+                                            Image = null,
+                                            CreatedBy = "System",
+                                            UpdatedBy = "System",
+                                            CreatedAt = DateTime.UtcNow,
+                                            UpdatedAt = DateTime.UtcNow,
+                                            IsDeleted = false,
+                                        },
+                                        new Position
+                                        {
+                                            Id = "6351c905181f4959973341881dcbc3ac",
+                                            Name = "Right Chest",
+                                            Image = null,
+                                            CreatedBy = "System",
+                                            UpdatedBy = "System",
+                                            CreatedAt = DateTime.UtcNow,
+                                            UpdatedAt = DateTime.UtcNow,
+                                            IsDeleted = false,
+                                        },
+                                        new Position
+                                        {
+                                            Id = "d1a6e54ea47d4b89beaa90421e819a2f",
+                                            Name = "Center Chest",
+                                            Image = null,
+                                            CreatedBy = "System",
+                                            UpdatedBy = "System",
+                                            CreatedAt = DateTime.UtcNow,
+                                            UpdatedAt = DateTime.UtcNow,
+                                            IsDeleted = false,
+                                        },
+                                        new Position
+                                        {
+                                            Id = "18d2ffb3804c4a6d89db65961c26d687",
+                                            Name = "Left Dress Side",
+                                            Image = null,
+                                            CreatedBy = "System",
+                                            UpdatedBy = "System",
+                                            CreatedAt = DateTime.UtcNow,
+                                            UpdatedAt = DateTime.UtcNow,
+                                            IsDeleted = false,
+                                        },
+                                        new Position
+                                        {
+                                            Id = "cf321914500e44e0ab21fffebff8f63b",
+                                            Name = "Right Dress Side",
+                                            Image = null,
+                                            CreatedBy = "System",
+                                            UpdatedBy = "System",
+                                            CreatedAt = DateTime.UtcNow,
+                                            UpdatedAt = DateTime.UtcNow,
+                                            IsDeleted = false,
+                                        },
+                                        new Position
+                                        {
+                                            Id = "7ab17c28f8764667a8cdd92015d135a7",
+                                            Name = "Full Neckline",
+                                            Image = null,
+                                            CreatedBy = "System",
+                                            UpdatedBy = "System",
+                                            CreatedAt = DateTime.UtcNow,
+                                            UpdatedAt = DateTime.UtcNow,
+                                            IsDeleted = false,
+                                        },
+                                        new Position
+                                        {
+                                            Id = "3a0440ea7695472f9324919567fbd548",
+                                            Name = "Full Dress Hem",
+                                            Image = null,
+                                            CreatedBy = "System",
+                                            UpdatedBy = "System",
+                                            CreatedAt = DateTime.UtcNow,
+                                            UpdatedAt = DateTime.UtcNow,
+                                            IsDeleted = false,
+                                        }
+                                    );
 
             modelBuilder.Entity<Size>().HasData(
                 new Size

@@ -86,7 +86,11 @@ public class SepayService : ISepayService
         }
 
         await _transactionService.CreateTransactionAsync(payload, order.Id, order.Code);
-
+        var txn = await _unitOfWork.TransactionRepository.GetLatestTransactionByOrderIdAsync(order.Id);
+        if (order.User == null && !string.IsNullOrEmpty(order.UserId))
+        {
+            order.User = await _unitOfWork.UserRepository.GetByIdAsync(order.UserId);
+        }
         if (order.PaymentType == PaymentType.DEPOSIT)
         {
             if (order.PaymentStatus == PaymentStatus.PENDING)
@@ -97,6 +101,13 @@ public class SepayService : ISepayService
                     OrderStatus.CONFIRMED,
                     PaymentStatus.PAID_DEPOSIT
                 );
+                
+                if (txn != null)
+                {
+                    await _transactionService.SendPaymentReceiptAsync(order, txn, PaymentStatus.PAID_DEPOSIT);
+                    await _unitOfWork.TransactionRepository.UpdateAsync(txn);
+                    await _unitOfWork.SaveChangesAsync();
+                }
 
                 await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
                 {
@@ -124,6 +135,13 @@ public class SepayService : ISepayService
                     PaymentStatus.PAID_DEPOSIT_COMPLETED
                 );
 
+                if (txn != null)
+                {
+                    await _transactionService.SendPaymentReceiptAsync(order, txn, PaymentStatus.PAID_DEPOSIT_COMPLETED);
+                    await _unitOfWork.TransactionRepository.UpdateAsync(txn);
+                    await _unitOfWork.SaveChangesAsync();
+                }
+                
                 await _notificationService.SendAndSaveNotificationToMultipleAsync(new NotificationMultipleRequestDto
                 {
                     NotificationTitle = "Thanh toán phần còn lại thành công",
@@ -161,6 +179,12 @@ public class SepayService : ISepayService
                     PaymentStatus.PAID_FULL
                 );
 
+                if (txn != null)
+                {
+                    await _transactionService.SendPaymentReceiptAsync(order, txn, PaymentStatus.PAID_FULL);
+                    await _unitOfWork.TransactionRepository.UpdateAsync(txn);
+                    await _unitOfWork.SaveChangesAsync();
+                }
 
                 await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
                 {
@@ -186,6 +210,13 @@ public class SepayService : ISepayService
                 PaymentStatus.PAID_FULL
             );
 
+            if (txn != null)
+            {
+                await _transactionService.SendPaymentReceiptAsync(order, txn, PaymentStatus.PAID_FULL);
+                await _unitOfWork.TransactionRepository.UpdateAsync(txn);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            
             await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
             {
                 NotificationTitle = "Thanh toán thành công",

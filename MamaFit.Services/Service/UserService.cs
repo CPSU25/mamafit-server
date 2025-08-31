@@ -1,8 +1,6 @@
-using System.Security.Claims;
 using AutoMapper;
 using MamaFit.BusinessObjects.DTO.UploadImageDto;
 using MamaFit.BusinessObjects.DTO.UserDto;
-using MamaFit.BusinessObjects.Entity;
 using MamaFit.Repositories.Helper;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
@@ -60,22 +58,22 @@ public class UserService : IUserService
     public async Task<UserReponseDto> UpdateUserAsync(string userId, UpdateUserRequestDto model)
     {
         await _validation.ValidateAndThrowAsync(model);
-    
+
         var user = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(userId);
         _validation.CheckNotFound(user, "User not found!");
-    
+
         if (user.UserName != model.UserName)
         {
-            var usernameExists = await _unitOfWork.UserRepository.IsEntityExistsAsync(x => 
+            var usernameExists = await _unitOfWork.UserRepository.IsEntityExistsAsync(x =>
                 x.UserName == model.UserName && x.Id != userId);
             _validation.CheckBadRequest(usernameExists, "Username already exists!");
         }
-    
+
         var role = await _unitOfWork.RoleRepository.GetByIdAsync(model.RoleId);
         _validation.CheckNotFound(role, "Role not found!");
-    
+
         _mapper.Map(model, user);
-    
+
         await _unitOfWork.UserRepository.UpdateUserAsync(user);
         await _unitOfWork.SaveChangesAsync();
 
@@ -114,4 +112,11 @@ public class UserService : IUserService
         return uploadResult;
     }
 
+    public async Task<List<UserReponseDto>> GetAllStaffAsync()
+    {
+        var listUser = await _unitOfWork.UserRepository.GetAllUserAsync();
+        var response = listUser.Where(x => x.Role!.RoleName != "Staff");
+
+        return _mapper.Map<List<UserReponseDto>>(response);
+    }
 }

@@ -6,6 +6,7 @@ namespace MamaFit.Repositories.Interface;
 public interface IUserRepository : IGenericRepository<ApplicationUser>
 {
     Task<PaginatedList<ApplicationUser>> GetUsersAsync(int index, int pageSize, string? nameSearch, string? roleName);
+    Task<List<ApplicationUser>> GetAllUserAsync();
     Task<ApplicationUser?> GetByIdAsync(string id);
     Task<ApplicationUser?> GetByEmailAsync(string email);
     Task<ApplicationUser?> GetByUsernameAsync(string username);

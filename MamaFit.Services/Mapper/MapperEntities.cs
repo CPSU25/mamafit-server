@@ -60,6 +60,7 @@ namespace MamaFit.Services.Mapper
             CreateMap<ApplicationUser, UserReponseDto>()
                 .ForMember(dest => dest.RoleName,
                     opt => opt.MapFrom(src => src.Role != null ? src.Role.RoleName : null))
+                .ForMember(dest => dest.JobCount, otp => otp.MapFrom(src => src.OrderItemTasks.Where(x => x.Status == OrderItemTaskStatus.PENDING || x.Status == OrderItemTaskStatus.IN_PROGRESS).Count()))
                 .ReverseMap();
             CreateMap<ApplicationUser, PermissionResponseDto>()
                 .ForMember(dest => dest.RoleName,

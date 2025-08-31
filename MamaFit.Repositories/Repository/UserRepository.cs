@@ -50,6 +50,7 @@ public class UserRepository : GenericRepository<ApplicationUser>, IUserRepositor
     {
         return await _dbSet.FirstOrDefaultAsync(x => x.UserEmail.ToLower() == email && x.PhoneNumber == phone && !x.IsDeleted);
     }
+
     public async Task<ApplicationUser?> GetByPhoneNumberAsync(string phoneNumber) 
     {
         return await _dbSet.FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber && !x.IsDeleted);
@@ -82,6 +83,7 @@ public class UserRepository : GenericRepository<ApplicationUser>, IUserRepositor
     {
         await InsertAsync(user);
     }
+
     public async Task UpdateUserAsync(ApplicationUser user)
     {
         await UpdateAsync(user);
@@ -90,5 +92,14 @@ public class UserRepository : GenericRepository<ApplicationUser>, IUserRepositor
     public async Task DeleteUserAsync(ApplicationUser user)
     {
         await SoftDeleteAsync(user.Id);
+    }
+
+    public async Task<List<ApplicationUser>> GetAllUserAsync()
+    {
+        var response = await _dbSet.Include(x => x.Role)
+            .Include(x => x.OrderItemTasks)
+            .ToListAsync();
+
+        return response;
     }
 }

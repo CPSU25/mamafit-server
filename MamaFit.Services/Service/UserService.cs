@@ -115,7 +115,7 @@ public class UserService : IUserService
     public async Task<List<UserReponseDto>> GetAllStaffAsync()
     {
         var listUser = await _unitOfWork.UserRepository.GetAllUserAsync();
-        var response = listUser.Where(x => x.Role!.RoleName != "Staff");
+        var response = listUser.Where(x => x.Role!.RoleName == "Staff");
 
         return _mapper.Map<List<UserReponseDto>>(response);
     }

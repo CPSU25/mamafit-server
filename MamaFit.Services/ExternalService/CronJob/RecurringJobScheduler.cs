@@ -11,5 +11,11 @@ public class RecurringJobScheduler : IRecurringJobScheduler
             "measurement-reminder-job",
             service => service.CheckAndSendRemindersAsync(),
             "0 9 * * *");
+        
+        RecurringJob.AddOrUpdate<IAppointmentReminderJob>(
+            "appointment-reminder-sweeper",
+            j => j.SweepAndSendAsync(),
+            "* * * * *",
+            timeZone: TimeZoneInfo.FindSystemTimeZoneById("Asia/Ho_Chi_Minh"));
     }
 }

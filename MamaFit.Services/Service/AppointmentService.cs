@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Hangfire;
 using MamaFit.BusinessObjects.DTO.AppointmentDto;
 using MamaFit.BusinessObjects.Entity;
 using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Implement;
 using MamaFit.Repositories.Infrastructure;
+using MamaFit.Services.ExternalService.CronJob;
 using MamaFit.Services.ExternalService.Redis;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
@@ -95,6 +97,25 @@ namespace MamaFit.Services.Service
             await _unitOfWork.AppointmentRepository.InsertAsync(newAppointment);
             await _unitOfWork.SaveChangesAsync();
 
+            // Schedule nhắc trước 30'
+            var scheduleUtc = newAppointment.BookingTime.AddMinutes(-30);
+
+            if (scheduleUtc <= DateTime.UtcNow)
+            {
+                // Nếu lịch được đặt sát giờ (<=30'), gửi ngay lập tức bằng background
+                BackgroundJob.Enqueue<IAppointmentReminderJob>(j => j.SendReminderAsync(newAppointment.Id));
+            }
+            else
+            {
+                var jobId = BackgroundJob.Schedule<IAppointmentReminderJob>(
+                    j => j.SendReminderAsync(newAppointment.Id),
+                    scheduleUtc);
+
+                newAppointment.ReminderJobId = jobId;
+                await _unitOfWork.AppointmentRepository.UpdateAsync(newAppointment);
+                await _unitOfWork.SaveChangesAsync();
+            }
+
             await _cacheService.RemoveByPrefixAsync($"appointment");
 
             return newAppointment.Id;
@@ -154,6 +175,13 @@ namespace MamaFit.Services.Service
             var appointment = await _unitOfWork.AppointmentRepository.GetByIdAsync(id);
             _validationService.CheckNotFound(appointment, $"Appointment not found with id {id}");
 
+            if (!string.IsNullOrEmpty(appointment.ReminderJobId))
+            {
+                BackgroundJob.Delete(appointment.ReminderJobId);
+                appointment.ReminderJobId = null;
+                appointment.Reminder30SentAt = null; // reset nếu đổi giờ
+            }
+            
             _mapper.Map(requestDto, appointment);
             appointment.UpdatedAt = DateTime.UtcNow;
             appointment.UpdatedBy = GetCurrentUserName();
@@ -161,7 +189,18 @@ namespace MamaFit.Services.Service
             await _unitOfWork.AppointmentRepository.UpdateAsync(appointment);
             await _unitOfWork.SaveChangesAsync();
 
-            var dateOnly = DateOnly.FromDateTime(requestDto.BookingTime);
+            var scheduleUtc = appointment.BookingTime.AddMinutes(-30);
+            if (scheduleUtc <= DateTime.UtcNow)
+            {
+                BackgroundJob.Enqueue<IAppointmentReminderJob>(j => j.SendReminderAsync(appointment.Id));
+            }
+            else
+            {
+                var jobId = BackgroundJob.Schedule<IAppointmentReminderJob>(
+                    j => j.SendReminderAsync(appointment.Id),
+                    scheduleUtc);
+                appointment.ReminderJobId = jobId;
+            }
             await _cacheService.RemoveByPrefixAsync($"appointment");
         }
 
@@ -207,6 +246,11 @@ namespace MamaFit.Services.Service
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, $"Appointment with id {id} already cancelled");
             }
+            if (!string.IsNullOrEmpty(oldAppointment.ReminderJobId))
+            {
+                BackgroundJob.Delete(oldAppointment.ReminderJobId);
+                oldAppointment.ReminderJobId = null;
+            }
         }
 
         public async Task CheckOutAsync(string id)
@@ -227,6 +271,11 @@ namespace MamaFit.Services.Service
             else
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, $"Appointment with id {id} already checked-out");
+            }
+            if (!string.IsNullOrEmpty(oldAppointment.ReminderJobId))
+            {
+                BackgroundJob.Delete(oldAppointment.ReminderJobId);
+                oldAppointment.ReminderJobId = null;
             }
         }
 

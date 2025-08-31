@@ -38,4 +38,12 @@ public class TransactionRepository : GenericRepository<Transaction>, ITransactio
             .Select(t => t.Order)
             .FirstOrDefaultAsync();
     }
+    
+    public async Task<Transaction?> GetLatestTransactionByOrderIdAsync(string orderId)
+    {
+        return await _dbSet
+            .Where(x => x.OrderId == orderId && !x.IsDeleted)
+            .OrderByDescending(x => x.CreatedAt)
+            .FirstOrDefaultAsync();
+    }
 }

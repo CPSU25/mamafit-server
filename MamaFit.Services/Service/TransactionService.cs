@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Text;
 using AutoMapper;
 using MamaFit.BusinessObjects.DTO.SepayDto;
 using MamaFit.BusinessObjects.DTO.TransactionDto;
@@ -18,14 +20,16 @@ public class TransactionService : ITransactionService
     private readonly IMapper _mapper;
     private readonly IValidationService _validation;
     private readonly ICacheService _cache;
+    private readonly IEmailSenderSevice _emailSenderService;
 
     public TransactionService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation,
-        ICacheService cache)
+        ICacheService cache, IEmailSenderSevice emailSenderService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _validation = validation;
         _cache = cache;
+        _emailSenderService = emailSenderService;
     }
 
     public async Task<PaginatedList<TransactionResponseDto>> GetTransactionsAsync(
@@ -399,5 +403,128 @@ public class TransactionService : ITransactionService
             .ToListAsync();
 
         return new RecentOrdersResponse { Items = items };
+    }
+    
+    public async Task SendPaymentReceiptAsync(Order order, Transaction txn, PaymentStatus newPaymentStatus)
+    {
+        var email = order.User.UserEmail;
+        if (string.IsNullOrWhiteSpace(email))
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                "User email is not set, cannot send receipt");
+
+        var subject = newPaymentStatus switch
+        {
+            PaymentStatus.PAID_DEPOSIT => $"[MamaFit] Xác nhận thanh toán CỌC cho đơn {order.Code}",
+            PaymentStatus.PAID_DEPOSIT_COMPLETED => $"[MamaFit] Xác nhận thanh toán PHẦN CÒN LẠI cho đơn {order.Code}",
+            PaymentStatus.PAID_FULL => $"[MamaFit] Xác nhận thanh toán THÀNH CÔNG đơn {order.Code}",
+            _ => $"[MamaFit] Cập nhật thanh toán đơn {order.Code}"
+        };
+
+        var html = BuildReceiptHtml(order, txn, newPaymentStatus);
+        await _emailSenderService.SendEmailAsync(email, subject, html);
+    }
+
+    private static string BuildReceiptHtml(Order order, Transaction txn, PaymentStatus status)
+    {
+        var vn = new CultureInfo("vi-VN");
+        var tz = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"); // Asia/Ho_Chi_Minh (Windows)
+        var paidAt = txn?.TransactionDate ?? DateTime.UtcNow;
+        var localPaidAt = TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(paidAt, DateTimeKind.Utc), tz);
+
+        var paymentTypeText = order.PaymentType == PaymentType.DEPOSIT ? "Thanh toán cọc" : "Thanh toán toàn bộ";
+        if (status == PaymentStatus.PAID_DEPOSIT_COMPLETED) paymentTypeText = "Thanh toán phần còn lại";
+
+        var amount = (decimal?)txn?.TransferAmount ?? 0m;
+        var total = order.TotalAmount ?? 0m;
+        var subtotal = order.SubTotalAmount ?? 0m;
+        var shipping = order.ShippingFee;
+        var discount = order.DiscountSubtotal ?? 0m;
+
+        var itemsHtml = new StringBuilder();
+        if (order?.OrderItems != null)
+        {
+            foreach (var it in order.OrderItems)
+            {
+                var name =
+                    it.Preset?.Name ??
+                    it.MaternityDressDetail?.Name ??
+                    (it.DesignRequest != null ? "Yêu cầu thiết kế" : "Sản phẩm");
+                itemsHtml.Append($@"
+                    <tr>
+                        <td style=""padding:8px 0"">{name}</td>
+                        <td style=""padding:8px 0; text-align:center"">{it.Quantity}</td>
+                        <td style=""padding:8px 0; text-align:right"">{(it.Price).ToString("c0", vn)}</td>
+                    </tr>");
+            }
+        }
+
+        var addressLine = order.DeliveryMethod == DeliveryMethod.DELIVERY
+            ? $"{order?.Address?.Street}, {order?.Address?.Ward}, {order?.Address?.District}, {order?.Address?.Province}"
+            : $"Nhận tại chi nhánh: {order?.Branch?.Name}";
+
+        var preheader = $"Xác nhận {paymentTypeText} cho đơn {order?.Code}";
+
+        return $@"
+<!DOCTYPE html>
+<html lang=""vi"">
+<head>
+<meta charset=""UTF-8"">
+<meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+<title>Biên nhận thanh toán</title>
+<style>
+body {{ font-family: Arial, Helvetica, sans-serif; background:#f7f7f7; margin:0; padding:0; }}
+.container {{ max-width: 600px; margin:40px auto; background:#fff; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.05); padding:24px; }}
+.brand {{ font-size:22px; font-weight:bold; color:#2266cc; text-align:center; margin-bottom:6px; }}
+.sub {{ text-align:center; color:#666; margin-bottom:16px; }}
+.section-title {{ font-size:16px; font-weight:bold; margin:18px 0 8px; }}
+.table {{ width:100%; border-collapse:collapse; }}
+.table th, .table td {{ border-bottom:1px solid #eee; padding:8px 0; font-size:14px; }}
+.right {{ text-align:right; }}
+.footer {{ margin-top:24px; font-size:12px; color:#888; text-align:center; }}
+.badge {{ display:inline-block; padding:6px 10px; background:#e8f3ff; color:#2266cc; border-radius:999px; font-size:12px; }}
+.total-row td {{ font-weight:bold; }}
+</style>
+</head>
+<body>
+<span style=""display:none!important;"">{preheader}</span>
+<div class=""container"">
+    <div class=""brand"">MamaFit</div>
+    <div class=""sub""><span class=""badge"">{paymentTypeText}</span></div>
+
+    <div class=""section-title"">Thông tin đơn hàng</div>
+    <table class=""table"">
+        <tr><td>Mã đơn</td><td class=""right"">{order?.Code}</td></tr>
+        <tr><td>Thời gian thanh toán</td><td class=""right"">{localPaidAt:dd/MM/yyyy HH:mm}</td></tr>
+        <tr><td>Phương thức</td><td class=""right"">{order?.PaymentMethod}</td></tr>
+        <tr><td>Trạng thái thanh toán</td><td class=""right"">{status}</td></tr>
+        {(string.IsNullOrEmpty(addressLine) ? "" : $@"<tr><td>Giao nhận</td><td class=""right"">{addressLine}</td></tr>")}
+        {(string.IsNullOrEmpty(txn?.ReferenceCode) ? "" : $@"<tr><td>Mã tham chiếu</td><td class=""right"">{txn?.ReferenceCode}</td></tr>")}
+        {(string.IsNullOrEmpty(txn?.Code) ? "" : $@"<tr><td>Mã giao dịch</td><td class=""right"">{txn?.Code}</td></tr>")}
+    </table>
+
+    <div class=""section-title"">Chi tiết sản phẩm</div>
+    <table class=""table"">
+        <thead>
+            <tr><th style=""text-align:left"">Sản phẩm</th><th>Số lượng</th><th class=""right"">Đơn giá</th></tr>
+        </thead>
+        <tbody>
+            {itemsHtml}
+        </tbody>
+        <tfoot>
+            <tr><td colspan=""2"" class=""right"">Tạm tính</td><td class=""right"">{subtotal.ToString("c0", vn)}</td></tr>
+            {(discount > 0 ? $@"<tr><td colspan=""2"" class=""right"">Giảm giá</td><td class=""right"">- {discount.ToString("c0", vn)}</td></tr>" : "")}
+            <tr><td colspan=""2"" class=""right"">Phí vận chuyển</td><td class=""right"">{shipping.ToString("c0", vn)}</td></tr>
+            <tr class=""total-row""><td colspan=""2"" class=""right"">Tổng cộng</td><td class=""right"">{total.ToString("c0", vn)}</td></tr>
+            <tr><td colspan=""2"" class=""right"">Số tiền đã thanh toán trong lần này</td><td class=""right"">{amount.ToString("c0", vn)}</td></tr>
+        </tfoot>
+    </table>
+
+    <div class=""footer"">
+        Nếu có sai sót, vui lòng phản hồi email này hoặc liên hệ MamaFit để được hỗ trợ.<br/>
+        &copy; {DateTime.Now.Year} MamaFit. All rights reserved.
+    </div>
+</div>
+</body>
+</html>";
     }
 }

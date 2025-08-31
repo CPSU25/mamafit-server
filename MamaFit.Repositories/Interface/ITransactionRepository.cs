@@ -9,4 +9,5 @@ public interface ITransactionRepository : IGenericRepository<Transaction>
     Task<PaginatedList<Transaction>> GetAllAsync(int index, int pageSize, DateTime? startDate, DateTime? endDate);
     Task<Transaction?> GetByOrderIdAsync(string id);
     Task<Order?> GetOrderByPaymentCodeAsync(string paymentCode);
+    Task<Transaction?> GetLatestTransactionByOrderIdAsync(string orderId);
 }

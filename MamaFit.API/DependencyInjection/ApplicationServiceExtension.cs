@@ -83,6 +83,7 @@ namespace MamaFit.API.DependencyInjection
         public static void AddServices(this IServiceCollection services)
         {
             // Add your service registrations here
+            services.AddScoped<IAppointmentReminderJob, AppointmentReminderJob>();
             services.AddSingleton<IRecurringJobScheduler, RecurringJobScheduler>();
             services.AddScoped<IBodyGrowthCalculator, BodyGrowthCalculator>();
             services.AddScoped<IValidationService, ValidationService>();

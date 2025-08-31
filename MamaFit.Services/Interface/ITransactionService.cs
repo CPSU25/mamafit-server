@@ -1,5 +1,7 @@
 using MamaFit.BusinessObjects.DTO.SepayDto;
 using MamaFit.BusinessObjects.DTO.TransactionDto;
+using MamaFit.BusinessObjects.Entity;
+using MamaFit.BusinessObjects.Enum;
 using MamaFit.Repositories.Infrastructure;
 
 namespace MamaFit.Services.Interface;
@@ -15,4 +17,5 @@ public interface ITransactionService
     Task<OrderStatusResponse> GetOrderStatusAsync(string range);
     Task<BranchTopResponse> GetTopBranchesAsync(string metric, int limit, string range);
     Task<RecentOrdersResponse> GetRecentOrdersAsync(int limit);
+    Task SendPaymentReceiptAsync(Order order, Transaction txn, PaymentStatus newPaymentStatus);
 }    

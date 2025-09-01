@@ -107,8 +107,12 @@ namespace MamaFit.Services.Service
 
             if (scheduleUtc <= DateTime.UtcNow)
             {
-                // Nếu lịch được đặt sát giờ (<=30'), gửi ngay lập tức bằng background
-                BackgroundJob.Enqueue<IAppointmentReminderJob>(j => j.SendReminderAsync(newAppointment.Id));
+                var jobId = BackgroundJob.Enqueue<IAppointmentReminderJob>(j => j.SendReminderAsync(newAppointment.Id));
+
+                newAppointment.ReminderJobId = jobId;
+
+                await _unitOfWork.AppointmentRepository.UpdateAsync(newAppointment);
+                await _unitOfWork.SaveChangesAsync();
             }
             else
             {
@@ -117,6 +121,7 @@ namespace MamaFit.Services.Service
                     scheduleUtc);
 
                 newAppointment.ReminderJobId = jobId;
+
                 await _unitOfWork.AppointmentRepository.UpdateAsync(newAppointment);
                 await _unitOfWork.SaveChangesAsync();
             }
@@ -125,7 +130,7 @@ namespace MamaFit.Services.Service
 
             return newAppointment.Id;
         }
-        
+
         public async Task DeleteAsync(string id)
         {
             var oldAppointment = await _unitOfWork.AppointmentRepository.GetByIdAsync(id);
@@ -193,14 +198,15 @@ namespace MamaFit.Services.Service
         public async Task UpdateAsync(string id, AppointmentRequestDto requestDto)
         {
             await _validationService.ValidateAndThrowAsync(requestDto);
+
             var appointment = await _unitOfWork.AppointmentRepository.GetByIdAsync(id);
             _validationService.CheckNotFound(appointment, $"Appointment not found with id {id}");
 
             if (!string.IsNullOrEmpty(appointment.ReminderJobId))
             {
                 BackgroundJob.Delete(appointment.ReminderJobId);
-                appointment.ReminderJobId = null;
-                appointment.Reminder30SentAt = null; // reset nếu đổi giờ
+                appointment.ReminderJobId = null; // Reset ReminderJobId
+                appointment.Reminder30SentAt = null; // Reset Reminder30SentAt if time changes
             }
 
             _mapper.Map(requestDto, appointment);
@@ -211,9 +217,16 @@ namespace MamaFit.Services.Service
             await _unitOfWork.SaveChangesAsync();
 
             var scheduleUtc = appointment.BookingTime.AddMinutes(-30);
+
             if (scheduleUtc <= DateTime.UtcNow)
             {
-                BackgroundJob.Enqueue<IAppointmentReminderJob>(j => j.SendReminderAsync(appointment.Id));
+                // If the appointment is very soon (<= 30 minutes), send reminder immediately
+                var jobId = BackgroundJob.Enqueue<IAppointmentReminderJob>(j => j.SendReminderAsync(appointment.Id));
+
+                appointment.ReminderJobId = jobId;
+
+                await _unitOfWork.AppointmentRepository.UpdateAsync(appointment);
+                await _unitOfWork.SaveChangesAsync();
             }
             else
             {
@@ -227,6 +240,7 @@ namespace MamaFit.Services.Service
 
             await _cacheService.RemoveByPrefixAsync($"appointment");
         }
+
 
         public async Task CheckInAsync(string id)
         {

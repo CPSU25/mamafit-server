@@ -297,6 +297,7 @@ namespace MamaFit.Services.Service
             {
                 var requestItem = new WarrantyRequestItem
                 {
+                    EstimateTime = dto.EstimateTime,
                     WarrantyRequestId = warrantyRequest.Id,
                     DestinationBranchId = branchId,
                     DestinationType = DestinationType.BRANCH,

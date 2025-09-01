@@ -6,6 +6,7 @@ namespace MamaFit.BusinessObjects.DTO.WarrantyRequestDto;
 public class WarrantyBranchRequestDto
 {
     public PaymentMethod PaymentMethod { get; set; }
+    public DateTime EstimateTime { get; set; }
     public decimal? Fee { get; set; }
     public List<WarrantyRequestItemCreateDto> Items { get; set; } = new();
 }

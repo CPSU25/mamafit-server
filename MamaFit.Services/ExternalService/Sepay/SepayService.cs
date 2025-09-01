@@ -142,21 +142,18 @@ public class SepayService : ISepayService
                     await _unitOfWork.SaveChangesAsync();
                 }
                 
-                await _notificationService.SendAndSaveNotificationToMultipleAsync(new NotificationMultipleRequestDto
+                await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto()
                 {
                     NotificationTitle = "Thanh toán phần còn lại thành công",
-                    NotificationContent = $"Bạn đã thanh toán phần còn lại cho đơn {order.Code}. Chúng tôi sẽ tiến hành sản xuất và giao hàng cho bạn.",
+                    NotificationContent =
+                        $"Bạn đã thanh toán phần còn lại cho đơn {order.Code}. Chúng tôi sẽ tiến hành sản xuất và giao hàng cho bạn.",
                     Metadata = new()
                     {
                         { "orderId", order.Id },
                         { "paymentStatus", PaymentStatus.PAID_DEPOSIT_COMPLETED.ToString() }
                     },
                     Type = NotificationType.PAYMENT,
-                    ReceiverIds = new List<string>
-                    {
-                        order.UserId,
-                        "1a3bcd123456789012345678901234561a3bcd12345678901234567890123456"
-                    }
+                    ReceiverId = order.UserId
                 });
             }
         }

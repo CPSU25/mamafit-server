@@ -83,6 +83,18 @@ public class UserController : ControllerBase
         ));
     }
 
+    [HttpPut("token")]
+    public async Task<IActionResult> UpdateUserProfile([FromBody] UpdateProfileRequestDto model)
+    {
+        var updatedUser = await _service.UpdateUserAsync(model);
+        return Ok(new ResponseModel<UserReponseDto>(
+            StatusCodes.Status200OK,
+            ApiCodes.SUCCESS,
+            updatedUser,
+            "Update user successfully!"
+        ));
+    }
+
     [HttpDelete("{userId}")]
     public async Task<IActionResult> DeleteUser(string userId)
     {

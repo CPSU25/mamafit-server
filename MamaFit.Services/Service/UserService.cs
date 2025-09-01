@@ -7,6 +7,7 @@ using MamaFit.Repositories.Infrastructure;
 using MamaFit.Services.ExternalService.CloudinaryService;
 using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
+using System.Security.Cryptography;
 
 namespace MamaFit.Services.Service;
 
@@ -16,14 +17,16 @@ public class UserService : IUserService
     private readonly IMapper _mapper;
     private readonly ICloudinaryService _cloudinaryService;
     private readonly IValidationService _validation;
+    private readonly IHttpContextAccessor _context;
 
     public UserService(IUnitOfWork unitOfWork, IMapper mapper, ICloudinaryService cloudinaryService,
-        IValidationService validation)
+        IValidationService validation, IHttpContextAccessor context)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _cloudinaryService = cloudinaryService;
         _validation = validation;
+        _context = context;
     }
 
     public async Task<PaginatedList<UserReponseDto>> GetAllUsersAsync(
@@ -45,6 +48,13 @@ public class UserService : IUserService
         return responsePaginatedList;
     }
 
+    private bool VerifyPassword(string password, string storedHash, string storedSalt)
+    {
+        var saltBytes = Convert.FromBase64String(storedSalt);
+        var hashBytes = new Rfc2898DeriveBytes(password, saltBytes, 20000, HashAlgorithmName.SHA256).GetBytes(32);
+        return Convert.ToBase64String(hashBytes) == storedHash;
+    }
+
     public async Task<UserReponseDto> GetUserByIdAsync(string userId)
     {
         var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
@@ -55,29 +65,38 @@ public class UserService : IUserService
         return _mapper.Map<UserReponseDto>(user);
     }
 
-    public async Task<UserReponseDto> UpdateUserAsync(string userId, UpdateUserRequestDto model)
+    public async Task<UserReponseDto> UpdateUserAsync(UpdateProfileRequestDto model)
     {
         await _validation.ValidateAndThrowAsync(model);
+        var currentUserId = GetCurrentUserId();
 
-        var user = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(userId);
+        var user = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(currentUserId);
         _validation.CheckNotFound(user, "User not found!");
 
         if (user.UserName != model.UserName)
         {
             var usernameExists = await _unitOfWork.UserRepository.IsEntityExistsAsync(x =>
-                x.UserName == model.UserName && x.Id != userId);
+                x.UserName == model.UserName && x.Id != currentUserId);
             _validation.CheckBadRequest(usernameExists, "Username already exists!");
         }
 
-        var role = await _unitOfWork.RoleRepository.GetByIdAsync(model.RoleId);
-        _validation.CheckNotFound(role, "Role not found!");
+        if (!VerifyPassword(model.OldPassword, user.HashPassword, user.Salt))
+            throw new ErrorException(StatusCodes.Status401Unauthorized,
+                ApiCodes.UNAUTHORIZED, "Incorrect password!");
 
         _mapper.Map(model, user);
+        user.Salt = HashHelper.GenerateSalt();
+        user.HashPassword = HashHelper.HashPassword(model.NewPassword, user.Salt);
 
         await _unitOfWork.UserRepository.UpdateUserAsync(user);
         await _unitOfWork.SaveChangesAsync();
 
         return _mapper.Map<UserReponseDto>(user);
+    }
+
+    private string GetCurrentUserId()
+    {
+        return _context.HttpContext.User.FindFirst("userId").Value;
     }
 
     public async Task DeleteUserAsync(string userId)
@@ -119,5 +138,29 @@ public class UserService : IUserService
         var response = listUser.Where(x => x.Role?.RoleName == "Staff" || x.Role?.RoleName == "Designer").ToList();
 
         return _mapper.Map<List<UserReponseDto>>(response);
+    }
+
+    public async Task<UserReponseDto> UpdateUserAsync(string userId, UpdateUserRequestDto model)
+    {
+        await _validation.ValidateAndThrowAsync(model);
+
+        var user = await _unitOfWork.UserRepository.GetByIdNotDeletedAsync(userId);
+        _validation.CheckNotFound(user, "User not found!");
+
+        if (user.UserName != model.UserName)
+        {
+            var usernameExists = await _unitOfWork.UserRepository.IsEntityExistsAsync(x =>
+                x.UserName == model.UserName && x.Id != userId);
+            _validation.CheckBadRequest(usernameExists, "Username already exists!");
+        }
+
+        _mapper.Map(model, user);
+        user.Salt = HashHelper.GenerateSalt();
+        user.HashPassword = HashHelper.HashPassword(model.Password, user.Salt);
+
+        await _unitOfWork.UserRepository.UpdateUserAsync(user);
+        await _unitOfWork.SaveChangesAsync();
+
+        return _mapper.Map<UserReponseDto>(user);
     }
 }

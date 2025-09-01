@@ -15,6 +15,7 @@ public interface IUserService
     Task<UserReponseDto> GetUserByIdAsync(string userId);
     Task<List<UserReponseDto>> GetAllStaffAsync();
     Task<UserReponseDto> UpdateUserAsync(string userId, UpdateUserRequestDto model);
+    Task<UserReponseDto> UpdateUserAsync(UpdateProfileRequestDto model);
     Task<PhotoUploadResult> UpdateUserProfilePictureAsync(UploadImageDto model);
     Task DeleteUserAsync(string userId);
 }

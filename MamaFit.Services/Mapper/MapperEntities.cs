@@ -72,6 +72,7 @@ namespace MamaFit.Services.Mapper
                 .ForMember(dest => dest.Salt, opt => opt.Ignore());
             CreateMap<ApplicationUser, SendOTPRequestDto>().ReverseMap();
             CreateMap<ApplicationUser, UpdateUserRequestDto>().ReverseMap();
+            CreateMap<ApplicationUser, UpdateProfileRequestDto>().ReverseMap();
 
             #endregion
 

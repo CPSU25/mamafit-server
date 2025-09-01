@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Globalization;
+using System.Text;
+using AutoMapper;
 using Contentful.Core;
 using Contentful.Core.Models.Management;
 using MamaFit.BusinessObjects.DTO.CartItemDto;
@@ -31,17 +33,19 @@ public class OrderService : IOrderService
     private readonly IConfiguration _configuration;
     private readonly ICacheService _cacheService;
     private readonly IConfigService _configService;
+    private readonly IEmailSenderSevice _emailSenderService;
 
     public OrderService(IUnitOfWork unitOfWork, IMapper mapper, IValidationService validation,
         INotificationService notificationService, IHttpContextAccessor contextAccessor, HttpClient httpClient,
-        IConfiguration configuration, ICacheService cacheService, IConfigService configService)
+        IConfiguration configuration, ICacheService cacheService, IConfigService configService,
+        IEmailSenderSevice emailSenderService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _validation = validation;
         _contextAccessor = contextAccessor;
         _notificationService = notificationService;
-
+        _emailSenderService = emailSenderService;
         _httpClient = httpClient;
         _configuration = configuration;
         _contentfulSettings = configuration.GetSection("Contentful");
@@ -220,7 +224,8 @@ public class OrderService : IOrderService
 
         await _notificationService.SendAndSaveNotificationToMultipleAsync(new NotificationMultipleRequestDto
         {
-            ReceiverIds = [
+            ReceiverIds =
+            [
                 order.UserId,
             ],
             NotificationTitle = "Câp nhật trạng thái đơn hàng",
@@ -478,6 +483,7 @@ public class OrderService : IOrderService
 
 
     private static readonly Random _random = new Random();
+
     private string GenerateOrderCode()
     {
         string prefix = "ORD";
@@ -534,6 +540,7 @@ public class OrderService : IOrderService
             TotalAmount = designFee,
             SubTotalAmount = designFee,
             PaymentStatus = PaymentStatus.PENDING,
+            PaymentMethod = PaymentMethod.ONLINE_BANKING,
             PaymentType = PaymentType.FULL,
             OrderItems = new List<OrderItem>
             {
@@ -861,32 +868,28 @@ public class OrderService : IOrderService
 
     public async Task ReceivedAtBranchAsync(string orderId)
     {
-        // 1. Validate order tồn tại
         var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(orderId);
         _validation.CheckNotFound(order, $"Order with id: {orderId} not found");
         var branch = await _unitOfWork.BranchRepository.GetByIdAsync(order.BranchId);
-        // 2. Validate order có branch
+
         if (branch == null)
         {
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                 $"Order {orderId} does not have an associated branch");
         }
 
-        // 3. Validate branch có name
         if (string.IsNullOrEmpty(branch.Name))
         {
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                 $"Branch associated with order {orderId} does not have a name");
         }
 
-        // 4. Validate branch có manager
         if (string.IsNullOrEmpty(order.Branch.BranchManagerId))
         {
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                 $"Branch {order.Branch.Name} does not have a branch manager assigned");
         }
 
-        // 5. Cập nhật order status
         order.Status = OrderStatus.RECEIVED_AT_BRANCH;
         order.ReceivedAtBranch = DateTime.UtcNow;
 
@@ -897,28 +900,35 @@ public class OrderService : IOrderService
             NotificationContent = $"Đơn hàng đã được nhận tại chi nhánh {branch.Name}",
             Type = NotificationType.ORDER_PROGRESS,
             ReceiverIds = new List<string>
-        {
-            order.UserId,
-            branch.BranchManagerId,
-            "4c9804ecc1d645de96fcfc906cc43d6c",
-            "1a3bcd12345678901234567890123456"
-        },
+            {
+                order.UserId,
+                branch.BranchManagerId,
+                "4c9804ecc1d645de96fcfc906cc43d6c", // Sample receiver ID (could be a customer service or admin)
+                "1a3bcd12345678901234567890123456" // Sample receiver ID (admin or other relevant)
+            },
             ActionUrl = $"/order/{order.Id}",
             Metadata = new Dictionary<string, string>
-        {
-            { "orderId", order.Id },
-            { "branchId", order.Branch.Id },
-            { "status", OrderStatus.RECEIVED_AT_BRANCH.ToString() }
-        }
+            {
+                { "orderId", order.Id },
+                { "branchId", order.Branch.Id },
+                { "status", OrderStatus.RECEIVED_AT_BRANCH.ToString() }
+            }
         };
 
+        // Send notification
         await _notificationService.SendAndSaveNotificationToMultipleAsync(notification);
+
+        // 7. Send email to customer about the order status update
+        await SendOrderReceivedAtBranchEmailAsync(order);
+
+        // 8. Update order status and save changes to the database
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
     }
+
     public async Task CompleteOrderAtBranch(string orderId)
     {
-       var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(orderId);
+        var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(orderId);
         _validation.CheckNotFound(order, $"Order with id: {orderId} not found");
         var branch = await _unitOfWork.BranchRepository.GetByIdAsync(order.BranchId);
         if (branch == null)
@@ -926,11 +936,13 @@ public class OrderService : IOrderService
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                 $"Order {orderId} does not have an associated branch");
         }
+
         if (string.IsNullOrEmpty(branch.Name))
         {
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                 $"Branch associated with order {orderId} does not have a name");
         }
+
         if (string.IsNullOrEmpty(order.Branch.BranchManagerId))
         {
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
@@ -946,23 +958,120 @@ public class OrderService : IOrderService
             NotificationContent = $"Đơn hàng đã được hoàn thành tại chi nhánh {branch.Name}",
             Type = NotificationType.ORDER_PROGRESS,
             ReceiverIds = new List<string>
-        {
-            order.UserId,
-            branch.BranchManagerId,
-            "4c9804ecc1d645de96fcfc906cc43d6c",
-            "1a3bcd12345678901234567890123456"
-        },
+            {
+                order.UserId,
+                branch.BranchManagerId,
+                "4c9804ecc1d645de96fcfc906cc43d6c",
+                "1a3bcd12345678901234567890123456"
+            },
             ActionUrl = $"/order/{order.Id}",
             Metadata = new Dictionary<string, string>
-        {
-            { "orderId", order.Id },
-            { "branchId", order.Branch.Id },
-            { "status", OrderStatus.COMPLETED.ToString() }
-        }
+            {
+                { "orderId", order.Id },
+                { "branchId", order.Branch.Id },
+                { "status", OrderStatus.COMPLETED.ToString() }
+            }
         };
 
         await _notificationService.SendAndSaveNotificationToMultipleAsync(notification);
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task SendOrderReceivedAtBranchEmailAsync(Order order)
+    {
+        var email = order.User.UserEmail;
+        if (string.IsNullOrWhiteSpace(email))
+            throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                "User email is not set, cannot send email");
+
+        var subject = $"[MamaFit] Đơn hàng {order.Code} đã sẵn sàng tại chi nhánh";
+
+        // Custom message for order received at branch
+        var html = BuildOrderReceivedAtBranchHtml(order);
+
+        await _emailSenderService.SendEmailAsync(email, subject, html);
+    }
+
+    private static string BuildOrderReceivedAtBranchHtml(Order order)
+    {
+        var vn = new CultureInfo("vi-VN");
+
+        var itemsHtml = new StringBuilder();
+        if (order?.OrderItems != null)
+        {
+            foreach (var it in order.OrderItems)
+            {
+                var name =
+                    it.Preset?.Name ??
+                    it.MaternityDressDetail?.Name ??
+                    (it.DesignRequest != null ? "Yêu cầu thiết kế" : "Sản phẩm");
+                itemsHtml.Append($@"
+            <tr>
+                <td style=""padding:8px 0"">{name}</td>
+                <td style=""padding:8px 0; text-align:center"">{it.Quantity}</td>
+                <td style=""padding:8px 0; text-align:right"">{(it.Price).ToString("c0", vn)}</td>
+            </tr>");
+            }
+        }
+
+        var preheader = $"Thông báo về trạng thái đơn hàng {order?.Code}";
+
+        return $@"
+    <!DOCTYPE html>
+    <html lang=""vi"">
+    <head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Thông báo đơn hàng nhận tại chi nhánh</title>
+    <style>
+    body {{ font-family: Arial, Helvetica, sans-serif; background:#f7f7f7; margin:0; padding:0; }}
+    .container {{ max-width: 600px; margin:40px auto; background:#fff; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.05); padding:24px; }}
+    .brand {{ font-size:22px; font-weight:bold; color:#2266cc; text-align:center; margin-bottom:6px; }}
+    .sub {{ text-align:center; color:#666; margin-bottom:16px; }}
+    .section-title {{ font-size:16px; font-weight:bold; margin:18px 0 8px; }}
+    .table {{ width:100%; border-collapse:collapse; }}
+    .table th, .table td {{ border-bottom:1px solid #eee; padding:8px 0; font-size:14px; }}
+    .right {{ text-align:right; }}
+    .footer {{ margin-top:24px; font-size:12px; color:#888; text-align:center; }}
+    .badge {{ display:inline-block; padding:6px 10px; background:#e8f3ff; color:#2266cc; border-radius:999px; font-size:12px; }}
+    .total-row td {{ font-weight:bold; }}
+    </style>
+    </head>
+    <body>
+    <span style=""display:none!important;"">{preheader}</span>
+    <div class=""container"">
+        <div class=""brand"">MamaFit</div>
+        <div class=""sub""><span class=""badge"">Đơn hàng đã sẵn sàng</span></div>
+
+        <div class=""section-title"">Thông tin đơn hàng</div>
+        <table class=""table"">
+            <tr><td>Mã đơn</td><td class=""right"">{order?.Code}</td></tr>
+            <tr><td>Trạng thái</td><td class=""right"">Sẵn sàng tại chi nhánh</td></tr>
+            <tr><td>Chi nhánh</td><td class=""right"">{order.Branch?.Name}</td></tr>
+        </table>
+
+        <div class=""section-title"">Chi tiết sản phẩm</div>
+        <table class=""table"">
+            <thead>
+                <tr><th style=""text-align:left"">Sản phẩm</th><th>Số lượng</th><th class=""right"">Đơn giá</th></tr>
+            </thead>
+            <tbody>
+                {itemsHtml}
+            </tbody>
+            <tfoot>
+                <tr><td colspan=""2"" class=""right"">Phí vận chuyển</td><td class=""right"">{order.ShippingFee.ToString("c0", vn)}</td></tr>
+                <tr><td colspan=""2"" class=""right"">Tạm tính</td><td class=""right"">{order.SubTotalAmount?.ToString("c0", vn) ?? "0"}</td></tr>
+                <tr><td colspan=""2"" class=""right"">Tổng cộng</td><td class=""right"">{order.TotalAmount?.ToString("c0", vn) ?? "0"}</td></tr>
+            </tfoot>
+        </table>
+
+        <div class=""footer"">
+            Nếu có sai sót, vui lòng phản hồi email này hoặc liên hệ MamaFit để được hỗ trợ.<br/>
+            &copy; {DateTime.Now.Year} MamaFit. All rights reserved.
+        </div>
+    </div>
+    </body>
+    </html>";
     }
 }

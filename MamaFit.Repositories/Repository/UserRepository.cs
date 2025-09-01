@@ -71,7 +71,7 @@ public class UserRepository : GenericRepository<ApplicationUser>, IUserRepositor
     
     public async Task<ApplicationUser?> GetByEmailAsync(string email)
     {
-        return await _dbSet.FirstOrDefaultAsync(x => x.UserEmail.ToLower() == email && !x.IsDeleted);
+        return await _dbSet.FirstOrDefaultAsync(x => x.UserEmail == email && !x.IsDeleted);
     }
 
     public async Task<ApplicationUser?> GetByUsernameAsync(string username)
@@ -101,5 +101,25 @@ public class UserRepository : GenericRepository<ApplicationUser>, IUserRepositor
             .ToListAsync();
 
         return response;
+    }
+    
+    public async Task<List<string>> GetAllUserIdsByCustomerRoleAsync()
+    {
+        var customerRoleId = await _context.Roles
+            .Where(r => r.RoleName == "User" && !r.IsDeleted)
+            .Select(r => r.Id)
+            .FirstOrDefaultAsync();
+
+        if (string.IsNullOrEmpty(customerRoleId))
+        {
+            return new List<string>();
+        }
+
+        var userIds = await _dbSet
+            .Where(u => u.RoleId == customerRoleId && !u.IsDeleted)
+            .Select(u => u.Id)
+            .ToListAsync();
+
+        return userIds;
     }
 }

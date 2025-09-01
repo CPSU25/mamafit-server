@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Globalization;
+using System.Text;
+using AutoMapper;
 using MamaFit.BusinessObjects.DTO.GhtkDto.SubmitOrder;
 using MamaFit.BusinessObjects.DTO.NotificationDto;
 using MamaFit.BusinessObjects.DTO.OrderDto;
@@ -30,6 +32,7 @@ namespace MamaFit.Services.Service
         private readonly IGhtkService _ghtkService;
         private readonly GhtkSettings _ghtkSettings;
         private readonly ICacheService _cacheService;
+        private readonly IEmailSenderSevice _emailSenderService;
 
         public WarrantyRequestService(
             IUnitOfWork unitOfWork,
@@ -41,7 +44,8 @@ namespace MamaFit.Services.Service
             IWarrantyRequestItemRepository warrantyRequestItemRepository,
             IGhtkService ghtkService,
             IOptions<GhtkSettings> ghtkSettings,
-            ICacheService cacheService)
+            ICacheService cacheService,
+            IEmailSenderSevice emailSenderService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -53,6 +57,7 @@ namespace MamaFit.Services.Service
             _ghtkService = ghtkService;
             _ghtkSettings = ghtkSettings.Value;
             _cacheService = cacheService;
+            _emailSenderService = emailSenderService;
         }
 
 
@@ -461,6 +466,7 @@ namespace MamaFit.Services.Service
         }
 
         private static readonly Random _random = new Random();
+
         private string GenerateOrderCode()
         {
             string prefix = "ORD";
@@ -477,15 +483,18 @@ namespace MamaFit.Services.Service
             _validationService.CheckNotFound(firstWarrantyItem, "No warranty request items found!");
 
             // Lấy warranty order item
-            var warrantyOrderItem = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(firstWarrantyItem.OrderItemId);
-            _validationService.CheckNotFound(warrantyOrderItem, $"Warranty order item with id {firstWarrantyItem.OrderItemId} not found!");
+            var warrantyOrderItem =
+                await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(firstWarrantyItem.OrderItemId);
+            _validationService.CheckNotFound(warrantyOrderItem,
+                $"Warranty order item with id {firstWarrantyItem.OrderItemId} not found!");
 
             // Lấy warranty order từ warranty order item
             var warrantyOrder = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(warrantyOrderItem.OrderId!);
-            _validationService.CheckNotFound(warrantyOrder, $"Warranty order with id {warrantyOrderItem.OrderId} not found!");
+            _validationService.CheckNotFound(warrantyOrder,
+                $"Warranty order with id {warrantyOrderItem.OrderId} not found!");
 
 
-            if (warrantyRequest.Status != WarrantyRequestStatus.APPROVED )
+            if (warrantyRequest.Status != WarrantyRequestStatus.APPROVED)
             {
                 throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                     "Only approved warranty requests can be completed");
@@ -507,6 +516,7 @@ namespace MamaFit.Services.Service
                     item.Status = WarrantyRequestItemStatus.APPROVED;
                 }
             }
+
             await _unitOfWork.OrderRepository.UpdateAsync(warrantyOrder);
             await _unitOfWork.WarrantyRequestRepository.UpdateAsync(warrantyRequest);
             await _unitOfWork.SaveChangesAsync();
@@ -1053,7 +1063,7 @@ namespace MamaFit.Services.Service
                 };
             if (oi.PresetId != null)
                 return new GhtkProductDto
-                { Name = oi.Preset?.Name ?? "Preset thiết kế", Weight = oi.Preset?.Weight ?? 200, Quantity = 1 };
+                    { Name = oi.Preset?.Name ?? "Preset thiết kế", Weight = oi.Preset?.Weight ?? 200, Quantity = 1 };
             throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.INVALID_INPUT,
                 "Order item must have either MaternityDressDetail or Preset");
         }
@@ -1078,6 +1088,103 @@ namespace MamaFit.Services.Service
             }
 
             return sum;
+        }
+
+        public async Task SendOrderReceivedAtBranchEmailAsync(Order order)
+        {
+            var email = order.User.UserEmail;
+            if (string.IsNullOrWhiteSpace(email))
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                    "User email is not set, cannot send email");
+
+            var subject = $"[MamaFit] Đơn hàng {order.Code} đã sẵn sàng tại chi nhánh";
+
+            // Custom message for order received at branch
+            var html = BuildOrderReceivedAtBranchHtml(order);
+
+            await _emailSenderService.SendEmailAsync(email, subject, html);
+        }
+
+        private static string BuildOrderReceivedAtBranchHtml(Order order)
+        {
+            var vn = new CultureInfo("vi-VN");
+
+            var itemsHtml = new StringBuilder();
+            if (order?.OrderItems != null)
+            {
+                foreach (var it in order.OrderItems)
+                {
+                    var name =
+                        it.Preset?.Name ??
+                        it.MaternityDressDetail?.Name ??
+                        (it.DesignRequest != null ? "Yêu cầu thiết kế" : "Sản phẩm");
+                    itemsHtml.Append($@"
+            <tr>
+                <td style=""padding:8px 0"">{name}</td>
+                <td style=""padding:8px 0; text-align:center"">{it.Quantity}</td>
+                <td style=""padding:8px 0; text-align:right"">{(it.Price).ToString("c0", vn)}</td>
+            </tr>");
+                }
+            }
+
+            var preheader = $"Thông báo về trạng thái đơn hàng {order?.Code}";
+
+            return $@"
+    <!DOCTYPE html>
+    <html lang=""vi"">
+    <head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Thông báo đơn hàng nhận tại chi nhánh</title>
+    <style>
+    body {{ font-family: Arial, Helvetica, sans-serif; background:#f7f7f7; margin:0; padding:0; }}
+    .container {{ max-width: 600px; margin:40px auto; background:#fff; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.05); padding:24px; }}
+    .brand {{ font-size:22px; font-weight:bold; color:#2266cc; text-align:center; margin-bottom:6px; }}
+    .sub {{ text-align:center; color:#666; margin-bottom:16px; }}
+    .section-title {{ font-size:16px; font-weight:bold; margin:18px 0 8px; }}
+    .table {{ width:100%; border-collapse:collapse; }}
+    .table th, .table td {{ border-bottom:1px solid #eee; padding:8px 0; font-size:14px; }}
+    .right {{ text-align:right; }}
+    .footer {{ margin-top:24px; font-size:12px; color:#888; text-align:center; }}
+    .badge {{ display:inline-block; padding:6px 10px; background:#e8f3ff; color:#2266cc; border-radius:999px; font-size:12px; }}
+    .total-row td {{ font-weight:bold; }}
+    </style>
+    </head>
+    <body>
+    <span style=""display:none!important;"">{preheader}</span>
+    <div class=""container"">
+        <div class=""brand"">MamaFit</div>
+        <div class=""sub""><span class=""badge"">Đơn hàng đã sẵn sàng</span></div>
+
+        <div class=""section-title"">Thông tin đơn hàng</div>
+        <table class=""table"">
+            <tr><td>Mã đơn</td><td class=""right"">{order?.Code}</td></tr>
+            <tr><td>Trạng thái</td><td class=""right"">Sẵn sàng tại chi nhánh</td></tr>
+            <tr><td>Chi nhánh</td><td class=""right"">{order.Branch?.Name}</td></tr>
+        </table>
+
+        <div class=""section-title"">Chi tiết sản phẩm</div>
+        <table class=""table"">
+            <thead>
+                <tr><th style=""text-align:left"">Sản phẩm</th><th>Số lượng</th><th class=""right"">Đơn giá</th></tr>
+            </thead>
+            <tbody>
+                {itemsHtml}
+            </tbody>
+            <tfoot>
+                <tr><td colspan=""2"" class=""right"">Phí vận chuyển</td><td class=""right"">{order.ShippingFee.ToString("c0", vn)}</td></tr>
+                <tr><td colspan=""2"" class=""right"">Tạm tính</td><td class=""right"">{order.SubTotalAmount?.ToString("c0", vn) ?? "0"}</td></tr>
+                <tr><td colspan=""2"" class=""right"">Tổng cộng</td><td class=""right"">{order.TotalAmount?.ToString("c0", vn) ?? "0"}</td></tr>
+            </tfoot>
+        </table>
+
+        <div class=""footer"">
+            Nếu có sai sót, vui lòng phản hồi email này hoặc liên hệ MamaFit để được hỗ trợ.<br/>
+            &copy; {DateTime.Now.Year} MamaFit. All rights reserved.
+        </div>
+    </div>
+    </body>
+    </html>";
         }
     }
 }

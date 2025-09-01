@@ -17,4 +17,5 @@ public interface IMeasurementService
     Task<MeasurementDto> CreateMeasurementAsync(CreateMeasurementDto dto);
     Task<MeasurementDto> UpdateMeasurementAsync(string id, UpdateMeasurementDto dto);
     Task<bool> DeleteMeasurementAsync(string id);
+    
 }

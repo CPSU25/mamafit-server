@@ -135,7 +135,7 @@ public class UserService : IUserService
     {
         var listUser = await _unitOfWork.UserRepository.GetAllUserAsync();
 
-        var response = listUser.Where(x => x.Role!.RoleName == "Staff" || x.Role!.RoleName == "Designer");
+        var response = listUser.Where(x => x.Role?.RoleName == "Staff" || x.Role?.RoleName == "Designer").ToList();
 
         return _mapper.Map<List<UserReponseDto>>(response);
     }

@@ -131,9 +131,9 @@ namespace MamaFit.Services.Service
             }
 
             await _cacheService.RemoveByPrefixAsync($"appointment");
-            
+
             await SendAppointmentConfirmationEmailAsync(newAppointment);
-            
+
             return newAppointment.Id;
         }
 
@@ -406,7 +406,12 @@ namespace MamaFit.Services.Service
         private string BuildAppointmentConfirmationHtml(Appointment appointment)
         {
             var vn = new CultureInfo("vi-VN");
-            var appointmentTime = appointment.BookingTime.ToString("HH:mm dd/MM/yyyy");
+
+            // Convert UTC to Vietnam time (UTC +7)
+            var appointmentTimeInVietnam = appointment.BookingTime.ToUniversalTime().AddHours(7);
+
+            // Format the time in Vietnam local time
+            var appointmentTime = appointmentTimeInVietnam.ToString("HH:mm dd/MM/yyyy");
 
             return $@"
     <!DOCTYPE html>

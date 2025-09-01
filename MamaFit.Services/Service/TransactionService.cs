@@ -242,7 +242,7 @@ public class TransactionService : ITransactionService
             };
         }).ToList();
     }
-    
+
     // 3) /analytics/orders/status?range=month
     public async Task<OrderStatusResponse> GetOrderStatusAsync(string range)
     {
@@ -438,6 +438,8 @@ public class TransactionService : ITransactionService
         var subtotal = order.SubTotalAmount ?? 0m;
         var shipping = order.ShippingFee;
         var discount = order.DiscountSubtotal ?? 0m;
+        var deposit = order.DepositSubtotal ?? 0m;
+        var service = order.ServiceAmount ?? 0m;
 
         var itemsHtml = new StringBuilder();
         if (order?.OrderItems != null)
@@ -449,11 +451,11 @@ public class TransactionService : ITransactionService
                     it.MaternityDressDetail?.Name ??
                     (it.DesignRequest != null ? "Yêu cầu thiết kế" : "Sản phẩm");
                 itemsHtml.Append($@"
-                <tr>
-                    <td style=""padding:8px 0"">{name}</td>
-                    <td style=""padding:8px 0; text-align:center"">{it.Quantity}</td>
-                    <td style=""padding:8px 0; text-align:right"">{(it.Price).ToString("c0", vn)}</td>
-                </tr>");
+            <tr>
+                <td style=""padding:8px 0"">{name}</td>
+                <td style=""padding:8px 0; text-align:center"">{it.Quantity}</td>
+                <td style=""padding:8px 0; text-align:right"">{(it.Price).ToString("c0", vn)}</td>
+            </tr>");
             }
         }
 
@@ -508,6 +510,8 @@ body {{ font-family: Arial, Helvetica, sans-serif; background:#f7f7f7; margin:0;
             <tr><td colspan=""2"" class=""right"">Tạm tính</td><td class=""right"">{subtotal.ToString("c0", vn)}</td></tr>
             {(discount > 0 ? $@"<tr><td colspan=""2"" class=""right"">Giảm giá</td><td class=""right"">- {discount.ToString("c0", vn)}</td></tr>" : "")}
             <tr><td colspan=""2"" class=""right"">Phí vận chuyển</td><td class=""right"">{shipping.ToString("c0", vn)}</td></tr>
+            {(deposit > 0 ? $@"<tr><td colspan=""2"" class=""right"">Tiền cọc</td><td class=""right"">{deposit.ToString("c0", vn)}</td></tr>" : "")}
+            {(service > 0 ? $@"<tr><td colspan=""2"" class=""right"">Phí dịch vụ</td><td class=""right"">{service.ToString("c0", vn)}</td></tr>" : "")}
             <tr class=""total-row""><td colspan=""2"" class=""right"">Tổng cộng</td><td class=""right"">{total.ToString("c0", vn)}</td></tr>
             <tr><td colspan=""2"" class=""right"">Số tiền đã thanh toán trong lần này</td><td class=""right"">{amount.ToString("c0", vn)}</td></tr>
         </tfoot>

@@ -540,6 +540,7 @@ public class OrderService : IOrderService
             TotalAmount = designFee,
             SubTotalAmount = designFee,
             PaymentStatus = PaymentStatus.PENDING,
+            PaymentMethod = PaymentMethod.ONLINE_BANKING,
             PaymentType = PaymentType.FULL,
             OrderItems = new List<OrderItem>
             {

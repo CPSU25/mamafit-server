@@ -13,6 +13,7 @@ public interface IUserRepository : IGenericRepository<ApplicationUser>
     Task<ApplicationUser?> GetByEmailPhoneAsync(string email, string phoneNumber);
     Task<ApplicationUser?> GetByPhoneNumberAsync(string phoneNumber);
     Task<List<ApplicationUser>> GetUsersByRoleIdAsync(string roleId, bool onlyActiveUsers = true);
+    Task<List<string>> GetAllUserIdsByCustomerRoleAsync();
     Task CreateUserAsync(ApplicationUser user);
     Task UpdateUserAsync(ApplicationUser user);
     Task DeleteUserAsync(ApplicationUser user);

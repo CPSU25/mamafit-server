@@ -69,10 +69,21 @@ public class MeasurementService : IMeasurementService
 
     public async Task CheckAndSendRemindersAsync()
     {
-        var diaries = await _unitOfWork.MeasurementDiaryRepository.GetAllAsync();
-        foreach (var diary in diaries)
+        // Get all user IDs
+        var userIds = await _unitOfWork.UserRepository
+            .GetAllUserIdsByCustomerRoleAsync();
+
+        foreach (var userId in userIds)
         {
-            await CheckAndSendReminderForDiary(diary);
+            var notification = new NotificationRequestDto
+            {
+                ReceiverId = userId,
+                Type = NotificationType.MEASUREMENT,
+                NotificationTitle = "Thông báo nhắc nhở cập nhật số đo",
+                NotificationContent =
+                    "Bạn chưa cập nhật số đo cho tuần thai. Vui lòng cập nhật số đo để theo dõi sự phát triển của bạn và thai nhi.",
+            };
+            await _notificationService.SendAndSaveNotificationAsync(notification);
         }
     }
 
@@ -279,7 +290,8 @@ public class MeasurementService : IMeasurementService
         bool hasMeasurement = await _unitOfWork.MeasurementRepository
             .ValidateMeasurementExistenceAsync(diary.Id, currentWeek);
 
-        if (!hasMeasurement)
+        // if (!hasMeasurement)
+        if (hasMeasurement)
         {
             var notification = new NotificationRequestDto
             {

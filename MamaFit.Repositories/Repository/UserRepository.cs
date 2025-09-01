@@ -102,4 +102,24 @@ public class UserRepository : GenericRepository<ApplicationUser>, IUserRepositor
 
         return response;
     }
+    
+    public async Task<List<string>> GetAllUserIdsByCustomerRoleAsync()
+    {
+        var customerRoleId = await _context.Roles
+            .Where(r => r.RoleName == "User" && !r.IsDeleted)
+            .Select(r => r.Id)
+            .FirstOrDefaultAsync();
+
+        if (string.IsNullOrEmpty(customerRoleId))
+        {
+            return new List<string>();
+        }
+
+        var userIds = await _dbSet
+            .Where(u => u.RoleId == customerRoleId && !u.IsDeleted)
+            .Select(u => u.Id)
+            .ToListAsync();
+
+        return userIds;
+    }
 }

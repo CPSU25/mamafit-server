@@ -47,28 +47,21 @@ namespace MamaFit.Services.Service
             var user = await _unitOfWork.UserRepository.GetByIdAsync(requestDto.UserId);
             _validationService.CheckNotFound(user, $"User not found with id {requestDto.UserId}");
 
-            // Nhận giờ từ frontend (FE) dưới dạng giờ địa phương (giả sử FE nhập giờ VN)
-            var localTime =
-                DateTime.SpecifyKind(requestDto.BookingTime, DateTimeKind.Unspecified); // FE nhập giờ địa phương (VN)
-
-            // 1. Chuyển từ giờ VN sang UTC để lưu vào database
-            var vnTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Ho_Chi_Minh");
-            var bookingUtc = TimeZoneInfo.ConvertTimeToUtc(localTime, vnTimeZone); // Chuyển đổi sang UTC
-
-            // Kiểm tra trùng lặp với thời gian đã được đặt
-            var dateOnly = DateOnly.FromDateTime(bookingUtc);
+            var dateOnly = DateOnly.FromDateTime(requestDto.BookingTime);
             var slotList = await GetSlotAsync(requestDto.BranchId, dateOnly);
 
-            var bookingTime = TimeOnly.FromDateTime(bookingUtc); // Giờ UTC
+            var bookingTime = TimeOnly.FromDateTime(requestDto.BookingTime).AddHours(7);
 
             // Kiểm tra nếu thời gian này đã bị đặt rồi (bị trùng)
             bool isDuplicated = slotList.Any(slot =>
-                slot.IsBooked && bookingTime == slot.Slot[0]);
+                slot.IsBooked &&
+                bookingTime == slot.Slot[0]);
 
             if (isDuplicated)
                 throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                     $"Booking time {bookingTime} is already booked by another user." +
                     $" Please choose another time slot.");
+
 
             // Kiểm tra nếu thời gian có nằm trong slot hợp lệ hay không
             bool isValid = slotList.Any(slot =>
@@ -81,7 +74,7 @@ namespace MamaFit.Services.Service
                     $"Booking time {requestDto.BookingTime:t} is not within any available slot." +
                     $" Please choose a valid time range.");
 
-            // Kiểm tra số lượng lịch hẹn theo ngày và người dùng
+
             var config = await _configService.GetConfig();
 
             if (user.Appointments.Count(x =>
@@ -98,33 +91,30 @@ namespace MamaFit.Services.Service
                     $"User {user.UserName} has reached the maximum number of upcoming appointments" +
                     $". Please cancel an existing appointment before booking a new one.");
 
-            // Tạo Appointment mới
             var newAppointment = _mapper.Map<Appointment>(requestDto);
             newAppointment.User = user;
             newAppointment.Branch = branch;
             newAppointment.Status = AppointmentStatus.UP_COMING;
-            newAppointment.CreatedAt = DateTime.UtcNow; // Ghi nhận giờ UTC khi tạo
+            newAppointment.CreatedAt = DateTime.UtcNow;
             newAppointment.CreatedBy = userName;
             newAppointment.UpdatedBy = userName;
-            newAppointment.BookingTime = bookingUtc; // Lưu giờ UTC vào database
 
             await _unitOfWork.AppointmentRepository.InsertAsync(newAppointment);
             await _unitOfWork.SaveChangesAsync();
 
-            // 2. Trừ 7 tiếng khi lên lịch job reminder (để đồng bộ với giờ VN)
+            // Schedule nhắc trước 30'
             var scheduleUtc = newAppointment.BookingTime.AddMinutes(-30);
-            var scheduleTime = scheduleUtc.AddHours(-7); // Trừ đi 7 giờ để đồng bộ với FE
 
-            // Schedule job reminder
-            if (scheduleTime <= DateTime.UtcNow)
+            if (scheduleUtc <= DateTime.UtcNow)
             {
+                // Nếu lịch được đặt sát giờ (<=30'), gửi ngay lập tức bằng background
                 BackgroundJob.Enqueue<IAppointmentReminderJob>(j => j.SendReminderAsync(newAppointment.Id));
             }
             else
             {
                 var jobId = BackgroundJob.Schedule<IAppointmentReminderJob>(
                     j => j.SendReminderAsync(newAppointment.Id),
-                    scheduleTime);
+                    scheduleUtc);
 
                 newAppointment.ReminderJobId = jobId;
                 await _unitOfWork.AppointmentRepository.UpdateAsync(newAppointment);
@@ -135,7 +125,7 @@ namespace MamaFit.Services.Service
 
             return newAppointment.Id;
         }
-
+        
         public async Task DeleteAsync(string id)
         {
             var oldAppointment = await _unitOfWork.AppointmentRepository.GetByIdAsync(id);

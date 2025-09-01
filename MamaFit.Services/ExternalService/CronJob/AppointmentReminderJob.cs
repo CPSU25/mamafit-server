@@ -55,7 +55,6 @@ public class AppointmentReminderJob : IAppointmentReminderJob
 
     private async Task SendAndMarkAsync(MamaFit.BusinessObjects.Entity.Appointment appt)
     {
-        // Lấy giờ hiển thị theo VN
         var tz = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"); // Windows
         // Nếu chạy Linux, dùng "Asia/Ho_Chi_Minh"
         try { tz = TimeZoneInfo.FindSystemTimeZoneById("Asia/Ho_Chi_Minh"); } catch {}

@@ -46,10 +46,17 @@ namespace MamaFit.Services.Service
             var user = await _unitOfWork.UserRepository.GetByIdAsync(requestDto.UserId);
             _validationService.CheckNotFound(user, $"User not found with id {requestDto.UserId}");
 
-            var dateOnly = DateOnly.FromDateTime(requestDto.BookingTime);
+            var localTime = DateTime.SpecifyKind(requestDto.BookingTime, DateTimeKind.Unspecified);
+
+            // Convert từ giờ VN (Asia/Ho_Chi_Minh) sang UTC
+            var vnTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Ho_Chi_Minh");
+            var bookingUtc = TimeZoneInfo.ConvertTimeToUtc(localTime, vnTimeZone);
+
+            // Kiểm tra trùng lặp với thời gian đã được đặt
+            var dateOnly = DateOnly.FromDateTime(bookingUtc);
             var slotList = await GetSlotAsync(requestDto.BranchId, dateOnly);
 
-            var bookingTime = TimeOnly.FromDateTime(requestDto.BookingTime).AddHours(7);
+            var bookingTime = TimeOnly.FromDateTime(bookingUtc);
 
             // Kiểm tra nếu thời gian này đã bị đặt rồi (bị trùng)
             bool isDuplicated = slotList.Any(slot =>
@@ -93,6 +100,7 @@ namespace MamaFit.Services.Service
             newAppointment.CreatedAt = DateTime.UtcNow;
             newAppointment.CreatedBy = userName;
             newAppointment.UpdatedBy = userName;
+            newAppointment.BookingTime = bookingUtc;
 
             await _unitOfWork.AppointmentRepository.InsertAsync(newAppointment);
             await _unitOfWork.SaveChangesAsync();
@@ -125,6 +133,14 @@ namespace MamaFit.Services.Service
         {
             var oldAppointment = await _unitOfWork.AppointmentRepository.GetByIdAsync(id);
             _validationService.CheckNotFound(oldAppointment, $"Appointment not found with id {id}");
+
+            if (!string.IsNullOrEmpty(oldAppointment.ReminderJobId))
+            {
+                BackgroundJob.Delete(oldAppointment.ReminderJobId);
+                oldAppointment.ReminderJobId = null;
+                await _unitOfWork.AppointmentRepository.UpdateAsync(oldAppointment);
+                await _unitOfWork.SaveChangesAsync();
+            }
 
             await _unitOfWork.AppointmentRepository.SoftDeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
@@ -200,6 +216,8 @@ namespace MamaFit.Services.Service
                     j => j.SendReminderAsync(appointment.Id),
                     scheduleUtc);
                 appointment.ReminderJobId = jobId;
+                await _unitOfWork.AppointmentRepository.UpdateAsync(appointment);
+                await _unitOfWork.SaveChangesAsync();
             }
             await _cacheService.RemoveByPrefixAsync($"appointment");
         }
@@ -250,6 +268,8 @@ namespace MamaFit.Services.Service
             {
                 BackgroundJob.Delete(oldAppointment.ReminderJobId);
                 oldAppointment.ReminderJobId = null;
+                await _unitOfWork.AppointmentRepository.UpdateAsync(oldAppointment);
+                await _unitOfWork.SaveChangesAsync();
             }
         }
 
@@ -258,9 +278,9 @@ namespace MamaFit.Services.Service
             var oldAppointment = await _unitOfWork.AppointmentRepository.GetByIdAsync(id);
             _validationService.CheckNotFound(oldAppointment, $"Appointment not found with id {id}");
 
-            if (oldAppointment.Status != BusinessObjects.Enum.AppointmentStatus.CHECKED_OUT || oldAppointment.Status != AppointmentStatus.CANCELED)
+            if (oldAppointment.Status != AppointmentStatus.CHECKED_OUT && oldAppointment.Status != AppointmentStatus.CANCELED)
             {
-                oldAppointment.Status = BusinessObjects.Enum.AppointmentStatus.CHECKED_OUT;
+                oldAppointment.Status = AppointmentStatus.CHECKED_OUT;
                 oldAppointment.UpdatedAt = DateTime.UtcNow;
                 oldAppointment.UpdatedBy = GetCurrentUserName();
 
@@ -276,6 +296,8 @@ namespace MamaFit.Services.Service
             {
                 BackgroundJob.Delete(oldAppointment.ReminderJobId);
                 oldAppointment.ReminderJobId = null;
+                await _unitOfWork.AppointmentRepository.UpdateAsync(oldAppointment);
+                await _unitOfWork.SaveChangesAsync();
             }
         }
 

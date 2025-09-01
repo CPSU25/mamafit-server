@@ -137,8 +137,8 @@ public class TransactionService : ITransactionService
     private static IQueryable<Order> ApplyRevenuePolicy(IQueryable<Order> q)
     {
         return q.Where(o => o.PaymentStatus == PaymentStatus.PAID_DEPOSIT
-        || o.PaymentStatus == PaymentStatus.PAID_FULL
-        || o.PaymentStatus == PaymentStatus.PAID_DEPOSIT_COMPLETED);
+                            || o.PaymentStatus == PaymentStatus.PAID_FULL
+                            || o.PaymentStatus == PaymentStatus.PAID_DEPOSIT_COMPLETED);
     }
 
 
@@ -404,7 +404,7 @@ public class TransactionService : ITransactionService
 
         return new RecentOrdersResponse { Items = items };
     }
-    
+
     public async Task SendPaymentReceiptAsync(Order order, Transaction txn, PaymentStatus newPaymentStatus)
     {
         var email = order.User.UserEmail;
@@ -427,9 +427,9 @@ public class TransactionService : ITransactionService
     private static string BuildReceiptHtml(Order order, Transaction txn, PaymentStatus status)
     {
         var vn = new CultureInfo("vi-VN");
-        var tz = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"); // Asia/Ho_Chi_Minh (Windows)
+
+        // Lấy thời gian thanh toán từ TransactionDate
         var paidAt = txn?.TransactionDate ?? DateTime.UtcNow;
-        var localPaidAt = TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(paidAt, DateTimeKind.Utc), tz);
 
         var paymentTypeText = order.PaymentType == PaymentType.DEPOSIT ? "Thanh toán cọc" : "Thanh toán toàn bộ";
         if (status == PaymentStatus.PAID_DEPOSIT_COMPLETED) paymentTypeText = "Thanh toán phần còn lại";
@@ -450,17 +450,13 @@ public class TransactionService : ITransactionService
                     it.MaternityDressDetail?.Name ??
                     (it.DesignRequest != null ? "Yêu cầu thiết kế" : "Sản phẩm");
                 itemsHtml.Append($@"
-                    <tr>
-                        <td style=""padding:8px 0"">{name}</td>
-                        <td style=""padding:8px 0; text-align:center"">{it.Quantity}</td>
-                        <td style=""padding:8px 0; text-align:right"">{(it.Price).ToString("c0", vn)}</td>
-                    </tr>");
+                <tr>
+                    <td style=""padding:8px 0"">{name}</td>
+                    <td style=""padding:8px 0; text-align:center"">{it.Quantity}</td>
+                    <td style=""padding:8px 0; text-align:right"">{(it.Price).ToString("c0", vn)}</td>
+                </tr>");
             }
         }
-
-        var addressLine = order.DeliveryMethod == DeliveryMethod.DELIVERY
-            ? $"{order?.Address?.Street}, {order?.Address?.Ward}, {order?.Address?.District}, {order?.Address?.Province}"
-            : $"Nhận tại chi nhánh: {order?.Branch?.Name}";
 
         var preheader = $"Xác nhận {paymentTypeText} cho đơn {order?.Code}";
 
@@ -494,10 +490,9 @@ body {{ font-family: Arial, Helvetica, sans-serif; background:#f7f7f7; margin:0;
     <div class=""section-title"">Thông tin đơn hàng</div>
     <table class=""table"">
         <tr><td>Mã đơn</td><td class=""right"">{order?.Code}</td></tr>
-        <tr><td>Thời gian thanh toán</td><td class=""right"">{localPaidAt:dd/MM/yyyy HH:mm}</td></tr>
+        <tr><td>Thời gian thanh toán</td><td class=""right"">{paidAt:dd/MM/yyyy HH:mm}</td></tr>
         <tr><td>Phương thức</td><td class=""right"">{order?.PaymentMethod}</td></tr>
         <tr><td>Trạng thái thanh toán</td><td class=""right"">{status}</td></tr>
-        {(string.IsNullOrEmpty(addressLine) ? "" : $@"<tr><td>Giao nhận</td><td class=""right"">{addressLine}</td></tr>")}
         {(string.IsNullOrEmpty(txn?.ReferenceCode) ? "" : $@"<tr><td>Mã tham chiếu</td><td class=""right"">{txn?.ReferenceCode}</td></tr>")}
         {(string.IsNullOrEmpty(txn?.Code) ? "" : $@"<tr><td>Mã giao dịch</td><td class=""right"">{txn?.Code}</td></tr>")}
     </table>

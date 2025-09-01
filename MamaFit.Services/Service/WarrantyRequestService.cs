@@ -362,6 +362,8 @@ namespace MamaFit.Services.Service
             await _unitOfWork.OrderRepository.UpdateAsync(order);
             await _unitOfWork.SaveChangesAsync();
 
+            await SendOrderReceivedAtBranchEmailAsync(order);
+            
             // Gửi thông báo hoàn thành đơn hàng bảo hành
             await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
             {
@@ -528,6 +530,8 @@ namespace MamaFit.Services.Service
                 var orderItem = await _unitOfWork.OrderItemRepository.GetByIdNotDeletedAsync(firstItem.OrderItemId);
                 var order = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(orderItem.OrderId!);
 
+                await SendOrderReceivedAtBranchEmailAsync(order);
+                
                 await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
                 {
                     ReceiverId = order.UserId,
@@ -1172,9 +1176,7 @@ namespace MamaFit.Services.Service
                 {itemsHtml}
             </tbody>
             <tfoot>
-                <tr><td colspan=""2"" class=""right"">Phí vận chuyển</td><td class=""right"">{order.ShippingFee.ToString("c0", vn)}</td></tr>
                 <tr><td colspan=""2"" class=""right"">Tạm tính</td><td class=""right"">{order.SubTotalAmount?.ToString("c0", vn) ?? "0"}</td></tr>
-                <tr><td colspan=""2"" class=""right"">Tổng cộng</td><td class=""right"">{order.TotalAmount?.ToString("c0", vn) ?? "0"}</td></tr>
             </tfoot>
         </table>
 

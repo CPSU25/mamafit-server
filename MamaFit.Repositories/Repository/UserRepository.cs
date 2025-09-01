@@ -71,7 +71,7 @@ public class UserRepository : GenericRepository<ApplicationUser>, IUserRepositor
     
     public async Task<ApplicationUser?> GetByEmailAsync(string email)
     {
-        return await _dbSet.FirstOrDefaultAsync(x => x.UserEmail.ToLower() == email && !x.IsDeleted);
+        return await _dbSet.FirstOrDefaultAsync(x => x.UserEmail == email && !x.IsDeleted);
     }
 
     public async Task<ApplicationUser?> GetByUsernameAsync(string username)

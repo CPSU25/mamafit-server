@@ -425,7 +425,7 @@ public class AuthService : IAuthService
     public async Task SendOtpEmailAsync(string email, string otpCode)
     {
         string subject = "Your OTP Code - MamaFit";
-        string preheader = "Use this OTP code to complete your registration. This code is valid for 60 seconds.";
+        string preheader = "Use this OTP code to complete your registration. This code is valid for 5 minutes.";
 
         string content = $@"
     <!DOCTYPE html>

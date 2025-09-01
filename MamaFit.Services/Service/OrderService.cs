@@ -1060,9 +1060,7 @@ public class OrderService : IOrderService
                 {itemsHtml}
             </tbody>
             <tfoot>
-                <tr><td colspan=""2"" class=""right"">Phí vận chuyển</td><td class=""right"">{order.ShippingFee.ToString("c0", vn)}</td></tr>
                 <tr><td colspan=""2"" class=""right"">Tạm tính</td><td class=""right"">{order.SubTotalAmount?.ToString("c0", vn) ?? "0"}</td></tr>
-                <tr><td colspan=""2"" class=""right"">Tổng cộng</td><td class=""right"">{order.TotalAmount?.ToString("c0", vn) ?? "0"}</td></tr>
             </tfoot>
         </table>
 

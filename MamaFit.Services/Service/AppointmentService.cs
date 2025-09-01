@@ -21,7 +21,8 @@ namespace MamaFit.Services.Service
         private readonly IValidationService _validationService;
         private readonly IConfigService _configService;
 
-        public AppointmentService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor contextAccessor, ICacheService cacheService, IValidationService validationService, IConfigService configService)
+        public AppointmentService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor contextAccessor,
+            ICacheService cacheService, IValidationService validationService, IConfigService configService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -46,28 +47,28 @@ namespace MamaFit.Services.Service
             var user = await _unitOfWork.UserRepository.GetByIdAsync(requestDto.UserId);
             _validationService.CheckNotFound(user, $"User not found with id {requestDto.UserId}");
 
-            var localTime = DateTime.SpecifyKind(requestDto.BookingTime, DateTimeKind.Unspecified);
+            // Nhận giờ từ frontend (FE) dưới dạng giờ địa phương (giả sử FE nhập giờ VN)
+            var localTime =
+                DateTime.SpecifyKind(requestDto.BookingTime, DateTimeKind.Unspecified); // FE nhập giờ địa phương (VN)
 
-            // Convert từ giờ VN (Asia/Ho_Chi_Minh) sang UTC
+            // 1. Chuyển từ giờ VN sang UTC để lưu vào database
             var vnTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Ho_Chi_Minh");
-            var bookingUtc = TimeZoneInfo.ConvertTimeToUtc(localTime, vnTimeZone);
+            var bookingUtc = TimeZoneInfo.ConvertTimeToUtc(localTime, vnTimeZone); // Chuyển đổi sang UTC
 
             // Kiểm tra trùng lặp với thời gian đã được đặt
             var dateOnly = DateOnly.FromDateTime(bookingUtc);
             var slotList = await GetSlotAsync(requestDto.BranchId, dateOnly);
 
-            var bookingTime = TimeOnly.FromDateTime(bookingUtc);
+            var bookingTime = TimeOnly.FromDateTime(bookingUtc); // Giờ UTC
 
             // Kiểm tra nếu thời gian này đã bị đặt rồi (bị trùng)
             bool isDuplicated = slotList.Any(slot =>
-                slot.IsBooked &&
-                bookingTime == slot.Slot[0]);
+                slot.IsBooked && bookingTime == slot.Slot[0]);
 
             if (isDuplicated)
                 throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                     $"Booking time {bookingTime} is already booked by another user." +
                     $" Please choose another time slot.");
-
 
             // Kiểm tra nếu thời gian có nằm trong slot hợp lệ hay không
             bool isValid = slotList.Any(slot =>
@@ -80,44 +81,50 @@ namespace MamaFit.Services.Service
                     $"Booking time {requestDto.BookingTime:t} is not within any available slot." +
                     $" Please choose a valid time range.");
 
-
+            // Kiểm tra số lượng lịch hẹn theo ngày và người dùng
             var config = await _configService.GetConfig();
 
-            if (user.Appointments.Count(x => x.BookingTime.Date == requestDto.BookingTime.Date && x.Status != AppointmentStatus.CANCELED) >= config.Fields.MaxAppointmentPerDay)
+            if (user.Appointments.Count(x =>
+                    x.BookingTime.Date == requestDto.BookingTime.Date && x.Status != AppointmentStatus.CANCELED) >=
+                config.Fields.MaxAppointmentPerDay)
                 throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                     $"User {user.UserName} has reached the maximum number of appointments for the day" +
                     $". Please try again tomorrow.");
 
-            if (user.Appointments.Count(x => x.Status == AppointmentStatus.UP_COMING && x.Status != AppointmentStatus.CANCELED) >= config.Fields.MaxAppointmentPerUser)
+            if (user.Appointments.Count(x =>
+                    x.Status == AppointmentStatus.UP_COMING && x.Status != AppointmentStatus.CANCELED) >=
+                config.Fields.MaxAppointmentPerUser)
                 throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
                     $"User {user.UserName} has reached the maximum number of upcoming appointments" +
                     $". Please cancel an existing appointment before booking a new one.");
 
+            // Tạo Appointment mới
             var newAppointment = _mapper.Map<Appointment>(requestDto);
             newAppointment.User = user;
             newAppointment.Branch = branch;
             newAppointment.Status = AppointmentStatus.UP_COMING;
-            newAppointment.CreatedAt = DateTime.UtcNow;
+            newAppointment.CreatedAt = DateTime.UtcNow; // Ghi nhận giờ UTC khi tạo
             newAppointment.CreatedBy = userName;
             newAppointment.UpdatedBy = userName;
-            newAppointment.BookingTime = bookingUtc;
+            newAppointment.BookingTime = bookingUtc; // Lưu giờ UTC vào database
 
             await _unitOfWork.AppointmentRepository.InsertAsync(newAppointment);
             await _unitOfWork.SaveChangesAsync();
 
-            // Schedule nhắc trước 30'
+            // 2. Trừ 7 tiếng khi lên lịch job reminder (để đồng bộ với giờ VN)
             var scheduleUtc = newAppointment.BookingTime.AddMinutes(-30);
+            var scheduleTime = scheduleUtc.AddHours(-7); // Trừ đi 7 giờ để đồng bộ với FE
 
-            if (scheduleUtc <= DateTime.UtcNow)
+            // Schedule job reminder
+            if (scheduleTime <= DateTime.UtcNow)
             {
-                // Nếu lịch được đặt sát giờ (<=30'), gửi ngay lập tức bằng background
                 BackgroundJob.Enqueue<IAppointmentReminderJob>(j => j.SendReminderAsync(newAppointment.Id));
             }
             else
             {
                 var jobId = BackgroundJob.Schedule<IAppointmentReminderJob>(
                     j => j.SendReminderAsync(newAppointment.Id),
-                    scheduleUtc);
+                    scheduleTime);
 
                 newAppointment.ReminderJobId = jobId;
                 await _unitOfWork.AppointmentRepository.UpdateAsync(newAppointment);
@@ -147,20 +154,27 @@ namespace MamaFit.Services.Service
             await _cacheService.RemoveByPrefixAsync($"appointment");
         }
 
-        public async Task<PaginatedList<AppointmentResponseDto>> GetAllAsync(int index, int pageSize, DateTime? StartDate, DateTime? EndDate, AppointmentOrderBy? sortBy)
+        public async Task<PaginatedList<AppointmentResponseDto>> GetAllAsync(int index, int pageSize,
+            DateTime? StartDate, DateTime? EndDate, AppointmentOrderBy? sortBy)
         {
             var userId = GetCurrentUserId();
             var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
             if (user == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, $"User not found with id {userId}");
-            var paginatedResponse = await _cacheService.GetAsync<PaginatedList<AppointmentResponseDto>>($"appointments_{index}_{pageSize}_{StartDate}_{EndDate}_{sortBy}");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND,
+                    $"User not found with id {userId}");
+            var paginatedResponse =
+                await _cacheService.GetAsync<PaginatedList<AppointmentResponseDto>>(
+                    $"appointments_{index}_{pageSize}_{StartDate}_{EndDate}_{sortBy}");
 
             if (paginatedResponse == null)
             {
-                var appointmentList = await _unitOfWork.AppointmentRepository.GetAllAsync(userId, index, pageSize, StartDate, EndDate, sortBy);
+                var appointmentList =
+                    await _unitOfWork.AppointmentRepository.GetAllAsync(userId, index, pageSize, StartDate, EndDate,
+                        sortBy);
 
                 // Map từng phần tử trong danh sách Items
-                var responseList = appointmentList.Items.Select(item => _mapper.Map<AppointmentResponseDto>(item)).ToList();
+                var responseList = appointmentList.Items.Select(item => _mapper.Map<AppointmentResponseDto>(item))
+                    .ToList();
 
                 // Tạo PaginatedList mới với các đối tượng đã map
                 paginatedResponse = new PaginatedList<AppointmentResponseDto>(
@@ -170,7 +184,8 @@ namespace MamaFit.Services.Service
                     appointmentList.PageSize
                 );
 
-                await _cacheService.SetAsync($"appointment_{index}_{pageSize}_{StartDate}_{EndDate}_{sortBy}", paginatedResponse);
+                await _cacheService.SetAsync($"appointment_{index}_{pageSize}_{StartDate}_{EndDate}_{sortBy}",
+                    paginatedResponse);
                 return paginatedResponse;
             }
 
@@ -197,7 +212,7 @@ namespace MamaFit.Services.Service
                 appointment.ReminderJobId = null;
                 appointment.Reminder30SentAt = null; // reset nếu đổi giờ
             }
-            
+
             _mapper.Map(requestDto, appointment);
             appointment.UpdatedAt = DateTime.UtcNow;
             appointment.UpdatedBy = GetCurrentUserName();
@@ -219,6 +234,7 @@ namespace MamaFit.Services.Service
                 await _unitOfWork.AppointmentRepository.UpdateAsync(appointment);
                 await _unitOfWork.SaveChangesAsync();
             }
+
             await _cacheService.RemoveByPrefixAsync($"appointment");
         }
 
@@ -239,7 +255,8 @@ namespace MamaFit.Services.Service
             }
             else
             {
-                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.NOT_FOUND, $"Appointment with id {id} already checked-in");
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.NOT_FOUND,
+                    $"Appointment with id {id} already checked-in");
             }
         }
 
@@ -262,8 +279,10 @@ namespace MamaFit.Services.Service
             }
             else
             {
-                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, $"Appointment with id {id} already cancelled");
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                    $"Appointment with id {id} already cancelled");
             }
+
             if (!string.IsNullOrEmpty(oldAppointment.ReminderJobId))
             {
                 BackgroundJob.Delete(oldAppointment.ReminderJobId);
@@ -278,7 +297,8 @@ namespace MamaFit.Services.Service
             var oldAppointment = await _unitOfWork.AppointmentRepository.GetByIdAsync(id);
             _validationService.CheckNotFound(oldAppointment, $"Appointment not found with id {id}");
 
-            if (oldAppointment.Status != AppointmentStatus.CHECKED_OUT && oldAppointment.Status != AppointmentStatus.CANCELED)
+            if (oldAppointment.Status != AppointmentStatus.CHECKED_OUT &&
+                oldAppointment.Status != AppointmentStatus.CANCELED)
             {
                 oldAppointment.Status = AppointmentStatus.CHECKED_OUT;
                 oldAppointment.UpdatedAt = DateTime.UtcNow;
@@ -290,8 +310,10 @@ namespace MamaFit.Services.Service
             }
             else
             {
-                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST, $"Appointment with id {id} already checked-out");
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                    $"Appointment with id {id} already checked-out");
             }
+
             if (!string.IsNullOrEmpty(oldAppointment.ReminderJobId))
             {
                 BackgroundJob.Delete(oldAppointment.ReminderJobId);
@@ -301,14 +323,17 @@ namespace MamaFit.Services.Service
             }
         }
 
-        public async Task<PaginatedList<AppointmentResponseDto>> GetByUserId(int index, int pageSize, string? search, AppointmentOrderBy? sortBy)
+        public async Task<PaginatedList<AppointmentResponseDto>> GetByUserId(int index, int pageSize, string? search,
+            AppointmentOrderBy? sortBy)
         {
             var userId = GetCurrentUserId();
             var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
             if (user == null)
-                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND, $"User not found with id {userId}");
+                throw new ErrorException(StatusCodes.Status404NotFound, ApiCodes.NOT_FOUND,
+                    $"User not found with id {userId}");
 
-            var appointmentList = await _unitOfWork.AppointmentRepository.GetByUserId(userId, index, pageSize, search, sortBy);
+            var appointmentList =
+                await _unitOfWork.AppointmentRepository.GetByUserId(userId, index, pageSize, search, sortBy);
 
             // Map từng phần tử trong danh sách Items
             var responseList = appointmentList.Items.Select(item => _mapper.Map<AppointmentResponseDto>(item)).ToList();

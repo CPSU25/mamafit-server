@@ -64,7 +64,8 @@ namespace MamaFit.Services.Mapper
                 .ReverseMap();
             CreateMap<ApplicationUser, PermissionResponseDto>()
                 .ForMember(dest => dest.RoleName,
-                    opt => opt.MapFrom(src => src.Role != null ? src.Role.RoleName : null));
+                    opt => opt.MapFrom(src => src.Role != null ? src.Role.RoleName : null))
+                .ForMember(dest => dest.JobTitle, otp => otp.MapFrom(src => src.JobTitle != null ? src.JobTitle : null));
             CreateMap<ApplicationUser, RegisterUserRequestDto>();
             CreateMap<RegisterUserRequestDto, ApplicationUser>()
                 .ForMember(dest => dest.HashPassword, opt => opt.Ignore())

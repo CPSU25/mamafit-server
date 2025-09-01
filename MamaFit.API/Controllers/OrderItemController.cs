@@ -48,7 +48,7 @@ public class OrderItemController : ControllerBase
     public async Task<IActionResult> GetCurrentSequenceOrder(string orderItemId)
     {
         var result = await _service.GetCurrentOrderItemTaskSequence(orderItemId);
-        return Ok(new ResponseModel<int>(
+        return Ok(new ResponseModel<SequenceOrderResponseDto>(
             StatusCodes.Status200OK,
             ApiCodes.SUCCESS,
             result,

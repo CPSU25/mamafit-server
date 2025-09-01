@@ -244,7 +244,7 @@ public class OrderItemService : IOrderItemService
         return response;
     }
 
-    public async Task<int> GetCurrentOrderItemTaskSequence(string orderItemId)
+    public async Task<SequenceOrderResponseDto> GetCurrentOrderItemTaskSequence(string orderItemId)
     {
         var progressList = await _milestoneService.GetMilestoneByOrderItemId(orderItemId);
         foreach (var progress in progressList)
@@ -253,9 +253,16 @@ public class OrderItemService : IOrderItemService
                 continue;
             else
             {
-                return progress!.Milestone!.SequenceOrder;
+                var maternityTask = await _unitOfWork.MaternityDressTaskRepository.GetByIdAsync(progress.CurrentTask.Id);
+                return new SequenceOrderResponseDto
+                {
+                    Milestone = progress.Milestone!.SequenceOrder,
+                    Task = maternityTask.SequenceOrder,
+                };
             }
         }
-        return 0;
+        return new SequenceOrderResponseDto
+        {
+        };
     }
 }

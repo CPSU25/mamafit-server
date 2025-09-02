@@ -6168,7 +6168,7 @@ namespace MamaFit.BusinessObjects.Data
                     AddOnId = "c136acbd20b14414a8013a9b8b8ea5ab",
                     PositionId = "7ab17c28f8764667a8cdd92015d135a7",
                     SizeId = "d500f6f2377f475b86fcaefe85ca172b",
-                    Name = "Đính Rhinestone Toàn Bộ Cổ Váy",
+                    Name = "Đính Rhinestone Ở Cổ Váy",
                     Description = "Đính đá rhinestone lên toàn bộ cổ váy.",
                     Price = 2500m,
                     ItemServiceType = (ItemServiceType)2,

@@ -80,13 +80,17 @@ public class UserService : IUserService
             _validation.CheckBadRequest(usernameExists, "Username already exists!");
         }
 
-        if (!VerifyPassword(model.OldPassword, user.HashPassword, user.Salt))
-            throw new ErrorException(StatusCodes.Status401Unauthorized,
-                ApiCodes.UNAUTHORIZED, "Incorrect password!");
+        if (!string.IsNullOrEmpty(model.NewPassword))
+        {
+            if (!VerifyPassword(model.OldPassword, user.HashPassword, user.Salt))
+                throw new ErrorException(StatusCodes.Status401Unauthorized,
+                    ApiCodes.UNAUTHORIZED, "Incorrect password!");
+
+            user.Salt = HashHelper.GenerateSalt();
+            user.HashPassword = HashHelper.HashPassword(model.NewPassword, user.Salt);
+        }
 
         _mapper.Map(model, user);
-        user.Salt = HashHelper.GenerateSalt();
-        user.HashPassword = HashHelper.HashPassword(model.NewPassword, user.Salt);
 
         await _unitOfWork.UserRepository.UpdateUserAsync(user);
         await _unitOfWork.SaveChangesAsync();

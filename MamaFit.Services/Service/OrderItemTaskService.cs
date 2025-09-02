@@ -16,6 +16,8 @@ using MamaFit.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using System.Text.Json;
+using System.Globalization;
+using System.Text;
 
 namespace MamaFit.Services.Service;
 
@@ -31,12 +33,14 @@ public class OrderItemTaskService : IOrderItemTaskService
     private readonly IChatService _chatService;
     private readonly INotificationService _notificationService;
     private readonly IHubContext<ChatHub> _chatHubContext;
+    private readonly IHubContext<NotificationHub> _notificationHubContext;
+    private readonly IEmailSenderSevice _emailSenderService;
 
     public OrderItemTaskService(IOrderItemTaskRepository repo, IMapper mapper, IValidationService validation,
         IHttpContextAccessor contextAccessor, IUnitOfWork unitOfWork, IMilestoneService milestoneService,
         IChatService chatService, INotificationService notificationService,
-        IHubContext<ChatHub> chatHubContext,
-        ICacheService cacheService)
+        IHubContext<ChatHub> chatHubContext, IHubContext<NotificationHub> notificationHubContext,
+        ICacheService cacheService, IEmailSenderSevice emailSenderService)
 
     {
         _repo = repo;
@@ -48,7 +52,9 @@ public class OrderItemTaskService : IOrderItemTaskService
         _chatService = chatService;
         _notificationService = notificationService;
         _chatHubContext = chatHubContext;
+        _notificationHubContext = notificationHubContext;
         _cacheService = cacheService;
+        _emailSenderService = emailSenderService;
     }
 
     public async Task<List<OrderItemTaskGetByTokenResponse>> GetTasksByAssignedStaffAsync()
@@ -190,6 +196,9 @@ public class OrderItemTaskService : IOrderItemTaskService
     }
     private async Task HandleInProgressAsync(OrderItemTask task, OrderItem orderItem, Order order)
     {
+        // Bắn SignalR thông báo task IN_PROGRESS để client render UI realtime
+        await SendTaskUpdateSignalRAsync(task, orderItem, order, "IN_PROGRESS");
+
         if (task.MaternityDressTask.Milestone.SequenceOrder == 1)
         {
             if (orderItem.ItemType == ItemType.DESIGN_REQUEST)
@@ -206,9 +215,13 @@ public class OrderItemTaskService : IOrderItemTaskService
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
     }
+    
     private async Task HandleDoneAsync(OrderItem orderItem, Order order,
         List<MilestoneAchiveOrderItemResponseDto> progress, IEnumerable<Milestone> milestones,  OrderItemTask currentTask)
     {
+        // Bắn SignalR thông báo task hoàn thành để client render UI realtime
+        await SendTaskUpdateSignalRAsync(currentTask, orderItem, order, "DONE");
+
         if (orderItem.ItemType == ItemType.DESIGN_REQUEST)
         {
             order.Status = OrderStatus.COMPLETED;
@@ -216,31 +229,20 @@ public class OrderItemTaskService : IOrderItemTaskService
         else if (orderItem.ItemType == ItemType.PRESET || orderItem.ItemType == ItemType.WARRANTY)
         {
             await UpdateStatusForPresetDoneAsync(order, progress);
-            // var qcFailProgress = progress.Where(x => x.Milestone.ApplyFor.Contains(ItemType.QC_FAIL));
-            // if (qcFailProgress.Any(x => x.Progress == 100 && x.IsDone))
-            // {
-            //     if (CheckAllItemInLastMilestone(order, milestones))
-            //     {
-            //         if (order.PaymentType == PaymentType.FULL && order.PaymentStatus == PaymentStatus.PAID_FULL)
-            //         {
-            //             order.Status = OrderStatus.PACKAGING;
-            //         }
-            //         else if (order.PaymentType == PaymentType.DEPOSIT &&
-            //                  order.PaymentStatus == PaymentStatus.PAID_DEPOSIT)
-            //         {
-            //             order.Status = OrderStatus.AWAITING_PAID_REST;
-            //         }
-            //     }
-            //     else
-            //     {
-            //         order.Status = OrderStatus.IN_PROGRESS;
-            //     }
-            // }
             await UpdateOrderStatusByAllItemsAsync(order, currentTask);
         }
 
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
+
+        // Kiểm tra xem toàn bộ ORDER đã hoàn thành chưa
+        var isOrderCompleted = await IsOrderFullyCompletedAsync(order);
+        
+        if (isOrderCompleted)
+        {
+            // Gửi thông báo và email khi toàn bộ ORDER hoàn thành
+            await SendOrderCompletedNotificationAndEmailAsync(order);
+        }
     }
     private async Task UpdateStatusForPresetDoneAsync(Order order, List<MilestoneAchiveOrderItemResponseDto> progress)
     {
@@ -292,6 +294,13 @@ public class OrderItemTaskService : IOrderItemTaskService
     // }
     private async Task HandlePassAsync(Order order, List<MilestoneAchiveOrderItemResponseDto> progress, OrderItemTask currentTask)
     {
+        // Bắn SignalR thông báo task PASS để client render UI realtime
+        var orderItem = await _unitOfWork.OrderItemRepository.GetDetailById(currentTask.OrderItemId!);
+        if (orderItem != null)
+        {
+            await SendTaskUpdateSignalRAsync(currentTask, orderItem, order, "PASS");
+        }
+
         if (order.Type == OrderType.WARRANTY)
         {
             var in_warrantyKey = new[] { "in warranty" };
@@ -315,42 +324,18 @@ public class OrderItemTaskService : IOrderItemTaskService
             }
         }
 
-        // var keywordList = new[] { "quality check", "qc" };
-        // var qcProgress = progress.Where(x => keywordList.Any(k => x.Milestone!.Name!.ToLower().Contains(k)));
-        //
-        // if (qcProgress.Any(x => x.Progress == 100))
-        // {
-        //     var keyword = new[] { "fail" };
-        //     var qcFailProgress = progress.Where(x => keyword.Any(k => x.Milestone!.Name!.ToLower().Contains(k)));
-        //
-        //     if (qcFailProgress.Any(x => x.Progress == 100 && x.IsDone))
-        //     {
-        //         if (order.PaymentType == PaymentType.FULL && order.PaymentStatus == PaymentStatus.PAID_FULL)
-        //         {
-        //             order.Status = OrderStatus.PACKAGING;
-        //         }
-        //         else if (order.PaymentType == PaymentType.DEPOSIT && order.PaymentStatus == PaymentStatus.PAID_DEPOSIT)
-        //         {
-        //             order.Status = OrderStatus.AWAITING_PAID_REST;
-        //         }
-        //     }
-        //
-        //     if (!qcFailProgress.Any())
-        //     {
-        //         if (order.PaymentType == PaymentType.FULL && (order.PaymentStatus == PaymentStatus.PAID_FULL ||
-        //                                                       order.PaymentStatus == PaymentStatus.WARRANTY))
-        //         {
-        //             order.Status = OrderStatus.PACKAGING;
-        //         }
-        //         else if (order.PaymentType == PaymentType.DEPOSIT && order.PaymentStatus == PaymentStatus.PAID_DEPOSIT)
-        //         {
-        //             order.Status = OrderStatus.AWAITING_PAID_REST;
-        //         }
-        //     }
-        // }
         await UpdateOrderStatusByAllItemsAsync(order, currentTask);
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
+        
+        // Kiểm tra xem toàn bộ ORDER đã hoàn thành chưa
+        var isOrderCompleted = await IsOrderFullyCompletedAsync(order);
+        
+        if (isOrderCompleted)
+        {
+            // Gửi thông báo và email khi toàn bộ ORDER hoàn thành
+            await SendOrderCompletedNotificationAndEmailAsync(order);
+        }
     }
     private async Task HandleFailAsync(
         OrderItem orderItem,
@@ -360,6 +345,9 @@ public class OrderItemTaskService : IOrderItemTaskService
         bool? severity,
         OrderItemTask task)
     {
+        // Bắn SignalR thông báo task FAIL để client render UI realtime
+        await SendTaskUpdateSignalRAsync(task, orderItem, order, "FAIL");
+
         var keywordList = new[] { "fail" };
         var qcProgress = progress.Where(x => keywordList.Any(k => x.Milestone!.Name!.ToLower().Contains(k)));
         if (task.MaternityDressTask.Milestone.Name.ToLower().Contains("validation"))
@@ -622,5 +610,325 @@ public class OrderItemTaskService : IOrderItemTaskService
         {
             order.Status = OrderStatus.IN_PROGRESS;
         }
+    }
+
+    /// <summary>
+    /// Bắn SignalR thông báo khi task được update để client có thể render UI realtime
+    /// </summary>
+    private async Task SendTaskUpdateSignalRAsync(OrderItemTask task, OrderItem orderItem, Order order, string taskStatus)
+    {
+        try
+        {
+            var taskName = task.MaternityDressTask?.Name ?? "Task";
+            var milestoneName = task.MaternityDressTask?.Milestone?.Name ?? "Milestone";
+            var productName = GetProductName(orderItem);
+
+            // Bắn SignalR để client bắt NotificationType và render lại UI
+            var notificationData = new
+            {
+                Type = NotificationType.ORDER_PROGRESS,
+                OrderId = order.Id,
+                OrderItemId = orderItem.Id,
+                TaskId = $"{task.MaternityDressTaskId}_{task.OrderItemId}",
+                TaskName = taskName,
+                MilestoneName = milestoneName,
+                ProductName = productName,
+                Status = taskStatus,
+                OrderCode = order.Code,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            // Gửi tới User qua SignalR
+            if (!string.IsNullOrEmpty(order.UserId))
+            {
+                await _notificationHubContext.Clients.User(order.UserId)
+                    .SendAsync("TaskUpdated", notificationData);
+            }
+
+            // Gửi tới tất cả Manager qua SignalR  
+            var managers = await GetAllManagersAsync();
+            foreach (var manager in managers)
+            {
+                await _notificationHubContext.Clients.User(manager.Id)
+                    .SendAsync("TaskUpdated", notificationData);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ERROR] Error sending SignalR task update: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Kiểm tra xem toàn bộ ORDER (tất cả orderItem) đã hoàn thành chưa
+    /// </summary>
+    private async Task<bool> IsOrderFullyCompletedAsync(Order order)
+    {
+        try
+        {
+            // Sử dụng logic có sẵn để kiểm tra order ready for packaging
+            // Khi order ready for packaging = tất cả orderItem đã hoàn thành sản xuất
+            var ready = await AreAllItemsReadyForPackagingAsync(order);
+            return ready && order.Status == OrderStatus.PACKAGING;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ERROR] Error checking order completion: {ex.Message}");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Gửi thông báo và email khi toàn bộ ORDER hoàn thành
+    /// </summary>
+    private async Task SendOrderCompletedNotificationAndEmailAsync(Order order)
+    {
+        try
+        {
+            // Tạo danh sách người nhận: User + tất cả Manager
+            var receiverIds = new List<string>();
+            
+            // 1. Thêm User vào danh sách
+            if (!string.IsNullOrEmpty(order.UserId))
+            {
+                receiverIds.Add(order.UserId);
+            }
+            
+            // 2. Thêm tất cả Manager vào danh sách
+            var managers = await GetAllManagersAsync();
+            receiverIds.AddRange(managers.Select(m => m.Id));
+
+            // Gửi thông báo cho tất cả (User + Managers)
+            if (receiverIds.Any())
+            {
+                await _notificationService.SendAndSaveNotificationToMultipleAsync(new NotificationMultipleRequestDto
+                {
+                    ReceiverIds = receiverIds,
+                    NotificationTitle = "Đơn hàng hoàn thành sản xuất",
+                    NotificationContent = $"Đơn hàng {order.Code} đã hoàn thành tất cả các công đoạn sản xuất và sẵn sàng đóng gói.",
+                    Type = NotificationType.ORDER_PROGRESS,
+                    Metadata = new Dictionary<string, string>
+                    {
+                        { "orderId", order.Id },
+                        { "orderCode", order.Code ?? "" },
+                        { "status", "PRODUCTION_COMPLETED" }
+                    }
+                });
+            }
+
+            // Gửi email riêng cho User và Manager
+            if (!string.IsNullOrEmpty(order.UserId))
+            {
+                await SendOrderCompletedEmailToUserAsync(order);
+            }
+            
+            await SendOrderCompletedEmailToManagersAsync(order);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ERROR] Error sending order completion notification: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Lấy tất cả Manager (theo role name)
+    /// </summary>
+    private async Task<List<ApplicationUser>> GetAllManagersAsync()
+    {
+        // Lấy manager theo role name
+        var managerRoleNames = new[] { "Manager", "Admin", "Production Manager" };
+        var managers = new List<ApplicationUser>();
+        
+        foreach (var roleName in managerRoleNames)
+        {
+            try
+            {
+                var role = await _unitOfWork.RoleRepository.GetByNameAsync(roleName);
+                if (role != null)
+                {
+                    var usersInRole = await _unitOfWork.UserRepository.GetUsersByRoleIdAsync(role.Id, true);
+                    managers.AddRange(usersInRole);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting users for role {roleName}: {ex.Message}");
+            }
+        }
+        
+        // Remove duplicates
+        return managers.GroupBy(m => m.Id).Select(g => g.First()).ToList();
+    }
+
+    /// <summary>
+    /// Lấy tên sản phẩm từ OrderItem
+    /// </summary>
+    private string GetProductName(OrderItem orderItem)
+    {
+        return orderItem.MaternityDressDetail?.MaternityDress?.Name ?? 
+               orderItem.Preset?.Name ?? 
+               (orderItem.DesignRequest != null ? "Yêu cầu thiết kế" : "Sản phẩm");
+    }
+
+    /// <summary>
+    /// Gửi email thông báo hoàn thành sản xuất cho User
+    /// </summary>
+    private async Task SendOrderCompletedEmailToUserAsync(Order order)
+    {
+        if (order.User?.UserEmail == null) return;
+
+        var subject = $"[MamaFit] Đơn hàng {order.Code} đã hoàn thành sản xuất";
+        var htmlContent = BuildOrderCompletedEmailHtml(order, "USER");
+        
+        await _emailSenderService.SendEmailAsync(order.User.UserEmail, subject, htmlContent);
+    }
+
+    /// <summary>
+    /// Gửi email thông báo hoàn thành sản xuất cho Manager
+    /// </summary>
+    private async Task SendOrderCompletedEmailToManagersAsync(Order order)
+    {
+        var managers = await GetAllManagersAsync();
+        var managersWithEmail = managers.Where(m => !string.IsNullOrEmpty(m.UserEmail)).ToList();
+        
+        if (!managersWithEmail.Any()) return;
+
+        var subject = $"[MamaFit] Đơn hàng {order.Code} hoàn thành sản xuất";
+        var htmlContent = BuildOrderCompletedEmailHtml(order, "MANAGER");
+        
+        foreach (var manager in managersWithEmail)
+        {
+            await _emailSenderService.SendEmailAsync(manager.UserEmail!, subject, htmlContent);
+        }
+    }
+
+    /// <summary>
+    /// Tạo nội dung HTML cho email thông báo hoàn thành sản xuất
+    /// </summary>
+    private string BuildOrderCompletedEmailHtml(Order order, string receiverType)
+    {
+        var vn = new CultureInfo("vi-VN");
+        
+        var preheader = receiverType == "USER" 
+            ? $"Đơn hàng {order.Code} đã hoàn thành sản xuất"
+            : $"Cần xử lý giao hàng - Đơn {order.Code} đã hoàn thành sản xuất";
+
+        var greeting = receiverType == "USER" 
+            ? $"Xin chào <strong>{order.User?.FullName ?? "Quý khách"}</strong>,"
+            : "Xin chào <strong>Quý anh/chị</strong>,";
+
+        var content = receiverType == "USER"
+            ? $"Chúng tôi vui mừng thông báo rằng đơn hàng <strong>{order.Code}</strong> đã hoàn thành tất cả các công đoạn sản xuất."
+            : $"Đơn hàng <strong>{order.Code}</strong> đã hoàn thành tất cả các công đoạn sản xuất và sẵn sàng cho bước đóng gói và giao hàng.";
+
+        var nextSteps = receiverType == "USER"
+            ? "Chúng tôi sẽ tiến hành đóng gói và giao hàng cho bạn trong thời gian sớm nhất."
+            : "Vui lòng tiến hành đóng gói và chuẩn bị giao hàng cho khách hàng. Kiểm tra thông tin địa chỉ giao hàng và liên hệ với khách hàng nếu cần thiết.";
+
+        // Tạo danh sách sản phẩm
+        var itemsHtml = new StringBuilder();
+        if (order.OrderItems != null && order.OrderItems.Any())
+        {
+            foreach (var item in order.OrderItems)
+            {
+                var productName = GetProductName(item);
+                itemsHtml.Append($@"
+            <tr>
+                <td style=""padding:8px 0"">{productName}</td>
+                <td style=""padding:8px 0; text-align:center"">{item.Quantity}</td>
+                <td style=""padding:8px 0; text-align:right"">{item.Price.ToString("c0", vn)}</td>
+            </tr>");
+            }
+        }
+
+        return $@"
+    <!DOCTYPE html>
+    <html lang=""vi"">
+    <head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Hoàn thành sản xuất</title>
+    <style>
+    body {{ font-family: Arial, Helvetica, sans-serif; background:#f7f7f7; margin:0; padding:0; }}
+    .container {{ max-width: 600px; margin:40px auto; background:#fff; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.05); padding:24px; }}
+    .brand {{ font-size:22px; font-weight:bold; color:#2266cc; text-align:center; margin-bottom:6px; }}
+    .sub {{ text-align:center; color:#666; margin-bottom:16px; }}
+    .section-title {{ font-size:16px; font-weight:bold; margin:18px 0 8px; }}
+    .table {{ width:100%; border-collapse:collapse; }}
+    .table th, .table td {{ border-bottom:1px solid #eee; padding:8px 0; font-size:14px; }}
+    .right {{ text-align:right; }}
+    .footer {{ margin-top:24px; font-size:12px; color:#888; text-align:center; }}
+    .badge {{ display:inline-block; padding:6px 10px; background:#d4edda; color:#155724; border-radius:999px; font-size:12px; }}
+    .highlight {{ background:#e8f3ff; padding:12px; border-radius:6px; margin:12px 0; }}
+    .success-box {{ background:#d4edda; border:1px solid #c3e6cb; color:#155724; padding:16px; border-radius:8px; margin:16px 0; }}
+    </style>
+    </head>
+    <body>
+    <span style=""display:none!important;"">{preheader}</span>
+    <div class=""container"">
+        <div class=""brand"">MamaFit</div>
+        <div class=""sub""><span class=""badge"">{(receiverType == "USER" ? "Hoàn thành sản xuất" : "Cần xử lý giao hàng")}</span></div>
+
+        <p>{greeting}</p>
+        
+        <p>{content}</p>
+
+        <div class=""section-title"">Thông tin đơn hàng</div>
+        <table class=""table"">
+            <tr><td>Mã đơn hàng</td><td class=""right"">{order.Code}</td></tr>
+            <tr><td>Trạng thái</td><td class=""right"">Hoàn thành sản xuất</td></tr>
+            <tr><td>Ngày hoàn thành</td><td class=""right"">{DateTime.Now.ToString("dd/MM/yyyy HH:mm", vn)}</td></tr>
+            <tr><td>Chi nhánh</td><td class=""right"">{order.Branch?.Name ?? "Không xác định"}</td></tr>
+            {(receiverType == "MANAGER" ? $@"
+            <tr><td>Khách hàng</td><td class=""right"">{order.User?.FullName ?? "Không xác định"}</td></tr>
+            <tr><td>Số điện thoại</td><td class=""right"">{order.User?.PhoneNumber ?? "Không có"}</td></tr>
+            <tr><td>Email</td><td class=""right"">{order.User?.UserEmail ?? "Không có"}</td></tr>
+            <tr><td>Địa chỉ giao hàng</td><td class=""right"">{(order.Address != null ? $"{order.Address.Street}, {order.Address.Ward}, {order.Address.District}, {order.Address.Province}" : "Chưa có địa chỉ")}</td></tr>" : "")}
+        </table>
+
+        <div class=""section-title"">Chi tiết sản phẩm</div>
+        <table class=""table"">
+            <thead>
+                <tr><th style=""text-align:left"">Sản phẩm</th><th>Số lượng</th><th class=""right"">Đơn giá</th></tr>
+            </thead>
+            <tbody>
+                {itemsHtml}
+            </tbody>
+        </table>
+
+        <div class=""success-box"">
+            <p><strong>🎉 {(receiverType == "USER" ? "Chúc mừng! Đơn hàng đã hoàn thành sản xuất." : "Đơn hàng đã sẵn sàng để giao hàng!")}</strong></p>
+            <p>{nextSteps}</p>
+            {(receiverType == "MANAGER" ? $@"
+            <div style=""margin-top:16px; padding:12px; background:#fff3cd; border:1px solid #ffeaa7; border-radius:6px;"">
+                <p><strong>📦 Cần xử lý:</strong></p>
+                <ul style=""margin:8px 0; padding-left:20px;"">
+                    <li>Kiểm tra và đóng gói sản phẩm</li>
+                    <li>Xác nhận thông tin giao hàng</li>
+                    <li>Liên hệ khách hàng nếu cần thiết</li>
+                    <li>Cập nhật trạng thái giao hàng</li>
+                </ul>
+            </div>" : "")}
+        </div>
+
+        <div class=""highlight"">
+            <div class=""section-title"">{(receiverType == "USER" ? "Liên hệ hỗ trợ" : "Thông tin liên hệ và hướng dẫn")}</div>
+            {(receiverType == "USER" ? @"
+            <p><strong>📧 Email:</strong> support@mamafit.vn</p>
+            <p><strong>📞 Hotline:</strong> 1900 1234</p>
+            <p><strong>🕒 Thời gian:</strong> 8:00 - 22:00 (Thứ 2 - Chủ nhật)</p>" : @"
+            <p><strong>📞 Liên hệ khách hàng:</strong> Gọi trước khi giao hàng để xác nhận</p>
+            <p><strong>📦 Quy trình đóng gói:</strong> Kiểm tra chất lượng trước khi đóng gói</p>
+            <p><strong>🚚 Giao hàng:</strong> Cập nhật tracking number cho khách hàng</p>
+            <p><strong>💬 Hỗ trợ:</strong> support@mamafit.vn | 1900 1234</p>")}
+        </div>
+
+        <div class=""footer"">
+            Cảm ơn bạn đã tin tưởng và sử dụng dịch vụ MamaFit!<br/>
+            &copy; {DateTime.Now.Year} MamaFit. All rights reserved.
+        </div>
+    </div>
+    </body>
+    </html>";
     }
 }

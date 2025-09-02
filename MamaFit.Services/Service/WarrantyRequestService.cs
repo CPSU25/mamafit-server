@@ -319,20 +319,46 @@ namespace MamaFit.Services.Service
 
             await _unitOfWork.SaveChangesAsync();
 
-            await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
+            
+            if (requestType == RequestType.FEE)
             {
-                ReceiverId = userId,
-                NotificationTitle = "Yêu cầu bảo hành mới",
-                NotificationContent =
-                    $"Bạn đã tạo thành công bảo hành cho các sản phẩm với SKU: {string.Join(", ", orderItemSKUs)}.",
-                ActionUrl = $"/warranty-requests/{warrantyRequest.Id}",
-                Metadata = new Dictionary<string, string>
+                await SendWarrantyFeePaymentEmailAsync(warrantyOrder, warrantyRequest, orderItemSKUs);
+
+                await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
                 {
-                    { "warrantyRequestId", warrantyRequest.Id },
-                    { "orderItemIds", string.Join(",", validOrderItems.Select(x => x.Id)) },
-                    { "orderId", warrantyOrder.Id }
-                }
-            });
+                    ReceiverId = originalOrder.UserId,
+                    NotificationTitle = $"Yêu cầu bảo hành được tại chi nhánh {branch.Name}",
+                    Type = NotificationType.WARRANTY,
+                    NotificationContent =
+                        $"Bạn có yêu cầu bảo hành cho các sản phẩm với SKU: {string.Join(", ", orderItemSKUs)} cần thanh toán phí {dto.Fee:N0} VNĐ. Vui lòng thanh toán để tiếp tục quy trình bảo hành.",
+                    ActionUrl = $"/orders/{warrantyOrder.Id}",
+                    Metadata = new Dictionary<string, string>
+                    {
+                        { "warrantyRequestId", warrantyRequest.Id },
+                        { "orderItemIds", string.Join(",", validOrderItems.Select(x => x.Id)) },
+                        { "orderId", warrantyOrder.Id },
+                        { "fee", (dto.Fee ?? 0).ToString() }
+                    }
+                });
+            }
+            else
+            {
+                await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
+                {
+                    ReceiverId = originalOrder.UserId,
+                    NotificationTitle = $"Yêu cầu bảo hành được tại chi nhánh {branch.Name}",
+                    Type = NotificationType.WARRANTY,
+                    NotificationContent =
+                        $"Yêu cầu bảo hành cho các sản phẩm với SKU: {string.Join(", ", orderItemSKUs)} đã được chấp nhận và đang được xử lý.",
+                    ActionUrl = $"/warranty-requests/{warrantyRequest.Id}",
+                    Metadata = new Dictionary<string, string>
+                    {
+                        { "warrantyRequestId", warrantyRequest.Id },
+                        { "orderItemIds", string.Join(",", validOrderItems.Select(x => x.Id)) },
+                        { "orderId", warrantyOrder.Id }
+                    }
+                });
+            }
 
             return warrantyOrder.Id;
         }
@@ -665,6 +691,19 @@ namespace MamaFit.Services.Service
                         Status = WarrantyRequestItemStatus.REJECTED,
                         TrackingCode = null
                     });
+                    var orderEntity = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(wri.OrderItem.OrderId);
+                    _validationService.CheckNotFound(orderEntity, $"Order {wri.OrderItem.OrderId} not found");
+
+                    var allRejected = wr.WarrantyRequestItems
+                        .Where(w => w.OrderItem.OrderId == wri.OrderItem.OrderId)
+                        .All(w => w.Status == WarrantyRequestItemStatus.REJECTED);
+
+                    if (allRejected && orderEntity.Status != OrderStatus.COMPLETED)
+                    {
+                        orderEntity.Status = OrderStatus.COMPLETED;
+                        orderEntity.ReceivedAt = DateTime.UtcNow;  
+                        await _unitOfWork.OrderRepository.UpdateAsync(orderEntity);
+                    }
                     continue;
                 }
 
@@ -755,6 +794,9 @@ namespace MamaFit.Services.Service
                 else wr.Status = WarrantyRequestStatus.REJECTED;
 
                 await _unitOfWork.SaveChangesAsync();
+
+                // Gửi email và thông báo cho khách hàng về quyết định bảo hành (nhánh FEE)
+                await SendWarrantyDecisionNotificationAsync(wr, responseItems);
 
                 return new WarrantyDecisionResponseDto
                 {
@@ -887,6 +929,9 @@ namespace MamaFit.Services.Service
                 wr.Status = WarrantyRequestStatus.REJECTED;
 
             await _unitOfWork.SaveChangesAsync();
+
+            // Gửi email và thông báo cho khách hàng về quyết định bảo hành
+            await SendWarrantyDecisionNotificationAsync(wr, responseItems);
 
             return new WarrantyDecisionResponseDto
             {
@@ -1182,6 +1227,371 @@ namespace MamaFit.Services.Service
 
         <div class=""footer"">
             Nếu có sai sót, vui lòng phản hồi email này hoặc liên hệ MamaFit để được hỗ trợ.<br/>
+            &copy; {DateTime.Now.Year} MamaFit. All rights reserved.
+        </div>
+    </div>
+    </body>
+    </html>";
+        }
+
+        public async Task SendWarrantyFeePaymentEmailAsync(Order warrantyOrder, WarrantyRequest warrantyRequest, List<string> orderItemSKUs)
+        {
+            // Lấy thông tin user, ưu tiên từ warrantyOrder.User
+            var user = warrantyOrder.User ?? await _unitOfWork.UserRepository.GetByIdAsync(warrantyOrder.UserId ?? "");
+            var email = user?.UserEmail;
+            
+            if (string.IsNullOrWhiteSpace(email))
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                    "Email người dùng không được thiết lập, không thể gửi thông báo bảo hành có phí.");
+
+            var subject = "[MamaFit] Yêu cầu bảo hành cần thanh toán phí";
+            
+            // Build HTML content for the email
+            var htmlContent = BuildWarrantyFeePaymentHtml(warrantyOrder, warrantyRequest, orderItemSKUs, user);
+            
+            // Send email
+            await _emailSenderService.SendEmailAsync(email, subject, htmlContent);
+        }
+
+        /// <summary>
+        /// Gửi email và thông báo cho khách hàng về quyết định bảo hành
+        /// </summary>
+        private async Task SendWarrantyDecisionNotificationAsync(WarrantyRequest warrantyRequest, List<WarrantyDecisionResponseItemDto> responseItems)
+        {
+            try
+            {
+                Console.WriteLine($"[DEBUG] SendWarrantyDecisionNotificationAsync called for warranty request {warrantyRequest.Id}");
+                
+                // Lấy thông tin user và order thông qua WarrantyRequestItem -> OrderItem -> Order
+                var firstItem = warrantyRequest.WarrantyRequestItems?.FirstOrDefault();
+                if (firstItem == null)
+                {
+                    Console.WriteLine("[DEBUG] No warranty request items found, skipping notification");
+                    return;
+                }
+                Console.WriteLine($"[DEBUG] Found first item: {firstItem.OrderItemId}");
+
+                var orderItem = await _unitOfWork.OrderItemRepository.GetByIdAsync(firstItem.OrderItemId);
+                if (orderItem?.OrderId == null)
+                {
+                    Console.WriteLine("[DEBUG] OrderItem or OrderId not found, skipping notification");
+                    return;
+                }
+                Console.WriteLine($"[DEBUG] Found order ID: {orderItem.OrderId}");
+
+                var order = await _unitOfWork.OrderRepository.GetByIdAsync(orderItem.OrderId);
+                if (order?.UserId == null)
+                {
+                    Console.WriteLine("[DEBUG] Order or UserId not found, skipping notification");
+                    return;
+                }
+                Console.WriteLine($"[DEBUG] Found user ID: {order.UserId}");
+
+                var user = await _unitOfWork.UserRepository.GetByIdAsync(order.UserId);
+                if (user?.UserEmail == null)
+                {
+                    Console.WriteLine($"[DEBUG] User email is null for user {order.UserId}, skipping notification");
+                    return;
+                }
+                Console.WriteLine($"[DEBUG] Found user email: {user.UserEmail}");
+
+                // Xác định nội dung email dựa trên trạng thái
+                string subject, emailBody, notificationMessage;
+                
+                Console.WriteLine($"[DEBUG] Warranty request status: {warrantyRequest.Status}");
+                
+                switch (warrantyRequest.Status)
+                {
+                    case WarrantyRequestStatus.APPROVED:
+                        subject = "Yêu cầu bảo hành đã được chấp nhận - MamaFit";
+                        emailBody = BuildWarrantyDecisionHtml(warrantyRequest, order, user, responseItems, "APPROVED");
+                        notificationMessage = "Yêu cầu bảo hành của bạn đã được chấp nhận. Chúng tôi sẽ tiến hành xử lý sớm nhất có thể.";
+                        break;
+                        
+                    case WarrantyRequestStatus.REJECTED:
+                        subject = "Yêu cầu bảo hành không được chấp nhận - MamaFit";
+                        emailBody = BuildWarrantyDecisionHtml(warrantyRequest, order, user, responseItems, "REJECTED");
+                        notificationMessage = "Yêu cầu bảo hành của bạn không được chấp nhận. Vui lòng xem chi tiết trong email.";
+                        break;
+                        
+                    case WarrantyRequestStatus.PARTIALLY_REJECTED:
+                        subject = "Kết quả xử lý yêu cầu bảo hành - MamaFit";
+                        emailBody = BuildWarrantyDecisionHtml(warrantyRequest, order, user, responseItems, "PARTIALLY_REJECTED");
+                        notificationMessage = "Yêu cầu bảo hành của bạn đã được xử lý. Một số sản phẩm được chấp nhận, một số không được chấp nhận.";
+                        break;
+                        
+                    default:
+                        Console.WriteLine($"[DEBUG] Skipping notification for status: {warrantyRequest.Status}");
+                        return; // Không gửi thông báo cho trạng thái khác
+                }
+
+                Console.WriteLine($"[DEBUG] Sending email to: {user.UserEmail}");
+                Console.WriteLine($"[DEBUG] Email subject: {subject}");
+
+                // Gửi email
+                await _emailSenderService.SendEmailAsync(user.UserEmail, subject, emailBody);
+                Console.WriteLine($"[DEBUG] Email sent successfully");
+                
+                // Gửi notification
+                await _notificationService.SendAndSaveNotificationAsync(new NotificationRequestDto
+                {
+                    ReceiverId = user.Id!,
+                    NotificationTitle = subject,
+                    NotificationContent = notificationMessage,
+                    Type = NotificationType.WARRANTY
+                });
+                Console.WriteLine($"[DEBUG] Notification sent successfully");
+
+                Console.WriteLine($"[DEBUG] Warranty decision notification sent successfully to {user.UserEmail}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Error sending warranty decision notification: {ex.Message}");
+                Console.WriteLine($"[ERROR] Stack trace: {ex.StackTrace}");
+                // Log lỗi nhưng không throw để không ảnh hưởng đến logic chính
+            }
+        }
+
+        /// <summary>
+        /// Tạo nội dung HTML cho email thông báo quyết định bảo hành
+        /// </summary>
+        private string BuildWarrantyDecisionHtml(WarrantyRequest warrantyRequest, Order order, ApplicationUser user, List<WarrantyDecisionResponseItemDto> responseItems, string status)
+        {
+            var vn = new CultureInfo("vi-VN");
+            
+            var statusText = status switch
+            {
+                "APPROVED" => "được chấp nhận",
+                "REJECTED" => "không được chấp nhận", 
+                "PARTIALLY_REJECTED" => "được xử lý (một phần chấp nhận)",
+                _ => "đã được xử lý"
+            };
+
+            var badgeClass = status switch
+            {
+                "APPROVED" => "background:#d4edda; color:#155724;",
+                "REJECTED" => "background:#f8d7da; color:#721c24;",
+                "PARTIALLY_REJECTED" => "background:#fff3cd; color:#856404;",
+                _ => "background:#e2e3e5; color:#383d41;"
+            };
+
+            // Tạo danh sách item với tên sản phẩm từ OrderItem
+            var itemsHtml = new StringBuilder();
+            if (responseItems != null && responseItems.Count > 0)
+            {
+                foreach (var item in responseItems)
+                {
+                    var itemStatusText = item.Status switch
+                    {
+                        WarrantyRequestItemStatus.APPROVED => "Chấp nhận",
+                        WarrantyRequestItemStatus.REJECTED => "Từ chối",
+                        _ => "Đang xử lý"
+                    };
+
+                    // Lấy tên sản phẩm từ OrderItem
+                    var orderItem = _unitOfWork.OrderItemRepository.GetByIdAsync(item.OrderItemId).Result;
+                    var itemName = orderItem?.MaternityDressDetail?.MaternityDress?.Name ?? 
+                                  orderItem?.Preset?.Name ?? 
+                                  "Sản phẩm";
+
+                    itemsHtml.Append($@"
+            <tr>
+                <td style=""padding:8px 0"">{itemName}</td>
+                <td style=""padding:8px 0; text-align:center"">{itemStatusText}</td>
+                <td style=""padding:8px 0; text-align:center"">{(item.Status == WarrantyRequestItemStatus.REJECTED ? "Không đủ điều kiện bảo hành" : "Đã được xác nhận")}</td>
+            </tr>");
+                }
+            }
+            else
+            {
+                itemsHtml.Append($@"
+            <tr>
+                <td style=""padding:8px 0"">Không có sản phẩm</td>
+                <td style=""padding:8px 0; text-align:center"">-</td>
+                <td style=""padding:8px 0"">-</td>
+            </tr>");
+            }
+
+            var preheader = $"Kết quả xử lý yêu cầu bảo hành {warrantyRequest?.SKU ?? warrantyRequest?.Id}";
+
+            return $@"
+    <!DOCTYPE html>
+    <html lang=""vi"">
+    <head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Kết quả yêu cầu bảo hành</title>
+    <style>
+    body {{ font-family: Arial, Helvetica, sans-serif; background:#f7f7f7; margin:0; padding:0; }}
+    .container {{ max-width: 600px; margin:40px auto; background:#fff; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.05); padding:24px; }}
+    .brand {{ font-size:22px; font-weight:bold; color:#2266cc; text-align:center; margin-bottom:6px; }}
+    .sub {{ text-align:center; color:#666; margin-bottom:16px; }}
+    .section-title {{ font-size:16px; font-weight:bold; margin:18px 0 8px; }}
+    .table {{ width:100%; border-collapse:collapse; }}
+    .table th, .table td {{ border-bottom:1px solid #eee; padding:8px 0; font-size:14px; }}
+    .right {{ text-align:right; }}
+    .footer {{ margin-top:24px; font-size:12px; color:#888; text-align:center; }}
+    .badge {{ display:inline-block; padding:6px 10px; border-radius:999px; font-size:12px; }}
+    .status-info {{ {badgeClass} padding:16px; border-radius:8px; margin:16px 0; }}
+    .highlight {{ background:#e8f3ff; padding:12px; border-radius:6px; margin:12px 0; }}
+    </style>
+    </head>
+    <body>
+    <span style=""display:none!important;"">{preheader}</span>
+    <div class=""container"">
+        <div class=""brand"">MamaFit</div>
+        <div class=""sub""><span class=""badge"" style=""{badgeClass}"">Yêu cầu bảo hành đã {statusText}</span></div>
+
+        <p>Xin chào <strong>{user?.FullName ?? "Quý khách"}</strong>,</p>
+        
+        <p>Chúng tôi đã xem xét yêu cầu bảo hành của bạn và có kết quả như sau:</p>
+
+        <div class=""section-title"">Thông tin yêu cầu bảo hành</div>
+        <table class=""table"">
+            <tr><td>Mã yêu cầu</td><td class=""right"">{warrantyRequest?.SKU}</td></tr>
+            <tr><td>Mã đơn hàng</td><td class=""right"">{order?.Code}</td></tr>
+            <tr><td>Ngày tạo</td><td class=""right"">{warrantyRequest?.CreatedAt.ToString("dd/MM/yyyy HH:mm", vn)}</td></tr>
+        </table>
+
+        <div class=""section-title"">Chi tiết kết quả</div>
+        <table class=""table"">
+            <thead>
+                <tr><th style=""text-align:left"">Sản phẩm</th><th>Trạng thái</th><th>Ghi chú</th></tr>
+            </thead>
+            <tbody>
+                {itemsHtml}
+            </tbody>
+        </table>
+
+        {(status == "APPROVED" ? @"
+        <div class=""status-info"">
+            <p><strong>🎉 Chúc mừng! Yêu cầu bảo hành của bạn đã được chấp nhận.</strong></p>
+            <p>Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất để tiến hành xử lý bảo hành.</p>
+        </div>" : "")}
+
+        {(status == "REJECTED" ? @"
+        <div class=""status-info"">
+            <p><strong>❌ Rất tiếc, yêu cầu bảo hành của bạn không được chấp nhận.</strong></p>
+            <p>Vui lòng xem ghi chú chi tiết ở bảng trên hoặc liên hệ với chúng tôi để được hỗ trợ thêm.</p>
+        </div>" : "")}
+
+        {(status == "PARTIALLY_REJECTED" ? @"
+        <div class=""status-info"">
+            <p><strong>⚠️ Yêu cầu bảo hành của bạn được xử lý một phần.</strong></p>
+            <p>Một số sản phẩm được chấp nhận bảo hành, một số không được chấp nhận. Vui lòng xem chi tiết ở bảng trên.</p>
+        </div>" : "")}
+
+        <div class=""highlight"">
+            <div class=""section-title"">Liên hệ hỗ trợ</div>
+            <p><strong>📧 Email:</strong> support@mamafit.studio</p>
+            <p><strong>🕒 Thời gian:</strong> 8:00 - 22:00 (Thứ 2 - Chủ nhật)</p>
+        </div>
+
+        <p><strong>Lưu ý:</strong> Nếu có bất kỳ thắc mắc nào về kết quả bảo hành, vui lòng liên hệ với chúng tôi để được hỗ trợ chi tiết.</p>
+
+        <div class=""footer"">
+            Cảm ơn bạn đã tin tưởng và sử dụng dịch vụ MamaFit!<br/>
+            &copy; {DateTime.Now.Year} MamaFit. All rights reserved.
+        </div>
+    </div>
+    </body>
+    </html>";
+        }
+
+        private static string BuildWarrantyFeePaymentHtml(Order warrantyOrder, WarrantyRequest warrantyRequest, List<string> orderItemSKUs, ApplicationUser? user)
+        {
+            var vn = new CultureInfo("vi-VN");
+
+            var itemsHtml = new StringBuilder();
+            if (orderItemSKUs != null && orderItemSKUs.Count > 0)
+            {
+                foreach (var sku in orderItemSKUs)
+                {
+                    itemsHtml.Append($@"
+            <tr>
+                <td style=""padding:8px 0"">{sku ?? "N/A"}</td>
+                <td style=""padding:8px 0; text-align:center"">Bảo hành</td>
+            </tr>");
+                }
+            }
+            else
+            {
+                itemsHtml.Append($@"
+            <tr>
+                <td style=""padding:8px 0"">Sản phẩm bảo hành</td>
+                <td style=""padding:8px 0; text-align:center"">Bảo hành</td>
+            </tr>");
+            }
+
+            var preheader = $"Yêu cầu thanh toán phí bảo hành cho đơn hàng {warrantyOrder?.Code ?? "N/A"}";
+
+            return $@"
+    <!DOCTYPE html>
+    <html lang=""vi"">
+    <head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Yêu cầu thanh toán phí bảo hành</title>
+    <style>
+    body {{ font-family: Arial, Helvetica, sans-serif; background:#f7f7f7; margin:0; padding:0; }}
+    .container {{ max-width: 600px; margin:40px auto; background:#fff; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.05); padding:24px; }}
+    .brand {{ font-size:22px; font-weight:bold; color:#2266cc; text-align:center; margin-bottom:6px; }}
+    .sub {{ text-align:center; color:#666; margin-bottom:16px; }}
+    .section-title {{ font-size:16px; font-weight:bold; margin:18px 0 8px; }}
+    .table {{ width:100%; border-collapse:collapse; }}
+    .table th, .table td {{ border-bottom:1px solid #eee; padding:8px 0; font-size:14px; }}
+    .right {{ text-align:right; }}
+    .footer {{ margin-top:24px; font-size:12px; color:#888; text-align:center; }}
+    .badge {{ display:inline-block; padding:6px 10px; background:#fff3cd; color:#856404; border-radius:999px; font-size:12px; }}
+    .fee-amount {{ color:#dc3545; font-weight:bold; font-size:18px; }}
+    .payment-info {{ background:#f8f9fa; padding:16px; border-radius:8px; margin:16px 0; }}
+    .highlight {{ background:#e8f3ff; padding:12px; border-radius:6px; margin:12px 0; }}
+    </style>
+    </head>
+    <body>
+    <span style=""display:none!important;"">{preheader}</span>
+    <div class=""container"">
+        <div class=""brand"">MamaFit</div>
+        <div class=""sub""><span class=""badge"">Cần thanh toán phí bảo hành</span></div>
+
+        <p>Xin chào <strong>{user?.UserName ?? "Quý khách"}</strong>,</p>
+        
+        <p>Chúng tôi đã tiếp nhận yêu cầu bảo hành của bạn. Tuy nhiên, do đây là lần bảo hành thứ 3 trở lên hoặc vượt quá thời gian bảo hành miễn phí, bạn cần thanh toán phí bảo hành để chúng tôi tiếp tục xử lý.</p>
+
+        <div class=""section-title"">Thông tin yêu cầu bảo hành</div>
+        <table class=""table"">
+            <tr><td>Mã bảo hành</td><td class=""right"">{warrantyRequest?.SKU ?? "N/A"}</td></tr>
+            <tr><td>Mã đơn hàng</td><td class=""right"">{warrantyOrder?.Code ?? "N/A"}</td></tr>
+            <tr><td>Ngày tạo</td><td class=""right"">{DateTime.Now.ToString("dd/MM/yyyy HH:mm", vn)}</td></tr>
+        </table>
+
+        <div class=""section-title"">Sản phẩm cần bảo hành</div>
+        <table class=""table"">
+            <thead>
+                <tr><th style=""text-align:left"">SKU Sản phẩm</th><th>Loại</th></tr>
+            </thead>
+            <tbody>
+                {itemsHtml}
+            </tbody>
+        </table>
+
+        <div class=""highlight"">
+            <div class=""section-title"">Phí bảo hành cần thanh toán</div>
+            <div class=""fee-amount"">{(warrantyOrder?.TotalAmount ?? 0).ToString("c0", vn)}</div>
+        </div>
+
+        <div class=""payment-info"">
+            <div class=""section-title"">Hướng dẫn thanh toán</div>
+            <p>1. Truy cập ứng dụng MamaFit hoặc website</p>
+            <p>2. Vào phần ""Đơn hàng của tôi""</p>
+            <p>3. Tìm đơn hàng bảo hành với mã: <strong>{warrantyOrder?.Code ?? "N/A"}</strong></p>
+            <p>4. Chọn ""Thanh toán"" và hoàn tất giao dịch</p>
+        </div>
+
+        <p><strong>Lưu ý:</strong> Sau khi thanh toán thành công, chúng tôi sẽ tiến hành xử lý yêu cầu bảo hành của bạn trong vòng 24-48 giờ làm việc.</p>
+
+        <div class=""footer"">
+            Nếu có thắc mắc, vui lòng liên hệ hotline: <strong>1900-xxxx</strong> hoặc phản hồi email này.<br/>
             &copy; {DateTime.Now.Year} MamaFit. All rights reserved.
         </div>
     </div>

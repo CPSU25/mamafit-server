@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Globalization;
+using AutoMapper;
 using Hangfire;
 using MamaFit.BusinessObjects.DTO.AppointmentDto;
 using MamaFit.BusinessObjects.Entity;
@@ -20,9 +21,11 @@ namespace MamaFit.Services.Service
         private readonly ICacheService _cacheService;
         private readonly IValidationService _validationService;
         private readonly IConfigService _configService;
+        private readonly IEmailSenderSevice _emailSenderService;
 
         public AppointmentService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor contextAccessor,
-            ICacheService cacheService, IValidationService validationService, IConfigService configService)
+            ICacheService cacheService, IValidationService validationService, IConfigService configService,
+            IEmailSenderSevice emailSenderService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -30,6 +33,7 @@ namespace MamaFit.Services.Service
             _cacheService = cacheService;
             _validationService = validationService;
             _configService = configService;
+            _emailSenderService = emailSenderService;
         }
 
         private string GetCurrentUserName()
@@ -127,6 +131,8 @@ namespace MamaFit.Services.Service
             }
 
             await _cacheService.RemoveByPrefixAsync($"appointment");
+
+            await SendAppointmentConfirmationEmailAsync(newAppointment);
 
             return newAppointment.Id;
         }
@@ -378,6 +384,75 @@ namespace MamaFit.Services.Service
             }
 
             return cachedSlots;
+        }
+
+        public async Task SendAppointmentConfirmationEmailAsync(Appointment newAppointment)
+        {
+            var user = newAppointment.User;
+            var email = user.UserEmail;
+            if (string.IsNullOrWhiteSpace(email))
+                throw new ErrorException(StatusCodes.Status400BadRequest, ApiCodes.BAD_REQUEST,
+                    "User email is not set, cannot send appointment confirmation.");
+
+            var subject = "[MamaFit] Đặt lịch hẹn thành công";
+
+            // Build the HTML content for the email
+            var htmlContent = BuildAppointmentConfirmationHtml(newAppointment);
+
+            // Use an email sender service to send the email (this is just an example, replace with your actual email service)
+            await _emailSenderService.SendEmailAsync(email, subject, htmlContent);
+        }
+
+        private string BuildAppointmentConfirmationHtml(Appointment appointment)
+        {
+            var vn = new CultureInfo("vi-VN");
+
+            // Convert UTC to Vietnam time (UTC +7)
+            var appointmentTimeInVietnam = appointment.BookingTime.ToUniversalTime().AddHours(7);
+
+            // Format the time in Vietnam local time
+            var appointmentTime = appointmentTimeInVietnam.ToString("HH:mm dd/MM/yyyy");
+
+            return $@"
+    <!DOCTYPE html>
+    <html lang=""vi"">
+    <head>
+        <meta charset=""UTF-8"">
+        <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+        <title>Đặt lịch hẹn thành công</title>
+        <style>
+            body {{ font-family: Arial, Helvetica, sans-serif; background:#f7f7f7; margin:0; padding:0; }}
+            .container {{ max-width: 600px; margin:40px auto; background:#fff; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.05); padding:24px; }}
+            .brand {{ font-size:22px; font-weight:bold; color:#2266cc; text-align:center; margin-bottom:6px; }}
+            .sub {{ text-align:center; color:#666; margin-bottom:16px; }}
+            .section-title {{ font-size:16px; font-weight:bold; margin:18px 0 8px; }}
+            .table {{ width:100%; border-collapse:collapse; }}
+            .table th, .table td {{ border-bottom:1px solid #eee; padding:8px 0; font-size:14px; }}
+            .right {{ text-align:right; }}
+            .footer {{ margin-top:24px; font-size:12px; color:#888; text-align:center; }}
+            .badge {{ display:inline-block; padding:6px 10px; background:#e8f3ff; color:#2266cc; border-radius:999px; font-size:12px; }}
+        </style>
+    </head>
+    <body>
+    <div class=""container"">
+        <div class=""brand"">MamaFit</div>
+        <div class=""sub""><span class=""badge"">Đặt lịch hẹn thành công</span></div>
+
+        <div class=""section-title"">Thông tin lịch hẹn</div>
+        <table class=""table"">
+            <tr><td>Trạng thái</td><td class=""right"">Chờ xác nhận</td></tr>
+            <tr><td>Thời gian</td><td class=""right"">{appointmentTime}</td></tr>
+            <tr><td>Chi nhánh</td><td class=""right"">{appointment.Branch?.Name}</td></tr>
+        </table>
+
+        <div class=""section-title"">Cảm ơn bạn đã đặt lịch với MamaFit!</div>
+        <div class=""footer"">
+            Nếu có sai sót, vui lòng phản hồi email này hoặc liên hệ MamaFit để được hỗ trợ.<br/>
+            &copy; {DateTime.Now.Year} MamaFit. All rights reserved.
+        </div>
+    </div>
+    </body>
+    </html>";
         }
     }
 }

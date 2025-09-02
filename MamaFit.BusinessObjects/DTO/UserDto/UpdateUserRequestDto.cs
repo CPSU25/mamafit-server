@@ -7,6 +7,6 @@ public class UpdateUserRequestDto
     public string? UserEmail { get; set; } = string.Empty;
     public string? Password { get; set; } = string.Empty;
     public string? FullName { get; set; }
-    public string? ProfilePicture { get; set; }
+    public string? Phone { get; set; }
     public string? RoleId { get; set; }
 }

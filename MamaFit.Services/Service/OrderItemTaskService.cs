@@ -193,12 +193,39 @@ public class OrderItemTaskService : IOrderItemTaskService
                 await HandleFailAsync(orderItem, order, milestones, progress, severity, task);
                 break;
         }
+
+        // Kiểm tra và gửi mail chỉ sau khi tất cả xử lý hoàn tất
+        // Chỉ kiểm tra với DONE và PASS vì đây là 2 status có thể dẫn đến hoàn thành milestone
+        if (request.Status == OrderItemTaskStatus.DONE || request.Status == OrderItemTaskStatus.PASS)
+        {
+            // Reload order để có đầy đủ thông tin mới nhất
+            var refreshedOrder = await _unitOfWork.OrderRepository.GetWithItemsAndDressDetails(order.Id);
+            if (refreshedOrder != null)
+            {
+                // CẬP NHẬT ORDER STATUS TRƯỚC KHI CHECK COMPLETION
+                await UpdateOrderStatusByAllItemsAsync(refreshedOrder, task);
+                
+                // Sau khi update status, check xem order đã hoàn thành chưa
+                var isOrderCompleted = await IsOrderFullyCompletedAsync(refreshedOrder);
+                
+                if (isOrderCompleted)
+                {
+                    Console.WriteLine($"[INFO] Order {refreshedOrder.Code} is fully completed after {request.Status}, sending notification and email...");
+                    await SendOrderCompletedNotificationAndEmailAsync(refreshedOrder);
+                }
+                else
+                {
+                    Console.WriteLine($"[INFO] Order {refreshedOrder.Code} not fully completed yet after {request.Status}. Status: {refreshedOrder.Status}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[WARNING] Could not reload order {order.Id} for completion check");
+            }
+        }
     }
     private async Task HandleInProgressAsync(OrderItemTask task, OrderItem orderItem, Order order)
     {
-        // Bắn SignalR thông báo task IN_PROGRESS để client render UI realtime
-        await SendTaskUpdateSignalRAsync(task, orderItem, order, "IN_PROGRESS");
-
         if (task.MaternityDressTask.Milestone.SequenceOrder == 1)
         {
             if (orderItem.ItemType == ItemType.DESIGN_REQUEST)
@@ -206,7 +233,7 @@ public class OrderItemTaskService : IOrderItemTaskService
                 order.Status = OrderStatus.IN_PROGRESS;
                 await SendMessageAndNoti(task);
             }
-            else if (orderItem.ItemType == ItemType.PRESET)
+            else if (orderItem.ItemType == ItemType.PRESET || orderItem.ItemType == ItemType.READY_TO_BUY)
             {
                 order.Status = OrderStatus.IN_PROGRESS;
             }
@@ -219,14 +246,11 @@ public class OrderItemTaskService : IOrderItemTaskService
     private async Task HandleDoneAsync(OrderItem orderItem, Order order,
         List<MilestoneAchiveOrderItemResponseDto> progress, IEnumerable<Milestone> milestones,  OrderItemTask currentTask)
     {
-        // Bắn SignalR thông báo task hoàn thành để client render UI realtime
-        await SendTaskUpdateSignalRAsync(currentTask, orderItem, order, "DONE");
-
         if (orderItem.ItemType == ItemType.DESIGN_REQUEST)
         {
             order.Status = OrderStatus.COMPLETED;
         }
-        else if (orderItem.ItemType == ItemType.PRESET || orderItem.ItemType == ItemType.WARRANTY)
+        else if (orderItem.ItemType == ItemType.PRESET || orderItem.ItemType == ItemType.WARRANTY || orderItem.ItemType == ItemType.READY_TO_BUY)
         {
             await UpdateStatusForPresetDoneAsync(order, progress);
             await UpdateOrderStatusByAllItemsAsync(order, currentTask);
@@ -235,19 +259,16 @@ public class OrderItemTaskService : IOrderItemTaskService
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
 
-        // Kiểm tra xem toàn bộ ORDER đã hoàn thành chưa
-        var isOrderCompleted = await IsOrderFullyCompletedAsync(order);
-        
-        if (isOrderCompleted)
-        {
-            // Gửi thông báo và email khi toàn bộ ORDER hoàn thành
-            await SendOrderCompletedNotificationAndEmailAsync(order);
-        }
     }
     private async Task UpdateStatusForPresetDoneAsync(Order order, List<MilestoneAchiveOrderItemResponseDto> progress)
     {
+        // Kiểm tra PRESET progress
         var presetProgress = progress.Where(x => x.Milestone.ApplyFor.Contains(ItemType.PRESET));
         if (!presetProgress.Any(x => x.Progress == 100 && x.IsDone)) return;
+
+        // Kiểm tra READY_TO_BUY progress
+        var readyToBuyProgress = progress.Where(x => x.Milestone.ApplyFor.Contains(ItemType.READY_TO_BUY));
+        if (readyToBuyProgress.Any() && !readyToBuyProgress.Any(x => x.Progress == 100 && x.IsDone)) return;
 
         var hasAddOn = progress.Where(x => x.Milestone.ApplyFor.Contains(ItemType.ADD_ON));
         if (hasAddOn.Any())
@@ -255,14 +276,13 @@ public class OrderItemTaskService : IOrderItemTaskService
             // Nếu có Add-on
             if (hasAddOn.Any(x => x.Progress == 100 && x.IsDone))
             {
-                // await UpdateStatusWithQCAsync(order, progress);
                 order.Status = OrderStatus.IN_PROGRESS;
             }
         }
         else
         {
             // Không có Add-on
-            // await UpdateStatusWithoutAddOnAsync(order, progress);
+            order.Status = OrderStatus.IN_PROGRESS;
         }
     }
     // private async Task UpdateStatusWithQCAsync(Order order, List<MilestoneAchiveOrderItemResponseDto> progress)
@@ -294,13 +314,6 @@ public class OrderItemTaskService : IOrderItemTaskService
     // }
     private async Task HandlePassAsync(Order order, List<MilestoneAchiveOrderItemResponseDto> progress, OrderItemTask currentTask)
     {
-        // Bắn SignalR thông báo task PASS để client render UI realtime
-        var orderItem = await _unitOfWork.OrderItemRepository.GetDetailById(currentTask.OrderItemId!);
-        if (orderItem != null)
-        {
-            await SendTaskUpdateSignalRAsync(currentTask, orderItem, order, "PASS");
-        }
-
         if (order.Type == OrderType.WARRANTY)
         {
             var in_warrantyKey = new[] { "in warranty" };
@@ -328,14 +341,7 @@ public class OrderItemTaskService : IOrderItemTaskService
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
         
-        // Kiểm tra xem toàn bộ ORDER đã hoàn thành chưa
-        var isOrderCompleted = await IsOrderFullyCompletedAsync(order);
-        
-        if (isOrderCompleted)
-        {
-            // Gửi thông báo và email khi toàn bộ ORDER hoàn thành
-            await SendOrderCompletedNotificationAndEmailAsync(order);
-        }
+        Console.WriteLine($"[INFO] Task PASS processed for order {order.Code}. Status: {order.Status}");
     }
     private async Task HandleFailAsync(
         OrderItem orderItem,
@@ -345,9 +351,6 @@ public class OrderItemTaskService : IOrderItemTaskService
         bool? severity,
         OrderItemTask task)
     {
-        // Bắn SignalR thông báo task FAIL để client render UI realtime
-        await SendTaskUpdateSignalRAsync(task, orderItem, order, "FAIL");
-
         var keywordList = new[] { "fail" };
         var qcProgress = progress.Where(x => keywordList.Any(k => x.Milestone!.Name!.ToLower().Contains(k)));
         if (task.MaternityDressTask.Milestone.Name.ToLower().Contains("validation"))
@@ -530,18 +533,36 @@ public class OrderItemTaskService : IOrderItemTaskService
             x.Milestone.ApplyFor.Contains(ItemType.QC_FAIL) &&
             x.Progress == 100 && x.IsDone);
 
-        // QC progress (quality check)
+        // QC progress (quality check) - áp dụng cho tất cả item types
         var qcReady = progress.Any(x =>
             NameLike(x.Milestone?.Name, "quality check", "qc") &&
             !x.Milestone.ApplyFor.Contains(ItemType.QC_FAIL) && // Exclude QC_FAIL milestones
             x.Progress == 100);
 
-        return qcFailReady || qcReady;
+        // Đặc biệt cho READY_TO_BUY - có thể ready ngay sau khi hoàn thành milestone chính
+        var readyToBuyReady = progress.Any(x =>
+            x.Milestone.ApplyFor.Contains(ItemType.READY_TO_BUY) &&
+            x.Progress == 100 && x.IsDone);
+
+        var result = qcFailReady || qcReady || readyToBuyReady;
+        
+        Console.WriteLine($"[DEBUG] ItemReadyForPackaging result: {result} (qcFailReady: {qcFailReady}, qcReady: {qcReady}, readyToBuyReady: {readyToBuyReady})");
+        
+        if (!result)
+        {
+            Console.WriteLine($"[DEBUG] Progress details:");
+            foreach (var p in progress)
+            {
+                Console.WriteLine($"[DEBUG] - Milestone: {p.Milestone?.Name}, ApplyFor: {string.Join(",", p.Milestone?.ApplyFor ?? new List<ItemType>())}, Progress: {p.Progress}%, IsDone: {p.IsDone}");
+            }
+        }
+        
+        return result;
     }
-    // Chỉ xét các item có sản xuất/thẩm định (PRESET/WARRANTY/...)
+    // Chỉ xét các item có sản xuất/thẩm định (PRESET/WARRANTY/READY_TO_BUY)
     // Nếu bạn dùng ADD_ON như một OrderItem độc lập thì thêm vào filter dưới đây
     private static bool IsProductionItem(OrderItem oi) =>
-        oi.ItemType == ItemType.PRESET || oi.ItemType == ItemType.WARRANTY;
+        oi.ItemType == ItemType.PRESET || oi.ItemType == ItemType.WARRANTY || oi.ItemType == ItemType.READY_TO_BUY;
     private async Task<bool> AreAllItemsReadyForPackagingAsync(Order order)
     {
         var itemIds = order.OrderItems
@@ -549,14 +570,28 @@ public class OrderItemTaskService : IOrderItemTaskService
             .Select(oi => oi.Id)
             .ToList();
 
-        if (itemIds.Count == 0) return false; // không có item cần QC
+        Console.WriteLine($"[DEBUG] Checking packaging readiness for order {order.Code}, production items count: {itemIds.Count}");
+
+        if (itemIds.Count == 0) 
+        {
+            Console.WriteLine($"[DEBUG] No production items found for order {order.Code}");
+            return false; // không có item cần QC
+        }
 
         var tasks = itemIds.Select(id => _milestoneService.GetMilestoneByOrderItemId(id));
         var allProgress = await Task.WhenAll(tasks);
 
-        foreach (var p in allProgress)
-            if (!ItemReadyForPackaging(p))
+        for (int i = 0; i < allProgress.Length; i++)
+        {
+            var itemProgress = allProgress[i];
+            var itemId = itemIds[i];
+            var ready = ItemReadyForPackaging(itemProgress);
+            
+            if (!ready)
+            {
                 return false;
+            }
+        }
 
         return true;
     }
@@ -612,52 +647,7 @@ public class OrderItemTaskService : IOrderItemTaskService
         }
     }
 
-    /// <summary>
-    /// Bắn SignalR thông báo khi task được update để client có thể render UI realtime
-    /// </summary>
-    private async Task SendTaskUpdateSignalRAsync(OrderItemTask task, OrderItem orderItem, Order order, string taskStatus)
-    {
-        try
-        {
-            var taskName = task.MaternityDressTask?.Name ?? "Task";
-            var milestoneName = task.MaternityDressTask?.Milestone?.Name ?? "Milestone";
-            var productName = GetProductName(orderItem);
 
-            // Bắn SignalR để client bắt NotificationType và render lại UI
-            var notificationData = new
-            {
-                Type = NotificationType.ORDER_PROGRESS,
-                OrderId = order.Id,
-                OrderItemId = orderItem.Id,
-                TaskId = $"{task.MaternityDressTaskId}_{task.OrderItemId}",
-                TaskName = taskName,
-                MilestoneName = milestoneName,
-                ProductName = productName,
-                Status = taskStatus,
-                OrderCode = order.Code,
-                UpdatedAt = DateTime.UtcNow
-            };
-
-            // Gửi tới User qua SignalR
-            if (!string.IsNullOrEmpty(order.UserId))
-            {
-                await _notificationHubContext.Clients.User(order.UserId)
-                    .SendAsync("TaskUpdated", notificationData);
-            }
-
-            // Gửi tới tất cả Manager qua SignalR  
-            var managers = await GetAllManagersAsync();
-            foreach (var manager in managers)
-            {
-                await _notificationHubContext.Clients.User(manager.Id)
-                    .SendAsync("TaskUpdated", notificationData);
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[ERROR] Error sending SignalR task update: {ex.Message}");
-        }
-    }
 
     /// <summary>
     /// Kiểm tra xem toàn bộ ORDER (tất cả orderItem) đã hoàn thành chưa
@@ -666,10 +656,31 @@ public class OrderItemTaskService : IOrderItemTaskService
     {
         try
         {
-            // Sử dụng logic có sẵn để kiểm tra order ready for packaging
-            // Khi order ready for packaging = tất cả orderItem đã hoàn thành sản xuất
+            // Kiểm tra xem tất cả production items đã ready for packaging chưa
             var ready = await AreAllItemsReadyForPackagingAsync(order);
-            return ready && order.Status == OrderStatus.PACKAGING;
+            Console.WriteLine($"[DEBUG] AreAllItemsReadyForPackagingAsync result: {ready}");
+            
+            if (!ready)
+            {
+                Console.WriteLine($"[DEBUG] Order {order.Code} not fully completed - items not ready");
+                return false;
+            }
+            
+            // Kiểm tra payment condition để đảm bảo order có thể chuyển sang PACKAGING
+            bool paymentReady = false;
+            if (order.PaymentType == PaymentType.FULL && (order.PaymentStatus == PaymentStatus.PAID_FULL || order.PaymentStatus == PaymentStatus.WARRANTY))
+            {
+                paymentReady = true;
+            }
+            else if (order.PaymentType == PaymentType.DEPOSIT && order.PaymentStatus == PaymentStatus.PAID_DEPOSIT_COMPLETED)
+            {
+                paymentReady = true;
+            }
+            
+            var result = ready && paymentReady;
+            Console.WriteLine($"[DEBUG] Final completion check for order {order.Code}: ready={ready}, paymentReady={paymentReady}, result={result}");
+            
+            return result;
         }
         catch (Exception ex)
         {
@@ -685,6 +696,16 @@ public class OrderItemTaskService : IOrderItemTaskService
     {
         try
         {
+            // Kiểm tra trong cache xem đã gửi email cho order này chưa
+            var cacheKey = $"order_completed_email_sent_{order.Id}";
+            var alreadySent = await _cacheService.GetAsync<bool>(cacheKey);
+            
+            if (alreadySent)
+            {
+                Console.WriteLine($"[INFO] Email for order {order.Code} already sent, skipping...");
+                return;
+            }
+
             // Tạo danh sách người nhận: User + tất cả Manager
             var receiverIds = new List<string>();
             
@@ -723,6 +744,11 @@ public class OrderItemTaskService : IOrderItemTaskService
             }
             
             await SendOrderCompletedEmailToManagersAsync(order);
+            
+            // Đánh dấu đã gửi email cho order này (cache 24 giờ)
+            await _cacheService.SetAsync(cacheKey, true, TimeSpan.FromHours(24));
+            
+            Console.WriteLine($"[INFO] Successfully sent completion notification and email for order {order.Code}");
         }
         catch (Exception ex)
         {

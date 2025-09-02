@@ -202,15 +202,15 @@ public class OrderItemTaskService : IOrderItemTaskService
             var refreshedOrder = await _unitOfWork.OrderRepository.GetWithItemsAndDressDetails(order.Id);
             if (refreshedOrder != null)
             {
-                // CẬP NHẬT ORDER STATUS TRƯỚC KHI CHECK COMPLETION
+                // CẬP NHẬT ORDER STATUS TRƯỚC KHI CHECK COMPLETION (dựa trên ready for packaging)
                 await UpdateOrderStatusByAllItemsAsync(refreshedOrder, task);
                 
-                // Sau khi update status, check xem order đã hoàn thành chưa
+                // Sau khi update status, check xem TẤT CẢ MILESTONE PACKING đã DONE chưa để gửi email
                 var isOrderCompleted = await IsOrderFullyCompletedAsync(refreshedOrder);
                 
                 if (isOrderCompleted)
                 {
-                    Console.WriteLine($"[INFO] Order {refreshedOrder.Code} is fully completed after {request.Status}, sending notification and email...");
+                    Console.WriteLine($"[INFO] Order {refreshedOrder.Code} is fully completed (all packing milestones done) after {request.Status}, sending notification and email...");
                     await SendOrderCompletedNotificationAndEmailAsync(refreshedOrder);
                 }
                 else
@@ -656,13 +656,13 @@ public class OrderItemTaskService : IOrderItemTaskService
     {
         try
         {
-            // Kiểm tra xem tất cả production items đã ready for packaging chưa
-            var ready = await AreAllItemsReadyForPackagingAsync(order);
-            Console.WriteLine($"[DEBUG] AreAllItemsReadyForPackagingAsync result: {ready}");
+            // Kiểm tra xem tất cả production items đã hoàn thành milestone Packing chưa
+            var packingCompleted = await AreAllPackingMilestonesCompletedAsync(order);
+            Console.WriteLine($"[DEBUG] AreAllPackingMilestonesCompletedAsync result: {packingCompleted}");
             
-            if (!ready)
+            if (!packingCompleted)
             {
-                Console.WriteLine($"[DEBUG] Order {order.Code} not fully completed - items not ready");
+                Console.WriteLine($"[DEBUG] Order {order.Code} not fully completed - packing milestones not completed");
                 return false;
             }
             
@@ -677,8 +677,8 @@ public class OrderItemTaskService : IOrderItemTaskService
                 paymentReady = true;
             }
             
-            var result = ready && paymentReady;
-            Console.WriteLine($"[DEBUG] Final completion check for order {order.Code}: ready={ready}, paymentReady={paymentReady}, result={result}");
+            var result = packingCompleted && paymentReady;
+            Console.WriteLine($"[DEBUG] Final completion check for order {order.Code}: packingCompleted={packingCompleted}, paymentReady={paymentReady}, result={result}");
             
             return result;
         }
@@ -687,6 +687,68 @@ public class OrderItemTaskService : IOrderItemTaskService
             Console.WriteLine($"[ERROR] Error checking order completion: {ex.Message}");
             return false;
         }
+    }
+
+    /// <summary>
+    /// Kiểm tra tất cả milestone Packing của order đã hoàn thành chưa
+    /// </summary>
+    private async Task<bool> AreAllPackingMilestonesCompletedAsync(Order order)
+    {
+        var itemIds = order.OrderItems
+            .Where(IsProductionItem)
+            .Select(oi => oi.Id)
+            .ToList();
+
+        Console.WriteLine($"[DEBUG] Checking packing completion for order {order.Code}, production items count: {itemIds.Count}");
+
+        if (itemIds.Count == 0) 
+        {
+            Console.WriteLine($"[DEBUG] No production items found for order {order.Code}");
+            return false; // không có item cần kiểm tra
+        }
+
+        var tasks = itemIds.Select(id => _milestoneService.GetMilestoneByOrderItemId(id));
+        var allProgress = await Task.WhenAll(tasks);
+
+        for (int i = 0; i < allProgress.Length; i++)
+        {
+            var itemProgress = allProgress[i];
+            var itemId = itemIds[i];
+            var packingCompleted = IsPackingMilestoneCompleted(itemProgress);
+            Console.WriteLine($"[DEBUG] Item {itemId} packing milestone completed: {packingCompleted}");
+            
+            if (!packingCompleted)
+            {
+                Console.WriteLine($"[DEBUG] Order {order.Code} not ready - item {itemId} packing milestone not completed");
+                return false;
+            }
+        }
+
+        Console.WriteLine($"[DEBUG] All packing milestones completed for order {order.Code}");
+        return true;
+    }
+
+    /// <summary>
+    /// Kiểm tra milestone Packing của 1 item đã hoàn thành chưa (tất cả task trong milestone Packing đều DONE)
+    /// </summary>
+    private static bool IsPackingMilestoneCompleted(List<MilestoneAchiveOrderItemResponseDto> progress)
+    {
+        // Tìm milestone có tên chứa "packing", "pack", "gói", "đóng gói"
+        var packingMilestone = progress.FirstOrDefault(x =>
+            NameLike(x.Milestone?.Name, "packing", "pack", "gói", "đóng gói"));
+
+        if (packingMilestone == null)
+        {
+            Console.WriteLine($"[DEBUG] No packing milestone found for this item");
+            return false; // Không có milestone packing
+        }
+
+        // Kiểm tra milestone packing đã 100% và IsDone = true
+        var isCompleted = packingMilestone.Progress == 100 && packingMilestone.IsDone;
+        
+        Console.WriteLine($"[DEBUG] Packing milestone '{packingMilestone.Milestone?.Name}' - Progress: {packingMilestone.Progress}%, IsDone: {packingMilestone.IsDone}, Result: {isCompleted}");
+        
+        return isCompleted;
     }
 
     /// <summary>

@@ -449,7 +449,7 @@ public class TransactionService : ITransactionService
                 var name =
                     it.Preset?.Name ??
                     it.MaternityDressDetail?.Name ??
-                    (it.DesignRequest != null ? "Yêu cầu thiết kế" : "Sản phẩm");
+                    (it.DesignRequest != null ? "Yêu cầu thiết kế" : "Váy bầu");
                 itemsHtml.Append($@"
             <tr>
                 <td style=""padding:8px 0"">{name}</td>

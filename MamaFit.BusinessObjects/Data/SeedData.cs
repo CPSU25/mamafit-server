@@ -41,168 +41,333 @@ namespace MamaFit.BusinessObjects.Data
                 }
             );
 
+            #region User
             modelBuilder.Entity<ApplicationUser>().HasData(
-                new ApplicationUser
-                {
-                    Id = "aw9aa51bbd304e77933e24bbed65cd19",
-                    UserName = "branchquan9",
-                    UserEmail = "branchquan9@mamafit.com",
-                    HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
-                    Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
-                    PhoneNumber = "0909648632",
-                    JobTitle = "Quản lý cửa hàng",
-                    FullName = "Hữu Danh",
-                    IsVerify = true,
-                    RoleId = "bf081015e17a41b8b1cae65b1b17cfdb",
-                },
                 new ApplicationUser
                 {
                     Id = "08ee8586464b43dd9a4507add95b281c",
                     UserName = "designer",
                     UserEmail = "designer@mamafit.com",
+                    FullName = "Designer",
+                    PhoneNumber = "909130392",
+                    JobTitle = "Nhân viên thiết kế",
+                    RoleId = "e5b0f987fbf44608b7a6a2d0e313b3b2",
                     HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
                     Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
-                    PhoneNumber = "0909130392",
-                    JobTitle = "Nhân viên thiết kế",
-                    FullName = "Designer",
                     IsVerify = true,
-                    RoleId = "e5b0f987fbf44608b7a6a2d0e313b3b2",
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    IsDeleted = false
                 },
+
                 new ApplicationUser
                 {
                     Id = "1a3bcd12345678901234567890123456",
                     UserName = "admin",
                     UserEmail = "admin@mamafit.com",
+                    FullName = "Admin",
+                    PhoneNumber = "909932698",
+                    JobTitle = "Quản lý hệ thống",
+                    RoleId = "2e7b5a97e42e4e84a08ffbe0bc05d2ea",
                     HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
                     Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
-                    PhoneNumber = "0909932698",
-                    JobTitle = "Quản lý hệ thống",
-                    FullName = "Admin",
                     IsVerify = true,
-                    RoleId = "2e7b5a97e42e4e84a08ffbe0bc05d2ea",
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    IsDeleted = false
                 },
+
                 new ApplicationUser
                 {
                     Id = "29d72211a9f7480c9812d61ee17c92b9",
                     UserName = "branchquan1",
                     UserEmail = "branchquan1@mamafit.com",
+                    FullName = "Phương Nam",
+                    PhoneNumber = "909446338",
+                    JobTitle = "Quản lý cửa hàng",
+                    RoleId = "bf081015e17a41b8b1cae65b1b17cfdb",
                     HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
                     Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
-                    PhoneNumber = "0909446338",
-                    JobTitle = "Quản lý cửa hàng",
-                    FullName = "Phương Nam",
                     IsVerify = true,
-                    RoleId = "bf081015e17a41b8b1cae65b1b17cfdb",
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    IsDeleted = false
                 },
+
                 new ApplicationUser
                 {
                     Id = "4c9804ecc1d645de96fcfc906cc43d6c",
                     UserName = "manager",
                     UserEmail = "manager@mamafit.com",
-                    HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
-                    Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
-                    PhoneNumber = "0909178846",
-                    JobTitle = "Quản lý nhà xưởng",
                     FullName = "Manager",
-                    IsVerify = true,
+                    PhoneNumber = "909178846",
+                    JobTitle = "Quản lý nhà xưởng",
                     RoleId = "a3cb88edaf2b4718a9986010c5b9c1d7",
-                },
-                new ApplicationUser
-                {
-                    Id = "ce5235c40924fd5b0792732d3fb1b6f",
-                    UserName = "vananh",
-                    UserEmail = "vananh@mamafit.com",
                     HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
                     Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
-                    PhoneNumber = "0909219060",
-                    FullName = "Van Anh",
-                    JobTitle = "Nhân viên vận hành",
                     IsVerify = true,
-                    RoleId = "5ed8cfa9b62d433c88ab097b6d2baccd",
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    IsDeleted = false
                 },
+
                 new ApplicationUser
                 {
                     Id = "5f6855ec48a84ad066b5bee371aa67fe",
                     UserName = "thanhtuan",
                     UserEmail = "thanhtuan@mamafit.com",
+                    FullName = "Thanh Tuan",
+                    PhoneNumber = "909213321",
+                    JobTitle = "Nhân viên vận hành",
+                    RoleId = "5ed8cfa9b62d433c88ab097b6d2baccd",
                     HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
                     Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
-                    PhoneNumber = "0909213321",
-                    FullName = "Thanh Tuan",
-                    JobTitle = "Nhân viên vận hành",
                     IsVerify = true,
-                    RoleId = "5ed8cfa9b62d433c88ab097b6d2baccd",
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    IsDeleted = false
                 },
+
                 new ApplicationUser
                 {
                     Id = "617b57c35a46c0efbb263506d9321843",
                     UserName = "duccuong",
                     UserEmail = "duccuong@mamafit.com",
+                    FullName = "Đức Cường",
+                    PhoneNumber = "909213321",
+                    JobTitle = "Nhân viên QC",
+                    RoleId = "5ed8cfa9b62d433c88ab097b6d2baccd",
                     HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
                     Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
-                    PhoneNumber = "0909213321",
-                    FullName = "Đức Cường",
-                    JobTitle = "Nhân viên QC",
                     IsVerify = true,
-                    RoleId = "5ed8cfa9b62d433c88ab097b6d2baccd",
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    IsDeleted = false
                 },
+
+                new ApplicationUser
+                {
+                    Id = "aw9aa51bbd304e77933e24bbed65cd19",
+                    UserName = "branchquan9",
+                    UserEmail = "branchquan9@mamafit.com",
+                    FullName = "Hữu Danh",
+                    PhoneNumber = "909648632",
+                    JobTitle = "Quản lý cửa hàng",
+                    RoleId = "bf081015e17a41b8b1cae65b1b17cfdb",
+                    HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
+                    Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
+                    IsVerify = true,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+
+                new ApplicationUser
+                {
+                    Id = "ce5235c40924fd5b0792732d3fb1b6f",
+                    UserName = "vananh",
+                    UserEmail = "vananh@mamafit.com",
+                    FullName = "Van Anh",
+                    PhoneNumber = "909219060",
+                    JobTitle = "Nhân viên vận hành",
+                    RoleId = "5ed8cfa9b62d433c88ab097b6d2baccd",
+                    HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
+                    Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
+                    IsVerify = true,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+
                 new ApplicationUser
                 {
                     Id = "f49aa51bbd304e77933e24bbed65b165",
                     UserName = "user",
                     UserEmail = "user@mamafit.com",
-                    HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
-                    Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
-                    PhoneNumber = "0909648736",
                     FullName = "User",
-                    JobTitle = "",
-                    IsVerify = true,
+                    PhoneNumber = "909648736",
                     RoleId = "b8d237b8b6f849988d60c6c3c1d0a943",
-                },
-                new ApplicationUser
-                {
-                    Id = "po103fbe31e6449b9b92c89b5c23oa1x2",
-                    UserName = "branchquan7",
-                    UserEmail = "branchquan7@mamafit.com",
                     HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
                     Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
-                    PhoneNumber = "0909648721",
-                    FullName = "Đức Anh",
-                    JobTitle = "Quản lý cửa hàng",
                     IsVerify = true,
-                    RoleId = "bf081015e17a41b8b1cae65b1b17cfdb",
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    IsDeleted = false
                 },
+
                 new ApplicationUser
                 {
                     Id = "ms1948fbai10380snalep19041nxbap1009",
                     UserName = "branchhanoi",
                     UserEmail = "branchhanoi@mamafit.com",
+                    FullName = "Lương Thiện",
+                    PhoneNumber = "909648722",
+                    JobTitle = "Quản lý cửa hàng",
+                    RoleId = "bf081015e17a41b8b1cae65b1b17cfdb",
                     HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
                     Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
-                    PhoneNumber = "0909648722",
-                    FullName = "Lương Thiện",
-                    JobTitle = "Quản lý cửa hàng",
                     IsVerify = true,
-                    RoleId = "bf081015e17a41b8b1cae65b1b17cfdb",
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    IsDeleted = false
                 },
+
                 new ApplicationUser
                 {
                     Id = "nnas1039jxoaopepmxsaoqjxba188290nci",
                     UserName = "branchbinhduong",
                     UserEmail = "branchbinhduong@mamafit.com",
+                    FullName = "Van Tai",
+                    PhoneNumber = "909648723",
+                    JobTitle = "Quản lý cửa hàng",
+                    RoleId = "bf081015e17a41b8b1cae65b1b17cfdb",
                     HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
                     Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
-                    PhoneNumber = "0909648723",
-                    FullName = "Van Tai",
-                    JobTitle = "Quản lý cửa hàng",
                     IsVerify = true,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+
+                new ApplicationUser
+                {
+                    Id = "po103fbe31e6449b9b92c89b5c23oa1x2",
+                    UserName = "branchquan7",
+                    UserEmail = "branchquan7@mamafit.com",
+                    FullName = "Đức Anh",
+                    PhoneNumber = "909648721",
+                    JobTitle = "Quản lý cửa hàng",
                     RoleId = "bf081015e17a41b8b1cae65b1b17cfdb",
+                    HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
+                    Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
+                    IsVerify = true,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 9, 2, 6, 28, 11, 442, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+
+                new ApplicationUser
+                {
+                    Id = "38047c4238564d229aa42734116c03f1",
+                    UserName = "khoa.tran",
+                    UserEmail = "thiennlse172858@fpt.edu.vn",
+                    FullName = "Trần Minh Khoa",
+                    PhoneNumber = "909932699",
+                    ProfilePicture = "https://github.com/torvalds.png",
+                    RoleId = "b8d237b8b6f849988d60c6c3c1d0a943",
+                    HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
+                    Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
+                    IsVerify = true,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 9, 2, 6, 40, 43, 857, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 9, 2, 6, 41, 10, 457, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+
+                new ApplicationUser
+                {
+                    Id = "475b7d2deed84e63b3235c2184bdd360",
+                    UserName = "lan.nguyen",
+                    UserEmail = "anhld172111@fpt.edu.vn",
+                    FullName = "Nguyễn Thị Lan",
+                    PhoneNumber = "909932700",
+                    ProfilePicture = "https://github.com/gaearon.png",
+                    RoleId = "b8d237b8b6f849988d60c6c3c1d0a943",
+                    HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
+                    Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
+                    IsVerify = true,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 9, 2, 6, 40, 43, 857, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 9, 2, 6, 41, 10, 457, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+
+                new ApplicationUser
+                {
+                    Id = "2840217dab064258964dc7a6d26ff802",
+                    UserName = "hoanganh.le",
+                    UserEmail = "namnlp172111@fpt.edu.vn",
+                    FullName = "Lê Hoàng Anh",
+                    PhoneNumber = "909932701",
+                    ProfilePicture = "https://github.com/yyx990803.png",
+                    RoleId = "b8d237b8b6f849988d60c6c3c1d0a943",
+                    HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
+                    Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
+                    IsVerify = true,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 9, 2, 6, 40, 43, 857, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 9, 2, 6, 41, 10, 457, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+
+                new ApplicationUser
+                {
+                    Id = "0a522458e0de48a681837c0d11696620",
+                    UserName = "mai.pham",
+                    UserEmail = "thienwen13@gmail.com",
+                    FullName = "Phạm Thị Mai",
+                    PhoneNumber = "909932702",
+                    ProfilePicture = "https://github.com/sindresorhus.png",
+                    RoleId = "b8d237b8b6f849988d60c6c3c1d0a943",
+                    HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
+                    Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
+                    IsVerify = true,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 9, 2, 6, 40, 43, 857, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 9, 2, 6, 41, 10, 457, DateTimeKind.Utc),
+                    IsDeleted = false
+                },
+
+                new ApplicationUser
+                {
+                    Id = "9eebd865d994424c805e5ae28f310f79",
+                    UserName = "huy.do",
+                    UserEmail = "danhnhse171766@fpt.edu.vn",
+                    FullName = "Đỗ Quang Huy",
+                    PhoneNumber = "909932703",
+                    ProfilePicture = "https://github.com/tj.png",
+                    RoleId = "b8d237b8b6f849988d60c6c3c1d0a943",
+                    HashPassword = "u+7jaa75MJns9ST/6FSw4aQU+zSF/iNldvzpJxBFzwk=",
+                    Salt = "R0kox04KXBTPFFlKjfxIzNeMzlbH1rGO/YJDtl0N894=",
+                    IsVerify = true,
+                    CreatedBy = "System",
+                    UpdatedBy = "System",
+                    CreatedAt = new DateTime(2025, 9, 2, 6, 40, 43, 857, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 9, 2, 6, 41, 10, 457, DateTimeKind.Utc),
+                    IsDeleted = false
                 }
             );
+            #endregion
 
             #region Seed Category, Style, and Component
-
-            var now = DateTime.UtcNow;
 
             // ===== CATEGORIES =====
             modelBuilder.Entity<Category>().HasData(
@@ -458,8 +623,8 @@ namespace MamaFit.BusinessObjects.Data
                     {
             "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fnormal-waist.png?alt=media&token=6b608665-6975-4993-abd7-c57106c913f8"
                     },
-                    
-                    
+
+
                     GlobalStatus = 0,
                     CreatedBy = "System",
                     UpdatedBy = "System",
@@ -479,8 +644,8 @@ namespace MamaFit.BusinessObjects.Data
                     {
             "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fasymmetrical-hem.png?alt=media&token=6267ed98-6b96-41bf-b0eb-c0b1574b8b23"
                     },
-                    
-                    
+
+
                     GlobalStatus = 0,
                     CreatedBy = "Admin",
                     UpdatedBy = "System",
@@ -500,8 +665,8 @@ namespace MamaFit.BusinessObjects.Data
                     {
             "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fcotton.png?alt=media&token=bdd471d7-c695-4c05-8770-ffb8eeb0f03e"
                     },
-                    
-                    
+
+
                     GlobalStatus = 0,
                     CreatedBy = "System",
                     UpdatedBy = "System",
@@ -521,8 +686,8 @@ namespace MamaFit.BusinessObjects.Data
                     {
             "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fpeplum-waist.png?alt=media&token=c4d57153-75e2-4bbd-be17-25de6e8a49b7"
                     },
-                    
-                    
+
+
                     GlobalStatus = 0,
                     CreatedBy = "Admin",
                     UpdatedBy = "System",
@@ -542,8 +707,8 @@ namespace MamaFit.BusinessObjects.Data
                     {
             "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fboat-neck.png?alt=media&token=3f2e448b-e252-4567-841f-b88531f378fc"
                     },
-                    
-                    
+
+
                     GlobalStatus = 0,
                     CreatedBy = "Admin",
                     UpdatedBy = "System",
@@ -563,8 +728,8 @@ namespace MamaFit.BusinessObjects.Data
                     {
             "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fno-sleeves.png?alt=media&token=222c148c-22b0-407d-acf9-03b91a793123"
                     },
-                    
-                    
+
+
                     GlobalStatus = 0,
                     CreatedBy = "System",
                     UpdatedBy = "System",
@@ -584,8 +749,8 @@ namespace MamaFit.BusinessObjects.Data
                     {
             "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Femerald-green.png?alt=media&token=d63ad4cc-0037-4ca5-b71b-4d8eb394b6ba"
                     },
-                    
-                    
+
+
                     GlobalStatus = 0,
                     CreatedBy = "System",
                     UpdatedBy = "System",
@@ -605,8 +770,8 @@ namespace MamaFit.BusinessObjects.Data
                     {
             "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fstraight-hem.png?alt=media&token=4ead53a9-08f5-4362-872e-5f3b0272d220"
                     },
-                    
-                    
+
+
                     GlobalStatus = 0,
                     CreatedBy = "Admin",
                     UpdatedBy = "System",
@@ -626,8 +791,8 @@ namespace MamaFit.BusinessObjects.Data
                     {
             "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fshort-sleeves.png?alt=media&token=04468aff-6280-41fc-bac7-203bb65ef698"
                     },
-                    
-                    
+
+
                     GlobalStatus = 0,
                     CreatedBy = "Admin",
                     UpdatedBy = "System",
@@ -647,8 +812,8 @@ namespace MamaFit.BusinessObjects.Data
                     {
             "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fhigh-low-hem.png?alt=media&token=258a7314-654c-4a9a-8af7-90a5b23597e3"
                     },
-                    
-                    
+
+
                     GlobalStatus = 0,
                     CreatedBy = "System",
                     UpdatedBy = "System",
@@ -668,8 +833,8 @@ namespace MamaFit.BusinessObjects.Data
                     {
             "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fwrap-waist.png?alt=media&token=3153efa1-17f4-4f8d-8e51-e287ca43ab26"
                     },
-                    
-                    
+
+
                     GlobalStatus = 0,
                     CreatedBy = "Admin",
                     UpdatedBy = "System",
@@ -689,8 +854,8 @@ namespace MamaFit.BusinessObjects.Data
                     {
             "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fspaghetti-strap.png?alt=media&token=db6fb73c-11e8-4b72-8a64-3f87c82eb34c"
                     },
-                    
-                    
+
+
                     GlobalStatus = 0,
                     CreatedBy = "System",
                     UpdatedBy = "System",
@@ -710,8 +875,8 @@ namespace MamaFit.BusinessObjects.Data
                     {
             "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fempire-waist.png?alt=media&token=292233b5-38d3-4b46-b543-6747d187a702"
                     },
-                    
-                    
+
+
                     GlobalStatus = 0,
                     CreatedBy = "System",
                     UpdatedBy = "System",
@@ -731,8 +896,8 @@ namespace MamaFit.BusinessObjects.Data
                     {
             "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fv-neck.png?alt=media&token=5418fe58-896e-4559-86ae-e2809c519963"
                     },
-                    
-                    
+
+
                     GlobalStatus = 0,
                     CreatedBy = "System",
                     UpdatedBy = "System",
@@ -752,8 +917,8 @@ namespace MamaFit.BusinessObjects.Data
                     {
             "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fbow-tie-waist.png?alt=media&token=43522a3e-848a-49d1-8e5a-a6610e619c21"
                     },
-                    
-                    
+
+
                     GlobalStatus = 0,
                     CreatedBy = "System",
                     UpdatedBy = "System",
@@ -773,8 +938,8 @@ namespace MamaFit.BusinessObjects.Data
                     {
             "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fsingle-layer-hem.png?alt=media&token=bfd6b737-ca41-4a9d-9257-b35320fd63b4"
                     },
-                    
-                    
+
+
                     GlobalStatus = 0,
                     CreatedBy = "System",
                     UpdatedBy = "System",
@@ -794,8 +959,8 @@ namespace MamaFit.BusinessObjects.Data
                     {
             "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fround-neck.png?alt=media&token=1f8e06b6-1aa5-49fc-a05a-e88e29593710"
                     },
-                    
-                    
+
+
                     GlobalStatus = 0,
                     CreatedBy = "System",
                     UpdatedBy = "System",
@@ -815,8 +980,8 @@ namespace MamaFit.BusinessObjects.Data
                     {
             "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fjersey-knit.png?alt=media&token=d16f44cc-528e-49e5-a985-61a63c058d77"
                     },
-                    
-                    
+
+
                     GlobalStatus = 0,
                     CreatedBy = "Admin",
                     UpdatedBy = "System",
@@ -836,8 +1001,8 @@ namespace MamaFit.BusinessObjects.Data
                     {
             "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Flinen.png?alt=media&token=39c033ba-8e36-46d3-8bdf-da5fc16a63f7"
                     },
-                    
-                    
+
+
                     GlobalStatus = 0,
                     CreatedBy = "Admin",
                     UpdatedBy = "System",
@@ -857,8 +1022,8 @@ namespace MamaFit.BusinessObjects.Data
                     {
             "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fred.png?alt=media&token=b520d1e1-69b9-48bd-aa84-d3824897c0b8"
                     },
-                    
-                    
+
+
                     GlobalStatus = 0,
                     CreatedBy = "System",
                     UpdatedBy = "System",
@@ -878,8 +1043,8 @@ namespace MamaFit.BusinessObjects.Data
                     {
             "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/components%2Fblack.png?alt=media&token=08e541fa-5ced-449c-bf7a-63da6ea78e2c"
                     },
-                    
-                    
+
+
                     GlobalStatus = 0,
                     CreatedBy = "Admin",
                     UpdatedBy = "System",
@@ -8127,486 +8292,252 @@ namespace MamaFit.BusinessObjects.Data
 
             #region Seed Order, OrderItem, Add_On, DesignRequest
 
-            modelBuilder.Entity<DesignRequest>().HasData(
-                new DesignRequest
-                {
-                    Id = "163bdbd2e4634e63a2be9b74f7c783b5",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    OrderItemId = "6390cef2d8644fa791480f1e3b7a81e2",
-                    Description = "cho tui xin 50k nhe",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/design-requests%2F1000028470.jpg?alt=media&token=02876007-5a09-42f1-9c99-e3a4b422ed0b",
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/design-requests%2F59d9afea-509e-4461-b70a-a01d8b6f97a4-1_all_13976.png?alt=media&token=b31b67e8-badd-4bae-b028-2901f47910fa"
-                    ],
-                    CreatedBy = "user",
-                    UpdatedBy = null,
-                    CreatedAt = new DateTime(2025, 8, 3, 6, 19, 30, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 3, 6, 19, 30, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new DesignRequest
-                {
-                    Id = "6f16cc921d924b38bfb1fdeba3a92a02",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    OrderItemId = "583f8d8a545a4eb19d3257433f84de2d",
-                    Description = "thiet ke cho tui 1 cai vay that dep",
-                    Images =
-                    [
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/design-requests%2F1000026857.jpg?alt=media&token=698e129c-6843-48ed-83f3-759664aa5f15"
-                    ],
-                    CreatedBy = "user",
-                    UpdatedBy = null,
-                    CreatedAt = new DateTime(2025, 8, 3, 6, 31, 42, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 3, 6, 31, 42, DateTimeKind.Utc),
-                    IsDeleted = false
-                }
-            );
-
+            #region Order
             modelBuilder.Entity<Order>().HasData(
                 new Order
                 {
-                    Id = "4951106889514ce2ada27665d3e41a43",
-                    AddressId = null,
-                    BranchId = null,
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    VoucherDiscountId = null,
-                    MeasurementId = null,
+                    Id = "c12cd80152ed47ae83c10ece52b82183",
+                    UserId = "9eebd865d994424c805e5ae28f310f79",
                     IsOnline = true,
                     Type = OrderType.DESIGN,
-                    Code = "ORD3216355",
-                    TrackingOrderCode = null,
-                    Status = 0,
-                    TotalAmount = 3000.0m,
-                    ShippingFee = 0,
-                    ServiceAmount = null,
-                    DiscountSubtotal = null,
-                    DepositSubtotal = null,
-                    RemainingBalance = null,
-                    TotalPaid = null,
-                    PaymentStatus = 0,
-                    PaymentMethod = 0,
-                    DeliveryMethod = 0,
-                    PaymentType = PaymentType.FULL,
-                    CanceledAt = null,
-                    CanceledReason = null,
-                    SubTotalAmount = 3000.0m,
-                    WarrantyCode = null,
-                    ReceivedAt = null,
-                    ReceivedAtBranch = null,
-                    CreatedBy = "User",
-                    UpdatedBy = null,
-                    CreatedAt = new DateTime(2025, 8, 3, 6, 19, 30, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 3, 6, 19, 30, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new Order
-                {
-                    Id = "b2643d4d3f854ad9926b3be5e63e4914",
-                    AddressId = "7aa93cf1dcea43e68da114d7c991a732",
-                    BranchId = null,
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    VoucherDiscountId = null,
-                    MeasurementId = "82e18e44f0984ad08209e575f77f3ca0",
-                    IsOnline = true,
-                    Type = 0,
-                    Code = "ORD2983710",
-                    TrackingOrderCode = null,
-                    Status = 0,
-                    TotalAmount = 30250m,
-                    ShippingFee = 22000m,
-                    ServiceAmount = 4250m,
-                    DiscountSubtotal = 0m,
-                    DepositSubtotal = 2000m,
-                    RemainingBalance = 2000m,
-                    TotalPaid = 28250m,
-                    PaymentStatus = 0,
-                    PaymentMethod = PaymentMethod.ONLINE_BANKING,
-                    DeliveryMethod = DeliveryMethod.DELIVERY,
-                    PaymentType = 0,
-                    CanceledAt = null,
-                    CanceledReason = null,
-                    SubTotalAmount = 4000m,
-                    WarrantyCode = null,
-                    ReceivedAt = null,
-                    ReceivedAtBranch = null,
-                    CreatedBy = "User",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new Order
-                {
-                    Id = "d7ba2e103448473f9949c10a59243e62",
-                    AddressId = null,
-                    BranchId = "b536f146c8f04bbc9949fc70a31fda8f",
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    VoucherDiscountId = null,
-                    MeasurementId = "c49743c2e5d746239bddd1ade3d76ae9",
-                    IsOnline = true,
-                    Type = 0,
-                    Code = "ORD3900133",
-                    TrackingOrderCode = null,
-                    Status = 0,
-                    TotalAmount = 27150.0m,
-                    ShippingFee = 22000,
-                    ServiceAmount = 3150.0m,
-                    DiscountSubtotal = 0,
-                    DepositSubtotal = null,
-                    RemainingBalance = null,
-                    TotalPaid = 27150.0m,
-                    PaymentStatus = 0,
+                    Code = "ORD3818141",
+                    Status = OrderStatus.COMPLETED,
+                    TotalAmount = 4000.00m,
+                    ShippingFee = 0.00m,
+                    PaymentStatus = PaymentStatus.PAID_FULL,
                     PaymentMethod = PaymentMethod.ONLINE_BANKING,
                     DeliveryMethod = 0,
                     PaymentType = PaymentType.FULL,
-                    CanceledAt = null,
-                    CanceledReason = null,
-                    SubTotalAmount = 2000.0m,
-                    WarrantyCode = null,
-                    ReceivedAt = null,
-                    ReceivedAtBranch = null,
-                    CreatedBy = "User",
-                    UpdatedBy = null,
-                    CreatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
+                    SubTotalAmount = 4000.00m,
+                    CreatedBy = "Đỗ Quang Huy",
+                    CreatedAt = new DateTime(2025, 9, 2, 13, 27, 37, 984, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 9, 2, 13, 27, 37, 984, DateTimeKind.Utc),
                     IsDeleted = false
                 },
-                new Order
-                {
-                    Id = "fffdd078a46040e3bf27839793bb2bed",
-                    AddressId = "7aa93cf1dcea43e68da114d7c991a732",
-                    BranchId = null,
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    VoucherDiscountId = null,
-                    MeasurementId = "82e18e44f0984ad08209e575f77f3ca0",
-                    IsOnline = true,
-                    Type = 0,
-                    Code = "ORD6500230",
-                    TrackingOrderCode = null,
-                    Status = 0,
-                    TotalAmount = 25850.0m,
-                    ShippingFee = 22000,
-                    ServiceAmount = 1850.0m,
-                    DiscountSubtotal = 0,
-                    DepositSubtotal = 1000.0m,
-                    RemainingBalance = 1000.0m,
-                    TotalPaid = 24850.0m,
-                    PaymentStatus = 0,
-                    PaymentMethod = PaymentMethod.ONLINE_BANKING,
-                    DeliveryMethod = DeliveryMethod.DELIVERY,
-                    PaymentType = 0,
-                    CanceledAt = null,
-                    CanceledReason = null,
-                    SubTotalAmount = 2000.0m,
-                    WarrantyCode = null,
-                    ReceivedAt = null,
-                    ReceivedAtBranch = null,
-                    CreatedBy = "User",
-                    UpdatedBy = null,
-                    CreatedAt = new DateTime(2025, 8, 3, 6, 29, 40, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 3, 6, 29, 40, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new Order
-                {
-                    Id = "b1dec711c96840a3b45c14ed8b40d6ba",
-                    AddressId = "7aa93cf1dcea43e68da114d7c991a732",
-                    BranchId = null,
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    VoucherDiscountId = null,
-                    MeasurementId = "c49743c2e5d746239bddd1ade3d76ae9",
-                    IsOnline = true,
-                    Type = 0,
-                    Code = "ORD3021123",
-                    TrackingOrderCode = null,
-                    Status = 0,
-                    TotalAmount = 24000.0m,
-                    ShippingFee = 22000,
-                    ServiceAmount = 0,
-                    DiscountSubtotal = 0,
-                    DepositSubtotal = null,
-                    RemainingBalance = null,
-                    TotalPaid = 24000.0m,
-                    PaymentStatus = 0,
-                    PaymentMethod = PaymentMethod.ONLINE_BANKING,
-                    DeliveryMethod = DeliveryMethod.DELIVERY,
-                    PaymentType = PaymentType.FULL,
-                    CanceledAt = null,
-                    CanceledReason = null,
-                    SubTotalAmount = 2000.0m,
-                    WarrantyCode = null,
-                    ReceivedAt = null,
-                    ReceivedAtBranch = null,
-                    CreatedBy = "User",
-                    UpdatedBy = null,
-                    CreatedAt = new DateTime(2025, 8, 3, 6, 30, 48, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 3, 6, 30, 48, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new Order
-                {
-                    Id = "74dede079f594b58b119a7edf9c21c01",
-                    AddressId = null,
-                    BranchId = null,
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    VoucherDiscountId = null,
-                    MeasurementId = null,
-                    IsOnline = true,
-                    Type = OrderType.DESIGN,
-                    Code = "ORD1354972",
-                    TrackingOrderCode = null,
-                    Status = 0,
-                    TotalAmount = 3000.0m,
-                    ShippingFee = 0,
-                    ServiceAmount = null,
-                    DiscountSubtotal = null,
-                    DepositSubtotal = null,
-                    RemainingBalance = null,
-                    TotalPaid = null,
-                    PaymentStatus = 0,
-                    PaymentMethod = 0,
-                    DeliveryMethod = 0,
-                    PaymentType = PaymentType.FULL,
-                    CanceledAt = null,
-                    CanceledReason = null,
-                    SubTotalAmount = 3000.0m,
-                    WarrantyCode = null,
-                    ReceivedAt = null,
-                    ReceivedAtBranch = null,
-                    CreatedBy = "User",
-                    UpdatedBy = null,
-                    CreatedAt = new DateTime(2025, 8, 3, 6, 31, 42, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 3, 6, 31, 42, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new Order
-                {
-                    Id = "4e0842a05e594525a25de04b1e79f4a8",
-                    AddressId = "7aa93cf1dcea43e68da114d7c991a732",
-                    BranchId = null,
-                    UserId = "f49aa51bbd304e77933e24bbed65b165",
-                    VoucherDiscountId = null,
-                    MeasurementId = "c49743c2e5d746239bddd1ade3d76ae9",
-                    IsOnline = true,
-                    Type = 0,
-                    Code = "ORD9498301",
-                    TrackingOrderCode = null,
-                    Status = 0,
-                    TotalAmount = 27950.0m,
-                    ShippingFee = 22000,
-                    ServiceAmount = 1950,
-                    DiscountSubtotal = 0,
-                    DepositSubtotal = null,
-                    RemainingBalance = null,
-                    TotalPaid = 27950.0m,
-                    PaymentStatus = 0,
-                    PaymentMethod = 0,
-                    DeliveryMethod = DeliveryMethod.DELIVERY,
-                    PaymentType = PaymentType.FULL,
-                    CanceledAt = null,
-                    CanceledReason = null,
-                    SubTotalAmount = 4000.0m,
-                    WarrantyCode = null,
-                    ReceivedAt = null,
-                    ReceivedAtBranch = null,
-                    CreatedBy = "User",
-                    UpdatedBy = "User",
-                    CreatedAt = new DateTime(2025, 8, 9, 10, 3, 21, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 9, 10, 4, 19, DateTimeKind.Utc),
-                    IsDeleted = false
-                }
-            );
 
+    new Order
+    {
+        Id = "0ac6cefcf4314b7687ba6be3ee92ae64",
+        UserId = "0a522458e0de48a681837c0d11696620",
+        IsOnline = true,
+        Type = OrderType.DESIGN,
+        Code = "ORD8726162",
+        Status = OrderStatus.COMPLETED,
+        TotalAmount = 4000.00m,
+        ShippingFee = 0.00m,
+        PaymentStatus = PaymentStatus.PAID_FULL,
+        PaymentMethod = PaymentMethod.ONLINE_BANKING,
+        DeliveryMethod = 0,
+        PaymentType = PaymentType.FULL,
+        SubTotalAmount = 4000.00m,
+        CreatedBy = "Phạm Thị Mai",
+        CreatedAt = new DateTime(2025, 9, 2, 13, 26, 39, 796, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 9, 2, 13, 26, 39, 796, DateTimeKind.Utc),
+        IsDeleted = false
+    },
+    new Order
+    {
+        Id = "e80fe9e4b34449d1806bf14eddc1a680",
+        UserId = "2840217dab064258964dc7a6d26ff802",
+        IsOnline = true,
+        Type = OrderType.DESIGN,
+        Code = "ORD3739397",
+        Status = OrderStatus.COMPLETED,
+        TotalAmount = 4000.00m,
+        ShippingFee = 0.00m,
+        PaymentStatus = PaymentStatus.PAID_FULL,
+        PaymentMethod = PaymentMethod.ONLINE_BANKING,
+        DeliveryMethod = 0,
+        PaymentType = PaymentType.FULL,
+        SubTotalAmount = 4000.00m,
+        CreatedBy = "Lê Hoàng Anh",
+        CreatedAt = new DateTime(2025, 9, 2, 13, 24, 46, 709, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 9, 2, 13, 24, 46, 709, DateTimeKind.Utc),
+        IsDeleted = false
+    },
 
+    new Order
+    {
+        Id = "4d70c09c61784a5485a15f265d9664cb",
+        UserId = "475b7d2deed84e63b3235c2184bdd360",
+        IsOnline = true,
+        Type = OrderType.DESIGN,
+        Code = "ORD1601834",
+        Status = OrderStatus.COMPLETED,
+        TotalAmount = 4000.00m,
+        ShippingFee = 0.00m,
+        PaymentStatus = PaymentStatus.PAID_FULL,
+        PaymentMethod = PaymentMethod.ONLINE_BANKING,
+        DeliveryMethod = 0,
+        PaymentType = PaymentType.FULL,
+        SubTotalAmount = 4000.00m,
+        CreatedBy = "Nguyễn Thị Lan",
+        CreatedAt = new DateTime(2025, 9, 2, 13, 23, 24, 585, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 9, 2, 13, 23, 24, 584, DateTimeKind.Utc),
+        IsDeleted = false
+    },
+
+    new Order
+    {
+        Id = "78264292c5eb4af48f56870fbf0bee4e",
+        UserId = "38047c4238564d229aa42734116c03f1",
+        IsOnline = true,
+        Type = OrderType.DESIGN,
+        Code = "ORD1439298",
+        Status = OrderStatus.COMPLETED,
+        TotalAmount = 4000.00m,
+        ShippingFee = 0.00m,
+        PaymentStatus = PaymentStatus.PAID_FULL,
+        PaymentMethod = PaymentMethod.ONLINE_BANKING,
+        DeliveryMethod = 0,
+        PaymentType = PaymentType.FULL,
+        SubTotalAmount = 4000.00m,
+        CreatedBy = "Trần Minh Khoa",
+        CreatedAt = new DateTime(2025, 9, 2, 13, 20, 10, 390, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 9, 2, 13, 20, 10, 389, DateTimeKind.Utc),
+        IsDeleted = false
+    }
+);
+            #endregion
+
+            #region OrderItem
             modelBuilder.Entity<OrderItem>().HasData(
                 new OrderItem
                 {
-                    Id = "6390cef2d8644fa791480f1e3b7a81e2",
-                    OrderId = "4951106889514ce2ada27665d3e41a43",
-                    ParentOrderItemId = null,
-                    MaternityDressDetailId = null,
-                    PresetId = null,
+                    Id = "59406e6fd2ed4f51b615e1d2bfabcf3a",
+                    OrderId = "c12cd80152ed47ae83c10ece52b82183",
                     ItemType = ItemType.DESIGN_REQUEST,
-                    Price = 3000.0m,
+                    Price = 4000.00m,
                     Quantity = 1,
-                    WarrantyDate = null,
-                    CreatedBy = "user",
-                    UpdatedBy = null,
-                    CreatedAt = new DateTime(2025, 8, 3, 6, 19, 30, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 3, 6, 19, 30, DateTimeKind.Utc),
+                    CreatedBy = "huy.do",
+                    CreatedAt = new DateTime(2025, 9, 2, 13, 27, 37, 984, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 9, 2, 13, 27, 37, 984, DateTimeKind.Utc),
                     IsDeleted = false
                 },
-                new OrderItem
-                {
-                    Id = "b9d43051de4f471aa7228bfc5a51af68",
-                    OrderId = "b2643d4d3f854ad9926b3be5e63e4914",
-                    ParentOrderItemId = null,
-                    MaternityDressDetailId = null,
-                    PresetId = "fe88b53dce4c4938a7785fb9e3db1f0a",
-                    ItemType = ItemType.PRESET,
-                    Price = 2000m,
-                    Quantity = 1,
-                    WarrantyDate = null,
-                    CreatedBy = "user",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new OrderItem
-                {
-                    Id = "ebd9a5edae214c4d8f770c29b7aa8b7e",
-                    OrderId = "b2643d4d3f854ad9926b3be5e63e4914",
-                    ParentOrderItemId = null,
-                    MaternityDressDetailId = null,
-                    PresetId = "fe7043a37995453db2d03741e81da9df",
-                    ItemType = ItemType.PRESET,
-                    Price = 2000m,
-                    Quantity = 1,
-                    WarrantyDate = null,
-                    CreatedBy = "user",
-                    UpdatedBy = "System",
-                    CreatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new OrderItem
-                {
-                    Id = "71f71d08ac434f1683ae64292fd7c5a5",
-                    OrderId = "4e0842a05e594525a25de04b1e79f4a8",
-                    ParentOrderItemId = null,
-                    MaternityDressDetailId = null,
-                    PresetId = "bcdcf89795b2484f96a3a12b25383a12",
-                    ItemType = (ItemType)1,
-                    Price = 2000m,
-                    Quantity = 1,
-                    WarrantyDate = null,
-                    CreatedBy = "user",
-                    UpdatedBy = "User",
-                    CreatedAt = new DateTime(2025, 8, 9, 10, 3, 21, 624, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 9, 10, 7, 38, 212, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new OrderItem
-                {
-                    Id = "2f0f0502c88f4723a3c6706989bb4b57",
-                    OrderId = "4e0842a05e594525a25de04b1e79f4a8",
-                    ParentOrderItemId = null,
-                    MaternityDressDetailId = null,
-                    PresetId = "fe88b53dce4c4938a7785fb9e3db1f0a",
-                    ItemType = (ItemType)1,
-                    Price = 2000m,
-                    Quantity = 1,
-                    WarrantyDate = null,
-                    CreatedBy = "user",
-                    UpdatedBy = "User",
-                    CreatedAt = new DateTime(2025, 8, 9, 10, 3, 21, 640, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 9, 10, 22, 31, 529, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new OrderItem
-                {
-                    Id = "5c599ac9632447ff814ffcc127910e01",
-                    OrderId = "d7ba2e103448473f9949c10a59243e62",
-                    ParentOrderItemId = null,
-                    MaternityDressDetailId = null,
-                    PresetId = "68fca8f086454898ae81b1ea29890b60",
-                    ItemType = ItemType.PRESET,
-                    Price = 2000.0m,
-                    Quantity = 1,
-                    WarrantyDate = null,
-                    CreatedBy = "user",
-                    UpdatedBy = null,
-                    CreatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 3, 6, 28, 4, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new OrderItem
-                {
-                    Id = "d0bca4f5b523409d9a8f6c245b2cc42f",
-                    OrderId = "fffdd078a46040e3bf27839793bb2bed",
-                    ParentOrderItemId = null,
-                    MaternityDressDetailId = null,
-                    PresetId = "33c8177630a54906b92c0b8c03c57450",
-                    ItemType = ItemType.PRESET,
-                    Price = 2000.0m,
-                    Quantity = 1,
-                    WarrantyDate = null,
-                    CreatedBy = "user",
-                    UpdatedBy = null,
-                    CreatedAt = new DateTime(2025, 8, 3, 6, 29, 40, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 3, 6, 29, 40, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new OrderItem
-                {
-                    Id = "0c70b067e66a4ac0a9cf7d61a72ec887",
-                    OrderId = "b1dec711c96840a3b45c14ed8b40d6ba",
-                    ParentOrderItemId = null,
-                    MaternityDressDetailId = null,
-                    PresetId = "fe88b53dce4c4938a7785fb9e3db1f0a",
-                    ItemType = ItemType.PRESET,
-                    Price = 2000.0m,
-                    Quantity = 1,
-                    WarrantyDate = null,
-                    CreatedBy = "user",
-                    UpdatedBy = null,
-                    CreatedAt = new DateTime(2025, 8, 3, 6, 30, 48, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 3, 6, 30, 48, DateTimeKind.Utc),
-                    IsDeleted = false
-                },
-                new OrderItem
-                {
-                    Id = "583f8d8a545a4eb19d3257433f84de2d",
-                    OrderId = "74dede079f594b58b119a7edf9c21c01",
-                    ParentOrderItemId = null,
-                    MaternityDressDetailId = null,
-                    PresetId = null,
-                    ItemType = ItemType.DESIGN_REQUEST,
-                    Price = 3000.0m,
-                    Quantity = 1,
-                    WarrantyDate = null,
-                    CreatedBy = "user",
-                    UpdatedBy = null,
-                    CreatedAt = new DateTime(2025, 8, 3, 6, 31, 42, DateTimeKind.Utc),
-                    UpdatedAt = new DateTime(2025, 8, 3, 6, 31, 42, DateTimeKind.Utc),
-                    IsDeleted = false
-                });
 
-            modelBuilder.Entity<OrderItemAddOnOption>().HasData(
-                new OrderItemAddOnOption
+    new OrderItem
+    {
+        Id = "119ac55d73924593b4d47faff32be5e5",
+        OrderId = "0ac6cefcf4314b7687ba6be3ee92ae64",
+        ItemType = ItemType.DESIGN_REQUEST,
+        Price = 4000.00m,
+        Quantity = 1,
+        CreatedBy = "mai.pham",
+        CreatedAt = new DateTime(2025, 9, 2, 13, 26, 39, 796, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 9, 2, 13, 26, 39, 796, DateTimeKind.Utc),
+        IsDeleted = false
+    },
+
+    new OrderItem
+    {
+        Id = "1366f974f2fd4e4abda8d863751bcca7",
+        OrderId = "e80fe9e4b34449d1806bf14eddc1a680",
+        ItemType = ItemType.DESIGN_REQUEST,
+        Price = 4000.00m,
+        Quantity = 1,
+        CreatedBy = "hoanganh.le",
+        CreatedAt = new DateTime(2025, 9, 2, 13, 24, 46, 709, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 9, 2, 13, 24, 46, 709, DateTimeKind.Utc),
+        IsDeleted = false
+    },
+
+    new OrderItem
+    {
+        Id = "f19f57d04e0c4354876eae75c5c261b5",
+        OrderId = "4d70c09c61784a5485a15f265d9664cb",
+        ItemType = ItemType.DESIGN_REQUEST,
+        Price = 4000.00m,
+        Quantity = 1,
+        CreatedBy = "lan.nguyen",
+        CreatedAt = new DateTime(2025, 9, 2, 13, 23, 24, 584, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 9, 2, 13, 23, 24, 584, DateTimeKind.Utc),
+        IsDeleted = false
+    },
+
+    new OrderItem
+    {
+        Id = "6148b1b2a3b245bb9f3cac4457aa8e23",
+        OrderId = "78264292c5eb4af48f56870fbf0bee4e",
+        ItemType = ItemType.DESIGN_REQUEST,
+        Price = 4000.00m,
+        Quantity = 1,
+        CreatedBy = "khoa.tran",
+        CreatedAt = new DateTime(2025, 9, 2, 13, 20, 10, 390, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 9, 2, 13, 20, 10, 390, DateTimeKind.Utc),
+        IsDeleted = false
+    }
+);
+            #endregion
+
+            #region Feedback
+            modelBuilder.Entity<Feedback>().HasData(
+                new Feedback
                 {
-                    OrderItemId = "5c599ac9632447ff814ffcc127910e01",
-                    AddOnOptionId = "0528ef2e60164a3aa4ee078e25e982b2",
-                    Value = ""
+                    Id = "51c9a04052c14309a151b750cfc5a43e",
+                    UserId = "38047c4238564d229aa42734116c03f1",
+                    OrderItemId = "6148b1b2a3b245bb9f3cac4457aa8e23",
+                    Description = "Mình rất hài lòng với dịch vụ. Váy được thiết kế đúng theo yêu cầu, đường may khá chắc chắn, chất liệu thoải mái cho mẹ bầu. Chỉ có phần giao hàng hơi chậm so với dự kiến, nhưng nhìn chung trải nghiệm vẫn rất ổn và đáng để thử.",
+                    Rated = 4,
+                    CreatedBy = "Trần Minh Khoa",
+                    CreatedAt = new DateTime(2025, 9, 2, 13, 22, 34, 67, DateTimeKind.Utc),
+                    UpdatedAt = new DateTime(2025, 9, 2, 13, 22, 34, 67, DateTimeKind.Utc),
+                    IsDeleted = false
                 },
-                new OrderItemAddOnOption
-                {
-                    OrderItemId = "b9d43051de4f471aa7228bfc5a51af68",
-                    AddOnOptionId = "c289f97217504ea4a0a16b7079cf5f2a",
-                    Value = ""
-                },
-                new OrderItemAddOnOption
-                {
-                    OrderItemId = "5c599ac9632447ff814ffcc127910e01",
-                    AddOnOptionId = "811a8841037a43e0adf5b0bfd7630bad",
-                    Value = "MamaFit la so 1"
-                },
-                new OrderItemAddOnOption
-                {
-                    OrderItemId = "d0bca4f5b523409d9a8f6c245b2cc42f",
-                    AddOnOptionId = "3c7f15f87fc34c3f9448d52a2e98f3ed",
-                    Value =
-                        "https://firebasestorage.googleapis.com/v0/b/mamafit-e0138.firebasestorage.app/o/add-ons%2F1000029294.png?alt=media&token=b97c8980-cfa7-4988-a335-30c4b5512c29"
-                },
-                new OrderItemAddOnOption
-                {
-                    OrderItemId = "d0bca4f5b523409d9a8f6c245b2cc42f",
-                    AddOnOptionId = "71655b636da34aa391d8691180ca763b",
-                    Value = "Xin chao MamaFit"
-                }
-            );
+
+    new Feedback
+    {
+        Id = "3c8b782971e7477691b20215c8d270c5",
+        UserId = "475b7d2deed84e63b3235c2184bdd360",
+        OrderItemId = "f19f57d04e0c4354876eae75c5c261b5",
+        Description = "Dịch vụ thiết kế váy bầu thực sự chuyên nghiệp. Mình chỉ cần đưa ý tưởng cơ bản, đội ngũ đã tư vấn chi tiết và biến thành sản phẩm cuối cùng rất vừa vặn, phù hợp với vóc dáng thay đổi trong thai kỳ. Kết quả đẹp hơn mong đợi, sẽ tiếp tục ủng hộ.",
+        Rated = 5,
+        CreatedBy = "Nguyễn Thị Lan",
+        CreatedAt = new DateTime(2025, 9, 2, 13, 23, 54, 232, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 9, 2, 13, 23, 54, 232, DateTimeKind.Utc),
+        IsDeleted = false
+    },
+
+    new Feedback
+    {
+        Id = "b2ee80af92554ec9a644b8a7bc85ce3f",
+        UserId = "2840217dab064258964dc7a6d26ff802",
+        OrderItemId = "1366f974f2fd4e4abda8d863751bcca7",
+        Description = "Form váy chuẩn, màu sắc rất hợp với mình. Cảm giác mặc thoải mái cả ngày, không bị bí hay khó chịu. Mình mong rằng trong tương lai có thêm nhiều lựa chọn về chất liệu và họa tiết để đa dạng hơn nữa.",
+        Rated = 4,
+        CreatedBy = "Lê Hoàng Anh",
+        CreatedAt = new DateTime(2025, 9, 2, 13, 25, 10, 469, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 9, 2, 13, 25, 10, 469, DateTimeKind.Utc),
+        IsDeleted = false
+    },
+
+    new Feedback
+    {
+        Id = "5b72d54ec83a47d58b9031dbe05b9fe1",
+        UserId = "0a522458e0de48a681837c0d11696620",
+        OrderItemId = "119ac55d73924593b4d47faff32be5e5",
+        Description = "Đội ngũ tư vấn nhiệt tình, kiên nhẫn hỗ trợ mình chỉnh sửa từng chi tiết nhỏ cho đến khi mình thật sự ưng ý. Váy sau khi hoàn thiện vừa vặn, mặc lên tôn dáng và thoải mái. Cảm nhận rõ ràng đây là dịch vụ thiết kế theo nhu cầu chứ không phải hàng may sẵn.",
+        Rated = 5,
+        CreatedBy = "Phạm Thị Mai",
+        CreatedAt = new DateTime(2025, 9, 2, 13, 27, 3, 510, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 9, 2, 13, 27, 3, 510, DateTimeKind.Utc),
+        IsDeleted = false
+    },
+
+    new Feedback
+    {
+        Id = "227855477c2a483eb1fbc1324f4418ee",
+        UserId = "9eebd865d994424c805e5ae28f310f79",
+        OrderItemId = "59406e6fd2ed4f51b615e1d2bfabcf3a",
+        Description = "Lần đầu mình thử dịch vụ thiết kế váy riêng và cảm thấy cực kỳ hài lòng. Váy vừa vặn hoàn hảo, đường may tinh tế, chất vải mềm mại. Mình thấy rất tự tin khi mặc và chắc chắn sẽ giới thiệu dịch vụ này cho bạn bè đang mang thai.",
+        Rated = 5,
+        CreatedBy = "Đỗ Quang Huy",
+        CreatedAt = new DateTime(2025, 9, 2, 13, 27, 59, 941, DateTimeKind.Utc),
+        UpdatedAt = new DateTime(2025, 9, 2, 13, 27, 59, 941, DateTimeKind.Utc),
+        IsDeleted = false
+    }
+);
+            #endregion
+
 
             #endregion
         }

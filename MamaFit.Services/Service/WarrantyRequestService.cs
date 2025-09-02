@@ -691,6 +691,19 @@ namespace MamaFit.Services.Service
                         Status = WarrantyRequestItemStatus.REJECTED,
                         TrackingCode = null
                     });
+                    var orderEntity = await _unitOfWork.OrderRepository.GetByIdNotDeletedAsync(wri.OrderItem.OrderId);
+                    _validationService.CheckNotFound(orderEntity, $"Order {wri.OrderItem.OrderId} not found");
+
+                    var allRejected = wr.WarrantyRequestItems
+                        .Where(w => w.OrderItem.OrderId == wri.OrderItem.OrderId)
+                        .All(w => w.Status == WarrantyRequestItemStatus.REJECTED);
+
+                    if (allRejected && orderEntity.Status != OrderStatus.COMPLETED)
+                    {
+                        orderEntity.Status = OrderStatus.COMPLETED;
+                        orderEntity.ReceivedAt = DateTime.UtcNow;  
+                        await _unitOfWork.OrderRepository.UpdateAsync(orderEntity);
+                    }
                     continue;
                 }
 

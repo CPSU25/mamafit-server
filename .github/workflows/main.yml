@@ -128,60 +128,60 @@ jobs:
             docker compose up -d --pull always --no-deps --force-recreate mamafit-api
             docker ps -a | grep mamafit-api
 
-  notify-success:
-    name: Notify Discord (Success)
-    runs-on: ubuntu-latest
-    needs: deploy
-    if: success()
-    steps:
-      - name: Send Success Message
-        run: |
-          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          curl -H "Content-Type: application/json" -X POST -d "{
-            \"embeds\": [{
-              \"title\": \"🚀 MamaFit API - Deployment Successful\",
-              \"description\": \"✨ App is live at https://api.mamafit.studio/\",
-              \"color\": 5763719,
-              \"author\": {
-                \"name\": \"${{ github.actor }}\",
-                \"icon_url\": \"https://github.com/${{ github.actor }}.png\"
-              },
-              \"fields\": [
-                { \"name\": \"Repository\", \"value\": \"[${{ github.repository }}](https://github.com/${{ github.repository }})\", \"inline\": true },
-                { \"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true },
-                { \"name\": \"Commit\", \"value\": \"[${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\", \"inline\": true }
-              ],
-              \"footer\": { \"text\": \"MamaFit CI/CD • GitHub Actions\" },
-              \"timestamp\": \"$TIMESTAMP\"
-            }]
-          }" ${{ secrets.DISCORD_WEBHOOK_URL }}
-
-  notify-failure:
-    name: Notify Discord (Failure)
-    runs-on: ubuntu-latest
-    needs: [test, build-and-push, deploy]
-    if: failure()
-    steps:
-      - name: Send Failure Message
-        run: |
-          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          curl -H "Content-Type: application/json" -X POST -d "{
-            \"content\": \"<@&1379069130656845824> 🚨 **MamaFit API** deployment failed!\",
-            \"embeds\": [{
-              \"title\": \"💥 Deployment Failed\",
-              \"description\": \"❌ CI/CD pipeline failed.\",
-              \"color\": 15158332,
-              \"author\": {
-                \"name\": \"${{ github.actor }}\",
-                \"icon_url\": \"https://github.com/${{ github.actor }}.png\"
-              },
-              \"fields\": [
-                { \"name\": \"Repository\", \"value\": \"[${{ github.repository }}](https://github.com/${{ github.repository }})\", \"inline\": true },
-                { \"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true },
-                { \"name\": \"Commit\", \"value\": \"[${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\", \"inline\": true },
-                { \"name\": \"Logs\", \"value\": \"[View Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\", \"inline\": true }
-              ],
-              \"footer\": { \"text\": \"MamaFit CI/CD • GitHub Actions\" },
-              \"timestamp\": \"$TIMESTAMP\"
-            }]
-          }" ${{ secrets.DISCORD_WEBHOOK_URL }}
+#  notify-success:
+#    name: Notify Discord (Success)
+#    runs-on: ubuntu-latest
+#    needs: deploy
+#    if: success()
+#    steps:
+#      - name: Send Success Message
+#        run: |
+#          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+#          curl -H "Content-Type: application/json" -X POST -d "{
+#            \"embeds\": [{
+#              \"title\": \"🚀 MamaFit API - Deployment Successful\",
+#              \"description\": \"✨ App is live at https://api.mamafit.studio/\",
+#              \"color\": 5763719,
+#              \"author\": {
+#                \"name\": \"${{ github.actor }}\",
+#                \"icon_url\": \"https://github.com/${{ github.actor }}.png\"
+#              },
+#              \"fields\": [
+#                { \"name\": \"Repository\", \"value\": \"[${{ github.repository }}](https://github.com/${{ github.repository }})\", \"inline\": true },
+#                { \"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true },
+#                { \"name\": \"Commit\", \"value\": \"[${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\", \"inline\": true }
+#              ],
+#              \"footer\": { \"text\": \"MamaFit CI/CD • GitHub Actions\" },
+#              \"timestamp\": \"$TIMESTAMP\"
+#            }]
+#          }" ${{ secrets.DISCORD_WEBHOOK_URL }}
+#
+#  notify-failure:
+#    name: Notify Discord (Failure)
+#    runs-on: ubuntu-latest
+#    needs: [ test, build-and-push, deploy ]
+#    if: failure()
+#    steps:
+#      - name: Send Failure Message
+#        run: |
+#          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+#          curl -H "Content-Type: application/json" -X POST -d "{
+#            \"content\": \"<@&1379069130656845824> 🚨 **MamaFit API** deployment failed!\",
+#            \"embeds\": [{
+#              \"title\": \"💥 Deployment Failed\",
+#              \"description\": \"❌ CI/CD pipeline failed.\",
+#              \"color\": 15158332,
+#              \"author\": {
+#                \"name\": \"${{ github.actor }}\",
+#                \"icon_url\": \"https://github.com/${{ github.actor }}.png\"
+#              },
+#              \"fields\": [
+#                { \"name\": \"Repository\", \"value\": \"[${{ github.repository }}](https://github.com/${{ github.repository }})\", \"inline\": true },
+#                { \"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true },
+#                { \"name\": \"Commit\", \"value\": \"[${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})\", \"inline\": true },
+#                { \"name\": \"Logs\", \"value\": \"[View Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\", \"inline\": true }
+#              ],
+#              \"footer\": { \"text\": \"MamaFit CI/CD • GitHub Actions\" },
+#              \"timestamp\": \"$TIMESTAMP\"
+#            }]
+#          }" ${{ secrets.DISCORD_WEBHOOK_URL }}

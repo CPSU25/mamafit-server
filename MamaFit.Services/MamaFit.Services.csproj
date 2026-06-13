@@ -24,7 +24,7 @@
     <PackageReference Include="OxyPlot.Core" Version="2.1.2"/>
 
     <!-- Logging -->
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.3"/>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.9"/>
   </ItemGroup>
 
   <ItemGroup>

@@ -361,7 +361,7 @@ namespace MamaFit.API.DependencyInjection
 
         private static void AddAutoMapper(this IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(MapperEntities).Assembly);
+            services.AddAutoMapper(_ => { }, typeof(MapperEntities).Assembly);
         }
     }
 }

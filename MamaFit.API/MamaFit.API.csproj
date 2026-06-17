@@ -29,4 +29,14 @@
     <ProjectReference Include="..\MamaFit.Services\MamaFit.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\.dockerignore" Link=".dockerignore" />
+    <None Include="..\.github\workflows\main.yml" Link=".github\workflows\main.yml" />
+    <None Include="..\docker-compose.build.yaml" Link="docker-compose.build.yaml" />
+    <None Include="..\docker-compose.yaml" Link="docker-compose.yaml" />
+    <None Include="..\Dockerfile" Link="Dockerfile" />
+    <None Include="..\filebeat.yml" Link="filebeat.yml" />
+    <None Include="..\README.Docker.md" Link="README.Docker.md" />
+  </ItemGroup>
+
 </Project>

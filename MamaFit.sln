@@ -1,17 +1,27 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.13.35828.75
+# Visual Studio Version 18
+VisualStudioVersion = 18.7.11903.348 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MamaFit.API", "MamaFit.API\MamaFit.API.csproj", "{E1CD3161-C062-4E94-BCD6-6570A2F73883}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. API", "1. API", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		docker-compose.build.yaml = docker-compose.build.yaml
 		docker-compose.yaml = docker-compose.yaml
 		Dockerfile = Dockerfile
 		filebeat.yml = filebeat.yml
+		README.Docker.md = README.Docker.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{01A6E07D-9181-4E64-8C83-8C2BF13B5D74}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{E409710B-0A51-4AAE-95A8-DC1B8D1CF7A6}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\main.yml = .github\workflows\main.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Services", "2. Services", "{C5787510-60EC-4024-BFAC-69B0D9BE9767}"
@@ -57,6 +67,7 @@ Global
 		{42DD4038-BC8B-4E9B-AA4E-29150627DF74} = {C5787510-60EC-4024-BFAC-69B0D9BE9767}
 		{5823E9EE-9B82-4249-95F0-341C54D4B87E} = {23B3F928-48F2-48F7-BCA5-F0021DC23158}
 		{60A0A1CF-02B9-4817-BC66-0127C639D3FB} = {330C30FD-1297-42C5-87B4-47C377465377}
+		{E409710B-0A51-4AAE-95A8-DC1B8D1CF7A6} = {01A6E07D-9181-4E64-8C83-8C2BF13B5D74}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ED66D7EE-499B-43B5-BB9B-D8FF8FF76C1C}
